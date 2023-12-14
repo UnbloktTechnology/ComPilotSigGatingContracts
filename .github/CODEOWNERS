@@ -5,9 +5,8 @@
 # the repo. Unless a later match takes precedence,
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
-*         @galimba @LizanLycan @grmkris @cbarrilab @fgregoribattista @MrRaccxxn @Eveelin @bogdancirlugea2 @markoftw @joelamouche @xela7
-.github/* @markoftw @grmkris
-deploy/openmeter/* @markoftw @grmkris
+*         @galimba @LizanLycan @grmkris @cbarrilab  @bogdancirlugea2 @markoftw @joelamouche
+.github/* @markoftw @grmkris @joelamouche
 
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
