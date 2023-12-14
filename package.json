@@ -20,6 +20,9 @@
   "devDependencies": {
     "lerna": "^8.0.0"
   },
+  "publishConfig": {
+    "@NexeraProtocol:registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build:hardhat": "pnpm run --filter \"@nexeraprotocol/contracts\" build"
   }
