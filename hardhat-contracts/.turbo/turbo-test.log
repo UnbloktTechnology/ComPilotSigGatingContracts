@@ -1,5 +1,0 @@
-
-> on-chain-verification-test@1.0.0 test /Users/antoineestienne/GithubRepositories/NexeraID/tests/on-chain-verification
-> npx hardhat test --network localhost
-
- ELIFECYCLE  Test failed. See above for more details.
