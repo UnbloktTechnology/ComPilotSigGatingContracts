@@ -21,6 +21,6 @@
     "lerna": "^8.0.0"
   },
   "scripts": {
-    "build:hardhat": "pnpm run --filter \"@nexeraid/contracts\" build"
+    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/contracts\" build"
   }
 }
