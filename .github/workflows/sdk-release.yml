@@ -56,6 +56,10 @@ jobs:
           lerna version --yes --changelog-preset=angular
 
       - name: Build
+        env:
+          MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+          MUMBAI_PRIVATE_KEY: ${{ secrets.MUMBAI_PRIVATE_KEY }}
+          MUMBAI_PRIVATE_KEY2: ${{ secrets.MUMBAI_PRIVATE_KEY2 }}
         run: |
           cd hardhat-contracts && npm run build
       - name: Publish to npm
