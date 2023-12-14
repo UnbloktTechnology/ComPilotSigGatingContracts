@@ -1,6 +1,6 @@
-# @nexeraprotocol/contracts
+# @nexeraprotocol/nexera-id-contracts
 
-@nexeraprotocol/contracts
+@nexeraprotocol/nexera-id-contracts
 
 ## Contracts
 

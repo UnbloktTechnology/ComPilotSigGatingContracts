@@ -24,6 +24,6 @@
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/contracts\" build"
+    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/nexera-id-contracts\" build"
   }
 }

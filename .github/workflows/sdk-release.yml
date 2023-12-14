@@ -72,4 +72,4 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm --filter "@nexeraprotocol/contracts" publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter "@nexeraprotocol/nexera-id-contracts" publish --no-git-checks --registry https://npm.pkg.github.com/

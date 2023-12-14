@@ -1,7 +1,7 @@
 {
-  "name": "@nexeraprotocol/contracts",
+  "name": "@nexeraprotocol/nexera-id-contracts",
   "version": "1.0.3",
-  "description": "Nexera Id Contracts",
+  "description": "Nexera ID Contracts",
   "author": "Nexera ID",
   "files": [
     "**/*.sol"
