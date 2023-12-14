@@ -6,14 +6,15 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "@openzeppelin/hardhat-upgrades";
-//import "@nomicfoundation/hardhat-viem";
-
-//import "@nomicfoundation/hardhat-toolbox-viem";
 
 import dotenv from "dotenv";
 import { ethers } from "ethers";
 
 dotenv.config();
+
+const DEFAULT_MUMBAI_URL = "https://polygon-mumbai-bor.publicnode.com";
+const MUMBAI_PROVIDER_URL =
+  process.env.MUMBAI_PROVIDER_URL || DEFAULT_MUMBAI_URL;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.16",
@@ -25,12 +26,12 @@ const config: HardhatUserConfig = {
   networks: {
     mumbai: {
       chainId: 80001,
-      url: `${process.env.MUMBAI_PROVIDER_URL}`,
+      url: `${MUMBAI_PROVIDER_URL}`,
       accounts: [`0x${process.env.MUMBAI_PRIVATE_KEY}`],
     },
     hardhat: {
       forking: {
-        url: `${process.env.MUMBAI_PROVIDER_URL}`,
+        url: `${MUMBAI_PROVIDER_URL}`,
         // using fixed block number is supposed to improve test performance
         blockNumber: 41591456,
       },
