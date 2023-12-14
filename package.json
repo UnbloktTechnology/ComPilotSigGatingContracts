@@ -1,0 +1,25 @@
+{
+  "name": "nexeraid-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=8.10.2"
+  },
+  "packageManager": "pnpm@8.10.2",
+  "author": "",
+  "workspaces": [
+    "hardhat-contracts"
+  ],
+  "preconstruct": {
+    "packages": [
+      "hardhat-contracts"
+    ]
+  },
+  "devDependencies": {
+    "lerna": "^8.0.0"
+  },
+  "scripts": {
+  }
+}
