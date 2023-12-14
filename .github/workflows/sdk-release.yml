@@ -61,9 +61,10 @@ jobs:
           MUMBAI_PRIVATE_KEY: ${{ secrets.MUMBAI_PRIVATE_KEY }}
           MUMBAI_PRIVATE_KEY2: ${{ secrets.MUMBAI_PRIVATE_KEY2 }}
         run: |
-          cd hardhat-contracts && npm run build
+          pnpm run build:hardhat
+
       - name: Publish to npm
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd hardhat-contracts && npm publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter "@nexeraid/contracts" publish --no-git-checks --registry https://npm.pkg.github.com/
