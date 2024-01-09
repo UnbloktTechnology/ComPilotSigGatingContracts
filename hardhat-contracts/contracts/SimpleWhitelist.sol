@@ -5,16 +5,25 @@ import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
 import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
 import "./verifiers/NexeraZKPVerifier.sol";
 
+/// @title SimpleWhitelist
+/// @notice This example contract implements a simple whitelist mechanism using Zero-Knowledge Proofs (ZKPs).
 contract SimpleWhitelist is NexeraZKPVerifier {
+  // Constant for the transfer request ID.
   uint64 public constant TRANSFER_REQUEST_ID = 1;
 
+  // Mapping from user ID to address.
   mapping(uint256 => address) public idToAddress;
+
+  // Mapping from address to user ID.
   mapping(address => uint256) public addressToId;
 
+  // Mapping to keep track of whitelisted addresses.
   mapping(address => bool) public whitelist;
 
-  constructor() {}
-
+  /// @dev Internal function called before submitting a proof.
+  ///      Ensures that the challenge input is the address of the sender.
+  /// @param inputs Array of inputs for the proof.
+  /// @param validator The circuit validator.
   function _beforeProofSubmit(
     uint64 /* requestId */,
     uint256[] memory inputs,
@@ -28,6 +37,11 @@ contract SimpleWhitelist is NexeraZKPVerifier {
     require(_msgSender() == addr, "address in proof is not a sender address");
   }
 
+  /// @dev Internal function called after submitting a proof.
+  ///      Registers a user to the whitelist if the conditions are met.
+  /// @param requestId The ID of the request being processed.
+  /// @param inputs Array of inputs for the proof.
+  /// @param validator The circuit validator.
   function _afterProofSubmit(
     uint64 requestId,
     uint256[] memory inputs,

@@ -6,6 +6,8 @@ import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
 import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
 import {ZKPVerifier} from "@iden3/contracts/verifiers/ZKPVerifier.sol";
 
+/// @title ERC20Verifier
+/// @notice This is a copy of the example provided by Polygon ID for ZKP based verification
 contract ERC20Verifier is ERC20, ZKPVerifier {
   uint64 public constant TRANSFER_REQUEST_ID = 1;
 
