@@ -1,20 +1,19 @@
 import { ethers } from "hardhat";
 
-import { CredentialType } from "@nexeraprotocol/nexera-id-schemas";
-
 import { getSchemaExampleQuery } from "./createRequestInput/getSchemaExampleQuery";
+import { CredentialType } from "../schemas";
 
 export async function setRequestForScenario(
   requestId: number,
   scenarioVerifierAddress: string,
   validatorAddress: string,
-  credentialType: CredentialType,
+  credentialType: CredentialType
 ): Promise<boolean> {
   const queryData = await getSchemaExampleQuery(credentialType, requestId);
 
   let scenarioVerifier = await ethers.getContractAt(
     "ScenarioVerifier",
-    scenarioVerifierAddress,
+    scenarioVerifierAddress
   );
 
   try {

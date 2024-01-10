@@ -25,12 +25,12 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     "deleteScenarioVerifier(address)": FunctionFragment;
     "disableScenario(address)": FunctionFragment;
     "enableScenario(address)": FunctionFragment;
+    "getIsScenarioEnabled(address)": FunctionFragment;
     "getScenarioVerifierAddress(uint256)": FunctionFragment;
+    "initialize(address)": FunctionFragment;
     "isAllowedForEntrypoint(address)": FunctionFragment;
-    "isScenarioEnabled(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "scenarioVerifierAddresses(uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateScenarioVerifier(address,address)": FunctionFragment;
   };
@@ -52,25 +52,22 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getScenarioVerifierAddress",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isAllowedForEntrypoint",
+    functionFragment: "getIsScenarioEnabled",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "isScenarioEnabled",
+    functionFragment: "getScenarioVerifierAddress",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "initialize", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "isAllowedForEntrypoint",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "scenarioVerifierAddresses",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -98,24 +95,21 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getIsScenarioEnabled",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getScenarioVerifierAddress",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isAllowedForEntrypoint",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isScenarioEnabled",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "scenarioVerifierAddresses",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -128,6 +122,7 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ScenarioVerifierAdded(address)": EventFragment;
     "ScenarioVerifierDeleted(address)": EventFragment;
@@ -136,6 +131,7 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     "ScenarioVerifierUpdated(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScenarioVerifierAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScenarioVerifierDeleted"): EventFragment;
@@ -143,6 +139,8 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ScenarioVerifierEnabled"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ScenarioVerifierUpdated"): EventFragment;
 }
+
+export type InitializedEvent = TypedEvent<[number] & { version: number }>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -235,18 +233,23 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getIsScenarioEnabled(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     getScenarioVerifierAddress(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isAllowedForEntrypoint(
       user: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    isScenarioEnabled(
-      arg0: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -255,11 +258,6 @@ export class NexeraVerifierEntrypoint extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    scenarioVerifierAddresses(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     transferOwnership(
       newOwner: string,
@@ -293,28 +291,31 @@ export class NexeraVerifierEntrypoint extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getIsScenarioEnabled(
+    scenarioVerifierAddress: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   getScenarioVerifierAddress(
     index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  initialize(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isAllowedForEntrypoint(
     user: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isScenarioEnabled(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  scenarioVerifierAddresses(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   transferOwnership(
     newOwner: string,
@@ -348,29 +349,26 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    getIsScenarioEnabled(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     getScenarioVerifierAddress(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    initialize(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     isAllowedForEntrypoint(
       user: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isScenarioEnabled(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    scenarioVerifierAddresses(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     transferOwnership(
       newOwner: string,
@@ -385,6 +383,14 @@ export class NexeraVerifierEntrypoint extends BaseContract {
   };
 
   filters: {
+    "Initialized(uint8)"(
+      version?: null
+    ): TypedEventFilter<[number], { version: number }>;
+
+    Initialized(
+      version?: null
+    ): TypedEventFilter<[number], { version: number }>;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -471,9 +477,19 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getIsScenarioEnabled(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getScenarioVerifierAddress(
       index: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isAllowedForEntrypoint(
@@ -481,20 +497,10 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isScenarioEnabled(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    scenarioVerifierAddresses(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     transferOwnership(
@@ -530,9 +536,19 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    getIsScenarioEnabled(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getScenarioVerifierAddress(
       index: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isAllowedForEntrypoint(
@@ -540,20 +556,10 @@ export class NexeraVerifierEntrypoint extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isScenarioEnabled(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    scenarioVerifierAddresses(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(

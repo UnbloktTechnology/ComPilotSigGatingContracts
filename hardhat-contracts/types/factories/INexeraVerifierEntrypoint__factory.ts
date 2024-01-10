@@ -27,6 +27,45 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "scenarioVerifierAddress",
+        type: "address",
+      },
+    ],
+    name: "deleteScenarioVerifier",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "scenarioVerifierAddress",
+        type: "address",
+      },
+    ],
+    name: "disableScenario",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "scenarioVerifierAddress",
+        type: "address",
+      },
+    ],
+    name: "enableScenario",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "user",
         type: "address",
       },
@@ -39,6 +78,24 @@ const _abi = [
         type: "bool",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "oldScenarioVerifierAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "newScenarioVerifierAddress",
+        type: "address",
+      },
+    ],
+    name: "updateScenarioVerifier",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },

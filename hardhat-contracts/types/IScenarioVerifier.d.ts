@@ -21,7 +21,8 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IScenarioVerifierInterface extends ethers.utils.Interface {
   functions: {
-    "finalizeWhitelistScenario(address)": FunctionFragment;
+    "allowUserForScenario(tuple[])": FunctionFragment;
+    "finalizeAllowListScenario(address)": FunctionFragment;
     "getZKPRequest(uint64)": FunctionFragment;
     "getZKPRequests(uint256,uint256)": FunctionFragment;
     "getZKPRequestsCount()": FunctionFragment;
@@ -29,11 +30,22 @@ interface IScenarioVerifierInterface extends ethers.utils.Interface {
     "requestIdExists(uint64)": FunctionFragment;
     "setZKPRequest(uint64,(string,address,bytes))": FunctionFragment;
     "submitZKPResponse(uint64,uint256[],uint256[2],uint256[2][2],uint256[2])": FunctionFragment;
-    "whitelistScenario(tuple[])": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "finalizeWhitelistScenario",
+    functionFragment: "allowUserForScenario",
+    values: [
+      {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "finalizeAllowListScenario",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -73,21 +85,13 @@ interface IScenarioVerifierInterface extends ethers.utils.Interface {
       [BigNumberish, BigNumberish]
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "whitelistScenario",
-    values: [
-      {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[]
-    ]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "finalizeWhitelistScenario",
+    functionFragment: "allowUserForScenario",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "finalizeAllowListScenario",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -116,10 +120,6 @@ interface IScenarioVerifierInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "submitZKPResponse",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whitelistScenario",
     data: BytesLike
   ): Result;
 
@@ -170,7 +170,18 @@ export class IScenarioVerifier extends BaseContract {
   interface: IScenarioVerifierInterface;
 
   functions: {
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -228,20 +239,20 @@ export class IScenarioVerifier extends BaseContract {
       c: [BigNumberish, BigNumberish],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  finalizeWhitelistScenario(
+  allowUserForScenario(
+    zkps: {
+      requestId: BigNumberish;
+      inputs: BigNumberish[];
+      a: [BigNumberish, BigNumberish];
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+      c: [BigNumberish, BigNumberish];
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  finalizeAllowListScenario(
     user: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -296,19 +307,19 @@ export class IScenarioVerifier extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  whitelistScenario(
-    zkps: {
-      requestId: BigNumberish;
-      inputs: BigNumberish[];
-      a: [BigNumberish, BigNumberish];
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-      c: [BigNumberish, BigNumberish];
-    }[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -362,8 +373,12 @@ export class IScenarioVerifier extends BaseContract {
       c: [BigNumberish, BigNumberish],
       overrides?: CallOverrides
     ): Promise<void>;
+  };
 
-    whitelistScenario(
+  filters: {};
+
+  estimateGas: {
+    allowUserForScenario(
       zkps: {
         requestId: BigNumberish;
         inputs: BigNumberish[];
@@ -371,14 +386,10 @@ export class IScenarioVerifier extends BaseContract {
         b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
         c: [BigNumberish, BigNumberish];
       }[],
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-  };
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
-  filters: {};
-
-  estimateGas: {
-    finalizeWhitelistScenario(
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -420,8 +431,10 @@ export class IScenarioVerifier extends BaseContract {
       c: [BigNumberish, BigNumberish],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+  };
 
-    whitelistScenario(
+  populateTransaction: {
+    allowUserForScenario(
       zkps: {
         requestId: BigNumberish;
         inputs: BigNumberish[];
@@ -430,11 +443,9 @@ export class IScenarioVerifier extends BaseContract {
         c: [BigNumberish, BigNumberish];
       }[],
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-  };
+    ): Promise<PopulatedTransaction>;
 
-  populateTransaction: {
-    finalizeWhitelistScenario(
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -476,17 +487,6 @@ export class IScenarioVerifier extends BaseContract {
       a: [BigNumberish, BigNumberish],
       b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
       c: [BigNumberish, BigNumberish],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

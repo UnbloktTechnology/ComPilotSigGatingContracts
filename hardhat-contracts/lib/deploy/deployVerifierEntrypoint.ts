@@ -1,26 +1,29 @@
 import { deployments, ethers } from "hardhat";
 
-import { ScenarioVerifier, ScenarioVerifierFactory } from "../../types";
+import {
+  NexeraVerifierEntrypoint,
+  VerifierEntrypointFactory,
+} from "../../types";
 
-export async function deployScenarioVerifier(): Promise<ScenarioVerifier> {
+export async function deployVerifierEntrypoint(): Promise<NexeraVerifierEntrypoint> {
   // get factory
   const scenarioVerifierFactoryAddress = (
-    await deployments.get("ScenarioVerifierFactory")
+    await deployments.get("VerifierEntrypointFactory")
   ).address;
   let scenarioVerifierFactory = (await ethers.getContractAt(
-    "ScenarioVerifierFactory",
+    "VerifierEntrypointFactory",
     scenarioVerifierFactoryAddress
-  )) as ScenarioVerifierFactory;
+  )) as VerifierEntrypointFactory;
 
   // deploy new verifier from factory
-  const tx = await scenarioVerifierFactory.createScenarioVerifier();
+  const tx = await scenarioVerifierFactory.createVerifierEntrypoint();
   const transactionReceipt = await tx.wait();
   const scenarioVerifierAddress = transactionReceipt.events?.[0].args?.[0];
 
   // instantiate from address
   const scenarioVerifier = (await ethers.getContractAt(
-    "ScenarioVerifier",
+    "NexeraVerifierEntrypoint",
     scenarioVerifierAddress
-  )) as ScenarioVerifier;
+  )) as NexeraVerifierEntrypoint;
   return scenarioVerifier;
 }

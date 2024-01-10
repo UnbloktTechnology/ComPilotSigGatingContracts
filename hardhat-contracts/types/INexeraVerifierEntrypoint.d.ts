@@ -22,7 +22,11 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface INexeraVerifierEntrypointInterface extends ethers.utils.Interface {
   functions: {
     "addScenarioVerifier(address)": FunctionFragment;
+    "deleteScenarioVerifier(address)": FunctionFragment;
+    "disableScenario(address)": FunctionFragment;
+    "enableScenario(address)": FunctionFragment;
     "isAllowedForEntrypoint(address)": FunctionFragment;
+    "updateScenarioVerifier(address,address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -30,8 +34,24 @@ interface INexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "deleteScenarioVerifier",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disableScenario",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "enableScenario",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isAllowedForEntrypoint",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateScenarioVerifier",
+    values: [string, string]
   ): string;
 
   decodeFunctionResult(
@@ -39,7 +59,23 @@ interface INexeraVerifierEntrypointInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "deleteScenarioVerifier",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disableScenario",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "enableScenario",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isAllowedForEntrypoint",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateScenarioVerifier",
     data: BytesLike
   ): Result;
 
@@ -95,8 +131,29 @@ export class INexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    deleteScenarioVerifier(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    disableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    enableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isAllowedForEntrypoint(
       user: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateScenarioVerifier(
+      oldScenarioVerifierAddress: string,
+      newScenarioVerifierAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -106,8 +163,29 @@ export class INexeraVerifierEntrypoint extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  deleteScenarioVerifier(
+    scenarioVerifierAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  disableScenario(
+    scenarioVerifierAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  enableScenario(
+    scenarioVerifierAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isAllowedForEntrypoint(
     user: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateScenarioVerifier(
+    oldScenarioVerifierAddress: string,
+    newScenarioVerifierAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -117,10 +195,31 @@ export class INexeraVerifierEntrypoint extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    deleteScenarioVerifier(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    disableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    enableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     isAllowedForEntrypoint(
       user: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    updateScenarioVerifier(
+      oldScenarioVerifierAddress: string,
+      newScenarioVerifierAddress: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -131,8 +230,29 @@ export class INexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    deleteScenarioVerifier(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    disableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    enableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isAllowedForEntrypoint(
       user: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateScenarioVerifier(
+      oldScenarioVerifierAddress: string,
+      newScenarioVerifierAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -143,8 +263,29 @@ export class INexeraVerifierEntrypoint extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    deleteScenarioVerifier(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    disableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    enableScenario(
+      scenarioVerifierAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     isAllowedForEntrypoint(
       user: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateScenarioVerifier(
+      oldScenarioVerifierAddress: string,
+      newScenarioVerifierAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

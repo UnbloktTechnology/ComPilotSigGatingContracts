@@ -17,8 +17,14 @@
       "hardhat-contracts"
     ]
   },
+  "pnpm": {
+    "overrides": {
+      "hardhat-deploy": "0.11.12",
+      "hardhat-deploy-ethers": "0.3.0-beta.13"
+    }
+  },
   "devDependencies": {
-    "lerna": "^8.0.0"
+    "lerna": "^8.0.2"
   },
   "publishConfig": {
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"

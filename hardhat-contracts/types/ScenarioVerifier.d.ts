@@ -23,11 +23,13 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
   functions: {
     "REQUESTS_RETURN_LIMIT()": FunctionFragment;
     "addressToId(address)": FunctionFragment;
-    "finalizeWhitelistScenario(address)": FunctionFragment;
+    "allowUserForScenario(tuple[])": FunctionFragment;
+    "finalizeAllowListScenario(address)": FunctionFragment;
     "getZKPRequest(uint64)": FunctionFragment;
     "getZKPRequests(uint256,uint256)": FunctionFragment;
     "getZKPRequestsCount()": FunctionFragment;
     "idToAddress(uint256)": FunctionFragment;
+    "initialize(address)": FunctionFragment;
     "isAllowedForScenario(address)": FunctionFragment;
     "isRuleIdRegistered(uint64)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -36,12 +38,11 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     "registeredRuleIDs(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "requestIdExists(uint64)": FunctionFragment;
-    "scenarioWhitelist(address)": FunctionFragment;
+    "scenarioAllowList(address)": FunctionFragment;
     "setNexeraZKPRequest(uint64,(string,address,bytes))": FunctionFragment;
     "setZKPRequest(uint64,(string,address,bytes))": FunctionFragment;
     "submitZKPResponse(uint64,uint256[],uint256[2],uint256[2][2],uint256[2])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "whitelistScenario(tuple[])": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -50,7 +51,19 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "addressToId", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "finalizeWhitelistScenario",
+    functionFragment: "allowUserForScenario",
+    values: [
+      {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "finalizeAllowListScenario",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -69,6 +82,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     functionFragment: "idToAddress",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "initialize", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isAllowedForScenario",
     values: [string]
@@ -99,7 +113,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "scenarioWhitelist",
+    functionFragment: "scenarioAllowList",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -130,18 +144,6 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(
-    functionFragment: "whitelistScenario",
-    values: [
-      {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[]
-    ]
-  ): string;
 
   decodeFunctionResult(
     functionFragment: "REQUESTS_RETURN_LIMIT",
@@ -152,7 +154,11 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "finalizeWhitelistScenario",
+    functionFragment: "allowUserForScenario",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "finalizeAllowListScenario",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -171,6 +177,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     functionFragment: "idToAddress",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isAllowedForScenario",
     data: BytesLike
@@ -198,7 +205,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "scenarioWhitelist",
+    functionFragment: "scenarioAllowList",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -217,13 +224,10 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "whitelistScenario",
-    data: BytesLike
-  ): Result;
 
   events: {
     "AddressIdConnection(address,uint256)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RequestRegistered(uint64)": EventFragment;
     "SubmitedAllZKPsForUser(address,tuple[])": EventFragment;
@@ -233,6 +237,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "AddressIdConnection"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RequestRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubmitedAllZKPsForUser"): EventFragment;
@@ -244,6 +249,8 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
 export type AddressIdConnectionEvent = TypedEvent<
   [string, BigNumber] & { userAddress: string; userId: BigNumber }
 >;
+
+export type InitializedEvent = TypedEvent<[number] & { version: number }>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -352,7 +359,18 @@ export class ScenarioVerifier extends BaseContract {
 
     addressToId(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -390,6 +408,11 @@ export class ScenarioVerifier extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     isAllowedForScenario(
       user: string,
@@ -429,7 +452,7 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    scenarioWhitelist(
+    scenarioAllowList(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -459,24 +482,24 @@ export class ScenarioVerifier extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
   REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<BigNumber>;
 
   addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  finalizeWhitelistScenario(
+  allowUserForScenario(
+    zkps: {
+      requestId: BigNumberish;
+      inputs: BigNumberish[];
+      a: [BigNumberish, BigNumberish];
+      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+      c: [BigNumberish, BigNumberish];
+    }[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  finalizeAllowListScenario(
     user: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -507,6 +530,11 @@ export class ScenarioVerifier extends BaseContract {
   getZKPRequestsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
   idToAddress(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  initialize(
+    newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   isAllowedForScenario(
     user: string,
@@ -546,7 +574,7 @@ export class ScenarioVerifier extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  scenarioWhitelist(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  scenarioAllowList(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   setNexeraZKPRequest(
     requestId: BigNumberish,
@@ -574,23 +602,23 @@ export class ScenarioVerifier extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  whitelistScenario(
-    zkps: {
-      requestId: BigNumberish;
-      inputs: BigNumberish[];
-      a: [BigNumberish, BigNumberish];
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-      c: [BigNumberish, BigNumberish];
-    }[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
     REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<BigNumber>;
 
     addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -621,6 +649,8 @@ export class ScenarioVerifier extends BaseContract {
     getZKPRequestsCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     idToAddress(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    initialize(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     isAllowedForScenario(
       user: string,
@@ -658,7 +688,7 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    scenarioWhitelist(
+    scenarioAllowList(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -688,17 +718,6 @@ export class ScenarioVerifier extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
-      overrides?: CallOverrides
-    ): Promise<boolean>;
   };
 
   filters: {
@@ -717,6 +736,14 @@ export class ScenarioVerifier extends BaseContract {
       [string, BigNumber],
       { userAddress: string; userId: BigNumber }
     >;
+
+    "Initialized(uint8)"(
+      version?: null
+    ): TypedEventFilter<[number], { version: number }>;
+
+    Initialized(
+      version?: null
+    ): TypedEventFilter<[number], { version: number }>;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -878,7 +905,18 @@ export class ScenarioVerifier extends BaseContract {
 
     addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -899,6 +937,11 @@ export class ScenarioVerifier extends BaseContract {
     idToAddress(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isAllowedForScenario(
@@ -939,7 +982,7 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    scenarioWhitelist(
+    scenarioAllowList(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -969,17 +1012,6 @@ export class ScenarioVerifier extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -992,7 +1024,18 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    finalizeWhitelistScenario(
+    allowUserForScenario(
+      zkps: {
+        requestId: BigNumberish;
+        inputs: BigNumberish[];
+        a: [BigNumberish, BigNumberish];
+        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
+        c: [BigNumberish, BigNumberish];
+      }[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    finalizeAllowListScenario(
       user: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1015,6 +1058,11 @@ export class ScenarioVerifier extends BaseContract {
     idToAddress(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isAllowedForScenario(
@@ -1055,7 +1103,7 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    scenarioWhitelist(
+    scenarioAllowList(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1083,17 +1131,6 @@ export class ScenarioVerifier extends BaseContract {
 
     transferOwnership(
       newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    whitelistScenario(
-      zkps: {
-        requestId: BigNumberish;
-        inputs: BigNumberish[];
-        a: [BigNumberish, BigNumberish];
-        b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]];
-        c: [BigNumberish, BigNumberish];
-      }[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

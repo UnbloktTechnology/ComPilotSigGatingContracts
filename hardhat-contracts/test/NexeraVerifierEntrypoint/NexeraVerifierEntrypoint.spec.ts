@@ -1,17 +1,17 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { deployNexeraVerifierEntrypoint } from "../../lib/deploy/deployNexeraVerifierEntrypoint";
-import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../types";
+import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
+import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 
 describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
   let scenarioVerifier: ScenarioVerifier;
   let nexeraVerifierEntrypoint: NexeraVerifierEntrypoint;
 
   beforeEach(async () => {
-    nexeraVerifierEntrypoint = await deployNexeraVerifierEntrypoint();
-    scenarioVerifier = await deployScenarioVerifier();
+    ({ scenarioVerifier, nexeraVerifierEntrypoint } =
+      await fixtureNexeraVerifierEntrypoint());
   });
 
   it(`Should prevent non-owner from adding a scenario`, async () => {
@@ -36,7 +36,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     )
       .to.emit(nexeraVerifierEntrypoint, "ScenarioVerifierAdded")
       .withArgs(scenarioVerifier.address);
-    const isEnabled = await nexeraVerifierEntrypoint.isScenarioEnabled(
+    const isEnabled = await nexeraVerifierEntrypoint.getIsScenarioEnabled(
       scenarioVerifier.address
     );
 
@@ -65,7 +65,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
   });
 
   it(`Should allow owner to add an scenario and update with other address`, async () => {
-    const oldScenarioVerifier = await deployScenarioVerifier();
+    const oldScenarioVerifier = scenarioVerifier;
     const newScenarioVerifier = await deployScenarioVerifier();
 
     await nexeraVerifierEntrypoint.addScenarioVerifier(
@@ -86,7 +86,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
       `Nexera Verifier: Scenario Verifier Address doesn't exist`
     );
 
-    const isEnabled = await nexeraVerifierEntrypoint.isScenarioEnabled(
+    const isEnabled = await nexeraVerifierEntrypoint.getIsScenarioEnabled(
       newScenarioVerifier.address
     );
 
@@ -106,7 +106,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
       .to.emit(nexeraVerifierEntrypoint, "ScenarioVerifierDisabled")
       .withArgs(otherScenarioVerifier.address);
 
-    const isEnabled = await nexeraVerifierEntrypoint.isScenarioEnabled(
+    const isEnabled = await nexeraVerifierEntrypoint.getIsScenarioEnabled(
       otherScenarioVerifier.address
     );
 
@@ -131,7 +131,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
       .to.emit(nexeraVerifierEntrypoint, "ScenarioVerifierEnabled")
       .withArgs(otherScenarioVerifier.address);
 
-    const isEnabled = await nexeraVerifierEntrypoint.isScenarioEnabled(
+    const isEnabled = await nexeraVerifierEntrypoint.getIsScenarioEnabled(
       otherScenarioVerifier.address
     );
 

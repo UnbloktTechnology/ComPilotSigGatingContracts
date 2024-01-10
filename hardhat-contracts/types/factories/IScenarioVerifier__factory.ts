@@ -13,12 +13,58 @@ const _abi = [
   {
     inputs: [
       {
+        components: [
+          {
+            internalType: "uint64",
+            name: "requestId",
+            type: "uint64",
+          },
+          {
+            internalType: "uint256[]",
+            name: "inputs",
+            type: "uint256[]",
+          },
+          {
+            internalType: "uint256[2]",
+            name: "a",
+            type: "uint256[2]",
+          },
+          {
+            internalType: "uint256[2][2]",
+            name: "b",
+            type: "uint256[2][2]",
+          },
+          {
+            internalType: "uint256[2]",
+            name: "c",
+            type: "uint256[2]",
+          },
+        ],
+        internalType: "struct IScenarioVerifier.ZKP[]",
+        name: "zkps",
+        type: "tuple[]",
+      },
+    ],
+    name: "allowUserForScenario",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "user",
         type: "address",
       },
     ],
-    name: "finalizeWhitelistScenario",
+    name: "finalizeAllowListScenario",
     outputs: [
       {
         internalType: "bool",
@@ -222,52 +268,6 @@ const _abi = [
     ],
     name: "submitZKPResponse",
     outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "uint64",
-            name: "requestId",
-            type: "uint64",
-          },
-          {
-            internalType: "uint256[]",
-            name: "inputs",
-            type: "uint256[]",
-          },
-          {
-            internalType: "uint256[2]",
-            name: "a",
-            type: "uint256[2]",
-          },
-          {
-            internalType: "uint256[2][2]",
-            name: "b",
-            type: "uint256[2][2]",
-          },
-          {
-            internalType: "uint256[2]",
-            name: "c",
-            type: "uint256[2]",
-          },
-        ],
-        internalType: "struct IScenarioVerifier.ZKP[]",
-        name: "zkps",
-        type: "tuple[]",
-      },
-    ],
-    name: "whitelistScenario",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
     stateMutability: "nonpayable",
     type: "function",
   },
