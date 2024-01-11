@@ -10,7 +10,8 @@
   "packageManager": "pnpm@8.10.2",
   "author": "",
   "workspaces": [
-    "hardhat-contracts"
+    "hardhat-contracts",
+    "contracts-sdk"
   ],
   "preconstruct": {
     "packages": [

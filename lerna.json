@@ -3,7 +3,8 @@
   "version": "independent",
   "npmClient": "pnpm",
   "packages": [
-    "hardhat-contracts"
+    "hardhat-contracts",
+    "contracts-sdk"
   ],
   "command": {
     "version": {
