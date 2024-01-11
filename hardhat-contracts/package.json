@@ -12,7 +12,10 @@
     "deploy-contracts": "hardhat deploy",
     "deploy-mumbai": "hardhat deploy --network mumbai_dev && hardhat deploy --network mumbai_staging && hardhat deploy --network mumbai_prod",
     "run-node": "hardhat node",
-    "build": "hardhat compile"
+    "build": "hardhat compile",
+    "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
+    "copy-factory-address": "hardhat run scripts/moveFactoryAddressesToSdk.ts",
+    "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address"
   },
   "keywords": [
     "solidity",

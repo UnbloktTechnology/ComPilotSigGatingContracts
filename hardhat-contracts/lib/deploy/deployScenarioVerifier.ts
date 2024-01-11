@@ -1,6 +1,6 @@
 import { deployments, ethers } from "hardhat";
 
-import { ScenarioVerifier, ScenarioVerifierFactory } from "../../types";
+import { ScenarioVerifier, ScenarioVerifierFactory } from "../../typechain";
 
 export async function deployScenarioVerifier(): Promise<ScenarioVerifier> {
   // get factory

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../types";
+import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../typechain";
 import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
 import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 

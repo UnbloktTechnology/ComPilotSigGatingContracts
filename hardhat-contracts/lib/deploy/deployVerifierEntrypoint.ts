@@ -3,7 +3,7 @@ import { deployments, ethers } from "hardhat";
 import {
   NexeraVerifierEntrypoint,
   VerifierEntrypointFactory,
-} from "../../types";
+} from "../../typechain";
 
 export async function deployVerifierEntrypoint(): Promise<NexeraVerifierEntrypoint> {
   // get factory

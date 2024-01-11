@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
   networks,
   namedAccounts,
   typechain: {
-    outDir: "types",
+    outDir: "typechain",
   },
   mocha: {
     timeout: 3000000,

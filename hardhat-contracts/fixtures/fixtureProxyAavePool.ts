@@ -4,7 +4,7 @@ import {
   NexeraVerifierEntrypoint,
   ProxyAavePool,
   ScenarioVerifier,
-} from "../types";
+} from "../typechain";
 import { deployScenarioVerifier } from "../lib/deploy/deployScenarioVerifier";
 import { deployVerifierEntrypoint } from "../lib/deploy/deployVerifierEntrypoint";
 import { Address } from "../lib/schemas";

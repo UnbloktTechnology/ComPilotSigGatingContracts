@@ -9,5 +9,4 @@ typechain-types
 cache
 artifacts
 
-lib/deploy/deploy_validator_output.json
 .openzeppelin
