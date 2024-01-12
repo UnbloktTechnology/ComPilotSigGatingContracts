@@ -15,7 +15,8 @@
   ],
   "preconstruct": {
     "packages": [
-      "hardhat-contracts"
+      "hardhat-contracts",
+      "contracts-sdk"
     ]
   },
   "pnpm": {
@@ -25,6 +26,7 @@
     }
   },
   "devDependencies": {
+    "@preconstruct/cli": "^2.8.2",
     "lerna": "^8.0.2"
   },
   "publishConfig": {
