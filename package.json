@@ -10,20 +10,30 @@
   "packageManager": "pnpm@8.10.2",
   "author": "",
   "workspaces": [
-    "hardhat-contracts"
+    "hardhat-contracts",
+    "contracts-sdk"
   ],
   "preconstruct": {
     "packages": [
       "hardhat-contracts"
     ]
   },
+  "pnpm": {
+    "overrides": {
+      "hardhat-deploy": "0.11.12",
+      "hardhat-deploy-ethers": "0.3.0-beta.13"
+    }
+  },
   "devDependencies": {
-    "lerna": "^8.0.0"
+    "lerna": "^8.0.2"
   },
   "publishConfig": {
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/nexera-id-contracts\" build"
+    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/nexera-id-contracts\" build",
+    "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
+    "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish-sdk-pkg",
+    "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-contracts test:unit"
   }
 }
