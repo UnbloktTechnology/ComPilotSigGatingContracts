@@ -15,5 +15,8 @@
     "entrypoints": [
       "index.ts"
     ]
+  },
+  "peerDependencies": {
+    "ethers": "^5.7.2"
   }
 }
