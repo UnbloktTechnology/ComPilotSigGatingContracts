@@ -23,3 +23,6 @@ export * from "./addresses/ScenarioVerifierFactoryAddress_mumbai_prod";
 export * from "./addresses/VerifierEntrypointFactoryAddress_mumbai_dev";
 export * from "./addresses/VerifierEntrypointFactoryAddress_mumbai_staging";
 export * from "./addresses/VerifierEntrypointFactoryAddress_mumbai_prod";
+
+// typechain
+export * from "./typechain";
