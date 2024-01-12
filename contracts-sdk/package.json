@@ -1,8 +1,8 @@
 {
   "version": "1.0.1",
   "name": "@nexeraprotocol/nexera-id-contracts-sdk",
-  "main": "dist/@nexeraprotocol/nexera-id-contracts-sdk.cjs.js",
-  "module": "dist/@nexeraprotocol/nexera-id-contracts-sdk.esm.js",
+  "main": "dist/nexeraprotocol-nexera-id-contracts-sdk.cjs.js",
+  "module": "dist/nexeraprotocol-nexera-id-contracts-sdk.esm.js",
   "scripts": {
     "get-types-abis-bytecodes-addresses": "pnpm run --filter @nexeraprotocol/nexera-id-contracts build && cp -r ../hardhat-contracts/typechain src/typechain && pnpm run --filter @nexeraprotocol/nexera-id-contracts copy-info-to-sdk && pnpm lint",
     "build": "pnpm run get-types-abis-bytecodes-addresses && preconstruct build",
