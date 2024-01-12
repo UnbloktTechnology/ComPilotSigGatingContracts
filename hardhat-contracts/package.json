@@ -35,7 +35,7 @@
     "hardhat-deploy-ethers": "0.3.0-beta.13"
   },
   "devDependencies": {
-    "@0xpolygonid/js-sdk": "^1.6.0",
+    "@0xpolygonid/js-sdk": "^1.6.1",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@iden3/js-jsonld-merklization": "^1.1.2",
@@ -48,7 +48,7 @@
     "@types/chai": "^4.3.11",
     "@types/eccrypto": "^1.1.6",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^20.10.8",
+    "@types/node": "^20.11.0",
     "chai": "^4.4.0",
     "dotenv": "^16.3.1",
     "eccrypto": "^1.1.6",
