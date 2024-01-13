@@ -8,7 +8,7 @@
     "build": "pnpm run get-types-abis-bytecodes-addresses && preconstruct build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy-package-json-to-dist": "copyfiles package.json dist/",
-    "publish-sdk-pkg": "pnpm build && pnpm copy-package-json-to-dist && npm publish dist --no-git-checks --registry https://npm.pkg.github.com/",
+    "publish-sdk-pkg": "pnpm build && pnpm copy-package-json-to-dist && pnpm publish dist --no-git-checks --registry https://npm.pkg.github.com/",
     "lint": "prettier --write src/**/**.ts"
   },
   "preconstruct": {
