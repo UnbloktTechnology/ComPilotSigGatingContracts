@@ -1,7 +1,7 @@
 export function prepareInputs(json: {
   proof: {
     pi_a: string[];
-    pi_b: string[][]; //[[bigint, bigint], [bigint, bigint]];
+    pi_b: string[][];
     pi_c: string[];
   };
   pub_signals: string[];

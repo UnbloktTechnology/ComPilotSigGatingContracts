@@ -1,5 +1,4 @@
-import { CredentialType } from "@nexeraprotocol/nexera-id-schemas";
-
+import { CredentialType } from "../../schemas";
 import { calculateQueryHash } from "./calculateQueryHash";
 import { generateRequestData } from "./generateRequestData";
 import { packValidatorParams } from "./packValidatorParams";
@@ -26,7 +25,7 @@ export type OnChainQueryRequest = {
   queryHash: string;
 };
 export const getSchemaExampleQueryParameters = (
-  credentialType: CredentialType,
+  credentialType: CredentialType
 ) => {
   switch (credentialType) {
     case "KYCAgeCredential":
@@ -67,7 +66,7 @@ export const getSchemaExampleQueryParameters = (
       };
     default:
       console.log(
-        "Credential Type doesn't have schema info, defaulting to KYCAgeCredential",
+        "Credential Type doesn't have schema info, defaulting to KYCAgeCredential"
       );
       return {
         operator: Operators.LT, // operator
@@ -79,14 +78,14 @@ export const getSchemaExampleQueryParameters = (
 
 export const getSchemaExampleQuery = async (
   credentialType: CredentialType,
-  requestId: number,
+  requestId: number
 ) => {
   const schemaExampleQueryParameters =
     getSchemaExampleQueryParameters(credentialType);
   const requestData = await generateRequestData(
     credentialType,
     schemaExampleQueryParameters.fieldName,
-    schemaExampleQueryParameters.value,
+    schemaExampleQueryParameters.value
   );
   const query: OnChainQueryRequest = {
     requestId,
@@ -106,7 +105,7 @@ export const getSchemaExampleQuery = async (
     query.slotIndex,
     query.operator,
     query.claimPathKey,
-    query.claimPathNotExists,
+    query.claimPathNotExists
   ).toString();
 
   return packValidatorParams(query);
