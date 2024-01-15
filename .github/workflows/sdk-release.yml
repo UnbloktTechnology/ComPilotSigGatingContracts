@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20.9.0]
-        pnpm-version: [8.10.2]
+        pnpm-version: [8.14.0]
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
