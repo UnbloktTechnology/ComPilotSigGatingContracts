@@ -1,0 +1,112 @@
+name: SDK Release - manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        type: string
+        description: Branch
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.branch || github.ref }}-sdk-release-manual
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.9.0]
+        pnpm-version: [8.14.0]
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.MERGE_BOT_APP_ID }}
+          private_key: ${{ secrets.MERGE_BOT_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v2.4.0
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: ${{ matrix.pnpm-version }}
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "pnpm"
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: |
+          pnpm install
+
+      - name: Config github actions user
+        run: |
+          git config --global user.name "nexera-release[bot]"
+          git config --global user.email "137495321+nexera-release[bot]@users.noreply.github.com"
+
+      - name: Set branch name
+        id: branch_name
+        run: |
+          original_branch="${{ inputs.branch }}"
+          timestamp=$(date +%s%3N)
+          
+          branch_name=$(echo "$original_branch-$timestamp" | tr '/' '-' | tr '_' '-')
+          
+          echo $branch_name
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+
+      - name: Set release tag
+        id: tag_release
+        run: |
+          release_tag="dev"
+          
+          echo "release_tag=$release_tag" >> $GITHUB_OUTPUT
+
+      - name: Prepare release version
+        run: |
+          echo ${{ steps.tag_release.outputs.release_tag }}
+          
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts"
+          echo $version
+          
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts-sdk" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts-sdk"
+          echo $version
+
+      - name: Build and publish contracts to npm
+        env:
+          MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+          TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
+          POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
+          DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run build:hardhat && pnpm run publish-pkg:contracts
+
+      - name: Build and publish contracts infos to npm
+        env:
+          MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+          TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
+          POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
+          DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pnpm run publish-pkg:sdk
