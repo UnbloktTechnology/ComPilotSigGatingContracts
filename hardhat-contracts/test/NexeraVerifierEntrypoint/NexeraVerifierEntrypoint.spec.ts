@@ -4,13 +4,17 @@ import { ethers } from "hardhat";
 import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../typechain";
 import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
 import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
+import { setupScenario2Rules } from "../utils/setupScenario2Rules";
+import { Address } from "../../lib/schemas";
+import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
 
 describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
   let scenarioVerifier: ScenarioVerifier;
   let nexeraVerifierEntrypoint: NexeraVerifierEntrypoint;
+  let validatorAddress: Address;
 
   beforeEach(async () => {
-    ({ scenarioVerifier, nexeraVerifierEntrypoint } =
+    ({ scenarioVerifier, validatorAddress, nexeraVerifierEntrypoint } =
       await fixtureNexeraVerifierEntrypoint());
   });
 
@@ -28,6 +32,62 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
       hasReverted = true;
     }
     expect(hasReverted).to.be.true;
+  });
+
+  it(`Should add two scenarios to nexeraVerifierEntrypoint, whitelist them and check that entrypoint is whitelisted`, async () => {
+    const scenarioVerifier1 = await deployScenarioVerifier();
+    const scenarioVerifier2 = await deployScenarioVerifier();
+
+    // Add Two Scenarios
+    await nexeraVerifierEntrypoint.addScenarioVerifier(
+      scenarioVerifier1.address
+    );
+    await nexeraVerifierEntrypoint.addScenarioVerifier(
+      scenarioVerifier2.address
+    );
+    const scenarioVerifierAddress1 =
+      await nexeraVerifierEntrypoint.getScenarioVerifierAddress(0);
+    const scenarioVerifierAddress2 =
+      await nexeraVerifierEntrypoint.getScenarioVerifierAddress(1);
+    expect(scenarioVerifierAddress1).to.eq(scenarioVerifier1.address);
+    expect(scenarioVerifierAddress2).to.eq(scenarioVerifier2.address);
+
+    // Set up the two Scenarios with 2 Rules
+    await setupScenario2Rules(scenarioVerifier1, validatorAddress);
+    await setupScenario2Rules(scenarioVerifier2, validatorAddress);
+
+    // get the two ZKPs
+    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+      await get2ZKPsForUserWhitelist();
+
+    // Check that user is not whitelisted before
+    const isWhitelistedBefore =
+      await nexeraVerifierEntrypoint.isAllowedForEntrypoint(address);
+    expect(isWhitelistedBefore).to.be.false;
+
+    // use allowUserForScenario one call on the first scenario
+    const tx = await scenarioVerifier1.allowUserForScenario([
+      zkpProofOfResidenceOnChain,
+      zkpIDScanOnChain,
+    ]);
+    await tx.wait();
+
+    // Check that user is not whitelisted when only one scenario is whitelisted
+    const isWhitelistedInBetween =
+      await nexeraVerifierEntrypoint.isAllowedForEntrypoint(address);
+    expect(isWhitelistedInBetween).to.be.false;
+
+    // use allowUserForScenario one call on the second scenario
+    const tx2 = await scenarioVerifier2.allowUserForScenario([
+      zkpProofOfResidenceOnChain,
+      zkpIDScanOnChain,
+    ]);
+    await tx2.wait();
+
+    // Check that user is whitelisted
+    const isWhitelistedAfter =
+      await nexeraVerifierEntrypoint.isAllowedForEntrypoint(address);
+    expect(isWhitelistedAfter).to.be.true;
   });
 
   it(`Should allow owner to add a scenario and check if is enabled`, async () => {
