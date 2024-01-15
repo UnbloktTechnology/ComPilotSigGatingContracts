@@ -20,10 +20,10 @@
   ],
   "preconstruct": {
     "entrypoints": [
-      "/abis/index.ts",
-      "/bytecodes/index.ts",
-      "/addresses/index.ts",
-      "/typechain/index.ts"
+      "abis/index.ts",
+      "bytecodes/index.ts",
+      "addresses/index.ts",
+      "typechain/index.ts"
     ]
   },
   "peerDependencies": {
