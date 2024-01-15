@@ -12,11 +12,11 @@
     "lint": "prettier --write src/**/**.ts"
   },
   "files": [
-    "/dist",
-    "/abis",
-    "/bytecodes",
-    "/addresses",
-    "/typechain"
+    "dist",
+    "abis",
+    "bytecodes",
+    "addresses",
+    "typechain"
   ],
   "preconstruct": {
     "entrypoints": [
