@@ -12,18 +12,18 @@
     "lint": "prettier --write src/**/**.ts"
   },
   "files": [
-    "/dist",
-    "/abis",
-    "/bytecodes",
-    "/addresses",
-    "/typechain"
+    "dist",
+    "abis",
+    "bytecodes",
+    "addresses",
+    "typechain"
   ],
   "preconstruct": {
     "entrypoints": [
-      "/abis/index.ts",
-      "/bytecodes/index.ts",
-      "/addresses/index.ts",
-      "/typechain/index.ts"
+      "abis/index.ts",
+      "bytecodes/index.ts",
+      "addresses/index.ts",
+      "typechain/index.ts"
     ]
   },
   "peerDependencies": {

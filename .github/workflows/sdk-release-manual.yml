@@ -1,9 +1,12 @@
-name: SDK Release
+name: SDK Release - manual
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      branch:
+        required: true
+        type: string
+        description: Branch
 
 permissions:
   contents: write
@@ -11,7 +14,7 @@ permissions:
   packages: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-sdk-release
+  group: ${{ github.workflow }}-${{ inputs.branch || github.ref }}-sdk-release-manual
   cancel-in-progress: true
 
 jobs:
@@ -58,11 +61,35 @@ jobs:
           git config --global user.name "nexera-release[bot]"
           git config --global user.email "137495321+nexera-release[bot]@users.noreply.github.com"
 
-      - name: Bump versions and update changelog
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      - name: Set branch name
+        id: branch_name
         run: |
-          lerna version --yes --changelog-preset=angular
+          original_branch="${{ inputs.branch }}"
+          timestamp=$(date +%s%3N)
+          
+          branch_name=$(echo "$original_branch-$timestamp" | tr '/' '-' | tr '_' '-')
+          
+          echo $branch_name
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+
+      - name: Set release tag
+        id: tag_release
+        run: |
+          release_tag="dev"
+          
+          echo "release_tag=$release_tag" >> $GITHUB_OUTPUT
+
+      - name: Prepare release version
+        run: |
+          echo ${{ steps.tag_release.outputs.release_tag }}
+          
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts"
+          echo $version
+          
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts-sdk" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts-sdk"
+          echo $version
 
       - name: Build and publish contracts to npm
         env:
