@@ -17,3 +17,5 @@ export type CredentialType =
   | "IDScanPassport"
   | "IDScanSelfie"
   | "ProofOfResidence";
+
+export type Environment = "local" | "dev" | "stage" | "prod" | "branch";

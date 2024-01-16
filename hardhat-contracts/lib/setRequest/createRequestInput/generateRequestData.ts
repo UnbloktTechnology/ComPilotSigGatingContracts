@@ -4,11 +4,8 @@ import {
   Merklizer,
   Path,
 } from "@iden3/js-jsonld-merklization";
-
-import {
-  CredentialType,
-  getCredentialSchemaLocation,
-} from "@nexeraprotocol/nexera-id-schemas";
+import { CredentialType, Environment } from "../../schemas";
+import { getCredentialSchemaLocation } from "./getCredentialSchemaLocation";
 
 // // you can run https://go.dev/play/p/rnrRbxXTRY6 to get schema hash and claimPathKey using YOUR schema
 // // Note: use script in ./go-script-example.md
@@ -26,7 +23,7 @@ const pathToCredentialSubject =
 export async function generateRequestData(
   credentialType: CredentialType,
   fieldName: string,
-  fieldValue: string | number,
+  fieldValue: string | number
 ) {
   const url = getCredentialSchemaLocation({
     credentialType,
@@ -44,7 +41,7 @@ export async function generateRequestData(
     ldJSONStr,
     credentialType,
     fieldName,
-    opts,
+    opts
   );
   path.prepend([pathToCredentialSubject]);
   const pathBigInt = await path.mtEntry();
@@ -58,7 +55,7 @@ export async function generateRequestData(
 
   const datatype = await Path.newTypeFromContext(
     ldJSONStr,
-    fieldInfo.pathToField,
+    fieldInfo.pathToField
   );
   const hashedValue = await Merklizer.hashValue(datatype, fieldInfo.value);
 
