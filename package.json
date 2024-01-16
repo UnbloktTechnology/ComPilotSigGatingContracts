@@ -38,7 +38,8 @@
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build:hardhat": "pnpm run --filter \"@nexeraprotocol/nexera-id-contracts\" build",
+    "build:hardhat": "pnpm run --filter @nexeraprotocol/nexera-id-contracts build",
+    "build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-contracts-sdk build",
     "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
     "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish-sdk-pkg",
     "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-contracts test:unit"

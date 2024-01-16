@@ -60,7 +60,7 @@ jobs:
         run: |
           lerna version --yes --changelog-preset=angular
 
-      - name: Build and publish contracts to npm
+      - name: Build
         env:
           MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
           TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
@@ -68,14 +68,10 @@ jobs:
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm run build:hardhat && pnpm run publish-pkg:contracts
+          pnpm run build:hardhat
+          pnpm run build:contracts-sdk
 
-      - name: Build and publish contracts infos to npm
-        env:
-          MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
-          TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
-          POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
-          DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to NPM
         run: |
-          pnpm run publish-pkg:sdk
+          pnpm --filter @nexeraprotocol/nexera-id-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
