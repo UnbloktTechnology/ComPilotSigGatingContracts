@@ -11,6 +11,7 @@
     "lint": "prettier --write src/**/**.ts"
   },
   "files": [
+    "dist",
     "abis",
     "bytecodes",
     "addresses",
