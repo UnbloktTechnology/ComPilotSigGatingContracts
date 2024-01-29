@@ -43,6 +43,7 @@ contract WhitelistedAccess {
         The data parameter in the getMessageHash function is intended to represent the entire calldata, including the function selector and its arguments.
         Ensure that the data passed to getMessageHash and the withWhitelistedAccess modifier includes the function selector and all the arguments of the call.
         This ensures that the signature protects the entire call, and different actions can have different validation rules.
+        // TODO should we calculate the hash of the data in the contract or can we trust that user will pass the correct data?
 */
     function getMessageHash(
         address _sender,
