@@ -9,7 +9,7 @@ contract WhitelistedAccess {
     using Counters for Counters.Counter;
 
     address private signer; // Address of the off-chain service that signs the transactions
-    mapping(address => Counters.Counter) private nonces;
+    mapping(address => Counters.Counter) public nonces;
 
     constructor(address _signer) {
         signer = _signer;
