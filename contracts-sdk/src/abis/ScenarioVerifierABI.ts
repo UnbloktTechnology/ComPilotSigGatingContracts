@@ -1,678 +1,679 @@
+
 export const ScenarioVerifierABI = [
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "userId",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "userId",
+        "type": "uint256"
+      }
     ],
-    name: "AddressIdConnection",
-    type: "event",
+    "name": "AddressIdConnection",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "uint8",
-        name: "version",
-        type: "uint8",
-      },
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
     ],
-    name: "Initialized",
-    type: "event",
+    "name": "Initialized",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "OwnershipTransferred",
-    type: "event",
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
-      },
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
+      }
     ],
-    name: "RequestRegistered",
-    type: "event",
+    "name": "RequestRegistered",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       },
       {
-        components: [
+        "components": [
           {
-            internalType: "uint64",
-            name: "requestId",
-            type: "uint64",
+            "internalType": "uint64",
+            "name": "requestId",
+            "type": "uint64"
           },
           {
-            internalType: "uint256[]",
-            name: "inputs",
-            type: "uint256[]",
+            "internalType": "uint256[]",
+            "name": "inputs",
+            "type": "uint256[]"
           },
           {
-            internalType: "uint256[2]",
-            name: "a",
-            type: "uint256[2]",
+            "internalType": "uint256[2]",
+            "name": "a",
+            "type": "uint256[2]"
           },
           {
-            internalType: "uint256[2][2]",
-            name: "b",
-            type: "uint256[2][2]",
+            "internalType": "uint256[2][2]",
+            "name": "b",
+            "type": "uint256[2][2]"
           },
           {
-            internalType: "uint256[2]",
-            name: "c",
-            type: "uint256[2]",
-          },
+            "internalType": "uint256[2]",
+            "name": "c",
+            "type": "uint256[2]"
+          }
         ],
-        indexed: false,
-        internalType: "struct IScenarioVerifier.ZKP[]",
-        name: "zkps",
-        type: "tuple[]",
-      },
+        "indexed": false,
+        "internalType": "struct IScenarioVerifier.ZKP[]",
+        "name": "zkps",
+        "type": "tuple[]"
+      }
     ],
-    name: "SubmitedAllZKPsForUser",
-    type: "event",
+    "name": "SubmitedAllZKPsForUser",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
-      },
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
+      }
     ],
-    name: "UserAllowedForRequest",
-    type: "event",
+    "name": "UserAllowedForRequest",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
     ],
-    name: "UserAllowedForScenario",
-    type: "event",
+    "name": "UserAllowedForScenario",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
       },
       {
-        indexed: false,
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
       },
       {
-        indexed: false,
-        internalType: "contract ICircuitValidator",
-        name: "validator",
-        type: "address",
+        "indexed": false,
+        "internalType": "contract ICircuitValidator",
+        "name": "validator",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "string",
-        name: "metadata",
-        type: "string",
-      },
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadata",
+        "type": "string"
+      }
     ],
-    name: "ZKPRequestSet",
-    type: "event",
+    "name": "ZKPRequestSet",
+    "type": "event"
   },
   {
-    inputs: [],
-    name: "REQUESTS_RETURN_LIMIT",
-    outputs: [
+    "inputs": [],
+    "name": "REQUESTS_RETURN_LIMIT",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    name: "addressToId",
-    outputs: [
+    "name": "addressToId",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        components: [
+        "components": [
           {
-            internalType: "uint64",
-            name: "requestId",
-            type: "uint64",
+            "internalType": "uint64",
+            "name": "requestId",
+            "type": "uint64"
           },
           {
-            internalType: "uint256[]",
-            name: "inputs",
-            type: "uint256[]",
+            "internalType": "uint256[]",
+            "name": "inputs",
+            "type": "uint256[]"
           },
           {
-            internalType: "uint256[2]",
-            name: "a",
-            type: "uint256[2]",
+            "internalType": "uint256[2]",
+            "name": "a",
+            "type": "uint256[2]"
           },
           {
-            internalType: "uint256[2][2]",
-            name: "b",
-            type: "uint256[2][2]",
+            "internalType": "uint256[2][2]",
+            "name": "b",
+            "type": "uint256[2][2]"
           },
           {
-            internalType: "uint256[2]",
-            name: "c",
-            type: "uint256[2]",
-          },
+            "internalType": "uint256[2]",
+            "name": "c",
+            "type": "uint256[2]"
+          }
         ],
-        internalType: "struct IScenarioVerifier.ZKP[]",
-        name: "zkps",
-        type: "tuple[]",
-      },
+        "internalType": "struct IScenarioVerifier.ZKP[]",
+        "name": "zkps",
+        "type": "tuple[]"
+      }
     ],
-    name: "allowUserForScenario",
-    outputs: [
+    "name": "allowUserForScenario",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
     ],
-    name: "finalizeAllowListScenario",
-    outputs: [
+    "name": "finalizeAllowListScenario",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "nonpayable",
-    type: "function",
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
-      },
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
+      }
     ],
-    name: "getZKPRequest",
-    outputs: [
+    "name": "getZKPRequest",
+    "outputs": [
       {
-        components: [
+        "components": [
           {
-            internalType: "string",
-            name: "metadata",
-            type: "string",
+            "internalType": "string",
+            "name": "metadata",
+            "type": "string"
           },
           {
-            internalType: "contract ICircuitValidator",
-            name: "validator",
-            type: "address",
+            "internalType": "contract ICircuitValidator",
+            "name": "validator",
+            "type": "address"
           },
           {
-            internalType: "bytes",
-            name: "data",
-            type: "bytes",
-          },
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+          }
         ],
-        internalType: "struct IZKPVerifier.ZKPRequest",
-        name: "",
-        type: "tuple",
-      },
+        "internalType": "struct IZKPVerifier.ZKPRequest",
+        "name": "",
+        "type": "tuple"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "startIndex",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "startIndex",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "length",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "length",
+        "type": "uint256"
+      }
     ],
-    name: "getZKPRequests",
-    outputs: [
+    "name": "getZKPRequests",
+    "outputs": [
       {
-        components: [
+        "components": [
           {
-            internalType: "string",
-            name: "metadata",
-            type: "string",
+            "internalType": "string",
+            "name": "metadata",
+            "type": "string"
           },
           {
-            internalType: "contract ICircuitValidator",
-            name: "validator",
-            type: "address",
+            "internalType": "contract ICircuitValidator",
+            "name": "validator",
+            "type": "address"
           },
           {
-            internalType: "bytes",
-            name: "data",
-            type: "bytes",
-          },
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+          }
         ],
-        internalType: "struct IZKPVerifier.ZKPRequest[]",
-        name: "",
-        type: "tuple[]",
-      },
+        "internalType": "struct IZKPVerifier.ZKPRequest[]",
+        "name": "",
+        "type": "tuple[]"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getZKPRequestsCount",
-    outputs: [
+    "inputs": [],
+    "name": "getZKPRequestsCount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: "idToAddress",
-    outputs: [
+    "name": "idToAddress",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
     ],
-    name: "isAllowedForScenario",
-    outputs: [
+    "name": "isAllowedForScenario",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "",
-        type: "uint64",
-      },
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
     ],
-    name: "isRuleIdRegistered",
-    outputs: [
+    "name": "isRuleIdRegistered",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "owner",
-    outputs: [
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
-        internalType: "uint64",
-        name: "",
-        type: "uint64",
-      },
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
     ],
-    name: "proofs",
-    outputs: [
+    "name": "proofs",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "",
-        type: "uint64",
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
       },
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    name: "queryRequestWhitelist",
-    outputs: [
+    "name": "queryRequestWhitelist",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: "registeredRuleIDs",
-    outputs: [
+    "name": "registeredRuleIDs",
+    "outputs": [
       {
-        internalType: "uint64",
-        name: "",
-        type: "uint64",
-      },
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
-      },
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
+      }
     ],
-    name: "requestIdExists",
-    outputs: [
+    "name": "requestIdExists",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    name: "scenarioAllowList",
-    outputs: [
+    "name": "scenarioAllowList",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
       },
       {
-        components: [
+        "components": [
           {
-            internalType: "string",
-            name: "metadata",
-            type: "string",
+            "internalType": "string",
+            "name": "metadata",
+            "type": "string"
           },
           {
-            internalType: "contract ICircuitValidator",
-            name: "validator",
-            type: "address",
+            "internalType": "contract ICircuitValidator",
+            "name": "validator",
+            "type": "address"
           },
           {
-            internalType: "bytes",
-            name: "data",
-            type: "bytes",
-          },
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+          }
         ],
-        internalType: "struct IZKPVerifier.ZKPRequest",
-        name: "request",
-        type: "tuple",
-      },
+        "internalType": "struct IZKPVerifier.ZKPRequest",
+        "name": "request",
+        "type": "tuple"
+      }
     ],
-    name: "setNexeraZKPRequest",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "setNexeraZKPRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
       },
       {
-        components: [
+        "components": [
           {
-            internalType: "string",
-            name: "metadata",
-            type: "string",
+            "internalType": "string",
+            "name": "metadata",
+            "type": "string"
           },
           {
-            internalType: "contract ICircuitValidator",
-            name: "validator",
-            type: "address",
+            "internalType": "contract ICircuitValidator",
+            "name": "validator",
+            "type": "address"
           },
           {
-            internalType: "bytes",
-            name: "data",
-            type: "bytes",
-          },
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+          }
         ],
-        internalType: "struct IZKPVerifier.ZKPRequest",
-        name: "request",
-        type: "tuple",
-      },
+        "internalType": "struct IZKPVerifier.ZKPRequest",
+        "name": "request",
+        "type": "tuple"
+      }
     ],
-    name: "setZKPRequest",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "setZKPRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint64",
-        name: "requestId",
-        type: "uint64",
+        "internalType": "uint64",
+        "name": "requestId",
+        "type": "uint64"
       },
       {
-        internalType: "uint256[]",
-        name: "inputs",
-        type: "uint256[]",
+        "internalType": "uint256[]",
+        "name": "inputs",
+        "type": "uint256[]"
       },
       {
-        internalType: "uint256[2]",
-        name: "a",
-        type: "uint256[2]",
+        "internalType": "uint256[2]",
+        "name": "a",
+        "type": "uint256[2]"
       },
       {
-        internalType: "uint256[2][2]",
-        name: "b",
-        type: "uint256[2][2]",
+        "internalType": "uint256[2][2]",
+        "name": "b",
+        "type": "uint256[2][2]"
       },
       {
-        internalType: "uint256[2]",
-        name: "c",
-        type: "uint256[2]",
-      },
+        "internalType": "uint256[2]",
+        "name": "c",
+        "type": "uint256[2]"
+      }
     ],
-    name: "submitZKPResponse",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "submitZKPResponse",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ] as const;

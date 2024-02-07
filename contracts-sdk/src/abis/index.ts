@@ -5,3 +5,4 @@ export * from "./ScenarioVerifierABI";
 export * from "./ScenarioVerifierFactoryABI";
 export * from "./VerifierEntrypointFactoryABI";
 export * from "./VerifierSigWrapperABI";
+export * from "./ExampleGatedNFTMinterABI";

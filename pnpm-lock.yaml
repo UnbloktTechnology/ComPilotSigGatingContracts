@@ -82,6 +82,9 @@ importers:
       '@iden3/js-jsonld-merklization':
         specifier: ^1.1.2
         version: 1.1.2(@iden3/js-crypto@1.0.3)(@iden3/js-merkletree@1.1.2)
+      '@nexeraprotocol/nexera-id-contracts-sdk':
+        specifier: workspace:*
+        version: link:../contracts-sdk
       '@nomiclabs/hardhat-ethers':
         specifier: ^2.2.3
         version: 2.2.3(ethers@5.7.2)(hardhat@2.19.4)
@@ -6970,7 +6973,6 @@ packages:
     dependencies:
       is-hex-prefixed: 1.0.0
       strip-hex-prefix: 1.0.0
-    bundledDependencies: false
 
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}

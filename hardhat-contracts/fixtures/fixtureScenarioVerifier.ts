@@ -1,6 +1,7 @@
-import { deployments, ethers } from "hardhat";
+import { deployments } from "hardhat";
 
 import { deployScenarioVerifier } from "../lib/deploy/deployScenarioVerifier";
+import { Address } from "../lib/schemas";
 
 export async function fixtureScenarioVerifier() {
   const contractName = "ScenarioVerifierFactory";

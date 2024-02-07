@@ -3,12 +3,12 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const version = "0.1.0";
-const contractName = "SimpleWhitelist";
+const contractName = "ExampleGatedNFTMinter";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, txAuthSigner } = await getNamedAccounts();
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
@@ -17,6 +17,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const deployResult = await deploy(contractName, {
     contract: contractName,
     from: deployer,
+    args: [txAuthSigner],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,

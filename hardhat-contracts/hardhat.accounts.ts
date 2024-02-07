@@ -10,6 +10,9 @@ const namedAccounts: {
   tester: {
     default: 1,
   },
+  txAuthSigner: {
+    default: 2,
+  },
 };
 
 export default namedAccounts;

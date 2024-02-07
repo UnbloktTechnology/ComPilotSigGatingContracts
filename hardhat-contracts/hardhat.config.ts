@@ -19,7 +19,16 @@ import { networks } from "./hardhat.networks";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.16",
+  solidity: {
+    version: "0.8.16",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 100,
+      },
+      viaIR: true,
+    },
+  },
   etherscan: {
     apiKey: {
       polygonMumbai: `${process.env.ETHERSCAN_MUMBAI_API_KEY}`,

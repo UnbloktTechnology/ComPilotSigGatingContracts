@@ -21,7 +21,7 @@ export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
     },
     {
       PoseidonFacade: poseidonFacade,
-    },
+    }
   );
   saveContractABI("ScenarioVerifier", scenarioABI);
   saveContractByteCode("ScenarioVerifier", unprocessedByteCode);
@@ -43,7 +43,7 @@ export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
     },
     {
       PoseidonFacade: poseidonFacade,
-    },
+    }
   );
   saveContractABI("NexeraVerifierEntrypoint", abi);
   saveContractByteCode("NexeraVerifierEntrypoint", unprocessedByteCode);
@@ -60,7 +60,7 @@ export const moveCAQSVByteCodeAndABIToSDK = () => {
   saveContractABI("CredentialAtomicQuerySigValidator", abi);
   saveContractByteCode(
     "CredentialAtomicQuerySigValidator",
-    unprocessedByteCode,
+    unprocessedByteCode
   );
 };
 
@@ -98,6 +98,17 @@ export const moveScenarioVerifierFactoryByteCodeAndABIToSDK = () => {
   saveContractABI("ScenarioVerifierFactory", abi);
   saveContractByteCode("ScenarioVerifierFactory", unprocessedByteCode);
 };
+export const moveExampleGatedNFTMinterByteCodeAndABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinter.sol/ExampleGatedNFTMinter.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("ExampleGatedNFTMinter", abi);
+  saveContractByteCode("ExampleGatedNFTMinter", unprocessedByteCode);
+};
 
 export const moveByteCodeAndABIToSdk = () => {
   moveScenarioVerifierByteCodeAndABIToSDK();
@@ -106,5 +117,6 @@ export const moveByteCodeAndABIToSdk = () => {
   moveVerifierSigWrapperByteCodeAndABIToSDK();
   moveVerifierEntrypointFactoryByteCodeAndABIToSDK();
   moveScenarioVerifierFactoryByteCodeAndABIToSDK();
+  moveExampleGatedNFTMinterByteCodeAndABIToSDK();
 };
 moveByteCodeAndABIToSdk();
