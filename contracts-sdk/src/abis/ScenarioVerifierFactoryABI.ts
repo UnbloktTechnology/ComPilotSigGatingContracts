@@ -1,40 +1,39 @@
-
 export const ScenarioVerifierFactoryABI = [
   {
-    "inputs": [
+    inputs: [
       {
-        "internalType": "address",
-        "name": "_implementationContract",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "_implementationContract",
+        type: "address",
+      },
     ],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
-    "anonymous": false,
-    "inputs": [
+    anonymous: false,
+    inputs: [
       {
-        "indexed": false,
-        "internalType": "address",
-        "name": "scenarioVerifierAddress",
-        "type": "address"
-      }
+        indexed: false,
+        internalType: "address",
+        name: "scenarioVerifierAddress",
+        type: "address",
+      },
     ],
-    "name": "NewScenarioVerifierDeployed",
-    "type": "event"
+    name: "NewScenarioVerifierDeployed",
+    type: "event",
   },
   {
-    "inputs": [],
-    "name": "createScenarioVerifier",
-    "outputs": [
+    inputs: [],
+    name: "createScenarioVerifier",
+    outputs: [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ] as const;

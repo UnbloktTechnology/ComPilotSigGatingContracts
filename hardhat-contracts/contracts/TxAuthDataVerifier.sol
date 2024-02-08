@@ -12,7 +12,7 @@ contract TxAuthDataVerifier is Ownable {
     uint256 private constant SIGNATURE_LENGTH = 65;
     uint256 private constant SIGNATURE_SUFFIX = 31;
     uint256 private constant SIGNATURE_OFFSET = 65 + 32 + 32 + SIGNATURE_SUFFIX;
-    uint256 private constant NUMBER_VARIABLE_LENGTH = 32;
+    uint256 private constant BYTES_32_VARIABLE = 32;
 
     address private signer; // Address of the off-chain service that signs the transactions
     mapping(address => Counters.Counter) public nonces;
@@ -49,7 +49,6 @@ contract TxAuthDataVerifier is Ownable {
     function requireTxDataAuthBasic(
         bytes calldata _signature,
         bytes memory _functionCallData,
-        uint256 _chainID,
         uint256 _blockExpiration
     ) internal {
         // Verify txData is not expired
@@ -62,7 +61,7 @@ contract TxAuthDataVerifier is Ownable {
             functionCallData: _functionCallData,
             contractAddress: address(this),
             userAddress: msg.sender,
-            chainID: _chainID,
+            chainID: block.chainid,
             nonce: nonces[msg.sender].current(),
             blockExpiration: _blockExpiration
         });
@@ -81,27 +80,16 @@ contract TxAuthDataVerifier is Ownable {
     }
 
     // Modifier to validate requests
-    // order is args, chainId, blockExpiration, signature
+    // order is args, blockExpiration, signature
     modifier requireTxDataAuthOpti() {
         bytes calldata argsWithSelector = msg.data[:msg.data.length -
-            NUMBER_VARIABLE_LENGTH -
-            NUMBER_VARIABLE_LENGTH -
+            BYTES_32_VARIABLE -
             SIGNATURE_OFFSET];
-        uint256 _chainID = uint256(
-            bytes32(
-                msg.data[msg.data.length -
-                    NUMBER_VARIABLE_LENGTH -
-                    NUMBER_VARIABLE_LENGTH -
-                    SIGNATURE_OFFSET:msg.data.length -
-                    SIGNATURE_OFFSET -
-                    NUMBER_VARIABLE_LENGTH]
-            )
-        );
 
         uint256 _blockExpiration = uint256(
             bytes32(
                 msg.data[msg.data.length -
-                    NUMBER_VARIABLE_LENGTH -
+                    BYTES_32_VARIABLE -
                     SIGNATURE_OFFSET:msg.data.length - SIGNATURE_OFFSET]
             )
         );
@@ -119,7 +107,7 @@ contract TxAuthDataVerifier is Ownable {
             functionCallData: argsWithSelector,
             contractAddress: address(this),
             userAddress: msg.sender,
-            chainID: _chainID,
+            chainID: block.chainid,
             nonce: nonces[msg.sender].current(),
             blockExpiration: _blockExpiration
         });

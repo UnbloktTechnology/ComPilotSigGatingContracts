@@ -26,7 +26,6 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier {
     function mintNFTBasic(
         address recipient,
         bytes calldata _signature,
-        uint256 _chainID,
         uint256 _blockExpiration
     ) public returns (uint256) {
         // Calculate function data as a concatenation of functionName and arguments
@@ -34,12 +33,7 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier {
         bytes memory functionData = abi.encodePacked(functionName, recipient);
 
         // call requireTxDataAuthBasic with correct inputs
-        requireTxDataAuthBasic(
-            _signature,
-            functionData,
-            _chainID,
-            _blockExpiration
-        );
+        requireTxDataAuthBasic(_signature, functionData, _blockExpiration);
 
         // if it doesn't revert, mint the NFT
         return mintNFT(recipient);
@@ -47,7 +41,6 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier {
 
     function mintNFTOpti(
         address recipient,
-        uint256 _chainID,
         uint256 _blockExpiration,
         bytes calldata _signature
     ) public requireTxDataAuthOpti returns (uint256) {

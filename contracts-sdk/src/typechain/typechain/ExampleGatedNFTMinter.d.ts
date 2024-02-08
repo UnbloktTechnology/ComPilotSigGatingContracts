@@ -27,8 +27,8 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "getMessageHash((bytes,address,address,uint256,uint256,uint256))": FunctionFragment;
     "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintNFTBasic(address,bytes,bytes,uint256,uint256)": FunctionFragment;
-    "mintNFTOpti(address,uint256,uint256,bytes)": FunctionFragment;
+    "mintNFTBasic(address,bytes,uint256)": FunctionFragment;
+    "mintNFTOpti(address,uint256,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -76,11 +76,11 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintNFTBasic",
-    values: [string, BytesLike, BytesLike, BigNumberish, BigNumberish]
+    values: [string, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "mintNFTOpti",
-    values: [string, BigNumberish, BigNumberish, BytesLike]
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -295,15 +295,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
     mintNFTBasic(
       recipient: string,
       _signature: BytesLike,
-      _functionCallData: BytesLike,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     mintNFTOpti(
       recipient: string,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -414,15 +411,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
   mintNFTBasic(
     recipient: string,
     _signature: BytesLike,
-    _functionCallData: BytesLike,
-    _chainID: BigNumberish,
     _blockExpiration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   mintNFTOpti(
     recipient: string,
-    _chainID: BigNumberish,
     _blockExpiration: BigNumberish,
     _signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -524,15 +518,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
     mintNFTBasic(
       recipient: string,
       _signature: BytesLike,
-      _functionCallData: BytesLike,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     mintNFTOpti(
       recipient: string,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: CallOverrides
@@ -702,15 +693,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
     mintNFTBasic(
       recipient: string,
       _signature: BytesLike,
-      _functionCallData: BytesLike,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     mintNFTOpti(
       recipient: string,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -825,15 +813,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
     mintNFTBasic(
       recipient: string,
       _signature: BytesLike,
-      _functionCallData: BytesLike,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     mintNFTOpti(
       recipient: string,
-      _chainID: BigNumberish,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }

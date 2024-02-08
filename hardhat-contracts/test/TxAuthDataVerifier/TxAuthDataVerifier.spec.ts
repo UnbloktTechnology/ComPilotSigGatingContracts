@@ -2,18 +2,10 @@ import { expect } from "chai";
 import { getNamedAccounts, network, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter } from "../../typechain";
-import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
-import { setupScenario2Rules } from "../utils/setupScenario2Rules";
 import { Address } from "../../lib/schemas";
 import { fixtureExampleGatedNFTMinter } from "../../fixtures/fixtureExampleGatedNFTMinter";
-import { getUserAddress } from "../utils/getUserAddress";
-import {
-  Abi,
-  encodeFunctionData,
-  numberToBytes,
-  numberToHex,
-  stringToHex,
-} from "viem";
+
+import { Abi, encodeFunctionData } from "viem";
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Interface } from "ethers/lib/utils";
@@ -117,7 +109,7 @@ describe.only(`ExampleGatedNFTMinter`, function () {
     // try to mint nft
     await exampleGatedNFTMinter
       .connect(testerSigner)
-      .mintNFTBasic(tester, signature, chainID, blockExpiration);
+      .mintNFTBasic(tester, signature, blockExpiration);
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - Optimized`, async () => {
     const { tester } = await getNamedAccounts();
@@ -132,13 +124,12 @@ describe.only(`ExampleGatedNFTMinter`, function () {
     const functionCallData = await generateFunctionCallData(
       ExampleGatedNFTMinterABI,
       "mintNFTOpti",
-      [recipient, chainID, blockExpiration, "0x1234"]
+      [recipient, blockExpiration, "0x1234"]
     );
     // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
     // 32 bytes for blockExpiration
-    // 32 bytes for chainID
-    // = 160 bytes = 320 characters
-    const argsWithSelector = functionCallData.slice(0, -320);
+    // = 128 bytes = 256 characters
+    const argsWithSelector = functionCallData.slice(0, -256);
 
     const txAuthData = {
       functionCallData: argsWithSelector,
@@ -154,6 +145,6 @@ describe.only(`ExampleGatedNFTMinter`, function () {
     // try to mint nft
     await exampleGatedNFTMinter
       .connect(testerSigner)
-      .mintNFTOpti(recipient, chainID, blockExpiration, signature);
+      .mintNFTOpti(recipient, blockExpiration, signature);
   });
 });
