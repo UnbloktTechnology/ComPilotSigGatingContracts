@@ -12,12 +12,12 @@ import { Interface } from "ethers/lib/utils";
 //import exampleGatedNFTMinterInfo from "../../artifacts/contracts/gatedExamples/ExampleGatedNFTMinter.sol/ExampleGatedNFTMinter.json";
 
 interface TxAuthData {
-  functionCallData: string;
-  contractAddress: Address;
-  userAddress: Address;
   chainID: number;
   nonce: number;
   blockExpiration: number;
+  contractAddress: Address;
+  userAddress: Address;
+  functionCallData: string;
 }
 
 // Generating functionCallData with viem
@@ -63,14 +63,14 @@ async function signTxAuthData(
   signer: SignerWithAddress
 ) {
   const messageHash = ethers.utils.solidityKeccak256(
-    ["bytes", "address", "address", "uint256", "uint256", "uint256"],
+    ["uint256", "uint256", "uint256", "address", "address", "bytes"],
     [
-      txAuthData.functionCallData,
-      txAuthData.contractAddress,
-      txAuthData.userAddress,
       txAuthData.chainID,
       txAuthData.nonce,
       txAuthData.blockExpiration,
+      txAuthData.contractAddress,
+      txAuthData.userAddress,
+      txAuthData.functionCallData,
     ]
   );
   const signature = await signer.signMessage(

@@ -24,12 +24,12 @@ contract TxAuthDataVerifier is Ownable {
     error InvalidSignature();
 
     struct TxAuthData {
-        bytes functionCallData; // Includes function selector and args
-        address contractAddress;
-        address userAddress;
         uint256 chainID;
         uint256 nonce;
         uint256 blockExpiration;
+        address contractAddress;
+        address userAddress;
+        bytes functionCallData; // Includes function selector and args
     }
 
     constructor(address _signer) {
@@ -132,12 +132,12 @@ contract TxAuthDataVerifier is Ownable {
         return
             keccak256(
                 abi.encodePacked(
-                    _txAuthData.functionCallData,
-                    _txAuthData.contractAddress,
-                    _txAuthData.userAddress,
                     _txAuthData.chainID,
                     _txAuthData.nonce,
-                    _txAuthData.blockExpiration
+                    _txAuthData.blockExpiration,
+                    _txAuthData.contractAddress,
+                    _txAuthData.userAddress,
+                    _txAuthData.functionCallData
                 )
             );
     }
