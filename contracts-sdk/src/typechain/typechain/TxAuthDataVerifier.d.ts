@@ -21,7 +21,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
   functions: {
-    "getMessageHash((bytes,address,address,uint256,uint256,uint256))": FunctionFragment;
+    "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
     "getUserNonce(address)": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -34,12 +34,12 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
     functionFragment: "getMessageHash",
     values: [
       {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       }
     ]
   ): string;
@@ -136,12 +136,12 @@ export class TxAuthDataVerifier extends BaseContract {
   functions: {
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -172,12 +172,12 @@ export class TxAuthDataVerifier extends BaseContract {
 
   getMessageHash(
     _txAuthData: {
-      functionCallData: BytesLike;
-      contractAddress: string;
-      userAddress: string;
       chainID: BigNumberish;
       nonce: BigNumberish;
       blockExpiration: BigNumberish;
+      contractAddress: string;
+      userAddress: string;
+      functionCallData: BytesLike;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -205,12 +205,12 @@ export class TxAuthDataVerifier extends BaseContract {
   callStatic: {
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -252,12 +252,12 @@ export class TxAuthDataVerifier extends BaseContract {
   estimateGas: {
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -286,12 +286,12 @@ export class TxAuthDataVerifier extends BaseContract {
   populateTransaction: {
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

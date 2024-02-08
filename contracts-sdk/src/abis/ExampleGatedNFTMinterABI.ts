@@ -175,21 +175,6 @@ export const ExampleGatedNFTMinterABI = [
       {
         components: [
           {
-            internalType: "bytes",
-            name: "functionCallData",
-            type: "bytes",
-          },
-          {
-            internalType: "address",
-            name: "contractAddress",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "userAddress",
-            type: "address",
-          },
-          {
             internalType: "uint256",
             name: "chainID",
             type: "uint256",
@@ -203,6 +188,21 @@ export const ExampleGatedNFTMinterABI = [
             internalType: "uint256",
             name: "blockExpiration",
             type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "contractAddress",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "userAddress",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "functionCallData",
+            type: "bytes",
           },
         ],
         internalType: "struct TxAuthDataVerifier.TxAuthData",

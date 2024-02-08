@@ -6,57 +6,84 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
+/// @title A contract for verifying transaction data authorized off-cahin with a signature
+/// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
+/// This version of the contract implements two ways to do that in order to compare them
+/// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
 contract TxAuthDataVerifier is Ownable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
+
+    /// @notice These are used to decompose msg.data
     uint256 private constant SIGNATURE_LENGTH = 65;
     uint256 private constant SIGNATURE_SUFFIX = 31;
     uint256 private constant SIGNATURE_OFFSET = 65 + 32 + 32 + SIGNATURE_SUFFIX;
     uint256 private constant BYTES_32_VARIABLE = 32;
 
-    address private signer; // Address of the off-chain service that signs the transactions
+    /// @notice Address of the off-chain service that signs the transactions
+    address private signer;
+
+    /// @notice Mapping to track the nonces of users to prevent replay attacks
+    /// @dev Maps a user address to their current nonce
     mapping(address => Counters.Counter) public nonces;
 
-    // This error means that the signature expired
+    /// @notice Custom error for handling signature expiry
     error BlockExpired();
 
-    // This error means the signature is invalid
+    /// @notice Custom error for handling invalid signatures
     error InvalidSignature();
 
+    /// @notice Struct to hold transaction authentication data
+    /// @param chainID The chain ID where the transaction is intended to be processed
+    /// @param nonce The nonce to prevent replay attacks
+    /// @param blockExpiration The block number after which the transaction is considered expired
+    /// @param contractAddress The address of the contract where the transaction is being executed
+    /// @param userAddress The address of the user executing the transaction
+    /// @param functionCallData The calldata of the function being called, including the function selector and arguments
     struct TxAuthData {
         uint256 chainID;
         uint256 nonce;
         uint256 blockExpiration;
         address contractAddress;
         address userAddress;
-        bytes functionCallData; // Includes function selector and args
+        bytes functionCallData;
     }
 
+    /// @notice Constructs the `TxAuthDataVerifier` contract
+    /// @param _signer The address of the off-chain service responsible for signing transactions
     constructor(address _signer) {
         signer = _signer;
     }
 
+    /// @notice Sets a new signer address
+    /// @dev Can only be called by the current owner
+    /// @param _signer The address of the new signer
     function setSigner(address _signer) public onlyOwner {
         signer = _signer;
     }
 
+    /// @notice Retrieves the current nonce for a given user
+    /// @param user The address of the user
+    /// @return The current nonce of the user
     function getUserNonce(address user) public view returns (uint256) {
         return nonces[user].current();
     }
 
-    // Function to validate requests
-    // cannot be a modifier because we need to build _functionCallData in the client function
+    /// @notice Validates the transaction data against the provided signature
+    /// @dev This function cannot be a modifier because we need to construct `_functionCallData` in the calling function
+    /// @param _signature The signature to validate
+    /// @param _functionCallData The calldata of the function call
+    /// @param _blockExpiration The block number after which the transaction is considered expired
     function requireTxDataAuthBasic(
         bytes calldata _signature,
         bytes memory _functionCallData,
         uint256 _blockExpiration
     ) internal {
-        // Verify txData is not expired
+        /// Check signature hasn't expired
         if (block.number >= _blockExpiration) {
             revert BlockExpired();
         }
 
-        // Build TxAuthData
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: _functionCallData,
             contractAddress: address(this),
@@ -66,26 +93,26 @@ contract TxAuthDataVerifier is Ownable {
             blockExpiration: _blockExpiration
         });
 
-        // Recreate the signed message
+        /// Get Hash
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
-        // Recover the signer from the signature
+        /// Verify Signature
         if (ethSignedMessageHash.recover(_signature) != signer) {
             revert InvalidSignature();
         }
 
-        // Increment the nonce for the sender to prevent replay attacks
+        /// increment nonce to prevent replay atatcks
         nonces[msg.sender].increment();
     }
 
-    // Modifier to validate requests
-    // order is args, blockExpiration, signature
+    /// @notice Modifier to validate transaction data in an optimized manner
+    /// @dev Extracts args, blockExpiration, and signature from `msg.data`
     modifier requireTxDataAuthOpti() {
+        /// Decompose msg.data into the different parts we want
         bytes calldata argsWithSelector = msg.data[:msg.data.length -
             BYTES_32_VARIABLE -
             SIGNATURE_OFFSET];
-
         uint256 _blockExpiration = uint256(
             bytes32(
                 msg.data[msg.data.length -
@@ -97,12 +124,11 @@ contract TxAuthDataVerifier is Ownable {
             SIGNATURE_LENGTH -
             SIGNATURE_SUFFIX:msg.data.length - SIGNATURE_SUFFIX];
 
-        // Verify txData is not expired
+        /// Check signature hasn't expired
         if (block.number >= _blockExpiration) {
             revert BlockExpired();
         }
 
-        // Build TxAuthData
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: argsWithSelector,
             contractAddress: address(this),
@@ -111,21 +137,25 @@ contract TxAuthDataVerifier is Ownable {
             nonce: nonces[msg.sender].current(),
             blockExpiration: _blockExpiration
         });
-        // Recreate the signed message
+
+        /// Get Hash
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
-        // Recover the signer from the signature
+        /// Verify Signature
         if (ethSignedMessageHash.recover(_signature) != signer) {
             revert InvalidSignature();
         }
 
-        // Increment the nonce for the sender to prevent replay attacks
+        /// increment nonce to prevent replay atatcks
         nonces[msg.sender].increment();
 
-        _; // Continue execution
+        _;
     }
 
+    /// @notice Generates a hash of the given `TxAuthData`
+    /// @param _txAuthData The transaction authentication data to hash
+    /// @return The keccak256 hash of the encoded `TxAuthData`
     function getMessageHash(
         TxAuthData memory _txAuthData
     ) public pure returns (bytes32) {

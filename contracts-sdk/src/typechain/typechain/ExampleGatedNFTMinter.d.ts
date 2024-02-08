@@ -24,7 +24,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getMessageHash((bytes,address,address,uint256,uint256,uint256))": FunctionFragment;
+    "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
     "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintNFTBasic(address,bytes,uint256)": FunctionFragment;
@@ -57,12 +57,12 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     functionFragment: "getMessageHash",
     values: [
       {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       }
     ]
   ): string;
@@ -274,12 +274,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -390,12 +390,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
   getMessageHash(
     _txAuthData: {
-      functionCallData: BytesLike;
-      contractAddress: string;
-      userAddress: string;
       chainID: BigNumberish;
       nonce: BigNumberish;
       blockExpiration: BigNumberish;
+      contractAddress: string;
+      userAddress: string;
+      functionCallData: BytesLike;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -497,12 +497,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -672,12 +672,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -789,12 +789,12 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     getMessageHash(
       _txAuthData: {
-        functionCallData: BytesLike;
-        contractAddress: string;
-        userAddress: string;
         chainID: BigNumberish;
         nonce: BigNumberish;
         blockExpiration: BigNumberish;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
