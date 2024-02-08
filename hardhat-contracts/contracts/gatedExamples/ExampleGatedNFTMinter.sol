@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "../TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
+import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
 
 /// @title Example Gated NFT Minter
 /// @notice This contract demonstrates an NFT minting process gated by off-chain signature verification.

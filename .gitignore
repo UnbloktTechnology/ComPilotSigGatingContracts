@@ -144,7 +144,3 @@ dist
 *.drawio.bkp
 
 env.test.bak
-
-# Custom
-circuits.zip
-circuits/

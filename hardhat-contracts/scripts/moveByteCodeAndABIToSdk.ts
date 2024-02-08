@@ -8,7 +8,7 @@ const poseidonFacade = "0xD65f5Fc521C4296723c6Eb16723A8171dCC12FB0";
 export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/ScenarioVerifier.sol/ScenarioVerifier.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/ScenarioVerifier.sol/ScenarioVerifier.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const scenarioABI = jsonData.abi;
@@ -30,7 +30,7 @@ export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
 export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/NexeraVerifierEntrypoint.sol/NexeraVerifierEntrypoint.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/NexeraVerifierEntrypoint.sol/NexeraVerifierEntrypoint.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -67,7 +67,7 @@ export const moveCAQSVByteCodeAndABIToSDK = () => {
 export const moveVerifierSigWrapperByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/verifiers/circuits/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/circuits/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -79,7 +79,7 @@ export const moveVerifierSigWrapperByteCodeAndABIToSDK = () => {
 export const moveVerifierEntrypointFactoryByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/VerifierEntrypointFactory.sol/VerifierEntrypointFactory.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/VerifierEntrypointFactory.sol/VerifierEntrypointFactory.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -90,7 +90,7 @@ export const moveVerifierEntrypointFactoryByteCodeAndABIToSDK = () => {
 export const moveScenarioVerifierFactoryByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/ScenarioVerifierFactory.sol/ScenarioVerifierFactory.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/ScenarioVerifierFactory.sol/ScenarioVerifierFactory.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
