@@ -17,6 +17,12 @@ contract TxAuthDataVerifier is Ownable {
     address private signer; // Address of the off-chain service that signs the transactions
     mapping(address => Counters.Counter) public nonces;
 
+    // This error means that the signature expired
+    error BlockExpired();
+
+    // This error means the signature is invalid
+    error InvalidSignature();
+
     struct TxAuthData {
         bytes functionCallData; // Includes function selector and args
         address contractAddress;
@@ -47,10 +53,9 @@ contract TxAuthDataVerifier is Ownable {
         uint256 _blockExpiration
     ) internal {
         // Verify txData is not expired
-        require(
-            block.number < _blockExpiration,
-            "Signed TxData Authorization expired"
-        );
+        if (block.number >= _blockExpiration) {
+            revert BlockExpired();
+        }
 
         // Build TxAuthData
         TxAuthData memory txAuthData = TxAuthData({
@@ -67,10 +72,9 @@ contract TxAuthDataVerifier is Ownable {
         bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
         // Recover the signer from the signature
-        require(
-            ethSignedMessageHash.recover(_signature) == signer,
-            "Invalid signature"
-        );
+        if (ethSignedMessageHash.recover(_signature) != signer) {
+            revert InvalidSignature();
+        }
 
         // Increment the nonce for the sender to prevent replay attacks
         nonces[msg.sender].increment();
@@ -106,10 +110,9 @@ contract TxAuthDataVerifier is Ownable {
             SIGNATURE_SUFFIX:msg.data.length - SIGNATURE_SUFFIX];
 
         // Verify txData is not expired
-        require(
-            block.number < _blockExpiration,
-            "Signed TxData Authorization expired"
-        );
+        if (block.number >= _blockExpiration) {
+            revert BlockExpired();
+        }
 
         // Build TxAuthData
         TxAuthData memory txAuthData = TxAuthData({
@@ -125,10 +128,9 @@ contract TxAuthDataVerifier is Ownable {
         bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
 
         // Recover the signer from the signature
-        require(
-            ethSignedMessageHash.recover(_signature) == signer,
-            "Invalid signature"
-        );
+        if (ethSignedMessageHash.recover(_signature) != signer) {
+            revert InvalidSignature();
+        }
 
         // Increment the nonce for the sender to prevent replay attacks
         nonces[msg.sender].increment();
