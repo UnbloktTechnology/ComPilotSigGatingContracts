@@ -1,4 +1,4 @@
-export const ExampleGatedNFTMinterABI = [
+export const ExampleGatedNFTMinterV0ABI = [
   {
     inputs: [
       {
@@ -205,7 +205,7 @@ export const ExampleGatedNFTMinterABI = [
             type: "bytes",
           },
         ],
-        internalType: "struct TxAuthDataVerifier.TxAuthData",
+        internalType: "struct TxAuthDataVerifierV0.TxAuthData",
         name: "_txAuthData",
         type: "tuple",
       },
@@ -272,6 +272,35 @@ export const ExampleGatedNFTMinterABI = [
         type: "address",
       },
       {
+        internalType: "bytes",
+        name: "_signature",
+        type: "bytes",
+      },
+      {
+        internalType: "uint256",
+        name: "_blockExpiration",
+        type: "uint256",
+      },
+    ],
+    name: "mintNFTBasic",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "_blockExpiration",
         type: "uint256",
@@ -282,7 +311,7 @@ export const ExampleGatedNFTMinterABI = [
         type: "bytes",
       },
     ],
-    name: "mintNFTGated",
+    name: "mintNFTOpti",
     outputs: [
       {
         internalType: "uint256",

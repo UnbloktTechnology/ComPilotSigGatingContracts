@@ -7,10 +7,11 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
+/// V0 compares two gating meachansim
 /// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
 /// This version of the contract implements two ways to do that in order to compare them
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
-contract TxAuthDataVerifier is Ownable {
+contract TxAuthDataVerifierV0 is Ownable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
 
@@ -69,9 +70,46 @@ contract TxAuthDataVerifier is Ownable {
         return nonces[user].current();
     }
 
+    /// @notice Validates the transaction data against the provided signature
+    /// @dev This function cannot be a modifier because we need to construct `_functionCallData` in the calling function
+    /// @param _signature The signature to validate
+    /// @param _functionCallData The calldata of the function call
+    /// @param _blockExpiration The block number after which the transaction is considered expired
+    function requireTxDataAuthBasic(
+        bytes calldata _signature,
+        bytes memory _functionCallData,
+        uint256 _blockExpiration
+    ) internal {
+        /// Check signature hasn't expired
+        if (block.number >= _blockExpiration) {
+            revert BlockExpired();
+        }
+
+        TxAuthData memory txAuthData = TxAuthData({
+            functionCallData: _functionCallData,
+            contractAddress: address(this),
+            userAddress: msg.sender,
+            chainID: block.chainid,
+            nonce: nonces[msg.sender].current(),
+            blockExpiration: _blockExpiration
+        });
+
+        /// Get Hash
+        bytes32 messageHash = getMessageHash(txAuthData);
+        bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
+
+        /// Verify Signature
+        if (ethSignedMessageHash.recover(_signature) != signer) {
+            revert InvalidSignature();
+        }
+
+        /// increment nonce to prevent replay atatcks
+        nonces[msg.sender].increment();
+    }
+
     /// @notice Modifier to validate transaction data in an optimized manner
     /// @dev Extracts args, blockExpiration, and signature from `msg.data`
-    modifier requireTxDataAuth() {
+    modifier requireTxDataAuthOpti() {
         /// Decompose msg.data into the different parts we want
         bytes calldata argsWithSelector = msg.data[:msg.data.length -
             BYTES_32_VARIABLE -

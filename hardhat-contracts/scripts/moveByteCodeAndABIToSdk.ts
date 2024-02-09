@@ -109,6 +109,17 @@ export const moveExampleGatedNFTMinterABIToSDK = () => {
   saveContractABI("ExampleGatedNFTMinter", abi);
   //saveContractByteCode("ExampleGatedNFTMinter", unprocessedByteCode);
 };
+export const moveExampleGatedNFTMinterV0ABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinterV0.sol/ExampleGatedNFTMinterV0.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("ExampleGatedNFTMinterV0", abi);
+  //saveContractByteCode("ExampleGatedNFTMinter", unprocessedByteCode);
+};
 
 export const moveByteCodeAndABIToSdk = () => {
   moveScenarioVerifierByteCodeAndABIToSDK();
@@ -118,5 +129,6 @@ export const moveByteCodeAndABIToSdk = () => {
   moveVerifierEntrypointFactoryByteCodeAndABIToSDK();
   moveScenarioVerifierFactoryByteCodeAndABIToSDK();
   moveExampleGatedNFTMinterABIToSDK();
+  moveExampleGatedNFTMinterV0ABIToSDK();
 };
 moveByteCodeAndABIToSdk();
