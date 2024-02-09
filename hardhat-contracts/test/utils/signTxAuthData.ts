@@ -2,6 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 import { Address } from "../../lib/schemas";
 import { ethers } from "hardhat";
+import { WalletClient, encodePacked, keccak256, toBytes } from "viem";
 
 export interface TxAuthData {
   chainID: number;
@@ -9,7 +10,7 @@ export interface TxAuthData {
   blockExpiration: number;
   contractAddress: Address;
   userAddress: Address;
-  functionCallData: string;
+  functionCallData: `0x${string}`;
 }
 export async function signTxAuthData(
   txAuthData: TxAuthData,
@@ -29,5 +30,32 @@ export async function signTxAuthData(
   const signature = await signer.signMessage(
     ethers.utils.arrayify(messageHash)
   );
+  return signature;
+}
+
+export async function signTxAuthDataViem(
+  txAuthData: TxAuthData,
+  walletClient: WalletClient
+) {
+  const messageHash = keccak256(
+    encodePacked(
+      ["uint256", "uint256", "uint256", "address", "address", "bytes"],
+      [
+        BigInt(txAuthData.chainID),
+        BigInt(txAuthData.nonce),
+        BigInt(txAuthData.blockExpiration),
+        txAuthData.contractAddress,
+        txAuthData.userAddress,
+        txAuthData.functionCallData,
+      ]
+    )
+  );
+  if (!walletClient.account?.address) {
+    throw new Error("txAuth wallet doesn't have an account");
+  }
+  const signature = await walletClient.signMessage({
+    account: walletClient.account?.address,
+    message: { raw: messageHash },
+  });
   return signature;
 }

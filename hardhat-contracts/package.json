@@ -29,6 +29,7 @@
     "@iden3/contracts": "^1.4.3",
     "@iden3/js-crypto": "^1.0.3",
     "@iden3/js-iden3-core": "^1.2.1",
+    "@nomicfoundation/hardhat-viem": "^1.0.3",
     "@openzeppelin/contracts": "^4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
     "@openzeppelin/upgrades": "2.8.0",

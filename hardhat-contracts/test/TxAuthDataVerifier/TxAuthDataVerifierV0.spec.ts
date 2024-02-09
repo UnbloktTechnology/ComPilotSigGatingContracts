@@ -68,7 +68,7 @@ describe(`ExampleGatedNFTMinterV0: Compare two gating mechanisms`, function () {
     // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
     // 32 bytes for blockExpiration
     // = 128 bytes = 256 characters
-    const argsWithSelector = functionCallData.slice(0, -256);
+    const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
 
     const txAuthData = {
       functionCallData: argsWithSelector,

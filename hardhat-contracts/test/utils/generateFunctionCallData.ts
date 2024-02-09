@@ -27,7 +27,7 @@ export async function generateFunctionCallData(
     functionName,
     args
   );
-  return functionCallData;
+  return functionCallData as `0x${string}`;
 }
 
 // generate function data as a concat of functionName and args (for the mint function)
@@ -37,5 +37,5 @@ export async function generateMintFunctionData(recipient: Address) {
   return ethers.utils.solidityPack(
     ["bytes32", "address"],
     [functionDataBytes32, recipient]
-  );
+  ) as `0x{string}`;
 }
