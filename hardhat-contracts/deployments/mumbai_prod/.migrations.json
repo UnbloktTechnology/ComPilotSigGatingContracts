@@ -6,5 +6,7 @@
   "NexeraVerifierEntrypoint0.1.0": 1704908437,
   "VerifierEntrypointFactory0.1.0": 1704908442,
   "ProxyAavePool0.1.0": 1704908447,
-  "SimpleWhitelist0.1.0": 1704908451
+  "SimpleWhitelist0.1.0": 1704908451,
+  "ExampleGatedNFTMinterV00.1.0": 1707730530,
+  "ExampleGatedNFTMinter0.1.0": 1707730534
 }

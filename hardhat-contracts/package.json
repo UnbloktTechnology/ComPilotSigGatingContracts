@@ -15,7 +15,8 @@
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
     "copy-factory-address": "hardhat run scripts/moveFactoryAddressesToSdk.ts",
-    "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address"
+    "copy-typechain-types": "./scripts/copy-typechain-types.sh",
+    "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address&& pnpm copy-typechain-types"
   },
   "keywords": [
     "solidity",
@@ -28,6 +29,7 @@
     "@iden3/contracts": "^1.4.3",
     "@iden3/js-crypto": "^1.0.3",
     "@iden3/js-iden3-core": "^1.2.1",
+    "@nomicfoundation/hardhat-viem": "^1.0.3",
     "@openzeppelin/contracts": "^4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
     "@openzeppelin/upgrades": "2.8.0",
@@ -39,6 +41,7 @@
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@iden3/js-jsonld-merklization": "^1.1.2",
+    "@nexeraprotocol/nexera-id-contracts-sdk": "workspace:*",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.6",

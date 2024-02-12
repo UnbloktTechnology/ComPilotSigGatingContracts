@@ -8,7 +8,7 @@ const poseidonFacade = "0xD65f5Fc521C4296723c6Eb16723A8171dCC12FB0";
 export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/ScenarioVerifier.sol/ScenarioVerifier.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/ScenarioVerifier.sol/ScenarioVerifier.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const scenarioABI = jsonData.abi;
@@ -21,7 +21,7 @@ export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
     },
     {
       PoseidonFacade: poseidonFacade,
-    },
+    }
   );
   saveContractABI("ScenarioVerifier", scenarioABI);
   saveContractByteCode("ScenarioVerifier", unprocessedByteCode);
@@ -30,7 +30,7 @@ export const moveScenarioVerifierByteCodeAndABIToSDK = () => {
 export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/NexeraVerifierEntrypoint.sol/NexeraVerifierEntrypoint.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/NexeraVerifierEntrypoint.sol/NexeraVerifierEntrypoint.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -43,7 +43,7 @@ export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
     },
     {
       PoseidonFacade: poseidonFacade,
-    },
+    }
   );
   saveContractABI("NexeraVerifierEntrypoint", abi);
   saveContractByteCode("NexeraVerifierEntrypoint", unprocessedByteCode);
@@ -60,14 +60,14 @@ export const moveCAQSVByteCodeAndABIToSDK = () => {
   saveContractABI("CredentialAtomicQuerySigValidator", abi);
   saveContractByteCode(
     "CredentialAtomicQuerySigValidator",
-    unprocessedByteCode,
+    unprocessedByteCode
   );
 };
 
 export const moveVerifierSigWrapperByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/verifiers/circuits/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/circuits/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -79,7 +79,7 @@ export const moveVerifierSigWrapperByteCodeAndABIToSDK = () => {
 export const moveVerifierEntrypointFactoryByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/VerifierEntrypointFactory.sol/VerifierEntrypointFactory.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/VerifierEntrypointFactory.sol/VerifierEntrypointFactory.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -90,13 +90,35 @@ export const moveVerifierEntrypointFactoryByteCodeAndABIToSDK = () => {
 export const moveScenarioVerifierFactoryByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/ScenarioVerifierFactory.sol/ScenarioVerifierFactory.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/zkpVerifiers/ScenarioVerifierFactory.sol/ScenarioVerifierFactory.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
   const unprocessedByteCode = jsonData.bytecode;
   saveContractABI("ScenarioVerifierFactory", abi);
   saveContractByteCode("ScenarioVerifierFactory", unprocessedByteCode);
+};
+export const moveExampleGatedNFTMinterABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinter.sol/ExampleGatedNFTMinter.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("ExampleGatedNFTMinter", abi);
+  //saveContractByteCode("ExampleGatedNFTMinter", unprocessedByteCode);
+};
+export const moveExampleGatedNFTMinterV0ABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinterV0.sol/ExampleGatedNFTMinterV0.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("ExampleGatedNFTMinterV0", abi);
+  //saveContractByteCode("ExampleGatedNFTMinter", unprocessedByteCode);
 };
 
 export const moveByteCodeAndABIToSdk = () => {
@@ -106,5 +128,7 @@ export const moveByteCodeAndABIToSdk = () => {
   moveVerifierSigWrapperByteCodeAndABIToSDK();
   moveVerifierEntrypointFactoryByteCodeAndABIToSDK();
   moveScenarioVerifierFactoryByteCodeAndABIToSDK();
+  moveExampleGatedNFTMinterABIToSDK();
+  moveExampleGatedNFTMinterV0ABIToSDK();
 };
 moveByteCodeAndABIToSdk();

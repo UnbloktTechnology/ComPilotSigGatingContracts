@@ -4,6 +4,7 @@ import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
+import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
@@ -19,7 +20,16 @@ import { networks } from "./hardhat.networks";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.16",
+  solidity: {
+    version: "0.8.16",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 100,
+      },
+      viaIR: true,
+    },
+  },
   etherscan: {
     apiKey: {
       polygonMumbai: `${process.env.ETHERSCAN_MUMBAI_API_KEY}`,
