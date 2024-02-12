@@ -4,7 +4,7 @@ import { saveFactoryAddresses } from "./saveTsFiles";
 
 export const moveFactoryAddressToSdk = (
   factoryName: string,
-  network: string,
+  network: string
 ) => {
   // Load the JSON file
   const jsonFile = `./deployments/${network}/${factoryName}.json`; // Replace with your JSON file's path
@@ -21,5 +21,8 @@ export const moveAllFactoryAddressesToSdk = () => {
   moveFactoryAddressToSdk("ScenarioVerifierFactory", "mumbai_dev");
   moveFactoryAddressToSdk("ScenarioVerifierFactory", "mumbai_staging");
   moveFactoryAddressToSdk("ScenarioVerifierFactory", "mumbai_prod");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_dev");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_staging");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_prod");
 };
 moveAllFactoryAddressesToSdk();
