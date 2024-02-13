@@ -23,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.9.0]
-        pnpm-version: [8.14.0]
+        node-version: [20.11.0]
+        pnpm-version: [8.15.2]
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
@@ -40,7 +40,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v2.4.0
+      - uses: pnpm/action-setup@v3.0.0
         name: Install pnpm
         id: pnpm-install
         with:
