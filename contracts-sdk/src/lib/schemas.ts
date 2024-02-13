@@ -31,6 +31,7 @@ export const AddressSchema = z
   .describe(
     "String value that identifies the address of a specific user. Normally tied to an EOA that includes the Smart Wallet."
   );
+
 // arbitrary length 0xstring
 const String0x = z.custom<`0x${string}`>((val) => {
   return typeof val === "string" ? val.startsWith("0x") : false;
