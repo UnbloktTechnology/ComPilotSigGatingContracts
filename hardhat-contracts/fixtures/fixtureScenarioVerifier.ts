@@ -1,7 +1,7 @@
 import { deployments } from "hardhat";
 
 import { deployScenarioVerifier } from "../lib/deploy/deployScenarioVerifier";
-import { Address } from "../lib/schemas";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 
 export async function fixtureScenarioVerifier() {
   const contractName = "ScenarioVerifierFactory";

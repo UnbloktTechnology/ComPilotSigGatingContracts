@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 import { getSchemaExampleQuery } from "./createRequestInput/getSchemaExampleQuery";
-import { CredentialType } from "../schemas";
+import { CredentialType } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 
 export async function setRequestForScenario(
   requestId: number,
