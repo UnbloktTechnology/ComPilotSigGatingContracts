@@ -51,5 +51,5 @@ jobs:
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
           pnpm run build:hardhat
+          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
