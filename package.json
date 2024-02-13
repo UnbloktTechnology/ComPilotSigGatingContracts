@@ -4,7 +4,7 @@
   "description": "",
   "keywords": [],
   "engines": {
-    "node": ">=20.9.0",
+    "node": ">=20.11.0",
     "pnpm": ">=8.10.2"
   },
   "packageManager": "pnpm@8.10.2",
@@ -26,13 +26,13 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.23.7",
-    "@babel/preset-env": "^7.23.8",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@preconstruct/cli": "^2.8.2",
+    "@preconstruct/cli": "^2.8.3",
     "copyfiles": "^2.4.1",
-    "lerna": "^8.0.2"
+    "lerna": "^8.1.2"
   },
   "publishConfig": {
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"
