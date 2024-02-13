@@ -8,7 +8,7 @@ import {
 } from "../../typechain";
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
-import { Address } from "../../lib/schemas";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureProxyAavePool } from "../../fixtures/fixtureProxyAavePool";
 import { getUserAddress } from "../utils/getUserAddress";
 

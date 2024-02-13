@@ -5,7 +5,7 @@ import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../typechain";
 import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
 import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
-import { Address } from "../../lib/schemas";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
 
 describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {

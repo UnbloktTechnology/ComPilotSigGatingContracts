@@ -1,4 +1,4 @@
-import { CredentialType } from "../../schemas";
+import { CredentialType } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { calculateQueryHash } from "./calculateQueryHash";
 import { generateRequestData } from "./generateRequestData";
 import { packValidatorParams } from "./packValidatorParams";

@@ -1,4 +1,4 @@
-import { NEXERA_CHAINS } from "./schemas";
+import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 
 export const ONCHAIN_VERIFICATION_CONTRACTS = {
   [NEXERA_CHAINS.MUMBAI]: {

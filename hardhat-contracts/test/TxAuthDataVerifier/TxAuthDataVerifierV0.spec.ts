@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { getNamedAccounts, network, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinterV0 } from "../../typechain";
-import { Address } from "../../lib/schemas";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinterV0 } from "../../fixtures/fixtureExampleGatedNFTMinterV0";
 
 import { ExampleGatedNFTMinterV0ABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";

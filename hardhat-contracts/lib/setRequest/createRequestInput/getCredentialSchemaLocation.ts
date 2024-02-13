@@ -1,4 +1,7 @@
-import { CredentialType, Environment } from "../../schemas";
+import {
+  CredentialType,
+  Environment,
+} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 
 const json_schema = {
   ID3: {

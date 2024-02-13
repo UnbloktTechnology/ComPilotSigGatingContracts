@@ -4,7 +4,10 @@ import {
   Merklizer,
   Path,
 } from "@iden3/js-jsonld-merklization";
-import { CredentialType, Environment } from "../../schemas";
+import {
+  CredentialType,
+  Environment,
+} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { getCredentialSchemaLocation } from "./getCredentialSchemaLocation";
 
 // // you can run https://go.dev/play/p/rnrRbxXTRY6 to get schema hash and claimPathKey using YOUR schema

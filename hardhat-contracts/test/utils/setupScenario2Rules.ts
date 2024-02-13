@@ -1,4 +1,4 @@
-import { Address } from "../../lib/schemas";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { setRequestForScenario } from "../../lib/setRequest/setRequestScenario";
 import { ScenarioVerifier } from "../../typechain";
 
