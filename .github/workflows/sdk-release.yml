@@ -41,13 +41,13 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: ${{ matrix.pnpm-version }}
+          version: ${{ env.PNPM_VERSION }}
           run_install: false
 
       - uses: actions/setup-node@v4
         with:
           cache: "pnpm"
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
         run: |
