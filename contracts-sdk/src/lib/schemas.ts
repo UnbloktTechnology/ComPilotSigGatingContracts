@@ -58,9 +58,9 @@ export type Environment = "local" | "dev" | "stage" | "prod" | "branch";
 export type WalletClientExtended = Client<
   Transport,
   Chain,
-  Account | undefined,
+  Account,
   RpcSchema,
-  PublicActions & WalletActions
+  PublicActions & WalletActions<Chain, Account>
 >;
 
 // Tx Auth Data SIgnature

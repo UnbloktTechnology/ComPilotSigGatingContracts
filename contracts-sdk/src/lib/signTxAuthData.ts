@@ -37,7 +37,6 @@ export async function signTxAuthDataViem(
     throw new Error("txAuth wallet doesn't have an account");
   }
   const signature = await walletClient.signMessage({
-    account: walletClient.account?.address,
     message: { raw: messageHash },
   });
   return signature;
