@@ -112,8 +112,6 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     // Build Signature
     const recipient = tester;
-    const block = await ethers.provider.getBlock("latest");
-    const blockExpiration = block.number + 50;
 
     const txAuthInput = {
       contractAbi: ExampleGatedNFTMinterABI,
@@ -124,7 +122,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
     };
 
-    const signature = await signTxAuthDataLib(
+    const signatureResponse = await signTxAuthDataLib(
       txAuthWalletClient.extend(publicActions),
       txAuthInput
     );
@@ -132,7 +130,11 @@ describe(`ExampleGatedNFTMinter`, function () {
     // try to mint nft
     const tx = await exampleGatedNFTMinter
       .connect(testerSigner)
-      .mintNFTGated(recipient, blockExpiration, signature);
+      .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
 
     const transactionReceipt = await tx.wait();
     const tokenId = Number(transactionReceipt.events?.[0].args?.tokenId);
