@@ -70,5 +70,8 @@ export const signTxAuthDataLib = async (
     blockExpiration,
   };
 
-  return await signTxAuthDataViem(txAuthData, txAuthWalletClient);
+  return {
+    signature: await signTxAuthDataViem(txAuthData, txAuthWalletClient),
+    blockExpiration,
+  };
 };
