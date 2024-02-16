@@ -22,7 +22,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner, txAuthSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const recipient = tester;
@@ -65,7 +65,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with Viem`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
-    const [__, ___, txAuthWalletClient] = await hre.viem.getWalletClients();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
 
     // Build Signature
     const recipient = tester;
@@ -108,7 +108,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
-    const [__, ___, txAuthWalletClient] = await hre.viem.getWalletClients();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
 
     // Build Signature
     const recipient = tester;
@@ -144,7 +144,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with a wrong signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner, txAuthSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const recipient = tester;
@@ -178,11 +178,11 @@ describe(`ExampleGatedNFTMinter`, function () {
         await generateFunctionCallData(
           ExampleGatedNFTMinterABI,
           "mintNFTGated",
-          [_.address, blockExpiration, "0x1234"]
+          [txAuthSigner.address, blockExpiration, "0x1234"]
         )
       ).slice(0, -256), // wrong recipient value
       contractAddress: tester as Address,
-      userAddress: _.address as Address,
+      userAddress: txAuthSigner.address as Address,
       chainID: 666,
       nonce: 666,
     };
@@ -211,7 +211,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner, txAuthSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const recipient = tester;

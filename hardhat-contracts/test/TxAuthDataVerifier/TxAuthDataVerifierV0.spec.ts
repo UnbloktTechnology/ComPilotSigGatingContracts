@@ -20,7 +20,7 @@ describe(`ExampleGatedNFTMinterV0: Compare two gating mechanisms`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - Basic`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner, txAuthSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const block = await ethers.provider.getBlock("latest");
@@ -52,7 +52,7 @@ describe(`ExampleGatedNFTMinterV0: Compare two gating mechanisms`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - Optimized`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner, txAuthSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const recipient = tester;

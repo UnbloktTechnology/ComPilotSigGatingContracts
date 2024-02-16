@@ -11,7 +11,7 @@ const namedAccounts: {
     default: 1,
   },
   txAuthSigner: {
-    default: 2,
+    default: 0,
   },
 };
 
