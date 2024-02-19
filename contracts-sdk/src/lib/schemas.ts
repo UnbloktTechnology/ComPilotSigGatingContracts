@@ -80,6 +80,5 @@ export const TxAuthInput = z.object({
   functionName: z.string(),
   args: z.array(z.unknown()),
   userAddress: AddressSchema,
-  nonce: z.number(),
 });
 export type TxAuthInput = z.infer<typeof TxAuthInput>;
