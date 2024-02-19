@@ -1,6 +1,7 @@
-import { encodeFunctionData, encodePacked, keccak256 } from "viem";
+import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
 import type { Abi } from "viem";
 import { TxAuthData, TxAuthInput, WalletClientExtended } from "./schemas";
+import { TxAuthDataVerifier } from "../typechain/TxAuthDataVerifier";
 
 // Generating functionCallData with viem
 export function generateFunctionCallDataViem(
@@ -61,12 +62,19 @@ export const signTxAuthDataLib = async (
   // = 128 bytes = 256 characters
   const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
 
+  // instantiate contract to get nonce
+  const contract = getContract({
+    address: txAuthInput.contractAddress,
+    abi: txAuthInput.contractAbi as Abi,
+    publicClient: txAuthWalletClient,
+  });
+
   const txAuthData = {
     functionCallData: argsWithSelector,
     contractAddress: txAuthInput.contractAddress,
     userAddress: txAuthInput.userAddress,
     chainID,
-    nonce: txAuthInput.nonce,
+    nonce: Number(await contract.read.getUserNonce([txAuthInput.userAddress])),
     blockExpiration,
   };
 
