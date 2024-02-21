@@ -1,8 +1,9 @@
-import { deployments, ethers } from "hardhat";
+import { deployments } from "hardhat";
 
-import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../types";
+import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../typechain";
 import { deployScenarioVerifier } from "../lib/deploy/deployScenarioVerifier";
 import { deployVerifierEntrypoint } from "../lib/deploy/deployVerifierEntrypoint";
+import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 
 export async function fixtureNexeraVerifierEntrypoint() {
   const contractName = "VerifierEntrypointFactory";
