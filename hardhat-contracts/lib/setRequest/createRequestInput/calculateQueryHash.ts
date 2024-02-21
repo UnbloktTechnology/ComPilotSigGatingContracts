@@ -13,11 +13,11 @@ export function calculateQueryHash(
   slotIndex: number,
   operator: number,
   claimPathKey: string,
-  claimPathNotExists: number,
+  claimPathNotExists: number
 ) {
   const expValue = prepareCircuitArrayValues(
     values.map((v) => BigInt(v)),
-    64,
+    64
   );
   const valueHash = poseidon.spongeHashX(expValue, 6);
   const schemaHash = coreSchemaFromStr(schema);

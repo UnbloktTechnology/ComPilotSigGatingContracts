@@ -4,7 +4,7 @@ import { OnChainQueryRequest } from "./getSchemaExampleQuery";
 
 export function packValidatorParams(
   query: OnChainQueryRequest,
-  allowedIssuers = [],
+  allowedIssuers = []
 ) {
   return encodeAbiParameters(
     [
@@ -38,6 +38,6 @@ export function packValidatorParams(
         skipClaimRevocationCheck: query.skipClaimRevocationCheck,
         claimPathNotExists: BigInt(query.claimPathNotExists),
       },
-    ],
+    ]
   );
 }

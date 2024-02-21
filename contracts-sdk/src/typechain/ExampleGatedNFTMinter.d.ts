@@ -24,6 +24,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getLastTokenId()": FunctionFragment;
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
     "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
@@ -51,6 +52,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastTokenId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getMessageHash",
@@ -119,6 +124,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastTokenId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -263,6 +272,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getLastTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -372,6 +383,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
   getMessageHash(
     _txAuthData: {
       chainID: BigNumberish;
@@ -471,6 +484,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMessageHash(
       _txAuthData: {
@@ -640,6 +655,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -749,6 +766,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getLastTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getMessageHash(
       _txAuthData: {

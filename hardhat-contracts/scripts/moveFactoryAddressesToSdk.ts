@@ -24,5 +24,8 @@ export const moveAllFactoryAddressesToSdk = () => {
   moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_dev");
   moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_staging");
   moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_prod");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_dev");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_staging");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_prod");
 };
 moveAllFactoryAddressesToSdk();

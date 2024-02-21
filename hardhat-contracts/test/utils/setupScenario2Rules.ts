@@ -21,4 +21,3 @@ export const setupScenario2Rules = async (
     "IDScan"
   );
 };
-
