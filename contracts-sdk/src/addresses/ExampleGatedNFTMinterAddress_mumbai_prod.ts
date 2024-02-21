@@ -1,2 +1,2 @@
 export const ExampleGatedNFTMinterAddress_mumbai_prod =
-  "0x33F49f5974Ffd24fD88132f57e698cC670Ab74fa" as const;
+  "0x3F0720BbBA66918EEc3CA15914F35Af489249C70" as const;

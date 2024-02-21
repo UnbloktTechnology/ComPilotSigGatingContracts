@@ -38,6 +38,7 @@
     "@NexeraProtocol:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
+    "lint": "prettier -w .",
     "postinstall": "pnpm run build:hardhat && pnpm run build:contracts-sdk",
     "build:hardhat": "pnpm run --filter @nexeraprotocol/nexera-id-contracts build",
     "build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-contracts-sdk build",
