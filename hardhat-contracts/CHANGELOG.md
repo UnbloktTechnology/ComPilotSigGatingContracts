@@ -7,10 +7,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
 
-
-
-
-
 ## [1.0.12](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.0.11...@nexeraprotocol/nexera-id-contracts@1.0.12) (2024-02-19)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
