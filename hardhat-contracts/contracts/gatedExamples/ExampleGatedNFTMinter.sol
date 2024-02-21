@@ -20,6 +20,13 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier {
         TxAuthDataVerifier(signerAddress)
     {}
 
+    /// @notice Retrieves the current value of the token ID counter.
+    /// @dev Returns the last token ID that was minted.
+    /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
+    function getLastTokenId() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
     /// @dev Internal function to mint a new NFT to a specified recipient.
     /// @param recipient The address that will receive the newly minted NFT.
     /// @return newItemId The token ID of the newly minted NFT.

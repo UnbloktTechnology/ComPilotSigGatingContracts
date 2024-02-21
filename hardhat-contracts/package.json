@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "test:unit": "hardhat test --parallel",
-    "test:unit:seq": "hardhat test",
+    "test:seq": "hardhat test",
     "deploy-contracts": "hardhat deploy",
     "deploy-mumbai": "hardhat deploy --network mumbai_dev && hardhat deploy --network mumbai_staging && hardhat deploy --network mumbai_prod",
     "run-node": "hardhat node",
