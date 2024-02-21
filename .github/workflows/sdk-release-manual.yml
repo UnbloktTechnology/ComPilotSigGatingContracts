@@ -66,9 +66,9 @@ jobs:
         run: |
           original_branch="${{ inputs.branch }}"
           timestamp=$(date +%s%3N)
-          
+
           branch_name=$(echo "$original_branch-$timestamp" | tr '/' '-' | tr '_' '-')
-          
+
           echo $branch_name
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
@@ -76,17 +76,17 @@ jobs:
         id: tag_release
         run: |
           release_tag="dev"
-          
+
           echo "release_tag=$release_tag" >> $GITHUB_OUTPUT
 
       - name: Prepare release version
         run: |
           echo ${{ steps.tag_release.outputs.release_tag }}
-          
+
           version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts" | head -n1 | tr -d '"')
           pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts"
           echo $version
-          
+
           version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts-sdk" | head -n1 | tr -d '"')
           pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts-sdk"
           echo $version

@@ -13,12 +13,30 @@ import {
 } from "../utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { publicActions } from "viem";
+import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
 
   beforeEach(async () => {
     ({ exampleGatedNFTMinter } = await fixtureExampleGatedNFTMinter());
+  });
+  it(`Should check that user can call the NON GATED ExampleNFTMinter for gas comparaison purposes`, async () => {
+    const { exampleNFTMinter } = await fixtureExampleNFTMinter();
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+
+    const recipient = tester;
+
+    // try to mint nft
+    console.log("recipeint", recipient);
+    console.log(Number(await exampleNFTMinter.getLastTokenId()));
+    await exampleNFTMinter.connect(testerSigner).mintNFT(recipient);
+
+    const tokenId = Number(await exampleNFTMinter.getLastTokenId());
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleNFTMinter.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
@@ -52,12 +70,11 @@ describe(`ExampleGatedNFTMinter`, function () {
     const signature = await signTxAuthData(txAuthData, txAuthSigner);
 
     // try to mint nft
-    const tx = await exampleGatedNFTMinter
+    await exampleGatedNFTMinter
       .connect(testerSigner)
       .mintNFTGated(recipient, blockExpiration, signature);
 
-    const transactionReceipt = await tx.wait();
-    const tokenId = Number(transactionReceipt.events?.[0].args?.tokenId);
+    const tokenId = Number(await exampleGatedNFTMinter.getLastTokenId());
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;

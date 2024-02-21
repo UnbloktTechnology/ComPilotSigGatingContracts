@@ -3,30 +3,29 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const version = "0.1.0";
-const contractName = "VerifierSigWrapper";
+const contractName = "ExampleNFTMinter";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, txAuthSigner } = await getNamedAccounts();
+  console.log("deployer", deployer);
+  console.log("txAuthSigner", txAuthSigner);
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
   console.log(`\n--------------------------------------------------------`);
 
-  const verifierWrapperResult = await deploy(contractName, {
+  const deployResult = await deploy(contractName, {
     contract: contractName,
     from: deployer,
     log: true,
-    // Will be enabled when refactored into a factory
-    skipIfAlreadyDeployed: false,
     nonce: "pending",
     waitConfirmations: 1,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
-  console.log(
-    "\nDeployed " + contractName + " at " + verifierWrapperResult.address
-  );
+
+  console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
   return true;
 };

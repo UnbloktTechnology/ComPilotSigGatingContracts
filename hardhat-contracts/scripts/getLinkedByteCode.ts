@@ -12,7 +12,7 @@ export default function linkLibrariesToByteCode(
       };
     };
   },
-  libraries: { [libraryName: string]: string },
+  libraries: { [libraryName: string]: string }
 ): string {
   Object.keys(linkReferences).forEach((fileName) => {
     Object.keys(linkReferences[fileName]).forEach((contractName) => {
@@ -31,7 +31,7 @@ export default function linkLibrariesToByteCode(
             .slice(0, start)
             .concat(address)
             .concat(bytecode.slice(start + length, bytecode.length));
-        },
+        }
       );
     });
   });

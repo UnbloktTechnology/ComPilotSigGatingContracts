@@ -20,7 +20,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log(`\n--------------------------------------------------------`);
   console.log(
-    `Deploying ${contractName}... with entrypoint address ${verifierEntrypointAddress}`,
+    `Deploying ${contractName}... with entrypoint address ${verifierEntrypointAddress}`
   );
   console.log(`\n--------------------------------------------------------`);
 
