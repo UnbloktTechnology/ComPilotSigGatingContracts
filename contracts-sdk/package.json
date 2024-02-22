@@ -1,5 +1,5 @@
 {
-  "version": "1.0.66",
+  "version": "1.0.67",
   "name": "@nexeraprotocol/nexera-id-contracts-sdk",
   "main": "dist/nexeraprotocol-nexera-id-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-contracts-sdk.esm.js",
