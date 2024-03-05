@@ -29,8 +29,6 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
 
     // try to mint nft
-    console.log("recipeint", recipient);
-    console.log(Number(await exampleNFTMinter.getLastTokenId()));
     await exampleNFTMinter.connect(testerSigner).mintNFT(recipient);
 
     const tokenId = Number(await exampleNFTMinter.getLastTokenId());

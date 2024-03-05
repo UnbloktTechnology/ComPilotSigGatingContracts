@@ -13,7 +13,6 @@ import {
 } from "../utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { publicActions } from "viem";
-import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 
 describe(`ExampleGatedNFTMinterUpgradeable`, function () {
   let exampleGatedNFTMinterUpgradeable: ExampleGatedNFTMinterUpgradeable;
