@@ -8,7 +8,8 @@
     "build": "pnpm run get-types-abis-bytecodes-addresses && preconstruct build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "lint": "prettier --write src/**/**.ts"
+    "lint": "prettier --write src/**/**.ts",
+    "lint:check": "prettier --check src/**/**.ts"
   },
   "files": [
     "dist",

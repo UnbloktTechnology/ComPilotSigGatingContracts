@@ -53,3 +53,7 @@ jobs:
         run: |
           pnpm run build:hardhat
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
+
+      - name: Lint
+        run: |
+          pnpm run lint:check
