@@ -4,7 +4,7 @@
   "main": "dist/nexeraprotocol-nexera-id-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-contracts-sdk.esm.js",
   "scripts": {
-    "get-types-abis-bytecodes-addresses": "pnpm run --filter @nexeraprotocol/nexera-id-contracts build && pnpm run --filter @nexeraprotocol/nexera-id-contracts copy-info-to-sdk && pnpm lint",
+    "get-types-abis-bytecodes-addresses": "pnpm run --filter @nexeraprotocol/nexera-id-contracts build && pnpm run --filter @nexeraprotocol/nexera-id-contracts copy-info-to-sdk",
     "build": "pnpm run get-types-abis-bytecodes-addresses && preconstruct build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
