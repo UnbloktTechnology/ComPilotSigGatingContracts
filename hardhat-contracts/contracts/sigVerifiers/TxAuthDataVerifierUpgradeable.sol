@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
 /// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
+/// This version is OwnableUpgradeable, making it compatible with OZ'ds proxy pattern
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
-contract TxAuthDataVerifier is Ownable {
+contract TxAuthDataVerifierUpgradeable is OwnableUpgradeable {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
 
@@ -48,10 +49,15 @@ contract TxAuthDataVerifier is Ownable {
         bytes functionCallData;
     }
 
-    /// @notice Constructs the `TxAuthDataVerifier` contract
-    /// @param _signer The address of the off-chain service responsible for signing transactions
-    constructor(address _signer) {
+    /**
+     * @dev Initialize proxied contract with signer
+     * @param _signer The address of the off-chain service responsible for signing transactions
+     */
+    function __TxAuthDataVerifierUpgradeable_init(
+        address _signer
+    ) internal onlyInitializing {
         signer = _signer;
+        __Ownable_init();
     }
 
     /// @notice Sets a new signer address
