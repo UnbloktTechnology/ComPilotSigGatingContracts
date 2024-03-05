@@ -43,6 +43,10 @@ jobs:
         run: |
           pnpm install
 
+      - name: Lint
+        run: |
+          pnpm run lint:check
+
       - name: Build
         env:
           MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
@@ -53,7 +57,3 @@ jobs:
         run: |
           pnpm run build:hardhat
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
-
-      - name: Lint
-        run: |
-          pnpm run lint:check
