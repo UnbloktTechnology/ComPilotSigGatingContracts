@@ -43,9 +43,15 @@ jobs:
         run: |
           pnpm install
 
-      - name: Lint
+      - name: Check for changes files
         run: |
-          pnpm run lint:check
+          git restore .npmrc
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+            echo "Changed files detected, run lint locally"
+            exit 1
+          else
+            echo "No new files, exiting cleanly"
+          fi
 
       - name: Build
         env:
