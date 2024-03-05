@@ -4,11 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
 /// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
-/// This version of the contract implements two ways to do that in order to compare them
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
 contract TxAuthDataVerifier is Ownable {
     using ECDSA for bytes32;
