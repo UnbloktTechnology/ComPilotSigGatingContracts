@@ -16,7 +16,9 @@
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
     "copy-factory-address": "hardhat run scripts/moveFactoryAddressesToSdk.ts",
     "copy-typechain-types": "./scripts/copy-typechain-types.sh",
-    "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address && pnpm copy-typechain-types && prettier -w .."
+    "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address && pnpm copy-typechain-types && prettier -w ..",
+    "lint": "prettier --write **/**.ts",
+    "lint:check": "prettier --check **/**.ts"
   },
   "keywords": [
     "solidity",
