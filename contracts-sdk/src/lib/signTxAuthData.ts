@@ -1,7 +1,8 @@
 import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
 import type { Abi } from "viem";
 import { TxAuthData, TxAuthInput, WalletClientExtended } from "./schemas";
-import { TxAuthDataVerifier } from "../typechain/TxAuthDataVerifier";
+
+const SIGNATURE_VALIDITY_DURATION = 50;
 
 // Generating functionCallData with viem
 export function generateFunctionCallDataViem(
@@ -51,7 +52,8 @@ export const signTxAuthDataLib = async (
   const blockExpiration =
     txAuthInput.blockExpiration ||
     Number((await txAuthWalletClient.getBlock({ blockTag: "latest" })).number) +
-      50;
+      SIGNATURE_VALIDITY_DURATION;
+
   const chainID = await txAuthWalletClient.getChainId();
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
