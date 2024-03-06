@@ -3,6 +3,8 @@ import { NetworksUserConfig } from "hardhat/types";
 
 dotenv.config();
 
+const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
+
 export const networks: NetworksUserConfig = {
   //prod
   polygon_main_prod: {
@@ -15,6 +17,12 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 80001,
     url: `${process.env.MUMBAI_PROVIDER_URL}`,
+    accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
+  },
+  sepolia_prod: {
+    live: true,
+    chainId: 11155111,
+    url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
   },
   // staging
@@ -30,6 +38,12 @@ export const networks: NetworksUserConfig = {
     url: `${process.env.MUMBAI_PROVIDER_URL}`,
     accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
   },
+  sepolia_staging: {
+    live: true,
+    chainId: 11155111,
+    url: SEPOLIA_PROVIDER_URL,
+    accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
+  },
   //dev
   polygon_main_dev: {
     live: true,
@@ -41,6 +55,12 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 80001,
     url: `${process.env.MUMBAI_PROVIDER_URL}`,
+    accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
+  },
+  sepolia_dev: {
+    live: true,
+    chainId: 11155111,
+    url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: process.env.DEPLOYMENT_MNEMONIC },
   },
   // local
