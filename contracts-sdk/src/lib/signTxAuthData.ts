@@ -45,12 +45,13 @@ export async function signTxAuthDataViem(
 
 export const signTxAuthDataLib = async (
   txAuthWalletClient: WalletClientExtended,
-  txAuthInput: TxAuthInput
+  txAuthInput: TxAuthInput & { chainId?: number }
 ) => {
   // Build Signature
   const block = await txAuthWalletClient.getBlock({ blockTag: "latest" });
   const blockExpiration = Number(block.number) + 50;
-  const chainID = await txAuthWalletClient.getChainId();
+  const chainID =
+    txAuthInput.chainId || (await txAuthWalletClient.getChainId());
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as Abi,
