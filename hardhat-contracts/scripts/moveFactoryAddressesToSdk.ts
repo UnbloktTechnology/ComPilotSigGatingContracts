@@ -15,6 +15,7 @@ export const moveFactoryAddressToSdk = (
 };
 
 export const moveAllFactoryAddressesToSdk = () => {
+  // Mumbai
   moveFactoryAddressToSdk("VerifierEntrypointFactory", "mumbai_dev");
   moveFactoryAddressToSdk("VerifierEntrypointFactory", "mumbai_staging");
   moveFactoryAddressToSdk("VerifierEntrypointFactory", "mumbai_prod");
@@ -27,5 +28,18 @@ export const moveAllFactoryAddressesToSdk = () => {
   moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_dev");
   moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_staging");
   moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_prod");
+  // Sepolia
+  moveFactoryAddressToSdk("VerifierEntrypointFactory", "sepolia_dev");
+  moveFactoryAddressToSdk("VerifierEntrypointFactory", "sepolia_staging");
+  moveFactoryAddressToSdk("VerifierEntrypointFactory", "sepolia_prod");
+  moveFactoryAddressToSdk("ScenarioVerifierFactory", "sepolia_dev");
+  moveFactoryAddressToSdk("ScenarioVerifierFactory", "sepolia_staging");
+  moveFactoryAddressToSdk("ScenarioVerifierFactory", "sepolia_prod");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_dev");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_staging");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_prod");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_dev");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_staging");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_prod");
 };
 moveAllFactoryAddressesToSdk();

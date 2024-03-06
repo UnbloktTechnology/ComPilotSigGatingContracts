@@ -1,283 +1,284 @@
+
 export const NexeraVerifierEntrypointABI = [
   {
-    inputs: [],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "uint8",
-        name: "version",
-        type: "uint8",
-      },
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
     ],
-    name: "Initialized",
-    type: "event",
+    "name": "Initialized",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "OwnershipTransferred",
-    type: "event",
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "ScenarioVerifierAdded",
-    type: "event",
+    "name": "ScenarioVerifierAdded",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "ScenarioVerifierDeleted",
-    type: "event",
+    "name": "ScenarioVerifierDeleted",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "ScenarioVerifierDisabled",
-    type: "event",
+    "name": "ScenarioVerifierDisabled",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "ScenarioVerifierEnabled",
-    type: "event",
+    "name": "ScenarioVerifierEnabled",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: false,
-        internalType: "address",
-        name: "oldScenarioVerifierAddress",
-        type: "address",
+        "indexed": false,
+        "internalType": "address",
+        "name": "oldScenarioVerifierAddress",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "address",
-        name: "newScenarioVerifierAddress",
-        type: "address",
-      },
+        "indexed": false,
+        "internalType": "address",
+        "name": "newScenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "ScenarioVerifierUpdated",
-    type: "event",
+    "name": "ScenarioVerifierUpdated",
+    "type": "event"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "addScenarioVerifier",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "addScenarioVerifier",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "deleteScenarioVerifier",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "deleteScenarioVerifier",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "disableScenario",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "disableScenario",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "enableScenario",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "enableScenario",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "scenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "scenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "getIsScenarioEnabled",
-    outputs: [
+    "name": "getIsScenarioEnabled",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "index",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
     ],
-    name: "getScenarioVerifierAddress",
-    outputs: [
+    "name": "getScenarioVerifierAddress",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
     ],
-    name: "isAllowedForEntrypoint",
-    outputs: [
+    "name": "isAllowedForEntrypoint",
+    "outputs": [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "owner",
-    outputs: [
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "address",
-        name: "oldScenarioVerifierAddress",
-        type: "address",
+        "internalType": "address",
+        "name": "oldScenarioVerifierAddress",
+        "type": "address"
       },
       {
-        internalType: "address",
-        name: "newScenarioVerifierAddress",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "newScenarioVerifierAddress",
+        "type": "address"
+      }
     ],
-    name: "updateScenarioVerifier",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
+    "name": "updateScenarioVerifier",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
 ] as const;
