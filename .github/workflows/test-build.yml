@@ -43,6 +43,16 @@ jobs:
         run: |
           pnpm install
 
+      - name: Check for changes files
+        run: |
+          git restore .npmrc
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+            echo "Changed files detected, run lint locally"
+            exit 1
+          else
+            echo "No new files, exiting cleanly"
+          fi
+
       - name: Build
         env:
           MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
