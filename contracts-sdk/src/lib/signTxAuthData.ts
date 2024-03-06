@@ -1,6 +1,7 @@
 import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
-import type { Abi, WalletClient, Transport, Chain, Account } from "viem";
-import { TxAuthData, TxAuthInput } from "./schemas";
+import type { Abi } from "viem";
+import { TxAuthData, TxAuthInput, WalletClientExtended } from "./schemas";
+import { TxAuthDataVerifier } from "../typechain/TxAuthDataVerifier";
 
 // Generating functionCallData with viem
 export function generateFunctionCallDataViem(
@@ -18,7 +19,7 @@ export function generateFunctionCallDataViem(
 
 export async function signTxAuthDataViem(
   txAuthData: TxAuthData,
-  walletClient: WalletClient<Transport, Chain | undefined, Account>
+  walletClient: WalletClientExtended
 ) {
   const messageHash = keccak256(
     encodePacked(
@@ -43,16 +44,19 @@ export async function signTxAuthDataViem(
 }
 
 export const signTxAuthDataLib = async (
-  txAuthWalletClient: WalletClient<Transport, Chain | undefined, Account>,
-  // TODO these variables will be included in TxAuthInput in next iteration of schemas
-  txAuthInput: TxAuthInput & { chainId: number; blockExpiration: number }
+  txAuthWalletClient: WalletClientExtended,
+  txAuthInput: TxAuthInput & { chainId?: number }
 ) => {
   // Build Signature
+  const block = await txAuthWalletClient.getBlock({ blockTag: "latest" });
+  const blockExpiration = Number(block.number) + 50;
+  const chainID =
+    txAuthInput.chainId || (await txAuthWalletClient.getChainId());
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as Abi,
     txAuthInput.functionName,
-    [...txAuthInput.args, txAuthInput.blockExpiration, "0x1234"]
+    [...txAuthInput.args, blockExpiration, "0x1234"]
   );
   // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
   // 32 bytes for blockExpiration
@@ -70,12 +74,13 @@ export const signTxAuthDataLib = async (
     functionCallData: argsWithSelector,
     contractAddress: txAuthInput.contractAddress,
     userAddress: txAuthInput.userAddress,
-    chainID: txAuthInput.chainId,
+    chainID,
     nonce: Number(await contract.read.getUserNonce([txAuthInput.userAddress])),
-    blockExpiration: txAuthInput.blockExpiration,
+    blockExpiration,
   };
 
   return {
     signature: await signTxAuthDataViem(txAuthData, txAuthWalletClient),
+    blockExpiration,
   };
 };
