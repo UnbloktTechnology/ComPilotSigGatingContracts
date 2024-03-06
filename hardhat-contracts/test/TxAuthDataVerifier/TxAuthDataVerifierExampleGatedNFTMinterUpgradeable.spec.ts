@@ -125,9 +125,6 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       functionName: "mintNFTGated",
       args: [recipient],
       userAddress: tester as Address,
-      nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
-      ),
     };
 
     const signatureResponse = await signTxAuthDataLib(
