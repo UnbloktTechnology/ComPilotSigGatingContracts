@@ -5,7 +5,10 @@ import { ExampleGatedNFTMinter } from "../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinter } from "../../fixtures/fixtureExampleGatedNFTMinter";
 
-import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
+import {
+  ExampleGatedNFTMinterABI,
+  ExampleMultipleInputsABI,
+} from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import {
   generateFunctionCallData,
@@ -14,6 +17,7 @@ import {
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { publicActions } from "viem";
 import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
+import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -51,10 +55,9 @@ describe(`ExampleGatedNFTMinter`, function () {
       "mintNFTGated",
       [recipient, blockExpiration, "0x1234"]
     );
-    // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
-    // 32 bytes for blockExpiration
-    // = 128 bytes = 256 characters
-    const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
+    // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
+    // = 128 characters
+    const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
     const txAuthData = {
       functionCallData: argsWithSelector,
@@ -93,10 +96,9 @@ describe(`ExampleGatedNFTMinter`, function () {
       "mintNFTGated",
       [recipient, blockExpiration, "0x1234"]
     );
-    // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
-    // 32 bytes for blockExpiration
-    // = 128 bytes = 256 characters
-    const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
+    // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
+    // = 128 characters
+    const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
     const txAuthData = {
       functionCallData: argsWithSelector,
@@ -155,6 +157,45 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
+  });
+  it(`Should check that user can call the ExampleMultipleInputs with a signature from the signer - with lib function`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
+
+    // Build Signature
+    const testNumber = 2;
+    const testAddress = tester;
+    const testByteString = "0x224455";
+
+    const txAuthInput = {
+      contractAbi: ExampleMultipleInputsABI,
+      contractAddress: exampleMultipleInputs.address as Address,
+      functionName: "updateVariables",
+      args: [testNumber, testAddress, testByteString],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+    console.log("signatureResponse.signature", signatureResponse.signature);
+
+    // try to mint nft
+    await exampleMultipleInputs
+      .connect(testerSigner)
+      .updateVariables(
+        testNumber,
+        testAddress,
+        testByteString,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const bytesVariable = await exampleMultipleInputs.getBytesVariable();
+    expect(testByteString === bytesVariable).to.be.true;
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with a wrong signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();

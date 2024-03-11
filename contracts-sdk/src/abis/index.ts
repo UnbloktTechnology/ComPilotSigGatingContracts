@@ -9,3 +9,4 @@ export * from "./ExampleGatedNFTMinterABI";
 export * from "./ExampleGatedNFTMinterV0ABI";
 export * from "./ExampleNFTMinterABI";
 export * from "./ExampleGatedNFTMinterUpgradeableABI";
+export * from "./ExampleMultipleInputsABI";

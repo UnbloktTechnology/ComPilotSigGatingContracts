@@ -48,7 +48,7 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier {
         address recipient,
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth returns (uint256) {
+    ) public requireTxDataAuth(_blockExpiration) returns (uint256) {
         return mintNFT(recipient);
     }
 }

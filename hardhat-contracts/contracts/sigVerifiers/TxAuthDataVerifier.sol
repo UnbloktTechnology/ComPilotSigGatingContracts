@@ -13,10 +13,18 @@ contract TxAuthDataVerifier is Ownable {
     using Counters for Counters.Counter;
 
     /// @notice These are used to decompose msg.data
+    /// @notice This is the length for the expected signature
     uint256 private constant SIGNATURE_LENGTH = 65;
+    /// @notice This completes the signature into a multiple of 32
     uint256 private constant SIGNATURE_SUFFIX = 31;
-    uint256 private constant SIGNATURE_OFFSET = 65 + 32 + 32 + SIGNATURE_SUFFIX;
-    uint256 private constant BYTES_32_VARIABLE = 32;
+    /// @notice The complete length of the signature related data includes a 32 length field indicating the lgnth,
+    // as well as the signature itself completed with 31 zeros to be a multiple of 32
+    uint256 private constant SIGNATURE_OFFSET =
+        SIGNATURE_LENGTH +
+            BYTES_32_LENGTH +
+            //+ 32
+            SIGNATURE_SUFFIX;
+    uint256 private constant BYTES_32_LENGTH = 32;
 
     /// @notice Address of the off-chain service that signs the transactions
     address private signer;
@@ -69,18 +77,10 @@ contract TxAuthDataVerifier is Ownable {
 
     /// @notice Modifier to validate transaction data in an optimized manner
     /// @dev Extracts args, blockExpiration, and signature from `msg.data`
-    modifier requireTxDataAuth() {
+    modifier requireTxDataAuth(uint256 _blockExpiration) {
         /// Decompose msg.data into the different parts we want
         bytes calldata argsWithSelector = msg.data[:msg.data.length -
-            BYTES_32_VARIABLE -
             SIGNATURE_OFFSET];
-        uint256 _blockExpiration = uint256(
-            bytes32(
-                msg.data[msg.data.length -
-                    BYTES_32_VARIABLE -
-                    SIGNATURE_OFFSET:msg.data.length - SIGNATURE_OFFSET]
-            )
-        );
         bytes calldata _signature = msg.data[msg.data.length -
             SIGNATURE_LENGTH -
             SIGNATURE_SUFFIX:msg.data.length - SIGNATURE_SUFFIX];
