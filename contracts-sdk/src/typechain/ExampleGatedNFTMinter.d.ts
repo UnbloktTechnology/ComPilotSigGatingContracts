@@ -26,6 +26,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getLastTokenId()": FunctionFragment;
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
+    "getSignerAddress()": FunctionFragment;
     "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintNFTGated(address,uint256,bytes)": FunctionFragment;
@@ -69,6 +70,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
         functionCallData: BytesLike;
       }
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSignerAddress",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getUserNonce",
@@ -132,6 +137,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getMessageHash",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSignerAddress",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -286,6 +295,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
     getUserNonce(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isApprovedForAll(
@@ -397,6 +408,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
   getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   isApprovedForAll(
@@ -498,6 +511,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       },
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getSignerAddress(overrides?: CallOverrides): Promise<string>;
 
     getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -669,6 +684,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -780,6 +797,8 @@ export class ExampleGatedNFTMinter extends BaseContract {
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUserNonce(
       user: string,

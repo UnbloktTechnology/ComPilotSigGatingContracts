@@ -36,10 +36,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       "mintNFTGated",
       [recipient, blockExpiration, "0x1234"]
     );
-    // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
-    // 32 bytes for blockExpiration
-    // = 128 bytes = 256 characters
-    const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
+    // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
+    // = 128 characters
+    const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
     const txAuthData = {
       functionCallData: argsWithSelector,
@@ -82,10 +81,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       "mintNFTGated",
       [recipient, blockExpiration, "0x1234"]
     );
-    // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
-    // 32 bytes for blockExpiration
-    // = 128 bytes = 256 characters
-    const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
+    // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
+    // = 128 characters
+    const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
     const txAuthData = {
       functionCallData: argsWithSelector,
@@ -263,5 +261,31 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       hasReverted = true;
     }
     expect(hasReverted).to.be.true;
+  });
+  it(`Should check that admin can change the signer`, async () => {
+    const [deployer, _testerSigner, address3] = await ethers.getSigners();
+    // try to mint nft
+    await exampleGatedNFTMinterUpgradeable
+      .connect(deployer)
+      .setSigner(address3.address);
+
+    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    expect(newSigner === address3.address).to.be.true;
+  });
+  it(`Should check that non-admin can NOT change the signer`, async () => {
+    const [_deployer, _testerSigner, address3] = await ethers.getSigners();
+    // try to mint nft
+    try {
+      await exampleGatedNFTMinterUpgradeable
+        .connect(address3)
+        .setSigner(address3.address);
+    } catch (e) {
+      expect((e as Error).toString().substring(0, 112)).to.eq(
+        "Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'"
+      );
+    }
+
+    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    expect(newSigner !== address3.address).to.be.true;
   });
 });

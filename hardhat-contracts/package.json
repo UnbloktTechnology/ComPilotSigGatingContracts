@@ -9,9 +9,9 @@
   "scripts": {
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
-    "deploy-contracts": "hardhat deploy",
-    "deploy-mumbai": "hardhat deploy --network mumbai_dev && hardhat deploy --network mumbai_staging && hardhat deploy --network mumbai_prod",
-    "deploy-sepolia": "hardhat deploy --network sepolia_dev && hardhat deploy --network sepolia_staging && hardhat deploy --network sepolia_prod",
+    "deploy-contracts": "hardhat deploy --tags liveNetwork",
+    "deploy-mumbai": "hardhat deploy --tags liveNetwork --network mumbai_dev && hardhat deploy --network mumbai_staging && hardhat deploy --network mumbai_prod",
+    "deploy-sepolia": "hardhat deploy --tags liveNetwork --network sepolia_dev && hardhat deploy --network sepolia_staging && hardhat deploy --network sepolia_prod",
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",

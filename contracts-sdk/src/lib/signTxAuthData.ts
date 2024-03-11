@@ -1,4 +1,10 @@
-import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
+import {
+  encodeFunctionData,
+  encodePacked,
+  getContract,
+  keccak256,
+  numberToHex,
+} from "viem";
 import type { Abi } from "viem";
 import { TxAuthData, TxAuthInput, WalletClientExtended } from "./schemas";
 
@@ -55,16 +61,17 @@ export const signTxAuthDataLib = async (
       SIGNATURE_VALIDITY_DURATION;
 
   const chainID = await txAuthWalletClient.getChainId();
+
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as Abi,
     txAuthInput.functionName,
     [...txAuthInput.args, blockExpiration, "0x1234"]
   );
-  // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
-  // 32 bytes for blockExpiration
-  // = 128 bytes = 256 characters
-  const argsWithSelector = functionCallData.slice(0, -256) as `0x${string}`;
+  console.log("functionCallData", functionCallData);
+  // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
+  // = 128 characters
+  const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
   // instantiate contract to get nonce
   const contract = getContract({

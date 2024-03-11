@@ -225,7 +225,7 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
             type: "bytes",
           },
         ],
-        internalType: "struct TxAuthDataVerifierUpgradeable.TxAuthData",
+        internalType: "struct BaseTxAuthDataVerifier.TxAuthData",
         name: "_txAuthData",
         type: "tuple",
       },
@@ -239,6 +239,19 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
       },
     ],
     stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSignerAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

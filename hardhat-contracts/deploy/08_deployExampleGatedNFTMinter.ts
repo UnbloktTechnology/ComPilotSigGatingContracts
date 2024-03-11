@@ -2,7 +2,7 @@ import { getNamedAccounts } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.2";
+const version = "0.1.3";
 const contractName = "ExampleGatedNFTMinter";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -33,4 +33,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version];
+func.tags = [contractName, version, "liveNetwork"];
