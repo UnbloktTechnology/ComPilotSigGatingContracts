@@ -73,13 +73,13 @@ contract BaseTxAuthDataVerifier {
 
     /// @notice Modifier to validate transaction data in an optimized manner
     /// @dev Extracts args, blockExpiration, and signature from `msg.data`
-    modifier requireTxDataAuth(uint256 _blockExpiration) {
+    modifier requireTxDataAuth(
+        uint256 _blockExpiration,
+        bytes calldata _signature
+    ) {
         /// Decompose msg.data into the different parts we want
         bytes calldata argsWithSelector = msg.data[:msg.data.length -
             SIGNATURE_OFFSET];
-        bytes calldata _signature = msg.data[msg.data.length -
-            SIGNATURE_LENGTH -
-            SIGNATURE_SUFFIX:msg.data.length - SIGNATURE_SUFFIX];
 
         /// Check signature hasn't expired
         if (block.number >= _blockExpiration) {

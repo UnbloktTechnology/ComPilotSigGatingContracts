@@ -35,7 +35,7 @@ contract ExampleMultipleInputs is TxAuthDataVerifier {
         bytes memory _bytesVariable,
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration) {
+    ) public requireTxDataAuth(_blockExpiration, _signature) {
         intVariable = _intVariable;
         addressVariable = _addressVariable;
         bytesVariable = _bytesVariable;
