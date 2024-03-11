@@ -2,7 +2,7 @@ import { getNamedAccounts } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.0";
+const version = "0.1.1";
 const contractName = "ExampleGatedNFTMinterUpgradeable";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {

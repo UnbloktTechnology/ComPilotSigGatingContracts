@@ -42,5 +42,5 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version];
+func.tags = [contractName, version, "liveNetwork"];
 func.dependencies = ["VerifierEntrypointFactory"];

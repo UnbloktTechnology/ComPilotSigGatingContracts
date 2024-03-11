@@ -59,12 +59,9 @@ export const signTxAuthDataLib = async (
     txAuthInput.blockExpiration ||
     Number((await txAuthWalletClient.getBlock({ blockTag: "latest" })).number) +
       SIGNATURE_VALIDITY_DURATION;
-  console.log(
-    "expected blockExpiration",
-    blockExpiration,
-    numberToHex(blockExpiration)
-  );
+
   const chainID = await txAuthWalletClient.getChainId();
+
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as Abi,
