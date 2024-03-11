@@ -143,6 +143,18 @@ export const moveExampleGatedNFTMinterUpgradeableABIToSDK = () => {
   //saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
 };
 
+export const moveExampleMultipleInputsABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/gatedExamples/ExampleMultipleInputs.sol/ExampleMultipleInputs.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("ExampleMultipleInputs", abi);
+  //saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
+};
+
 export const moveByteCodeAndABIToSdk = () => {
   moveScenarioVerifierByteCodeAndABIToSDK();
   moveNexeraVerifierEntrypointByteCodeAndABIToSDK();
@@ -154,5 +166,6 @@ export const moveByteCodeAndABIToSdk = () => {
   moveExampleGatedNFTMinterV0ABIToSDK();
   moveExampleNFTMinterABIToSDK();
   moveExampleGatedNFTMinterUpgradeableABIToSDK();
+  moveExampleMultipleInputsABIToSDK();
 };
 moveByteCodeAndABIToSdk();
