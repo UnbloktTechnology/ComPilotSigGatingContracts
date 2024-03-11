@@ -74,12 +74,7 @@ export const signTxAuthDataLib = async (
   console.log("functionCallData", functionCallData);
   // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
   // = 128 characters
-  const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`; //-256) as `0x${string}`;
-  console.log("argsWithSelector", argsWithSelector);
-  //const test= 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021234000000000000000000000000000000000000000000000000000000000000
-  // 000000000000000000000000000000000000000000000000000000000000;
-  // 000000000000000000000000000000000000000000000000000000000000021234;
-  // 000000000000000000000000000000000000000000000000000000000000;
+  const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
 
   // instantiate contract to get nonce
   const contract = getContract({

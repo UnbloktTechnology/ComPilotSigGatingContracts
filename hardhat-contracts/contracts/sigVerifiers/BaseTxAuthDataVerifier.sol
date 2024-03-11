@@ -19,10 +19,7 @@ contract BaseTxAuthDataVerifier {
     /// @notice The complete length of the signature related data includes a 32 length field indicating the lgnth,
     // as well as the signature itself completed with 31 zeros to be a multiple of 32
     uint256 private constant SIGNATURE_OFFSET =
-        SIGNATURE_LENGTH +
-            BYTES_32_LENGTH +
-            //+ 32
-            SIGNATURE_SUFFIX;
+        SIGNATURE_LENGTH + BYTES_32_LENGTH + SIGNATURE_SUFFIX;
     uint256 private constant BYTES_32_LENGTH = 32;
 
     /// @notice Address of the off-chain service that signs the transactions
