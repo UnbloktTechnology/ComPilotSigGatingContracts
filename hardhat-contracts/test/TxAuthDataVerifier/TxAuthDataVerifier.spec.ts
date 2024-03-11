@@ -264,6 +264,82 @@ describe(`ExampleGatedNFTMinter`, function () {
       expect(hasReverted).to.be.true;
     }
   });
+  it(`Should check that user can NOT call the ExampleMultipleInputs with a wrong signature from the signer`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
+
+    // Build Signature
+    const testNumber = 2;
+    const testAddress = tester;
+    const testByteString = "0x224455";
+    const block = await ethers.provider.getBlock("latest");
+    const blockExpiration = block.number + 50;
+    const chainID = Number(await network.provider.send("eth_chainId"));
+    // encode function data with a fake value for the signature
+    const functionCallData = await generateFunctionCallData(
+      ExampleMultipleInputsABI,
+      "updateVariables",
+      [testNumber, testAddress, testByteString, blockExpiration, "0x1234"]
+    );
+
+    // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
+    // 32 bytes for blockExpiration
+    // = 128 bytes = 256 characters
+    const argsWithSelector = functionCallData.slice(0, -128);
+
+    const txAuthData = {
+      functionCallData: argsWithSelector,
+      contractAddress: exampleGatedNFTMinter.address as Address,
+      userAddress: tester as Address,
+      chainID,
+      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      blockExpiration,
+    };
+
+    // Build Wrong Values
+    const wrongValues = {
+      functionCallData: (
+        await generateFunctionCallData(
+          ExampleMultipleInputsABI,
+          "updateVariables",
+          [testNumber, testAddress, testByteString, blockExpiration, "0x1234"]
+        )
+      ).slice(0, -128), // wrong recipient value
+      contractAddress: tester as Address,
+      userAddress: txAuthSigner.address as Address,
+      chainID: 666,
+      nonce: 666,
+    };
+
+    for (const wrongValueKey of Object.keys(wrongValues)) {
+      let hasReverted = false;
+      try {
+        const signature = await signTxAuthData(
+          //@ts-ignore
+          { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
+          txAuthSigner
+        );
+
+        // try to mint nft
+        await exampleMultipleInputs
+          .connect(testerSigner)
+          .updateVariables(
+            testNumber,
+            testAddress,
+            testByteString,
+            blockExpiration,
+            signature
+          );
+      } catch (e: unknown) {
+        expect((e as Error).toString()).to.eq(
+          `TransactionExecutionError: VM Exception while processing transaction: revert with unrecognized return data or custom error`
+        );
+        hasReverted = true;
+      }
+      expect(hasReverted).to.be.true;
+    }
+  });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
     const [txAuthSigner, testerSigner] = await ethers.getSigners();
