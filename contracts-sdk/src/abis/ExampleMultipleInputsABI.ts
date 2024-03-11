@@ -87,7 +87,7 @@ export const ExampleMultipleInputsABI = [
             type: "bytes",
           },
         ],
-        internalType: "struct TxAuthDataVerifier.TxAuthData",
+        internalType: "struct BaseTxAuthDataVerifier.TxAuthData",
         name: "_txAuthData",
         type: "tuple",
       },
@@ -101,6 +101,19 @@ export const ExampleMultipleInputsABI = [
       },
     ],
     stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSignerAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

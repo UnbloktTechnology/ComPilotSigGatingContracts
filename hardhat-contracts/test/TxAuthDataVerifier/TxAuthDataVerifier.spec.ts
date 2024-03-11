@@ -310,4 +310,26 @@ describe(`ExampleGatedNFTMinter`, function () {
     }
     expect(hasReverted).to.be.true;
   });
+  it(`Should check that admin can change the signer`, async () => {
+    const [deployer, _testerSigner, address3] = await ethers.getSigners();
+    // try to mint nft
+    await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
+
+    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    expect(newSigner === address3.address).to.be.true;
+  });
+  it(`Should check that non-admin can NOT change the signer`, async () => {
+    const [_deployer, _testerSigner, address3] = await ethers.getSigners();
+    // try to mint nft
+    try {
+      await exampleGatedNFTMinter.connect(address3).setSigner(address3.address);
+    } catch (e) {
+      expect((e as Error).toString().substring(0, 112)).to.eq(
+        "Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'"
+      );
+    }
+
+    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    expect(newSigner !== address3.address).to.be.true;
+  });
 });
