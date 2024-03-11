@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts-sdk@1.0.71...@nexeraprotocol/nexera-id-contracts-sdk@1.1.0) (2024-03-11)
+
+
+### Features
+
+* Feature/web3 244 smart contract fix to handle bytes inputs ([#29](https://github.com/NexeraProtocol/NexeraIDContracts/issues/29)) ([0ca65c9](https://github.com/NexeraProtocol/NexeraIDContracts/commit/0ca65c973792e4e88cb02dd8bf885b924503377e))
+
+
+
+
+
 ## [1.0.71](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts-sdk@1.0.70...@nexeraprotocol/nexera-id-contracts-sdk@1.0.71) (2024-03-06)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts-sdk
