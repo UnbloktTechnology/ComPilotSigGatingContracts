@@ -117,7 +117,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       .mintNFTGated(recipient, blockExpiration, signature);
 
     const transactionReceipt = await tx.wait();
-    const tokenId = Number(transactionReceipt.events?.[0].args?.tokenId);
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
@@ -153,10 +153,18 @@ describe(`ExampleGatedNFTMinter`, function () {
       );
 
     const transactionReceipt = await tx.wait();
-    const tokenId = Number(transactionReceipt.events?.[0].args?.tokenId);
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
   });
   it(`Should check that user can call the ExampleMultipleInputs with a signature from the signer - with lib function`, async () => {
     const { tester } = await getNamedAccounts();

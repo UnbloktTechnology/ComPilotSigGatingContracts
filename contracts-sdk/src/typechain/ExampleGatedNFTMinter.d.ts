@@ -190,12 +190,14 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -213,6 +215,17 @@ export type ApprovalForAllEvent = TypedEvent<
     owner: string;
     operator: string;
     approved: boolean;
+  }
+>;
+
+export type NexeraIDSignatureVerifiedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string, string, string] & {
+    chainID: BigNumber;
+    nonce: BigNumber;
+    blockExpiration: BigNumber;
+    contractAddress: string;
+    userAddress: string;
+    functionCallData: string;
   }
 >;
 
@@ -619,6 +632,44 @@ export class ExampleGatedNFTMinter extends BaseContract {
     ): TypedEventFilter<
       [string, string, boolean],
       { owner: string; operator: string; approved: boolean }
+    >;
+
+    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
+      chainID?: null,
+      nonce?: null,
+      blockExpiration?: null,
+      contractAddress?: null,
+      userAddress?: null,
+      functionCallData?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, string, string, string],
+      {
+        chainID: BigNumber;
+        nonce: BigNumber;
+        blockExpiration: BigNumber;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: string;
+      }
+    >;
+
+    NexeraIDSignatureVerified(
+      chainID?: null,
+      nonce?: null,
+      blockExpiration?: null,
+      contractAddress?: null,
+      userAddress?: null,
+      functionCallData?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, string, string, string],
+      {
+        chainID: BigNumber;
+        nonce: BigNumber;
+        blockExpiration: BigNumber;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: string;
+      }
     >;
 
     "OwnershipTransferred(address,address)"(
