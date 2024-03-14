@@ -29,6 +29,16 @@ contract BaseTxAuthDataVerifier {
     /// @dev Maps a user address to their current nonce
     mapping(address => Counters.Counter) public nonces;
 
+    /// @dev Event emitted when a signature is verified
+    event NexeraIDSignatureVerified(
+        uint256 chainID,
+        uint256 nonce,
+        uint256 blockExpiration,
+        address contractAddress,
+        address userAddress,
+        bytes functionCallData
+    );
+
     /// @notice Custom error for handling signature expiry
     error BlockExpired();
 
@@ -103,6 +113,15 @@ contract BaseTxAuthDataVerifier {
         if (ethSignedMessageHash.recover(_signature) != signer) {
             revert InvalidSignature();
         }
+
+        emit NexeraIDSignatureVerified(
+            block.chainid,
+            nonces[msg.sender].current(),
+            _blockExpiration,
+            address(this),
+            msg.sender,
+            argsWithSelector
+        );
 
         /// increment nonce to prevent replay atatcks
         nonces[msg.sender].increment();

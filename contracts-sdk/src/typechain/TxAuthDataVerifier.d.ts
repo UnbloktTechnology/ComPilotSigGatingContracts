@@ -89,11 +89,24 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
+    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type NexeraIDSignatureVerifiedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string, string, string] & {
+    chainID: BigNumber;
+    nonce: BigNumber;
+    blockExpiration: BigNumber;
+    contractAddress: string;
+    userAddress: string;
+    functionCallData: string;
+  }
+>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -247,6 +260,44 @@ export class TxAuthDataVerifier extends BaseContract {
   };
 
   filters: {
+    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
+      chainID?: null,
+      nonce?: null,
+      blockExpiration?: null,
+      contractAddress?: null,
+      userAddress?: null,
+      functionCallData?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, string, string, string],
+      {
+        chainID: BigNumber;
+        nonce: BigNumber;
+        blockExpiration: BigNumber;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: string;
+      }
+    >;
+
+    NexeraIDSignatureVerified(
+      chainID?: null,
+      nonce?: null,
+      blockExpiration?: null,
+      contractAddress?: null,
+      userAddress?: null,
+      functionCallData?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, string, string, string],
+      {
+        chainID: BigNumber;
+        nonce: BigNumber;
+        blockExpiration: BigNumber;
+        contractAddress: string;
+        userAddress: string;
+        functionCallData: string;
+      }
+    >;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null

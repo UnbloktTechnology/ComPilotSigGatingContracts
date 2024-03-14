@@ -68,7 +68,7 @@ export const signTxAuthDataLib = async (
     txAuthInput.functionName,
     [...txAuthInput.args, blockExpiration, "0x1234"]
   );
-  console.log("functionCallData", functionCallData);
+
   // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
   // = 128 characters
   const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
