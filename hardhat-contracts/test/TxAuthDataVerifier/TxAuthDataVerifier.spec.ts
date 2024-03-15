@@ -202,7 +202,6 @@ describe(`ExampleGatedNFTMinter`, function () {
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
-    const testByteString = "0x11";
 
     const txAuthInput = {
       contractAbi: ExampleMultipleInputsABI,
