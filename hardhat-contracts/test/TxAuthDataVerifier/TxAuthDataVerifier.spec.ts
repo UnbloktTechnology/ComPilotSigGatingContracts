@@ -158,7 +158,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
   });
-  it(`Should check that user can call the ExampleMultipleInputs with a signature from the signer - with lib function`, async () => {
+  it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
     const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
@@ -181,8 +181,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       txAuthWalletClient.extend(publicActions),
       txAuthInput
     );
-    console.log("signatureResponse.signature", signatureResponse.signature);
-
     // try to mint nft
     await exampleMultipleInputs
       .connect(testerSigner)
@@ -196,6 +194,40 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     const bytesVariable = await exampleMultipleInputs.getBytesVariable();
     expect(testByteString === bytesVariable).to.be.true;
+  });
+  it(`Should check that user can call the ExampleMultipleInputs - no input - with a signature from the signer - with lib function`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
+
+    // Build Signature
+    const testByteString = "0x11";
+
+    const txAuthInput = {
+      contractAbi: ExampleMultipleInputsABI,
+      contractAddress: exampleMultipleInputs.address as Address,
+      functionName: "updateVariablesNoInput",
+      args: [],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+    console.log("signatureResponse.signature", signatureResponse.signature);
+
+    // try to mint nft
+    await exampleMultipleInputs
+      .connect(testerSigner)
+      .updateVariablesNoInput(
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const intVar = await exampleMultipleInputs.getIntVariable();
+    expect(1 == Number(intVar)).to.be.true;
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with a wrong signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
