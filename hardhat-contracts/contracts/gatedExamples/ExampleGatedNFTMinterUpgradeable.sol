@@ -59,7 +59,7 @@ contract ExampleGatedNFTMinterUpgradeable is
         return mintNFT(recipient);
     }
 
-    // These overrides are necessary because both Context and ContextUpgradeable implement these
+    // These overrides are necessary because both TxAuthDataVerifierUpgradeable and ContextUpgradeable implement these
     function _msgSender()
         internal
         view
