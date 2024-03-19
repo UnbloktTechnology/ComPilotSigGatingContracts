@@ -58,4 +58,32 @@ contract ExampleGatedNFTMinterUpgradeable is
     ) public requireTxDataAuth(_blockExpiration, _signature) returns (uint256) {
         return mintNFT(recipient);
     }
+
+    // These overrides are necessary because both Context and ContextUpgradeable implement these
+    function _msgSender()
+        internal
+        view
+        override(TxAuthDataVerifierUpgradeable, ContextUpgradeable)
+        returns (address)
+    {
+        return msg.sender;
+    }
+
+    function _msgData()
+        internal
+        pure
+        override(TxAuthDataVerifierUpgradeable, ContextUpgradeable)
+        returns (bytes calldata)
+    {
+        return msg.data;
+    }
+
+    function _contextSuffixLength()
+        internal
+        pure
+        override(TxAuthDataVerifierUpgradeable, ContextUpgradeable)
+        returns (uint256)
+    {
+        return 0;
+    }
 }
