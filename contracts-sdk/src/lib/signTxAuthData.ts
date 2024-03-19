@@ -1,10 +1,4 @@
-import {
-  encodeFunctionData,
-  encodePacked,
-  getContract,
-  keccak256,
-  numberToHex,
-} from "viem";
+import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
 import type { Abi } from "viem";
 import { TxAuthData, TxAuthInput, WalletClientExtended } from "./schemas";
 
@@ -52,7 +46,7 @@ export async function signTxAuthDataViem(
 
 export const signTxAuthDataLib = async (
   txAuthWalletClient: WalletClientExtended,
-  txAuthInput: TxAuthInput & { blockExpiration?: number }
+  txAuthInput: TxAuthInput
 ) => {
   // Build Signature
   const blockExpiration =
@@ -64,7 +58,7 @@ export const signTxAuthDataLib = async (
 
   // encode function data with a fake value for the signature
   const functionCallData = generateFunctionCallDataViem(
-    txAuthInput.contractAbi as Abi,
+    txAuthInput.contractAbi as unknown as Abi,
     txAuthInput.functionName,
     [...txAuthInput.args, blockExpiration, "0x1234"]
   );
@@ -76,7 +70,7 @@ export const signTxAuthDataLib = async (
   // instantiate contract to get nonce
   const contract = getContract({
     address: txAuthInput.contractAddress,
-    abi: txAuthInput.contractAbi as Abi,
+    abi: txAuthInput.contractAbi as unknown as Abi,
     publicClient: txAuthWalletClient,
   });
 

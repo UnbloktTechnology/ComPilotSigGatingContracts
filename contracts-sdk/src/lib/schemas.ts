@@ -75,10 +75,11 @@ export const TxAuthData = z.object({
 export type TxAuthData = z.infer<typeof TxAuthData>;
 
 export const TxAuthInput = z.object({
-  contractAbi: z.unknown(),
+  contractAbi: z.array(z.record(z.unknown())),
   contractAddress: AddressSchema,
   functionName: z.string(),
   args: z.array(z.unknown()),
   userAddress: AddressSchema,
+  blockExpiration: z.number().int().optional(),
 });
 export type TxAuthInput = z.infer<typeof TxAuthInput>;
