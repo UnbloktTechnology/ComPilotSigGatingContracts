@@ -15,7 +15,7 @@ import {
   generateFunctionCallDataViem,
 } from "../utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
-import { publicActions } from "viem";
+import { getContract, publicActions } from "viem";
 import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
 
@@ -131,11 +131,63 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
 
     const txAuthInput = {
-      contractAbi: ExampleGatedNFTMinterABI,
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
       contractAddress: exampleGatedNFTMinter.address as Address,
       functionName: "mintNFTGated",
       args: [recipient],
       userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx = await exampleGatedNFTMinter
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const transactionReceipt = await tx.wait();
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
+  });
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function - custom nonce and chainId`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+
+    // Build Signature
+    const recipient = tester;
+
+    // here the idea is to provide the chainId and nonce, as it would be used by devs who want to test our api with a local testnet
+    const contract = getContract({
+      address: exampleGatedNFTMinter.address as Address,
+      abi: ExampleGatedNFTMinterABI,
+      publicClient: txAuthWalletClient,
+    });
+    const txAuthInput = {
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
+      contractAddress: exampleGatedNFTMinter.address as Address,
+      functionName: "mintNFTGated",
+      args: [recipient],
+      userAddress: tester as Address,
+      chainID: await txAuthWalletClient.getChainId(),
+      nonce: Number(await contract.read.getUserNonce([tester as Address])),
     };
 
     const signatureResponse = await signTxAuthDataLib(
@@ -178,7 +230,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const testByteString = "0x224455";
 
     const txAuthInput = {
-      contractAbi: ExampleMultipleInputsABI,
+      contractAbi: Array.from(ExampleMultipleInputsABI),
       contractAddress: exampleMultipleInputs.address as Address,
       functionName: "updateVariables",
       args: [testNumber, testAddress, testByteString],
