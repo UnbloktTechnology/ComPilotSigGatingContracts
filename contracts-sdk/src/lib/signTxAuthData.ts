@@ -69,17 +69,17 @@ export const signTxAuthDataLib = async (
 
   // Get Block Expiration
   const blockExpiration =
-    txAuthInput.blockExpiration ||
+    txAuthInput.blockExpiration ??
     Number((await txAuthWalletClient.getBlock({ blockTag: "latest" })).number) +
       SIGNATURE_VALIDITY_DURATION;
 
   // Get chainId
   const chainID =
-    txAuthInput.chainID || (await txAuthWalletClient.getChainId());
+    txAuthInput.chainID ?? (await txAuthWalletClient.getChainId());
 
   // Get Nonce (better provide the nonce for local testing)
   const nonce =
-    txAuthInput.nonce ||
+    txAuthInput.nonce ??
     (await getNonce(
       txAuthInput.contractAddress,
       txAuthInput.contractAbi as unknown as Abi,
