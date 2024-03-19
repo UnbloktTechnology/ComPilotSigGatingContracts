@@ -80,6 +80,9 @@ export const TxAuthInput = z.object({
   functionName: z.string(),
   args: z.array(z.unknown()),
   userAddress: AddressSchema,
+  // these optional inputs can be useful for local dev for example
   blockExpiration: z.number().int().optional(),
+  chainID: z.number().optional(),
+  nonce: z.number().optional(),
 });
 export type TxAuthInput = z.infer<typeof TxAuthInput>;

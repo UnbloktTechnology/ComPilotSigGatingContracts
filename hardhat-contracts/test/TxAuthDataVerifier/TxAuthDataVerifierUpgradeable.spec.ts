@@ -118,7 +118,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     const recipient = tester;
 
     const txAuthInput = {
-      contractAbi: ExampleGatedNFTMinterUpgradeableABI,
+      contractAbi: Array.from(ExampleGatedNFTMinterUpgradeableABI),
       contractAddress: exampleGatedNFTMinterUpgradeable.address as Address,
       functionName: "mintNFTGated",
       args: [recipient],

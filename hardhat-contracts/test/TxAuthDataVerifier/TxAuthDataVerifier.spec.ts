@@ -131,7 +131,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
 
     const txAuthInput = {
-      contractAbi: ExampleGatedNFTMinterABI,
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
       contractAddress: exampleGatedNFTMinter.address as Address,
       functionName: "mintNFTGated",
       args: [recipient],
@@ -178,7 +178,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const testByteString = "0x224455";
 
     const txAuthInput = {
-      contractAbi: ExampleMultipleInputsABI,
+      contractAbi: Array.from(ExampleMultipleInputsABI),
       contractAddress: exampleMultipleInputs.address as Address,
       functionName: "updateVariables",
       args: [testNumber, testAddress, testByteString],
