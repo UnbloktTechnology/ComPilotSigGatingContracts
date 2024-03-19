@@ -3,15 +3,16 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
 /// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
-contract BaseTxAuthDataVerifier {
+contract BaseTxAuthDataVerifier is Context {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
 
-    /// @notice These are used to decompose msg.data
+    /// @notice These are used to decompose _msgData()
     /// @notice This is the length for the expected signature
     uint256 private constant SIGNATURE_LENGTH = 65;
     /// @notice This completes the signature into a multiple of 32
@@ -82,13 +83,13 @@ contract BaseTxAuthDataVerifier {
     }
 
     /// @notice Modifier to validate transaction data in an optimized manner
-    /// @dev Extracts args, blockExpiration, and signature from `msg.data`
+    /// @dev Extracts args, blockExpiration, and signature from `_msgData()`
     modifier requireTxDataAuth(
         uint256 _blockExpiration,
         bytes calldata _signature
     ) {
-        /// Decompose msg.data into the different parts we want
-        bytes calldata argsWithSelector = msg.data[:msg.data.length -
+        /// Decompose _msgData() into the different parts we want
+        bytes calldata argsWithSelector = _msgData()[:_msgData().length -
             SIGNATURE_OFFSET];
 
         /// Check signature hasn't expired
@@ -99,9 +100,9 @@ contract BaseTxAuthDataVerifier {
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: argsWithSelector,
             contractAddress: address(this),
-            userAddress: msg.sender,
+            userAddress: _msgSender(),
             chainID: block.chainid,
-            nonce: nonces[msg.sender].current(),
+            nonce: nonces[_msgSender()].current(),
             blockExpiration: _blockExpiration
         });
 
@@ -116,15 +117,15 @@ contract BaseTxAuthDataVerifier {
 
         emit NexeraIDSignatureVerified(
             block.chainid,
-            nonces[msg.sender].current(),
+            nonces[_msgSender()].current(),
             _blockExpiration,
             address(this),
-            msg.sender,
+            _msgSender(),
             argsWithSelector
         );
 
         /// increment nonce to prevent replay atatcks
-        nonces[msg.sender].increment();
+        nonces[_msgSender()].increment();
 
         _;
     }
