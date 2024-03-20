@@ -34,34 +34,18 @@ contract TxAuthDataVerifierUpgradeable is
         _setSigner(_signer);
     }
 
-    // These overrides are necessary because both Context and ContextUpgradeable implement these
-    function _msgSender()
-        internal
-        view
-        virtual
-        override(Context, ContextUpgradeable)
-        returns (address)
-    {
-        return msg.sender;
-    }
-
-    function _msgData()
-        internal
-        pure
-        virtual
-        override(Context, ContextUpgradeable)
-        returns (bytes calldata)
-    {
-        return msg.data;
-    }
-
-    function _contextSuffixLength()
-        internal
-        pure
-        virtual
-        override(Context, ContextUpgradeable)
-        returns (uint256)
-    {
-        return 0;
+    // /// @notice Modifier to validate transaction data in an optimized manner
+    // /// @dev Extracts args, blockExpiration, and signature from `_msgData()`
+    modifier requireTxDataAuth(
+        uint256 _blockExpiration,
+        bytes calldata _signature
+    ) {
+        _verifyTxAuthData(
+            _msgData(),
+            _msgSender(),
+            _blockExpiration,
+            _signature
+        );
+        _;
     }
 }

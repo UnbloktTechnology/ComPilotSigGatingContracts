@@ -213,7 +213,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
           .mintNFTGated(recipient, blockExpiration, signature);
       } catch (e: unknown) {
         expect((e as Error).toString()).to.eq(
-          `TransactionExecutionError: VM Exception while processing transaction: revert with unrecognized return data or custom error`
+          `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
         );
         hasReverted = true;
       }
@@ -262,7 +262,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
         .mintNFTGated(recipient, blockExpiration, signature);
     } catch (e: unknown) {
       expect((e as Error).toString()).to.eq(
-        `TransactionExecutionError: VM Exception while processing transaction: revert with unrecognized return data or custom error`
+        `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
       );
       hasReverted = true;
     }
