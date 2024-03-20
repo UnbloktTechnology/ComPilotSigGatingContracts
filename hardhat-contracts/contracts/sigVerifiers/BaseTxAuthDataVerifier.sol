@@ -2,14 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
 /// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
 contract BaseTxAuthDataVerifier {
     using ECDSA for bytes32;
-    using Counters for Counters.Counter;
 
     /// @notice These are used to decompose msgData
     /// @notice This is the length for the expected signature
@@ -27,7 +25,7 @@ contract BaseTxAuthDataVerifier {
 
     /// @notice Mapping to track the nonces of users to prevent replay attacks
     /// @dev Maps a user address to their current nonce
-    mapping(address => Counters.Counter) public nonces; //TODO: user integrers instead
+    mapping(address => uint256) public nonces;
 
     /// @dev Event emitted when a signature is verified
     event NexeraIDSignatureVerified(
@@ -78,7 +76,7 @@ contract BaseTxAuthDataVerifier {
     /// @param user The address of the user
     /// @return The current nonce of the user
     function getUserNonce(address user) public view returns (uint256) {
-        return nonces[user].current();
+        return nonces[user];
     }
 
     /**
@@ -119,7 +117,7 @@ contract BaseTxAuthDataVerifier {
             contractAddress: address(this),
             userAddress: userAddress,
             chainID: block.chainid,
-            nonce: nonces[userAddress].current(),
+            nonce: nonces[userAddress],
             blockExpiration: blockExpiration
         });
 
@@ -134,7 +132,7 @@ contract BaseTxAuthDataVerifier {
 
         emit NexeraIDSignatureVerified(
             block.chainid,
-            nonces[userAddress].current(),
+            nonces[userAddress],
             blockExpiration,
             address(this),
             userAddress,
@@ -142,7 +140,7 @@ contract BaseTxAuthDataVerifier {
         );
 
         /// increment nonce to prevent replay atatcks
-        nonces[userAddress].increment();
+        nonces[userAddress] += 1;
 
         return true;
     }
