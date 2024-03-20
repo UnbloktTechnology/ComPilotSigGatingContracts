@@ -327,10 +327,7 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    nonces(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { _value: BigNumber }>;
+    nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 

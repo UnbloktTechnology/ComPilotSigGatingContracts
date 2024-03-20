@@ -203,7 +203,7 @@ export const ExampleMultipleInputsABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "_value",
+        name: "",
         type: "uint256",
       },
     ],

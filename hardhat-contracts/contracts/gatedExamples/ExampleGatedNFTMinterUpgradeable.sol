@@ -3,14 +3,21 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../sigVerifiers/TxAuthDataVerifierUpgradeable.sol"; // Ensure this path matches your file structure
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-/// @title Example Gated NFT Minter - Upgradeable
-/// @notice This contract demonstrates an NFT minting process gated by off-chain signature verification.
-/// This version is OwnableUpgradeable, making it compatible with OZ'ds proxy pattern
-/// @dev Inherits from OpenZeppelin's ERC721 for NFT functionality and a custom TxAuthDataVerifier for signature verification.
+/**
+ * @title Example Gated NFT Minter (Upgradeable)
+ * @dev Upgradeable NFT minting contract with gated access based on off-chain signature verification.
+ * This contract extends ERC721Upgradeable for NFT functionality, TxAuthDataVerifierUpgradeable for signature verification,
+ * and OwnableUpgradeable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ *
+ * The contract is designed to be used with a proxy for upgradeability.
+ */
 contract ExampleGatedNFTMinterUpgradeable is
     ERC721Upgradeable,
-    TxAuthDataVerifierUpgradeable
+    TxAuthDataVerifierUpgradeable,
+    OwnableUpgradeable
 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -24,7 +31,15 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @param signerAddress The address allowed to sign transaction data for minting authorization.
     function initialize(address signerAddress) public initializer {
         __ERC721_init("MyExampleGatedNFTMinterUpgradeable", "GNFTU");
+        __Ownable_init();
         __TxAuthDataVerifierUpgradeable_init(signerAddress);
+    }
+
+    /// @notice Sets a new signer address
+    /// @dev Can only be called by the current owner
+    /// @param _signer The address of the new signer
+    function setSigner(address _signer) public onlyOwner {
+        _setSigner(_signer);
     }
 
     /// @notice Retrieves the current value of the token ID counter.
