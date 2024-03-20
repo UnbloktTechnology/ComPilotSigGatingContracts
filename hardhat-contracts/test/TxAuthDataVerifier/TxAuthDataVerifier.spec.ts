@@ -165,6 +165,39 @@ describe(`ExampleGatedNFTMinter`, function () {
       .true;
     expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
       .to.be.true;
+
+    // Do it a second time to make sure nonce system works
+
+    // Build Signature
+
+    const signatureResponse2 = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx2 = await exampleGatedNFTMinter
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse2.blockExpiration,
+        signatureResponse2.signature
+      );
+
+    const transactionReceipt2 = await tx2.wait();
+
+    // Check new minted token id
+    const tokenId2 = Number(transactionReceipt2.events?.[1].args?.tokenId);
+    expect(tokenId2 === 2).to.be.true;
+    const tokenOwner2 = await exampleGatedNFTMinter.ownerOf(tokenId2);
+    expect(tokenOwner2 === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt2.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(
+      transactionReceipt2.events?.[0].event === "NexeraIDSignatureVerified"
+    ).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function - custom nonce and chainId`, async () => {
     const { tester } = await getNamedAccounts();
@@ -264,7 +297,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Build Signature
 
     const txAuthInput = {
-      contractAbi: ExampleMultipleInputsABI,
+      contractAbi: Array.from(ExampleMultipleInputsABI),
       contractAddress: exampleMultipleInputs.address as Address,
       functionName: "updateVariablesNoInput",
       args: [],

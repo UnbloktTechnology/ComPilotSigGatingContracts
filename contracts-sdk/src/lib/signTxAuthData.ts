@@ -49,17 +49,18 @@ export async function signTxAuthDataViem(
   return signature;
 }
 export const getNonce = async (
-  address: Address,
+  contractAddress: Address,
+  userAddress: Address,
   abi: Abi,
   client: WalletClientExtended
 ) => {
   // instantiate contract to get nonce
   const contract = getContract({
-    address: address,
+    address: contractAddress,
     abi: abi,
     publicClient: client,
   });
-  return Number(await contract.read.getUserNonce([address]));
+  return Number(await contract.read.getUserNonce([userAddress]));
 };
 export const signTxAuthDataLib = async (
   txAuthWalletClient: WalletClientExtended,
@@ -82,6 +83,7 @@ export const signTxAuthDataLib = async (
     txAuthInput.nonce ??
     (await getNonce(
       txAuthInput.contractAddress,
+      txAuthInput.userAddress,
       txAuthInput.contractAbi as unknown as Abi,
       txAuthWalletClient
     ));
