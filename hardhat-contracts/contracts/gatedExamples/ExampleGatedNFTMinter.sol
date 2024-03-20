@@ -6,9 +6,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
 
-/// @title Example Gated NFT Minter
-/// @notice This contract demonstrates an NFT minting process gated by off-chain signature verification.
-/// @dev Inherits from OpenZeppelin's ERC721 for NFT functionality and a custom TxAuthDataVerifier for signature verification.
+/**
+ * @title Example Gated NFT Minter
+ * @dev NFT minting contract with gated access based on off-chain signature verification.
+ * This contract extends ERC721 for NFT functionality, TxAuthDataVerifier for signature verification,
+ * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ */
 contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;

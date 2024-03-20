@@ -6,10 +6,14 @@ import "../sigVerifiers/TxAuthDataVerifierUpgradeable.sol"; // Ensure this path 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-/// @title Example Gated NFT Minter - Upgradeable
-/// @notice This contract demonstrates an NFT minting process gated by off-chain signature verification.
-/// This version is OwnableUpgradeable, making it compatible with OZ'ds proxy pattern
-/// @dev Inherits from OpenZeppelin's ERC721 for NFT functionality and a custom TxAuthDataVerifier for signature verification.
+/**
+ * @title Example Gated NFT Minter (Upgradeable)
+ * @dev Upgradeable NFT minting contract with gated access based on off-chain signature verification.
+ * This contract extends ERC721Upgradeable for NFT functionality, TxAuthDataVerifierUpgradeable for signature verification,
+ * and OwnableUpgradeable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ *
+ * The contract is designed to be used with a proxy for upgradeability.
+ */
 contract ExampleGatedNFTMinterUpgradeable is
     ERC721Upgradeable,
     TxAuthDataVerifierUpgradeable,

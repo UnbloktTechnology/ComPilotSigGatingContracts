@@ -387,7 +387,7 @@ export const ExampleGatedNFTMinterABI = [
     outputs: [
       {
         internalType: "uint256",
-        name: "_value",
+        name: "",
         type: "uint256",
       },
     ],

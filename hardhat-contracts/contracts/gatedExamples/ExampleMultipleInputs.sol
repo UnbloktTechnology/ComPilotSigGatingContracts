@@ -2,12 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
 
 /// @title Example Multiple Inputs Contract
 /// @dev This contract demonstrates a contract inheriting from TxAuthDataVerifier to update variables with signature verification.
 /// @notice This contract allows updating certain variables only after verifying the transaction authenticity with a signature.
-contract ExampleMultipleInputs is TxAuthDataVerifier {
+contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
     uint256 intVariable;
     address addressVariable;
     bytes bytesVariable;
@@ -15,6 +16,13 @@ contract ExampleMultipleInputs is TxAuthDataVerifier {
     /// @dev Initializes the contract by setting a signer address for the TxAuthDataVerifier.
     /// @param signerAddress The address used for transaction data signature verification.
     constructor(address signerAddress) TxAuthDataVerifier(signerAddress) {}
+
+    /// @notice Sets a new signer address
+    /// @dev Can only be called by the current owner
+    /// @param _signer The address of the new signer
+    function setSigner(address _signer) public onlyOwner {
+        _setSigner(_signer);
+    }
 
     /// @notice Returns the current value of the bytes variable.
     /// @return The current value of the bytes variable.

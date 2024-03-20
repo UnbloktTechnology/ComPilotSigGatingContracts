@@ -3,9 +3,17 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-/// @title A contract for verifying transaction data authorized off-cahin with a signature
-/// @notice This contract allows transactions to be signed off-chain and then verified on-chain using the signer's signature.
-/// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
+/**
+ * @title Base Transaction Authentication Data Verifier
+ * @dev Provides mechanisms for verifying transaction authentication data, including signature verification and nonce management.
+ * This contract is designed to be extended by other contracts requiring transaction authentication based on digital signatures.
+ * It includes functionality for:
+ * - Verifying transaction signatures against a specified signer address.
+ * - Ensuring transactions have not expired based on their block expiration.
+ * - Incrementing nonces to prevent replay attacks.
+ *
+ * The contract utilizes ECDSA cryptography for signature verification.
+ */
 contract BaseTxAuthDataVerifier {
     using ECDSA for bytes32;
 
