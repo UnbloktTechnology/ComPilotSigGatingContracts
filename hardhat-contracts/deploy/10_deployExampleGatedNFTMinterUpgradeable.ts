@@ -2,7 +2,7 @@ import { getNamedAccounts } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.1";
+const version = "0.2.0";
 const contractName = "ExampleGatedNFTMinterUpgradeable";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -30,7 +30,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
         },
       },
     },
-    nonce: "pending",
+    //nonce: "pending",
     waitConfirmations: 1,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
