@@ -81,6 +81,24 @@ contract BaseTxAuthDataVerifier {
         return nonces[user].current();
     }
 
+    /**
+     * @dev Verifies the authenticity and validity of a transaction's authorization data.
+     * This function checks if the transaction signature is valid, has not expired, and is signed by the correct user.
+     * It also ensures that the transaction has not been replayed by checking and incrementing the nonce.
+     * Emits a {NexeraIDSignatureVerified} event upon successful verification.
+     *
+     * @param msgData The full calldata including the function selector and arguments.
+     * @param userAddress The address of the user who signed the transaction.
+     * @param blockExpiration The block number until which the transaction is considered valid.
+     * @param _signature The signature of the user authorizing the transaction.
+     * @return A boolean value indicating whether the transaction was successfully verified.
+     *
+     * Requirements:
+     * - The current block number must be less than `blockExpiration`.
+     * - The signature must be valid and correspond to `userAddress`.
+     *
+     * Emits a {NexeraIDSignatureVerified} event.
+     */
     function _verifyTxAuthData(
         bytes calldata msgData,
         address userAddress,
@@ -128,54 +146,6 @@ contract BaseTxAuthDataVerifier {
 
         return true;
     }
-
-    // /// @notice Modifier to validate transaction data in an optimized manner
-    // /// @dev Extracts args, blockExpiration, and signature from `_msgData()`
-    // modifier requireTxDataAuth(
-    //     uint256 _blockExpiration,
-    //     bytes calldata _signature
-    // ) {
-    //     /// Decompose _msgData() into the different parts we want
-    //     bytes calldata argsWithSelector = _msgData()[:_msgData().length -
-    //         SIGNATURE_OFFSET];
-
-    //     /// Check signature hasn't expired
-    //     if (block.number >= _blockExpiration) {
-    //         revert BlockExpired();
-    //     }
-
-    //     TxAuthData memory txAuthData = TxAuthData({
-    //         functionCallData: argsWithSelector,
-    //         contractAddress: address(this),
-    //         userAddress: _msgSender(),
-    //         chainID: block.chainid,
-    //         nonce: nonces[_msgSender()].current(),
-    //         blockExpiration: _blockExpiration
-    //     });
-
-    //     /// Get Hash
-    //     bytes32 messageHash = getMessageHash(txAuthData);
-    //     bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
-
-    //     /// Verify Signature
-    //     if (ethSignedMessageHash.recover(_signature) != signer) {
-    //         revert InvalidSignature();
-    //     }
-
-    //     emit NexeraIDSignatureVerified(
-    //         block.chainid,
-    //         nonces[_msgSender()].current(),
-    //         _blockExpiration,
-    //         address(this),
-    //         _msgSender(),
-    //         argsWithSelector
-    //     );
-
-    //     /// increment nonce to prevent replay atatcks
-    //     nonces[_msgSender()].increment();
-
-    //     _;
-    // }
 
     /// @notice Generates a hash of the given `TxAuthData`
     /// @param _txAuthData The transaction authentication data to hash
