@@ -27,7 +27,7 @@ contract BaseTxAuthDataVerifier {
 
     /// @notice Mapping to track the nonces of users to prevent replay attacks
     /// @dev Maps a user address to their current nonce
-    mapping(address => Counters.Counter) public nonces;
+    mapping(address => Counters.Counter) public nonces; //TODO: user integrers instead
 
     /// @dev Event emitted when a signature is verified
     event NexeraIDSignatureVerified(
