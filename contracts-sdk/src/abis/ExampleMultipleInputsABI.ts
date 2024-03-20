@@ -96,6 +96,19 @@ export const ExampleMultipleInputsABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getIntVariable",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         components: [
@@ -272,6 +285,24 @@ export const ExampleMultipleInputsABI = [
       },
     ],
     name: "updateVariables",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_blockExpiration",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "_signature",
+        type: "bytes",
+      },
+    ],
+    name: "updateVariablesNoInput",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

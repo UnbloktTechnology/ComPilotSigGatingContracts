@@ -22,6 +22,12 @@ contract ExampleMultipleInputs is TxAuthDataVerifier {
         return bytesVariable;
     }
 
+    /// @notice Returns the current value of the int variable.
+    /// @return The current value of the int variable.
+    function getIntVariable() public view returns (uint256) {
+        return intVariable;
+    }
+
     /// @notice Updates the contract variables after verifying the transaction signature.
     /// @dev Requires the transaction to be authenticated via `requireTxDataAuth`.
     /// @param _intVariable The new value for the integer variable.
@@ -39,5 +45,14 @@ contract ExampleMultipleInputs is TxAuthDataVerifier {
         intVariable = _intVariable;
         addressVariable = _addressVariable;
         bytesVariable = _bytesVariable;
+    }
+
+    function updateVariablesNoInput(
+        uint256 _blockExpiration,
+        bytes calldata _signature
+    ) public requireTxDataAuth(_blockExpiration, _signature) {
+        intVariable = 1;
+        addressVariable = address(this);
+        bytesVariable = "0x11";
     }
 }
