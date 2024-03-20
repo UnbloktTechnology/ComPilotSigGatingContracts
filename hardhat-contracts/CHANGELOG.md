@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.1.2...@nexeraprotocol/nexera-id-contracts@1.2.0) (2024-03-20)
+
+
+### Features
+
+* implement  _msgSender for txauthdatasignature ([#33](https://github.com/NexeraProtocol/NexeraIDContracts/issues/33)) ([d03296e](https://github.com/NexeraProtocol/NexeraIDContracts/commit/d03296e61711b52ad0b296c0fc3ad4a3428c3725))
+
+
+
+
+
 ## [1.1.2](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.1.1...@nexeraprotocol/nexera-id-contracts@1.1.2) (2024-03-19)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
