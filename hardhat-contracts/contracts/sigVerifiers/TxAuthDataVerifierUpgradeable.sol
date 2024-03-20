@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {OwnableUpgradeable, ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+
 import {BaseTxAuthDataVerifier} from "./BaseTxAuthDataVerifier.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
@@ -30,5 +32,20 @@ contract TxAuthDataVerifierUpgradeable is
     /// @param _signer The address of the new signer
     function setSigner(address _signer) public onlyOwner {
         _setSigner(_signer);
+    }
+
+    // /// @notice Modifier to validate transaction data in an optimized manner
+    // /// @dev Extracts args, blockExpiration, and signature from `_msgData()`
+    modifier requireTxDataAuth(
+        uint256 _blockExpiration,
+        bytes calldata _signature
+    ) {
+        _verifyTxAuthData(
+            _msgData(),
+            _msgSender(),
+            _blockExpiration,
+            _signature
+        );
+        _;
     }
 }

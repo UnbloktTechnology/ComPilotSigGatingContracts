@@ -11,7 +11,7 @@ contract BaseTxAuthDataVerifier {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
 
-    /// @notice These are used to decompose msg.data
+    /// @notice These are used to decompose msgData
     /// @notice This is the length for the expected signature
     uint256 private constant SIGNATURE_LENGTH = 65;
     /// @notice This completes the signature into a multiple of 32
@@ -81,28 +81,46 @@ contract BaseTxAuthDataVerifier {
         return nonces[user].current();
     }
 
-    /// @notice Modifier to validate transaction data in an optimized manner
-    /// @dev Extracts args, blockExpiration, and signature from `msg.data`
-    modifier requireTxDataAuth(
-        uint256 _blockExpiration,
+    /**
+     * @dev Verifies the authenticity and validity of a transaction's authorization data.
+     * This function checks if the transaction signature is valid, has not expired, and is signed by the correct user.
+     * It also ensures that the transaction has not been replayed by checking and incrementing the nonce.
+     * Emits a {NexeraIDSignatureVerified} event upon successful verification.
+     *
+     * @param msgData The full calldata including the function selector and arguments.
+     * @param userAddress The address of the user who signed the transaction.
+     * @param blockExpiration The block number until which the transaction is considered valid.
+     * @param _signature The signature of the user authorizing the transaction.
+     * @return A boolean value indicating whether the transaction was successfully verified.
+     *
+     * Requirements:
+     * - The current block number must be less than `blockExpiration`.
+     * - The signature must be valid and correspond to `userAddress`.
+     *
+     * Emits a {NexeraIDSignatureVerified} event.
+     */
+    function _verifyTxAuthData(
+        bytes calldata msgData,
+        address userAddress,
+        uint256 blockExpiration,
         bytes calldata _signature
-    ) {
-        /// Decompose msg.data into the different parts we want
-        bytes calldata argsWithSelector = msg.data[:msg.data.length -
+    ) internal returns (bool) {
+        /// Decompose msgData into the different parts we want
+        bytes calldata argsWithSelector = msgData[:msgData.length -
             SIGNATURE_OFFSET];
 
         /// Check signature hasn't expired
-        if (block.number >= _blockExpiration) {
+        if (block.number >= blockExpiration) {
             revert BlockExpired();
         }
 
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: argsWithSelector,
             contractAddress: address(this),
-            userAddress: msg.sender,
+            userAddress: userAddress,
             chainID: block.chainid,
-            nonce: nonces[msg.sender].current(),
-            blockExpiration: _blockExpiration
+            nonce: nonces[userAddress].current(),
+            blockExpiration: blockExpiration
         });
 
         /// Get Hash
@@ -116,17 +134,17 @@ contract BaseTxAuthDataVerifier {
 
         emit NexeraIDSignatureVerified(
             block.chainid,
-            nonces[msg.sender].current(),
-            _blockExpiration,
+            nonces[userAddress].current(),
+            blockExpiration,
             address(this),
-            msg.sender,
+            userAddress,
             argsWithSelector
         );
 
         /// increment nonce to prevent replay atatcks
-        nonces[msg.sender].increment();
+        nonces[userAddress].increment();
 
-        _;
+        return true;
     }
 
     /// @notice Generates a hash of the given `TxAuthData`
