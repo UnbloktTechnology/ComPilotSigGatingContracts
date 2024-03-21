@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../sigVerifiers/TxAuthDataVerifierUpgradeable.sol"; // Ensure this path matches your file structure
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title Example Gated NFT Minter (Upgradeable)
@@ -19,8 +18,7 @@ contract ExampleGatedNFTMinterUpgradeable is
     TxAuthDataVerifierUpgradeable,
     OwnableUpgradeable
 {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+    uint256 private _tokenIds;
 
     /// @notice constructor conform OZ upgradable pattern
     constructor() {
@@ -46,22 +44,22 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
     function getLastTokenId() public view returns (uint256) {
-        return _tokenIds.current();
+        return _tokenIds;
     }
 
     /// @dev Internal function to mint a new NFT to a specified recipient.
     /// @param recipient The address that will receive the newly minted NFT.
     /// @return newItemId The token ID of the newly minted NFT.
     function mintNFT(address recipient) internal returns (uint256) {
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        _tokenIds += 1;
+        uint256 newItemId = _tokenIds;
         _mint(recipient, newItemId);
 
         return newItemId;
     }
 
     /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
-    /// @dev Leverages the `requireTxDataAuthOpti` modifier for efficient signature verification.
+    /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
     /// @param recipient The address to which the NFT will be minted.
     /// @param _blockExpiration The block number after which the request is considered expired.
     /// @param _signature The signature provided for verification.

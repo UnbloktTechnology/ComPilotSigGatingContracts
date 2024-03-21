@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title A contract for verifying transaction data authorized off-cahin with a signature
@@ -12,7 +12,6 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 /// @dev Utilizes ECDSA for signature recovery and Counters to track nonces
 contract TxAuthDataVerifierV0 is Ownable {
     using ECDSA for bytes32;
-    using Counters for Counters.Counter;
 
     /// @notice These are used to decompose msg.data
     uint256 private constant SIGNATURE_LENGTH = 65;
@@ -25,7 +24,7 @@ contract TxAuthDataVerifierV0 is Ownable {
 
     /// @notice Mapping to track the nonces of users to prevent replay attacks
     /// @dev Maps a user address to their current nonce
-    mapping(address => Counters.Counter) public nonces;
+    mapping(address => uint256) public nonces;
 
     /// @notice Custom error for handling signature expiry
     error BlockExpired();
@@ -66,7 +65,7 @@ contract TxAuthDataVerifierV0 is Ownable {
     /// @param user The address of the user
     /// @return The current nonce of the user
     function getUserNonce(address user) public view returns (uint256) {
-        return nonces[user].current();
+        return nonces[user];
     }
 
     /// @notice Validates the transaction data against the provided signature
@@ -89,7 +88,7 @@ contract TxAuthDataVerifierV0 is Ownable {
             contractAddress: address(this),
             userAddress: msg.sender,
             chainID: block.chainid,
-            nonce: nonces[msg.sender].current(),
+            nonce: nonces[msg.sender],
             blockExpiration: _blockExpiration
         });
 
@@ -102,8 +101,8 @@ contract TxAuthDataVerifierV0 is Ownable {
             revert InvalidSignature();
         }
 
-        /// increment nonce to prevent replay atatcks
-        nonces[msg.sender].increment();
+        /// increment nonce to prevent replay attacks
+        nonces[msg.sender] += 1;
     }
 
     /// @notice Modifier to validate transaction data in an optimized manner
@@ -134,7 +133,7 @@ contract TxAuthDataVerifierV0 is Ownable {
             contractAddress: address(this),
             userAddress: msg.sender,
             chainID: block.chainid,
-            nonce: nonces[msg.sender].current(),
+            nonce: nonces[msg.sender],
             blockExpiration: _blockExpiration
         });
 
@@ -147,8 +146,8 @@ contract TxAuthDataVerifierV0 is Ownable {
             revert InvalidSignature();
         }
 
-        /// increment nonce to prevent replay atatcks
-        nonces[msg.sender].increment();
+        /// increment nonce to prevent replay attacks
+        nonces[msg.sender] += 1;
 
         _;
     }

@@ -22,7 +22,7 @@ contract BaseTxAuthDataVerifier {
     uint256 private constant SIGNATURE_LENGTH = 65;
     /// @notice This completes the signature into a multiple of 32
     uint256 private constant SIGNATURE_SUFFIX = 31;
-    /// @notice The complete length of the signature related data includes a 32 length field indicating the lgnth,
+    /// @notice The complete length of the signature related data includes a 32 length field indicating the length,
     // as well as the signature itself completed with 31 zeros to be a multiple of 32
     uint256 private constant SIGNATURE_OFFSET =
         SIGNATURE_LENGTH + BYTES_32_LENGTH + SIGNATURE_SUFFIX;
@@ -109,7 +109,7 @@ contract BaseTxAuthDataVerifier {
         bytes calldata msgData,
         address userAddress,
         uint256 blockExpiration,
-        bytes calldata _signature
+        bytes memory _signature
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
         bytes calldata argsWithSelector = msgData[:msgData.length -
@@ -131,7 +131,7 @@ contract BaseTxAuthDataVerifier {
 
         /// Get Hash
         bytes32 messageHash = getMessageHash(txAuthData);
-        bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
+        bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
         /// Verify Signature
         if (ethSignedMessageHash.recover(_signature) != signer) {
@@ -147,7 +147,7 @@ contract BaseTxAuthDataVerifier {
             argsWithSelector
         );
 
-        /// increment nonce to prevent replay atatcks
+        /// increment nonce to prevent replay attacks
         nonces[userAddress] += 1;
 
         return true;
@@ -170,5 +170,26 @@ contract BaseTxAuthDataVerifier {
                     _txAuthData.functionCallData
                 )
             );
+    }
+
+    /**
+     * @dev Returns an Ethereum Signed Message, created from a `hash`. This
+     * produces hash corresponding to the one signed with the
+     * https://eth.wiki/json-rpc/API#eth_sign[`eth_sign`]
+     * JSON-RPC method as part of EIP-191.
+     *
+     * This is copied from OZ in order to be compatible with both v4 and v5
+     */
+    function toEthSignedMessageHash(
+        bytes32 hash
+    ) internal pure returns (bytes32 message) {
+        // 32 is the length in bytes of hash,
+        // enforced by the type signature above
+        /// @solidity memory-safe-assembly
+        assembly {
+            mstore(0x00, "\x19Ethereum Signed Message:\n32")
+            mstore(0x1c, hash)
+            message := keccak256(0x00, 0x3c)
+        }
     }
 }
