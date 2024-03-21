@@ -9,8 +9,7 @@ import "../sigVerifiers/TxAuthDataVerifierV0.sol"; // Ensure this path matches y
 /// @notice This contract demonstrates an NFT minting process gated by off-chain signature verification.
 /// @dev Inherits from OpenZeppelin's ERC721 for NFT functionality and a custom TxAuthDataVerifier for signature verification.
 contract ExampleGatedNFTMinterV0 is ERC721, TxAuthDataVerifierV0 {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+    uint256 private _tokenIds;
 
     /// @notice Initializes the contract by setting a name, symbol, and signer for TxAuthDataVerifier.
     /// @param signerAddress The address allowed to sign transaction data for minting authorization.
@@ -25,8 +24,8 @@ contract ExampleGatedNFTMinterV0 is ERC721, TxAuthDataVerifierV0 {
     /// @param recipient The address that will receive the newly minted NFT.
     /// @return newItemId The token ID of the newly minted NFT.
     function mintNFT(address recipient) internal returns (uint256) {
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        _tokenIds += 1;
+        uint256 newItemId = _tokenIds;
         _mint(recipient, newItemId);
 
         return newItemId;
