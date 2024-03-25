@@ -8,9 +8,13 @@ const contractName = "ExampleGatedNFTMinter";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSigner } = await getNamedAccounts();
+  const { deployer } = await getNamedAccounts();
   console.log("deployer", deployer);
-  console.log("txAuthSigner", txAuthSigner);
+
+  // Fetch deployed Signer Manager
+  const signerManagerAddress = (await deployments.get("NexeraIDSignerManager"))
+    .address;
+  console.log("signerManagerAddress", signerManagerAddress);
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
@@ -19,7 +23,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const deployResult = await deploy(contractName, {
     contract: contractName,
     from: deployer,
-    args: [txAuthSigner],
+    args: [signerManagerAddress],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,
@@ -34,3 +38,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 export default func;
 func.id = contractName + version;
 func.tags = [contractName, version, "liveNetwork"];
+func.dependencies = ["NexeraIDSignerManager"];

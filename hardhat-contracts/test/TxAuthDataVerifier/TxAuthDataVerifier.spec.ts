@@ -18,6 +18,7 @@ import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { getContract, publicActions } from "viem";
 import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
+import { deployExampleGatedNFTMinterWithEOA } from "../../lib/deploy/deployExampleGatedNFTMinter";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -198,6 +199,54 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(
       transactionReceipt2.events?.[0].event === "NexeraIDSignatureVerified"
     ).to.be.true;
+  });
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+
+    // Deploy manually another NFT minter but using EOA instead of SignerManager smart contract as signer
+    const exampleGatedNFTMinterWithEOA =
+      await deployExampleGatedNFTMinterWithEOA();
+
+    // Build Signature
+    const recipient = tester;
+
+    const txAuthInput = {
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
+      contractAddress: exampleGatedNFTMinterWithEOA.address as Address,
+      functionName: "mintNFTGated",
+      args: [recipient],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx = await exampleGatedNFTMinterWithEOA
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const transactionReceipt = await tx.wait();
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleGatedNFTMinterWithEOA.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function - custom nonce and chainId`, async () => {
     const { tester } = await getNamedAccounts();
