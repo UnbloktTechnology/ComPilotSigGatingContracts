@@ -29,8 +29,9 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
      * @dev Initializes the contract by setting the initial signer.
      * @param initialSigner The address of the initial signer.
      */
-    constructor(address initialSigner) {
+    constructor(address initialSigner, address _owner) {
         _setSigner(initialSigner);
+        transferOwnership(_owner);
     }
 
     /**
