@@ -35,4 +35,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 export default func;
 func.id = contractName + version;
 func.tags = [contractName, version];
-func.dependencies = ["ScenarioVerifier", "liveNetwork"];
+func.dependencies = ["ScenarioVerifier"]; //TODO: add network tags for ZKP contracts

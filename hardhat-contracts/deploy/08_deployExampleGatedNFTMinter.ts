@@ -2,8 +2,9 @@ import { getNamedAccounts } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.2.0";
+const version = "0.2.1";
 const contractName = "ExampleGatedNFTMinter";
+const testEnv = "testnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
@@ -37,5 +38,5 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version, "liveNetwork"];
+func.tags = [contractName, version, testEnv];
 func.dependencies = ["NexeraIDSignerManager"];
