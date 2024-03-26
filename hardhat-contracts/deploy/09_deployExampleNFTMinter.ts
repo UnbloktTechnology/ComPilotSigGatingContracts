@@ -4,6 +4,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const version = "0.1.0";
 const contractName = "ExampleNFTMinter";
+const testEnv = "testnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
@@ -32,4 +33,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version, "liveNetwork"];
+func.tags = [contractName, version, testEnv];

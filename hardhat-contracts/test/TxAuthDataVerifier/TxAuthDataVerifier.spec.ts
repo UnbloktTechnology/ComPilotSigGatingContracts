@@ -18,6 +18,7 @@ import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { getContract, publicActions } from "viem";
 import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
+import { deployExampleGatedNFTMinterWithEOA } from "../../lib/deploy/deployExampleGatedNFTMinter";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -199,6 +200,54 @@ describe(`ExampleGatedNFTMinter`, function () {
       transactionReceipt2.events?.[0].event === "NexeraIDSignatureVerified"
     ).to.be.true;
   });
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+
+    // Deploy manually another NFT minter but using EOA instead of SignerManager smart contract as signer
+    const exampleGatedNFTMinterWithEOA =
+      await deployExampleGatedNFTMinterWithEOA();
+
+    // Build Signature
+    const recipient = tester;
+
+    const txAuthInput = {
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
+      contractAddress: exampleGatedNFTMinterWithEOA.address as Address,
+      functionName: "mintNFTGated",
+      args: [recipient],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx = await exampleGatedNFTMinterWithEOA
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const transactionReceipt = await tx.wait();
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleGatedNFTMinterWithEOA.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
+  });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function - custom nonce and chainId`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
@@ -367,25 +416,17 @@ describe(`ExampleGatedNFTMinter`, function () {
     };
 
     for (const wrongValueKey of Object.keys(wrongValues)) {
-      let hasReverted = false;
-      try {
-        const signature = await signTxAuthData(
-          //@ts-ignore
-          { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-          txAuthSigner
-        );
+      const signature = await signTxAuthData(
+        //@ts-ignore
+        { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
+        txAuthSigner
+      );
 
-        // try to mint nft
-        await exampleGatedNFTMinter
+      await expect(
+        exampleGatedNFTMinter
           .connect(testerSigner)
-          .mintNFTGated(recipient, blockExpiration, signature);
-      } catch (e: unknown) {
-        expect((e as Error).toString()).to.eq(
-          `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
-        );
-        hasReverted = true;
-      }
-      expect(hasReverted).to.be.true;
+          .mintNFTGated(recipient, blockExpiration, signature)
+      ).to.be.revertedWith("InvalidSignature");
     }
   });
   it(`Should check that user can NOT call the ExampleMultipleInputs with a wrong signature from the signer`, async () => {
@@ -437,16 +478,14 @@ describe(`ExampleGatedNFTMinter`, function () {
     };
 
     for (const wrongValueKey of Object.keys(wrongValues)) {
-      let hasReverted = false;
-      try {
-        const signature = await signTxAuthData(
-          //@ts-ignore
-          { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-          txAuthSigner
-        );
+      const signature = await signTxAuthData(
+        //@ts-ignore
+        { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
+        txAuthSigner
+      );
 
-        // try to mint nft
-        await exampleMultipleInputs
+      await expect(
+        exampleMultipleInputs
           .connect(testerSigner)
           .updateVariables(
             testNumber,
@@ -454,14 +493,8 @@ describe(`ExampleGatedNFTMinter`, function () {
             testByteString,
             blockExpiration,
             signature
-          );
-      } catch (e: unknown) {
-        expect((e as Error).toString()).to.eq(
-          `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
-        );
-        hasReverted = true;
-      }
-      expect(hasReverted).to.be.true;
+          )
+      ).to.be.revertedWith("InvalidSignature");
     }
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
@@ -493,26 +526,17 @@ describe(`ExampleGatedNFTMinter`, function () {
       nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
       blockExpiration: 0,
     };
+    const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
 
-    let hasReverted = false;
-    try {
-      const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
-
-      // try to mint nft
-      await exampleGatedNFTMinter
+    await expect(
+      exampleGatedNFTMinter
         .connect(testerSigner)
-        .mintNFTGated(recipient, blockExpiration, signature);
-    } catch (e: unknown) {
-      expect((e as Error).toString()).to.eq(
-        `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
-      );
-      hasReverted = true;
-    }
-    expect(hasReverted).to.be.true;
+        .mintNFTGated(recipient, blockExpiration, signature)
+    ).to.be.revertedWith("InvalidSignature");
   });
   it(`Should check that admin can change the signer`, async () => {
     const [deployer, _testerSigner, address3] = await ethers.getSigners();
-    // try to mint nft
+    // set signer
     await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
 
     const newSigner = await exampleGatedNFTMinter.getSignerAddress();
@@ -520,14 +544,10 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
     const [_deployer, _testerSigner, address3] = await ethers.getSigners();
-    // try to mint nft
-    try {
-      await exampleGatedNFTMinter.connect(address3).setSigner(address3.address);
-    } catch (e) {
-      expect((e as Error).toString().substring(0, 112)).to.eq(
-        "Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'"
-      );
-    }
+    // try to set signer
+    await expect(
+      exampleGatedNFTMinter.connect(address3).setSigner(address3.address)
+    ).to.be.revertedWith("Ownable: caller is not the owner");
 
     const newSigner = await exampleGatedNFTMinter.getSignerAddress();
     expect(newSigner !== address3.address).to.be.true;

@@ -22,6 +22,11 @@ export * from "./ExampleNFTMinterAddress_mumbai_dev";
 export * from "./ExampleNFTMinterAddress_mumbai_staging";
 export * from "./ExampleNFTMinterAddress_mumbai_prod";
 
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_mumbai_dev";
+export * from "./NexeraIDSignerManagerAddress_mumbai_staging";
+export * from "./NexeraIDSignerManagerAddress_mumbai_prod";
+
 // Sepolia
 
 // ScenarioVerifierFactory
@@ -43,3 +48,8 @@ export * from "./ExampleGatedNFTMinterAddress_sepolia_prod";
 export * from "./ExampleNFTMinterAddress_sepolia_dev";
 export * from "./ExampleNFTMinterAddress_sepolia_staging";
 export * from "./ExampleNFTMinterAddress_sepolia_prod";
+
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_sepolia_dev";
+export * from "./NexeraIDSignerManagerAddress_sepolia_staging";
+export * from "./NexeraIDSignerManagerAddress_sepolia_prod";

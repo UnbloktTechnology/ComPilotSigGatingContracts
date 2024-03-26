@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
 /**
  * @title Base Transaction Authentication Data Verifier
@@ -12,11 +13,9 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
  * - Ensuring transactions have not expired based on their block expiration.
  * - Incrementing nonces to prevent replay attacks.
  *
- * The contract utilizes ECDSA cryptography for signature verification.
+ * The contract utilizes OZ SignatureChecker for signature verification.
  */
 contract BaseTxAuthDataVerifier {
-    using ECDSA for bytes32;
-
     /// @notice These are used to decompose msgData
     /// @notice This is the length for the expected signature
     uint256 private constant SIGNATURE_LENGTH = 65;
@@ -134,7 +133,13 @@ contract BaseTxAuthDataVerifier {
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
         /// Verify Signature
-        if (ethSignedMessageHash.recover(_signature) != signer) {
+        if (
+            !SignatureChecker.isValidSignatureNow(
+                signer,
+                ethSignedMessageHash,
+                _signature
+            )
+        ) {
             revert InvalidSignature();
         }
 
