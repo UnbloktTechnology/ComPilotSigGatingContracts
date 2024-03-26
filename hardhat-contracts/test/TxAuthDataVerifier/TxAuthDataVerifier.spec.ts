@@ -561,7 +561,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that admin can change the signer`, async () => {
     const [deployer, _testerSigner, address3] = await ethers.getSigners();
-    // try to mint nft
+    // set signer
     await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
 
     const newSigner = await exampleGatedNFTMinter.getSignerAddress();
@@ -569,7 +569,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
     const [_deployer, _testerSigner, address3] = await ethers.getSigners();
-    // try to mint nft
+    // try to set signer
     try {
       await exampleGatedNFTMinter.connect(address3).setSigner(address3.address);
     } catch (e) {
