@@ -112,7 +112,11 @@ contract NexeraVerifierEntrypoint is
             "Input Scenario address cannot be the zero address"
         );
 
-        EnumerableSet.add(scenarioVerifierAddresses, scenarioVerifierAddress);
+        bool added = EnumerableSet.add(
+            scenarioVerifierAddresses,
+            scenarioVerifierAddress
+        );
+        require(added, "Scenario Verifier already added");
         EnumerableMap.set(isScenarioEnabled, scenarioVerifierAddress, 1);
 
         emit ScenarioVerifierAdded(scenarioVerifierAddress);
@@ -167,7 +171,6 @@ contract NexeraVerifierEntrypoint is
         );
 
         EnumerableMap.set(isScenarioEnabled, scenarioVerifierAddress, 1);
-
         emit ScenarioVerifierEnabled(scenarioVerifierAddress);
     }
 
