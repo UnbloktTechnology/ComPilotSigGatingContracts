@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.16;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 
@@ -112,7 +112,11 @@ contract NexeraVerifierEntrypoint is
             "Input Scenario address cannot be the zero address"
         );
 
-        EnumerableSet.add(scenarioVerifierAddresses, scenarioVerifierAddress);
+        bool added = EnumerableSet.add(
+            scenarioVerifierAddresses,
+            scenarioVerifierAddress
+        );
+        require(added, "Scenario Verifier already added");
         EnumerableMap.set(isScenarioEnabled, scenarioVerifierAddress, 1);
 
         emit ScenarioVerifierAdded(scenarioVerifierAddress);
@@ -167,7 +171,6 @@ contract NexeraVerifierEntrypoint is
         );
 
         EnumerableMap.set(isScenarioEnabled, scenarioVerifierAddress, 1);
-
         emit ScenarioVerifierEnabled(scenarioVerifierAddress);
     }
 
