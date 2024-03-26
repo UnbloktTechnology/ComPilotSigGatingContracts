@@ -44,6 +44,9 @@ contract BaseTxAuthDataVerifier {
         bytes functionCallData
     );
 
+    // Event emitted when the signer is changed
+    event SignerChanged(address indexed newSigner);
+
     /// @notice Custom error for handling signature expiry
     error BlockExpired();
 
@@ -71,6 +74,7 @@ contract BaseTxAuthDataVerifier {
     /// @param _signer The address of the new signer
     function _setSigner(address _signer) internal {
         signer = _signer;
+        emit SignerChanged(_signer);
     }
 
     /// @notice Retrieves the signer address

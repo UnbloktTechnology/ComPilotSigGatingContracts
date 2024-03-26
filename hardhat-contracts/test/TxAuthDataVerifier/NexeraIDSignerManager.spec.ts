@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import hre, { getNamedAccounts, network, ethers } from "hardhat";
+import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";

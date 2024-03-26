@@ -83,6 +83,19 @@ export const ExampleMultipleInputsABI = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newSigner",
+        type: "address",
+      },
+    ],
+    name: "SignerChanged",
+    type: "event",
+  },
+  {
     inputs: [],
     name: "getBytesVariable",
     outputs: [

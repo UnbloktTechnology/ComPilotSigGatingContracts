@@ -49,7 +49,11 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    const chainID = Number(await network.provider.send("eth_chainId"));
+    //let provider = new ethers.providers.JsonRpcProvider();
+    if (!txAuthSigner.provider) {
+      throw new Error("missing provider on signer");
+    }
+    const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallData(
       ExampleGatedNFTMinterABI,
@@ -90,7 +94,10 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    const chainID = Number(await network.provider.send("eth_chainId"));
+    if (!testerSigner.provider) {
+      throw new Error("missing provider on signer");
+    }
+    const { chainId: chainID } = await testerSigner.provider.getNetwork();
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallDataViem(
       ExampleGatedNFTMinterABI,
@@ -248,7 +255,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
       .to.be.true;
   });
-  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function - custom nonce and chainId`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - custom nonce and chainId`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
     const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
@@ -281,6 +288,51 @@ describe(`ExampleGatedNFTMinter`, function () {
     const tx = await exampleGatedNFTMinter
       .connect(testerSigner)
       .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const transactionReceipt = await tx.wait();
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
+  });
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with custom address for contract to be able to call it`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+
+    // Build Signature
+    const recipient = tester;
+
+    const txAuthInput = {
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
+      contractAddress: exampleGatedNFTMinter.address as Address,
+      functionName: "mintNFTGatedWithAddress",
+      args: [recipient, recipient],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLib(
+      txAuthWalletClient.extend(publicActions),
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx = await exampleGatedNFTMinter
+      .connect(testerSigner)
+      .mintNFTGatedWithAddress(
+        recipient,
         recipient,
         signatureResponse.blockExpiration,
         signatureResponse.signature
@@ -378,7 +430,10 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    const chainID = Number(await network.provider.send("eth_chainId"));
+    if (!txAuthSigner.provider) {
+      throw new Error("missing provider on signer");
+    }
+    const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallData(
       ExampleGatedNFTMinterABI,
@@ -440,7 +495,10 @@ describe(`ExampleGatedNFTMinter`, function () {
     const testByteString = "0x224455";
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    const chainID = Number(await network.provider.send("eth_chainId"));
+    if (!txAuthSigner.provider) {
+      throw new Error("missing provider on signer");
+    }
+    const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallData(
       ExampleMultipleInputsABI,
@@ -505,7 +563,10 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    const chainID = Number(await network.provider.send("eth_chainId"));
+    if (!txAuthSigner.provider) {
+      throw new Error("missing provider on signer");
+    }
+    const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallData(
       ExampleGatedNFTMinterABI,
