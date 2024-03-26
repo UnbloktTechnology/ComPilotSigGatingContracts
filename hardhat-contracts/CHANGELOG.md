@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.2.5...@nexeraprotocol/nexera-id-contracts@1.3.0) (2024-03-26)
+
+
+### Features
+
+* add nexeraidsignermanager and link to BaseTxAuthDataVerifier ([#38](https://github.com/NexeraProtocol/NexeraIDContracts/issues/38)) ([4375965](https://github.com/NexeraProtocol/NexeraIDContracts/commit/43759654072d886d3f5f2c512d4fa2cc2a0600eb))
+
+
+
+
+
 ## [1.2.5](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.2.4...@nexeraprotocol/nexera-id-contracts@1.2.5) (2024-03-21)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
