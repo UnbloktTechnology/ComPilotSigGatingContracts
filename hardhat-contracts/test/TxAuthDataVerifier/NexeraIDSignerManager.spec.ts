@@ -28,13 +28,9 @@ describe(`NexeraIDSignerManager`, function () {
   it(`Should check that non-admin can NOT change the signer`, async () => {
     const [_deployer, _testerSigner, address3] = await ethers.getSigners();
     // try to set signer
-    try {
-      await nexeraIDSignerManager.connect(address3).setSigner(address3.address);
-    } catch (e) {
-      expect((e as Error).toString().substring(0, 112)).to.eq(
-        "Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'"
-      );
-    }
+    await expect(
+      nexeraIDSignerManager.connect(address3).setSigner(address3.address)
+    ).to.be.revertedWith("Ownable: caller is not the owner");
 
     const newSigner = await nexeraIDSignerManager.getSignerAddress();
     expect(newSigner !== address3.address).to.be.true;
@@ -103,25 +99,15 @@ describe(`NexeraIDSignerManager`, function () {
       txAuthWalletClient.extend(publicActions),
       txAuthInput
     );
-
-    // try to mint nft
-    let hasReverted = false;
-    try {
-      // try to mint nft
-      await exampleGatedNFTMinter
+    await expect(
+      exampleGatedNFTMinter
         .connect(testerSigner)
         .mintNFTGated(
           recipient,
           signatureResponse2.blockExpiration,
           signatureResponse2.signature
-        );
-    } catch (e: unknown) {
-      expect((e as Error).toString()).to.eq(
-        `Error: VM Exception while processing transaction: reverted with custom error 'InvalidSignature()'`
-      );
-      hasReverted = true;
-    }
-    expect(hasReverted).to.be.true;
+        )
+    ).to.be.revertedWith("InvalidSignature");
 
     // Check no new minted token id
     const tokenId2 = Number(await exampleGatedNFTMinter.getLastTokenId());
