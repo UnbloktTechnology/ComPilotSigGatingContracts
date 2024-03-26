@@ -18,7 +18,7 @@
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
 
-pragma solidity 0.8.16;
+pragma solidity ^0.8.16;
 
 contract VerifierMTP {
     // Scalar field size
