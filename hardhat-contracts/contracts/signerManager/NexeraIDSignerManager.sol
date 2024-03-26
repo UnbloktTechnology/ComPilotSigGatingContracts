@@ -28,6 +28,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
     /**
      * @dev Initializes the contract by setting the initial signer.
      * @param initialSigner The address of the initial signer.
+     * @param initialOwner The address of the initial owner of the contract.
      */
     constructor(address initialSigner, address initialOwner) {
         _setSigner(initialSigner);
@@ -55,6 +56,12 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
         );
         _signer = newSigner;
         emit SignerChanged(newSigner);
+    }
+
+    /// @notice Retrieves the signer address
+    /// @return The signer address
+    function getSignerAddress() public view returns (address) {
+        return _signer;
     }
 
     /**
