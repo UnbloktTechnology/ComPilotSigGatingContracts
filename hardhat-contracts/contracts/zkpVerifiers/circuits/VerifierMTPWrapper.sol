@@ -14,29 +14,32 @@
 pragma solidity 0.8.16;
 
 import "./VerifierMTP.sol";
-import "../../interfaces/IVerifier.sol";
+import {IVerifier} from "@iden3/contracts/interfaces/IVerifier.sol";
 
 contract VerifierMTPWrapper is VerifierMTP, IVerifier {
-  /**
-   * @dev Number of public signals for atomic mtp circuit
-   */
-  uint constant PUBSIGNALS_LENGTH = 11;
+    /**
+     * @dev Number of public signals for atomic mtp circuit
+     */
+    uint constant PUBSIGNALS_LENGTH = 11;
 
-  /// @return r  bool true if proof is valid
-  function verify(
-    uint256[2] calldata a,
-    uint256[2][2] calldata b,
-    uint256[2] calldata c,
-    uint256[] calldata input
-  ) public view returns (bool r) {
-    uint[PUBSIGNALS_LENGTH] memory pubSignals;
+    /// @return r  bool true if proof is valid
+    function verify(
+        uint256[2] calldata a,
+        uint256[2][2] calldata b,
+        uint256[2] calldata c,
+        uint256[] calldata input
+    ) public view returns (bool r) {
+        uint[PUBSIGNALS_LENGTH] memory pubSignals;
 
-    require(input.length == PUBSIGNALS_LENGTH, "expected array length is 11");
+        require(
+            input.length == PUBSIGNALS_LENGTH,
+            "expected array length is 11"
+        );
 
-    for (uint256 i = 0; i < PUBSIGNALS_LENGTH; i++) {
-      pubSignals[i] = input[i];
+        for (uint256 i = 0; i < PUBSIGNALS_LENGTH; i++) {
+            pubSignals[i] = input[i];
+        }
+
+        return this.verifyProof(a, b, c, pubSignals);
     }
-
-    return this.verifyProof(a, b, c, pubSignals);
-  }
 }

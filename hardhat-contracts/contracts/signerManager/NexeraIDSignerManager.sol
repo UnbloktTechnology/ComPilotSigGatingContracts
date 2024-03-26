@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.16;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -29,9 +29,9 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
      * @dev Initializes the contract by setting the initial signer.
      * @param initialSigner The address of the initial signer.
      */
-    constructor(address initialSigner, address _owner) {
+    constructor(address initialSigner, address initialOwner) {
         _setSigner(initialSigner);
-        transferOwnership(_owner);
+        transferOwnership(initialOwner);
     }
 
     /**
