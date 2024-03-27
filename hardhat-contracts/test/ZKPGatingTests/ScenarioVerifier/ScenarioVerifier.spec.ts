@@ -1,13 +1,13 @@
 import { expect } from "chai";
 
-import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
-import { ScenarioVerifier } from "../../typechain";
+import { get2ZKPsForUserWhitelist } from "../../utils/get2ZKPsForUserWhitelist";
+import { ScenarioVerifier } from "../../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
-import { fixtureScenarioVerifier } from "../../fixtures/fixtureScenarioVerifier";
-import { getSchemaExampleQuery } from "../../lib/setRequest/createRequestInput/getSchemaExampleQuery";
-import { setupScenario2Rules } from "../utils/setupScenario2Rules";
-import { prepareInputs } from "../utils/prepareInputs";
-import { setupThreeAccounts } from "../utils/fundAccounts";
+import { fixtureScenarioVerifier } from "../../../fixtures/fixtureScenarioVerifier";
+import { getSchemaExampleQuery } from "../../../lib/setRequest/createRequestInput/getSchemaExampleQuery";
+import { setupScenario2Rules } from "../../utils/setupScenario2Rules";
+import { prepareInputs } from "../../utils/prepareInputs";
+import { setupThreeAccounts } from "../../utils/fundAccounts";
 export const SIMPLE_TSF_COST = 21000n;
 const testDID =
   "did:polygonid:polygon:mumbai:2qPXXXnx37MVkfP44amJWcvcxGpLPSh7fUW6cyTDPt";
