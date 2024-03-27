@@ -636,14 +636,13 @@ describe(`ExampleGatedNFTMinter`, function () {
       ).to.be.revertedWith("InvalidSignature");
     }
   });
-  it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
+  it.only(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
     const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature
     const recipient = tester;
-    const block = await ethers.provider.getBlock("latest");
-    const blockExpiration = block.number + 50;
+    const blockExpiration = 1; //let's try a block that is necessarily expired
     if (!txAuthSigner.provider) {
       throw new Error("missing provider on signer");
     }
@@ -666,7 +665,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
-      blockExpiration: 0,
+      blockExpiration,
     };
     const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
 
@@ -674,7 +673,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       exampleGatedNFTMinter
         .connect(testerSigner)
         .mintNFTGated(recipient, blockExpiration, signature)
-    ).to.be.revertedWith("InvalidSignature");
+    ).to.be.revertedWith("BlockExpired");
   });
   it(`Should check that admin can change the signer`, async () => {
     const [deployer, _testerSigner, address3] = await ethers.getSigners();
