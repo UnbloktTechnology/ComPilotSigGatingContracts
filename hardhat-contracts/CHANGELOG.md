@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.4](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.3.3...@nexeraprotocol/nexera-id-contracts@1.3.4) (2024-03-27)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
+
+
+
+
+
 ## [1.3.3](https://github.com/NexeraProtocol/NexeraIDContracts/compare/@nexeraprotocol/nexera-id-contracts@1.3.2...@nexeraprotocol/nexera-id-contracts@1.3.3) (2024-03-27)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-contracts
