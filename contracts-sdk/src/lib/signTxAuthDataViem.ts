@@ -6,8 +6,7 @@ import {
   TxAuthInput,
   WalletClientExtended,
 } from "./schemas";
-
-const SIGNATURE_VALIDITY_DURATION = 50;
+import { getSignatureValidityBlockDuration } from "./getSignatureValidityDuration";
 
 // Generating functionCallData with viem
 export function generateFunctionCallDataViem(
@@ -68,15 +67,15 @@ export const signTxAuthDataLib = async (
 ) => {
   // Build Signature
 
+  // Get chainId
+  const chainID =
+    txAuthInput.chainID ?? (await txAuthWalletClient.getChainId());
+
   // Get Block Expiration
   const blockExpiration =
     txAuthInput.blockExpiration ??
     Number((await txAuthWalletClient.getBlock({ blockTag: "latest" })).number) +
-      SIGNATURE_VALIDITY_DURATION;
-
-  // Get chainId
-  const chainID =
-    txAuthInput.chainID ?? (await txAuthWalletClient.getChainId());
+      getSignatureValidityBlockDuration(chainID);
 
   // Get Nonce (better provide the nonce for local testing)
   const nonce =
@@ -97,7 +96,7 @@ export const signTxAuthDataLib = async (
 
   // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
   // = 128 characters
-  const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
+  const argsWithSelector = functionCallData.slice(0, -128) as Address;
 
   const txAuthData = {
     functionCallData: argsWithSelector,

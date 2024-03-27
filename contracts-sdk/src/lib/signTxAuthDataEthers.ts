@@ -1,12 +1,6 @@
 import { ethers } from "ethers";
-import {
-  Address,
-  TxAuthData,
-  TxAuthInput,
-  WalletClientExtended,
-} from "./schemas";
-
-const SIGNATURE_VALIDITY_DURATION = 50;
+import { Address, TxAuthData, TxAuthInput } from "./schemas";
+import { getSignatureValidityBlockDuration } from "./getSignatureValidityDuration";
 
 // Generating functionCallData with ethers
 export function generateFunctionCallDataEthers(
@@ -42,8 +36,8 @@ export async function signTxAuthDataEthers(
 }
 
 export const getNonceEthers = async (
-  contractAddress: string,
-  userAddress: string,
+  contractAddress: Address,
+  userAddress: Address,
   contractABI: any[],
   provider: ethers.providers.Provider
 ) => {
@@ -58,9 +52,10 @@ export const signTxAuthDataLibEthers = async (
 ) => {
   const provider = signer.provider;
   const blockNumber = await provider.getBlockNumber();
-  const blockExpiration =
-    txAuthInput.blockExpiration ?? blockNumber + SIGNATURE_VALIDITY_DURATION;
   const chainID = txAuthInput.chainID ?? (await provider.getNetwork()).chainId;
+  const blockExpiration =
+    txAuthInput.blockExpiration ??
+    blockNumber + getSignatureValidityBlockDuration(chainID);
   const nonce =
     txAuthInput.nonce ??
     (await getNonceEthers(
@@ -78,7 +73,7 @@ export const signTxAuthDataLibEthers = async (
   );
 
   // Remove the placeholder for the signature
-  const argsWithSelector = functionCallData.slice(0, -128) as `0x${string}`;
+  const argsWithSelector = functionCallData.slice(0, -128) as Address;
 
   const txAuthData = {
     functionCallData: argsWithSelector,
