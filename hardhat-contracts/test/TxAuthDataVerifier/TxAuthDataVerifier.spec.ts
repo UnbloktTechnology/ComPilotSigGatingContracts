@@ -2,14 +2,17 @@ import { expect } from "chai";
 import hre, { getNamedAccounts, network, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter } from "../../typechain";
-import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import {
+  Address,
+  signTxAuthDataLib,
+  signTxAuthDataLibEthers,
+} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinter } from "../../fixtures/fixtureExampleGatedNFTMinter";
 
 import {
   ExampleGatedNFTMinterABI,
   ExampleMultipleInputsABI,
 } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
-import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import {
   generateFunctionCallData,
   generateFunctionCallDataViem,
@@ -19,6 +22,7 @@ import { getContract, publicActions } from "viem";
 import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter";
 import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
 import { deployExampleGatedNFTMinterWithEOA } from "../../lib/deploy/deployExampleGatedNFTMinter";
+import { Wallet } from "ethers";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -29,7 +33,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   it(`Should check that user can call the NON GATED ExampleNFTMinter for gas comparaison purposes`, async () => {
     const { exampleNFTMinter } = await fixtureExampleNFTMinter();
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     const recipient = tester;
 
@@ -130,7 +134,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
   });
-  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with lib function`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with viem lib function`, async () => {
     const { tester } = await getNamedAccounts();
     const [_, testerSigner] = await ethers.getSigners();
     const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
@@ -207,10 +211,87 @@ describe(`ExampleGatedNFTMinter`, function () {
       transactionReceipt2.events?.[0].event === "NexeraIDSignatureVerified"
     ).to.be.true;
   });
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with ethers lib function`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
+
+    // Build Signature
+    const recipient = tester;
+
+    const txAuthInput = {
+      contractAbi: Array.from(ExampleGatedNFTMinterABI),
+      contractAddress: exampleGatedNFTMinter.address as Address,
+      functionName: "mintNFTGated",
+      args: [recipient],
+      userAddress: tester as Address,
+    };
+
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx = await exampleGatedNFTMinter
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse.blockExpiration,
+        signatureResponse.signature
+      );
+
+    const transactionReceipt = await tx.wait();
+
+    // Check new minted token id
+    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    expect(tokenId === 1).to.be.true;
+    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
+    expect(tokenOwner === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
+      .to.be.true;
+
+    // Do it a second time to make sure nonce system works
+
+    // Build Signature
+
+    const signatureResponse2 = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
+      txAuthInput
+    );
+
+    // try to mint nft
+    const tx2 = await exampleGatedNFTMinter
+      .connect(testerSigner)
+      .mintNFTGated(
+        recipient,
+        signatureResponse2.blockExpiration,
+        signatureResponse2.signature
+      );
+
+    const transactionReceipt2 = await tx2.wait();
+
+    // Check new minted token id
+    const tokenId2 = Number(transactionReceipt2.events?.[1].args?.tokenId);
+    expect(tokenId2 === 2).to.be.true;
+    const tokenOwner2 = await exampleGatedNFTMinter.ownerOf(tokenId2);
+    expect(tokenOwner2 === tester).to.be.true;
+
+    // Also check for signagure verified emitted event
+    expect(transactionReceipt2.events?.[0].args?.userAddress === tester).to.be
+      .true;
+    expect(
+      transactionReceipt2.events?.[0].event === "NexeraIDSignatureVerified"
+    ).to.be.true;
+  });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
 
     // Deploy manually another NFT minter but using EOA instead of SignerManager smart contract as signer
     const exampleGatedNFTMinterWithEOA =
@@ -227,8 +308,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       userAddress: tester as Address,
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
 
@@ -257,7 +338,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - custom nonce and chainId`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
     const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
 
     // Build Signature
@@ -279,8 +360,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       nonce: Number(await contract.read.getUserNonce([tester as Address])),
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
 
@@ -309,8 +390,8 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with custom address for contract to be able to call it`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
 
     // Build Signature
     const recipient = tester;
@@ -323,8 +404,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       userAddress: tester as Address,
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
 
@@ -354,8 +435,8 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
@@ -371,8 +452,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       userAddress: tester as Address,
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
     // try to mint nft
@@ -391,8 +472,8 @@ describe(`ExampleGatedNFTMinter`, function () {
   });
   it(`Should check that user can call the ExampleMultipleInputs - no input - with a signature from the signer - with lib function`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
@@ -405,8 +486,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       userAddress: tester as Address,
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
     console.log("signatureResponse.signature", signatureResponse.signature);
@@ -474,7 +555,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       const signature = await signTxAuthData(
         //@ts-ignore
         { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-        txAuthSigner
+        txAuthSigner as unknown as Wallet
       );
 
       await expect(
@@ -539,7 +620,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       const signature = await signTxAuthData(
         //@ts-ignore
         { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-        txAuthSigner
+        txAuthSigner as unknown as Wallet
       );
 
       await expect(
