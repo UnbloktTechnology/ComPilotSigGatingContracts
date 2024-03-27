@@ -2,7 +2,10 @@ import { expect } from "chai";
 import hre, { getNamedAccounts, network, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinterUpgradeable } from "../../typechain";
-import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import {
+  Address,
+  signTxAuthDataLibEthers,
+} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinterUpgradeable } from "../../fixtures/fixtureExampleGatedNFTMinterUpgradeable";
 
 import { ExampleGatedNFTMinterUpgradeableABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
@@ -13,6 +16,7 @@ import {
 } from "../utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { publicActions } from "viem";
+import { Wallet } from "ethers";
 
 describe(`ExampleGatedNFTMinterUpgradeable`, function () {
   let exampleGatedNFTMinterUpgradeable: ExampleGatedNFTMinterUpgradeable;
@@ -159,8 +163,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer -  with custom address for contract to be able to call it`, async () => {
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, ___] = await hre.viem.getWalletClients();
 
     // Build Signature
     const recipient = tester;
@@ -173,8 +177,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
     };
 
-    const signatureResponse = await signTxAuthDataLib(
-      txAuthWalletClient.extend(publicActions),
+    const signatureResponse = await signTxAuthDataLibEthers(
+      txAuthSigner as unknown as Wallet,
       txAuthInput
     );
 
