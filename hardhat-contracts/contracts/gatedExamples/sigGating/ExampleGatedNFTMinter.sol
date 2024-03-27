@@ -4,7 +4,7 @@ pragma solidity ^0.8.16;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
+import "../../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
 
 /**
  * @title Example Gated NFT Minter

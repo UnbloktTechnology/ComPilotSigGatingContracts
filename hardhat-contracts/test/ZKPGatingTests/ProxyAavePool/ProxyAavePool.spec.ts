@@ -5,13 +5,13 @@ import {
   NexeraVerifierEntrypoint,
   ProxyAavePool,
   ScenarioVerifier,
-} from "../../typechain";
-import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
-import { setupScenario2Rules } from "../utils/setupScenario2Rules";
+} from "../../../typechain";
+import { get2ZKPsForUserWhitelist } from "../../utils/get2ZKPsForUserWhitelist";
+import { setupScenario2Rules } from "../../utils/setupScenario2Rules";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
-import { fixtureProxyAavePool } from "../../fixtures/fixtureProxyAavePool";
-import { getUserAddress } from "../utils/getUserAddress";
-import { setupThreeAccounts } from "../utils/fundAccounts";
+import { fixtureProxyAavePool } from "../../../fixtures/fixtureProxyAavePool";
+import { getUserAddress } from "../../utils/getUserAddress";
+import { setupThreeAccounts } from "../../utils/fundAccounts";
 
 const aavePoolAddress = "0xcC6114B983E4Ed2737E9BD3961c9924e6216c704";
 const testWETHAddress = "0xc199807AF4fEDB02EE567Ed0FeB814A077de4802";

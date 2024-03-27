@@ -2,7 +2,7 @@
 pragma solidity ^0.8.16;
 
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
-import "../interfaces/INexeraVerifierEntrypoint.sol";
+import "../../interfaces/INexeraVerifierEntrypoint.sol";
 
 /// @title ProxyAavePool
 /// @notice This example contract acts as a proxy for interacting with the Aave Pool,
