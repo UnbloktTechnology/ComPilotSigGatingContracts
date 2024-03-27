@@ -7,6 +7,7 @@ import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier"
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
+import { setupThreeAccounts } from "../utils/fundAccounts";
 
 describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
   let scenarioVerifier: ScenarioVerifier;
@@ -14,6 +15,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
   let validatorAddress: Address;
 
   beforeEach(async () => {
+    await setupThreeAccounts();
     ({ scenarioVerifier, validatorAddress, nexeraVerifierEntrypoint } =
       await fixtureNexeraVerifierEntrypoint());
   });

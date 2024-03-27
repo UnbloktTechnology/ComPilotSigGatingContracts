@@ -23,17 +23,19 @@ import { fixtureExampleNFTMinter } from "../../fixtures/fixtureExampleNFTMinter"
 import { fixtureExampleMultipleInputs } from "../../fixtures/fixtureExampleMultipleInputs";
 import { deployExampleGatedNFTMinterWithEOA } from "../../lib/deploy/deployExampleGatedNFTMinter";
 import { Wallet } from "ethers";
+import { setupThreeAccounts } from "../utils/fundAccounts";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
 
   beforeEach(async () => {
+    await setupThreeAccounts();
     ({ exampleGatedNFTMinter } = await fixtureExampleGatedNFTMinter());
   });
   it(`Should check that user can call the NON GATED ExampleNFTMinter for gas comparaison purposes`, async () => {
     const { exampleNFTMinter } = await fixtureExampleNFTMinter();
     const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [_, testerSigner] = await ethers.getSigners();
 
     const recipient = tester;
 

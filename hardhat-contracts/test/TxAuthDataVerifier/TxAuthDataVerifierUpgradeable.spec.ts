@@ -17,11 +17,13 @@ import {
 import { signTxAuthData, signTxAuthDataViem } from "../utils/signTxAuthData";
 import { publicActions } from "viem";
 import { Wallet } from "ethers";
+import { setupThreeAccounts } from "../utils/fundAccounts";
 
 describe(`ExampleGatedNFTMinterUpgradeable`, function () {
   let exampleGatedNFTMinterUpgradeable: ExampleGatedNFTMinterUpgradeable;
 
   beforeEach(async () => {
+    await setupThreeAccounts();
     ({ exampleGatedNFTMinterUpgradeable } =
       await fixtureExampleGatedNFTMinterUpgradeable());
   });
