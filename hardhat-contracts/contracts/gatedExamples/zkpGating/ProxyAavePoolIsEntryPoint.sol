@@ -2,7 +2,7 @@
 pragma solidity ^0.8.16;
 
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
-import "../zkpVerifiers/NexeraVerifierEntrypoint.sol";
+import "../../zkpVerifiers/NexeraVerifierEntrypoint.sol";
 
 /// @title ProxyAavePoolIsEntryPoint
 /// @notice This contract acts as a proxy to the Aave Pool on the Mumbai network, integrating with the Nexera verifier for user verification.

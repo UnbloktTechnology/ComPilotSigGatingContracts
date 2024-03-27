@@ -101,7 +101,7 @@ export const moveScenarioVerifierFactoryByteCodeAndABIToSDK = () => {
 export const moveExampleGatedNFTMinterABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinter.sol/ExampleGatedNFTMinter.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/gatedExamples/sigGating/ExampleGatedNFTMinter.sol/ExampleGatedNFTMinter.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -112,7 +112,7 @@ export const moveExampleGatedNFTMinterABIToSDK = () => {
 export const moveExampleNFTMinterABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/gatedExamples/ExampleNFTMinter.sol/ExampleNFTMinter.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/gatedExamples/sigGating/ExampleNFTMinter.sol/ExampleNFTMinter.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -123,7 +123,7 @@ export const moveExampleNFTMinterABIToSDK = () => {
 export const moveExampleGatedNFTMinterUpgradeableABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/gatedExamples/ExampleGatedNFTMinterUpgradeable.sol/ExampleGatedNFTMinterUpgradeable.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/gatedExamples/sigGating/ExampleGatedNFTMinterUpgradeable.sol/ExampleGatedNFTMinterUpgradeable.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -135,7 +135,7 @@ export const moveExampleGatedNFTMinterUpgradeableABIToSDK = () => {
 export const moveExampleMultipleInputsABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/gatedExamples/ExampleMultipleInputs.sol/ExampleMultipleInputs.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/gatedExamples/sigGating/ExampleMultipleInputs.sol/ExampleMultipleInputs.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
