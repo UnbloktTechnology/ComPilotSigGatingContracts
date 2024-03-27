@@ -58,7 +58,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
         emit SignerChanged(newSigner);
     }
 
-    /// @notice Retrieves the signer address
+    /// @notice Retrieves the current signer address
     /// @return The signer address
     function getSignerAddress() public view returns (address) {
         return _signer;
@@ -80,13 +80,5 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
         } else {
             return 0xffffffff;
         }
-    }
-
-    /**
-     * @dev Retrieves the current signer address.
-     * @return The address of the current signer.
-     */
-    function getSigner() public view returns (address) {
-        return _signer;
     }
 }

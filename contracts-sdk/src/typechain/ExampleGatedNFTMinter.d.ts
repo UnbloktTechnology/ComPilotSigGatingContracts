@@ -30,6 +30,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintNFTGated(address,uint256,bytes)": FunctionFragment;
+    "mintNFTGatedWithAddress(address,address,uint256,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -86,6 +87,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "mintNFTGated",
     values: [string, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintNFTGatedWithAddress",
+    values: [string, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -155,6 +160,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     functionFragment: "mintNFTGated",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "mintNFTGatedWithAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -192,6 +201,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "SignerChanged(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -199,6 +209,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SignerChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
@@ -232,6 +243,8 @@ export type NexeraIDSignatureVerifiedEvent = TypedEvent<
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
 >;
+
+export type SignerChangedEvent = TypedEvent<[string] & { newSigner: string }>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
@@ -320,6 +333,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
+      _blockExpiration: BigNumberish,
+      _signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    mintNFTGatedWithAddress(
+      recipient: string,
+      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -435,6 +456,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  mintNFTGatedWithAddress(
+    recipient: string,
+    userAddress: string,
+    _blockExpiration: BigNumberish,
+    _signature: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -534,6 +563,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
+      _blockExpiration: BigNumberish,
+      _signature: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mintNFTGatedWithAddress(
+      recipient: string,
+      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: CallOverrides
@@ -685,6 +722,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
       { previousOwner: string; newOwner: string }
     >;
 
+    "SignerChanged(address)"(
+      newSigner?: string | null
+    ): TypedEventFilter<[string], { newSigner: string }>;
+
+    SignerChanged(
+      newSigner?: string | null
+    ): TypedEventFilter<[string], { newSigner: string }>;
+
     "Transfer(address,address,uint256)"(
       from?: string | null,
       to?: string | null,
@@ -744,6 +789,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
+      _blockExpiration: BigNumberish,
+      _signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    mintNFTGatedWithAddress(
+      recipient: string,
+      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -861,6 +914,14 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
+      _blockExpiration: BigNumberish,
+      _signature: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintNFTGatedWithAddress(
+      recipient: string,
+      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }

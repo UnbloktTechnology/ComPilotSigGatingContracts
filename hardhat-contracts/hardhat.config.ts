@@ -25,7 +25,10 @@ const config: HardhatUserConfig = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 100,
+        runs: 200,
+        details: {
+          yul: true, // this resolves the issue when running coverage:: `Stack too deep when compiling inline assembly: Variable value0 is 2 slot(s) too deep inside the stack`
+        },
       },
       viaIR: true,
     },

@@ -65,9 +65,11 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
 
   events: {
     "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
+    "SignerChanged(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SignerChanged"): EventFragment;
 }
 
 export type NexeraIDSignatureVerifiedEvent = TypedEvent<
@@ -80,6 +82,8 @@ export type NexeraIDSignatureVerifiedEvent = TypedEvent<
     functionCallData: string;
   }
 >;
+
+export type SignerChangedEvent = TypedEvent<[string] & { newSigner: string }>;
 
 export class TxAuthDataVerifier extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -220,6 +224,14 @@ export class TxAuthDataVerifier extends BaseContract {
         functionCallData: string;
       }
     >;
+
+    "SignerChanged(address)"(
+      newSigner?: string | null
+    ): TypedEventFilter<[string], { newSigner: string }>;
+
+    SignerChanged(
+      newSigner?: string | null
+    ): TypedEventFilter<[string], { newSigner: string }>;
   };
 
   estimateGas: {

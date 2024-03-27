@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import hre, { getNamedAccounts, network, ethers } from "hardhat";
+import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
@@ -8,12 +8,14 @@ import { fixtureExampleGatedNFTMinter } from "../../fixtures/fixtureExampleGated
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { publicActions } from "viem";
+import { setupThreeAccounts } from "../utils/fundAccounts";
 
 describe(`NexeraIDSignerManager`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
 
   beforeEach(async () => {
+    await setupThreeAccounts();
     ({ nexeraIDSignerManager, exampleGatedNFTMinter } =
       await fixtureExampleGatedNFTMinter());
   });
