@@ -636,7 +636,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ).to.be.revertedWith("InvalidSignature");
     }
   });
-  it.only(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
+  it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
     const [txAuthSigner, testerSigner] = await ethers.getSigners();
 

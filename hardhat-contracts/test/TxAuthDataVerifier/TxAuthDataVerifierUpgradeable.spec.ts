@@ -25,6 +25,15 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     ({ exampleGatedNFTMinterUpgradeable } =
       await fixtureExampleGatedNFTMinterUpgradeable());
   });
+  it(`Should not be able to be intialized twice`, async () => {
+    const { tester } = await getNamedAccounts();
+    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+
+    // try to mint nft
+    expect(exampleGatedNFTMinterUpgradeable.initialize(tester)).to.revertedWith(
+      "Initializable: contract is already initialized"
+    );
+  });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
     const [txAuthSigner, testerSigner] = await ethers.getSigners();
