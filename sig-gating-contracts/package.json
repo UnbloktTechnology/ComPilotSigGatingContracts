@@ -6,6 +6,11 @@
   "files": [
     "**/*.sol"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NexeraProtocol/NexeraIDContracts.git",
+    "directory": "sig-gating-contracts"
+  },
   "scripts": {
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
