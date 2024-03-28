@@ -52,14 +52,14 @@ export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
 export const moveCAQSVByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/validators/CredentialAtomicQuerySigValidator.sol/CredentialAtomicQuerySigValidator.json"; // Replace with your JSON file's path
+    "./artifacts/@iden3/contracts/validators/CredentialAtomicQuerySigV2Validator.sol/CredentialAtomicQuerySigV2Validator.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
   const unprocessedByteCode = jsonData.bytecode;
-  saveContractABI("CredentialAtomicQuerySigValidator", abi);
+  saveContractABI("CredentialAtomicQuerySigV2Validator", abi);
   saveContractByteCode(
-    "CredentialAtomicQuerySigValidator",
+    "CredentialAtomicQuerySigV2Validator",
     unprocessedByteCode
   );
 };

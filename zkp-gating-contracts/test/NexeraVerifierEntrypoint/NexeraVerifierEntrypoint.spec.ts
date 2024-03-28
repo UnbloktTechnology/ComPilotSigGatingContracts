@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../../typechain";
+import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../typechain";
 import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
 import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
@@ -29,7 +29,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
         .addScenarioVerifier(scenarioVerifier.address);
     } catch (e: unknown) {
       expect((e as Error).toString()).to.eq(
-        `Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'`
+        `Error: VM Exception while processing transaction: reverted with reason string 'OwnableUnauthorizedAccount("${addr2.address}")'`
       );
       hasReverted = true;
     }

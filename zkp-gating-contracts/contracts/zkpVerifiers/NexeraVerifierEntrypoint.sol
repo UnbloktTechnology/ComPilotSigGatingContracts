@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "./ScenarioVerifier.sol";
 import "../interfaces/INexeraVerifierEntrypoint.sol";
@@ -14,7 +15,7 @@ import "../interfaces/INexeraVerifierEntrypoint.sol";
 contract NexeraVerifierEntrypoint is
     Initializable,
     INexeraVerifierEntrypoint,
-    Ownable
+    OwnableUpgradeable
 {
     // Add the library methods
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -49,7 +50,7 @@ contract NexeraVerifierEntrypoint is
      * @param newOwner The address of the thing owner
      */
     function initialize(address newOwner) public initializer {
-        _transferOwnership(newOwner);
+        __Ownable_init(newOwner);
     }
 
     /// @dev Modifier to require a verified user as sender

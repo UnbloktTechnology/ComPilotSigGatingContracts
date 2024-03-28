@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
-import { ScenarioVerifier } from "../../../typechain";
+import { ScenarioVerifier } from "../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureScenarioVerifier } from "../../fixtures/fixtureScenarioVerifier";
 import { getSchemaExampleQuery } from "../../lib/setRequest/createRequestInput/getSchemaExampleQuery";

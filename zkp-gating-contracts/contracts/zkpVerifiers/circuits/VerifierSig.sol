@@ -17,8 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with snarkJS. If not, see <https://www.gnu.org/licenses/>.
 */
-
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 contract VerifierSig {
     // Scalar field size

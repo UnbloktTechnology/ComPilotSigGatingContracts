@@ -10,7 +10,7 @@ export async function fixtureNexeraVerifierEntrypoint() {
   await deployments.fixture([
     contractName,
     "ScenarioVerifierFactory",
-    "CredentialAtomicQuerySigValidator",
+    "CredentialAtomicQuerySigV2Validator",
   ]);
   const contractInstance = await deployVerifierEntrypoint();
   const scenarioVerifier = await deployScenarioVerifier();
@@ -19,7 +19,7 @@ export async function fixtureNexeraVerifierEntrypoint() {
     nexeraVerifierEntrypoint: contractInstance as NexeraVerifierEntrypoint,
     scenarioVerifier: scenarioVerifier as ScenarioVerifier,
     validatorAddress: (
-      await deployments.get("CredentialAtomicQuerySigValidator")
+      await deployments.get("CredentialAtomicQuerySigV2Validator")
     ).address as Address,
   };
 }

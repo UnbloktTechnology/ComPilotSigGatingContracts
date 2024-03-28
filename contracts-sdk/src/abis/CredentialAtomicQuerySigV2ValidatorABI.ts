@@ -1,15 +1,66 @@
 export const CredentialAtomicQuerySigV2ValidatorABI = [
   {
+    inputs: [],
+    name: "InvalidInitialization",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotInitializing",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
     anonymous: false,
     inputs: [
       {
         indexed: false,
-        internalType: "uint8",
+        internalType: "uint64",
         name: "version",
-        type: "uint8",
+        type: "uint64",
       },
     ],
     name: "Initialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferStarted",
     type: "event",
   },
   {
@@ -46,12 +97,19 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
   },
   {
     inputs: [],
-    name: "getSupportedCircuitIds",
+    name: "acceptOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getGISTRootExpirationTimeout",
     outputs: [
       {
-        internalType: "string[]",
-        name: "ids",
-        type: "string[]",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -59,12 +117,51 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
   },
   {
     inputs: [],
-    name: "gistRootExpirationTimeout",
+    name: "getProofExpirationTimeout",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getRevocationStateExpirationTimeout",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getStateAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSupportedCircuitIds",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "ids",
+        type: "string[]",
       },
     ],
     stateMutability: "view",
@@ -128,7 +225,7 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
         type: "uint256[]",
       },
     ],
-    name: "parseCommonPubSignals",
+    name: "parsePubSignals",
     outputs: [
       {
         components: [
@@ -188,7 +285,7 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
             type: "uint256",
           },
         ],
-        internalType: "struct CredentialAtomicQueryValidator.CommonPubSignals",
+        internalType: "struct CredentialAtomicQueryV2ValidatorBase.PubSignals",
         name: "",
         type: "tuple",
       },
@@ -198,12 +295,12 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
   },
   {
     inputs: [],
-    name: "proofExpirationTimeout",
+    name: "pendingOwner",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "address",
         name: "",
-        type: "uint256",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -214,19 +311,6 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "revocationStateExpirationTimeout",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
   {
@@ -282,13 +366,19 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "state",
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
     outputs: [
       {
-        internalType: "contract IState",
+        internalType: "bool",
         name: "",
-        type: "address",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -334,10 +424,46 @@ export const CredentialAtomicQuerySigV2ValidatorABI = [
         name: "data",
         type: "bytes",
       },
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
     ],
     name: "verify",
-    outputs: [],
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "string",
+            name: "key",
+            type: "string",
+          },
+          {
+            internalType: "uint256",
+            name: "inputIndex",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct ICircuitValidator.KeyToInputIndex[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "version",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
 ] as const;

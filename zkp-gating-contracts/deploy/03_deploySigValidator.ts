@@ -5,7 +5,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { ONCHAIN_VERIFICATION_CONTRACTS } from "../lib/contractAddresses";
 
 const version = "0.1.0";
-const contractName = "CredentialAtomicQuerySigValidator";
+const contractName = "CredentialAtomicQuerySigV2Validator";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
 

@@ -1,5 +1,5 @@
 // Byte codes
-export * from "./CredentialAtomicQuerySigValidatorByteCode";
+export * from "./CredentialAtomicQuerySigV2ValidatorByteCode";
 export * from "./NexeraVerifierEntrypointByteCode";
 export * from "./ScenarioVerifierByteCode";
 export * from "./ScenarioVerifierFactoryByteCode";

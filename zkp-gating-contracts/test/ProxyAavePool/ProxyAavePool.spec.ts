@@ -5,7 +5,7 @@ import {
   NexeraVerifierEntrypoint,
   ProxyAavePool,
   ScenarioVerifier,
-} from "../../../typechain";
+} from "../../typechain";
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
