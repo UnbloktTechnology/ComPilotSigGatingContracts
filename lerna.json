@@ -2,7 +2,11 @@
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "independent",
   "npmClient": "pnpm",
-  "packages": ["hardhat-contracts", "contracts-sdk"],
+  "packages": [
+    "contracts-sdk",
+    "sig-gating-contracts",
+    "zkp-gating-contracts"
+  ],
   "command": {
     "version": {
       "conventionalCommits": true,
