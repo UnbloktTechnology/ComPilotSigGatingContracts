@@ -1,2 +1,2 @@
 export const ScenarioVerifierFactoryAddress_sepolia_dev =
-  "0xEb0bAb68E25285706724c35FA00a13D48F96F6C2" as const;
+  "0x4BA0c2ad3E17e0E382516B8622f844549CBbE47C" as const;

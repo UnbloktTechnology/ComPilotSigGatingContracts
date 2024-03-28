@@ -1,2 +1,2 @@
 export const VerifierEntrypointFactoryAddress_mumbai_staging =
-  "0x4546F921A74F0Ce991a00cb133Fc3E6967edc935" as const;
+  "0xDc9D8f103Ed3B1Fa70D6AE71dA737C54C2fB2618" as const;

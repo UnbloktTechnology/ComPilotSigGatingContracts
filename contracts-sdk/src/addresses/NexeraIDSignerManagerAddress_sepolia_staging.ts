@@ -1,2 +1,2 @@
 export const NexeraIDSignerManagerAddress_sepolia_staging =
-  "0x3272e7ddF758fe57ce5F51520ceE2FB65Cc83F4e" as const;
+  "0x775F57FcFd37def531ABB6201f6282EF162A94aa" as const;

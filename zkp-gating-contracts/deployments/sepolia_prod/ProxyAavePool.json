@@ -1,0 +1,211 @@
+{
+  "address": "0x1b567571798575654B8c478df69fb5fcB76d18de",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nexeraVerifierAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "inputs": [],
+      "name": "aavePoolAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nexeraVerifierAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "supply",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "onBehalfOf",
+          "type": "address"
+        },
+        {
+          "internalType": "uint16",
+          "name": "referralCode",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "permitV",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "permitR",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "permitS",
+          "type": "bytes32"
+        }
+      ],
+      "name": "supplyWithPermit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
+    }
+  ],
+  "transactionHash": "0xfc840a60ffd0915768f06057998b2b8ea392d6ba78721d2779916f53594cbffa",
+  "receipt": {
+    "to": null,
+    "from": "0x0BAd9DaD98143b2E946e8A40E4f27537be2f55E2",
+    "contractAddress": "0x1b567571798575654B8c478df69fb5fcB76d18de",
+    "transactionIndex": 80,
+    "gasUsed": "266893",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x0c399cf849cf5eaeb2fbac66ce0d49ce56de8b4cf65e49396e5f302a709760bf",
+    "transactionHash": "0xfc840a60ffd0915768f06057998b2b8ea392d6ba78721d2779916f53594cbffa",
+    "logs": [],
+    "blockNumber": 5578920,
+    "cumulativeGasUsed": "8358986",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0xba12ef1dcc6F3533cb64FFDf8837d116ba4D4759"
+  ],
+  "numDeployments": 1,
+  "solcInputHash": "ae32deb1db46c11cf63bd3a5efe635da",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nexeraVerifierAddress\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"inputs\":[],\"name\":\"aavePoolAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nexeraVerifierAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"}],\"name\":\"supply\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"asset\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"onBehalfOf\",\"type\":\"address\"},{\"internalType\":\"uint16\",\"name\":\"referralCode\",\"type\":\"uint16\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"uint8\",\"name\":\"permitV\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"permitR\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"permitS\",\"type\":\"bytes32\"}],\"name\":\"supplyWithPermit\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"stateMutability\":\"payable\",\"type\":\"receive\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"Constructor that sets the Nexera Verifier address.\",\"params\":{\"_nexeraVerifierAddress\":\"Address of the Nexera Verifier contract.\"}},\"supply(address,uint256,address)\":{\"details\":\"we add this in addition to the fallback in order to get it in the generated interface\",\"params\":{\"_amount\":\"Amount of the token to supply.\",\"_token\":\"Address of the token being supplied.\",\"_user\":\"Address of the user on whose behalf the supply is made.\"}},\"supplyWithPermit(address,uint256,address,uint16,uint256,uint8,bytes32,bytes32)\":{\"details\":\"we add this in addition to the fallback in order to get it in the generated interface\",\"params\":{\"amount\":\"Amount of the asset.\",\"asset\":\"Address of the asset.\",\"deadline\":\"Deadline after which the permit is no longer valid.\",\"onBehalfOf\":\"Address of the user on whose behalf the supply is made.\",\"permitR\":\"R component of the permit signature.\",\"permitS\":\"S component of the permit signature.\",\"permitV\":\"V component of the permit signature.\",\"referralCode\":\"Referral code.\"}}},\"title\":\"ProxyAavePool\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"supply(address,uint256,address)\":{\"notice\":\"Delegates the supply function call to the Aave Pool.\"},\"supplyWithPermit(address,uint256,address,uint16,uint256,uint8,bytes32,bytes32)\":{\"notice\":\"Delegates the supplyWithPermit function call to the Aave Pool.\"}},\"notice\":\"This example contract acts as a proxy for interacting with the Aave Pool, integrating with the Nexera entrypoint verifier for gating users.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/gatedExamples/ProxyAavePool.sol\":\"ProxyAavePool\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[],\"viaIR\":true},\"sources\":{\"@openzeppelin/contracts/proxy/Proxy.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v4.6.0) (proxy/Proxy.sol)\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev This abstract contract provides a fallback function that delegates all calls to another contract using the EVM\\n * instruction `delegatecall`. We refer to the second contract as the _implementation_ behind the proxy, and it has to\\n * be specified by overriding the virtual {_implementation} function.\\n *\\n * Additionally, delegation to the implementation can be triggered manually through the {_fallback} function, or to a\\n * different contract through the {_delegate} function.\\n *\\n * The success and return data of the delegated call will be returned back to the caller of the proxy.\\n */\\nabstract contract Proxy {\\n    /**\\n     * @dev Delegates the current call to `implementation`.\\n     *\\n     * This function does not return to its internal call site, it will return directly to the external caller.\\n     */\\n    function _delegate(address implementation) internal virtual {\\n        assembly {\\n            // Copy msg.data. We take full control of memory in this inline assembly\\n            // block because it will not return to Solidity code. We overwrite the\\n            // Solidity scratch pad at memory position 0.\\n            calldatacopy(0, 0, calldatasize())\\n\\n            // Call the implementation.\\n            // out and outsize are 0 because we don't know the size yet.\\n            let result := delegatecall(gas(), implementation, 0, calldatasize(), 0, 0)\\n\\n            // Copy the returned data.\\n            returndatacopy(0, 0, returndatasize())\\n\\n            switch result\\n            // delegatecall returns 0 on error.\\n            case 0 {\\n                revert(0, returndatasize())\\n            }\\n            default {\\n                return(0, returndatasize())\\n            }\\n        }\\n    }\\n\\n    /**\\n     * @dev This is a virtual function that should be overridden so it returns the address to which the fallback function\\n     * and {_fallback} should delegate.\\n     */\\n    function _implementation() internal view virtual returns (address);\\n\\n    /**\\n     * @dev Delegates the current call to the address returned by `_implementation()`.\\n     *\\n     * This function does not return to its internal call site, it will return directly to the external caller.\\n     */\\n    function _fallback() internal virtual {\\n        _beforeFallback();\\n        _delegate(_implementation());\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other\\n     * function in the contract matches the call data.\\n     */\\n    fallback() external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if call data\\n     * is empty.\\n     */\\n    receive() external payable virtual {\\n        _fallback();\\n    }\\n\\n    /**\\n     * @dev Hook that is called before falling back to the implementation. Can happen as part of a manual `_fallback`\\n     * call, or as part of the Solidity `fallback` or `receive` functions.\\n     *\\n     * If overridden should call `super._beforeFallback()`.\\n     */\\n    function _beforeFallback() internal virtual {}\\n}\\n\",\"keccak256\":\"0xc130fe33f1b2132158531a87734153293f6d07bc263ff4ac90e85da9c82c0e27\",\"license\":\"MIT\"},\"contracts/gatedExamples/ProxyAavePool.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.16;\\n\\nimport {Proxy} from \\\"@openzeppelin/contracts/proxy/Proxy.sol\\\";\\nimport \\\"../interfaces/INexeraVerifierEntrypoint.sol\\\";\\n\\n/// @title ProxyAavePool\\n/// @notice This example contract acts as a proxy for interacting with the Aave Pool,\\n/// integrating with the Nexera entrypoint verifier for gating users.\\ncontract ProxyAavePool is Proxy {\\n    // Address of the Aave Pool on the Mumbai network.\\n    address public constant aavePoolAddress =\\n        0xcC6114B983E4Ed2737E9BD3961c9924e6216c704;\\n\\n    // Address of the Nexera Verifier.\\n    address public nexeraVerifierAddress;\\n\\n    /// @dev Constructor that sets the Nexera Verifier address.\\n    /// @param _nexeraVerifierAddress Address of the Nexera Verifier contract.\\n    constructor(address _nexeraVerifierAddress) {\\n        nexeraVerifierAddress = _nexeraVerifierAddress;\\n    }\\n\\n    /// @dev Returns the address of the implementation contract (the aave pool being proxied).\\n    /// @return The address of the Aave Pool contract.\\n    function _implementation() internal pure override returns (address) {\\n        return aavePoolAddress;\\n    }\\n\\n    /// @notice Delegates the supply function call to the Aave Pool.\\n    /// @dev we add this in addition to the fallback in order to get it in the generated interface\\n    /// @param _token Address of the token being supplied.\\n    /// @param _amount Amount of the token to supply.\\n    /// @param _user Address of the user on whose behalf the supply is made.\\n    function supply(address _token, uint256 _amount, address _user) public {\\n        _delegateWithChecks();\\n    }\\n\\n    /// @notice Delegates the supplyWithPermit function call to the Aave Pool.\\n    /// @dev we add this in addition to the fallback in order to get it in the generated interface\\n    /// @param asset Address of the asset.\\n    /// @param amount Amount of the asset.\\n    /// @param onBehalfOf Address of the user on whose behalf the supply is made.\\n    /// @param referralCode Referral code.\\n    /// @param deadline Deadline after which the permit is no longer valid.\\n    /// @param permitV V component of the permit signature.\\n    /// @param permitR R component of the permit signature.\\n    /// @param permitS S component of the permit signature.\\n    function supplyWithPermit(\\n        address asset,\\n        uint256 amount,\\n        address onBehalfOf,\\n        uint16 referralCode,\\n        uint256 deadline,\\n        uint8 permitV,\\n        bytes32 permitR,\\n        bytes32 permitS\\n    ) public {\\n        address _impl = aavePoolAddress;\\n        require(_impl != address(0), \\\"Implementation address not set\\\");\\n        require(\\n            INexeraVerifierEntrypoint(nexeraVerifierAddress)\\n                .isAllowedForEntrypoint(msg.sender),\\n            \\\"User is not whitelisted\\\"\\n        );\\n\\n        _delegateWithChecks();\\n    }\\n\\n    /// @dev Fallback function that delegates calls to the Aave Pool.\\n    fallback() external payable override {\\n        _delegateWithChecks();\\n    }\\n\\n    /// @dev Internal function to delegate calls to the Aave Pool after checking the implementation address and user whitelisting.\\n    function _delegateWithChecks() internal {\\n        address _impl = aavePoolAddress;\\n        require(_impl != address(0), \\\"Implementation address not set\\\");\\n        require(\\n            INexeraVerifierEntrypoint(nexeraVerifierAddress)\\n                .isAllowedForEntrypoint(msg.sender),\\n            \\\"User is not whitelisted\\\"\\n        );\\n        _delegate(aavePoolAddress);\\n    }\\n}\\n\",\"keccak256\":\"0x371a546f934e2679aad5d9c177e15feb6cffbb29471af3723f59ccb3a00f4251\",\"license\":\"MIT\"},\"contracts/interfaces/INexeraVerifierEntrypoint.sol\":{\"content\":\"// SPDX-License-Identifier: GPL-3.0\\n\\npragma solidity ^0.8.16;\\n\\n/// @title INexeraVerifierEntrypoint\\n/// @notice Interface for the Nexera Verifier Entrypoint, defining essential functions for user verification and scenario verifier management.\\ninterface INexeraVerifierEntrypoint {\\n    /// @notice Checks if a user is allowed to access the entrypoint.\\n    /// @param user The address of the user to check.\\n    /// @return Boolean indicating whether the user is allowed.\\n    function isAllowedForEntrypoint(address user) external returns (bool);\\n\\n    /// @notice Adds a new scenario verifier to the system.\\n    /// @param scenarioVerifierAddress The address of the scenario verifier to be added.\\n    function addScenarioVerifier(address scenarioVerifierAddress) external;\\n\\n    /// @notice Deletes a scenario verifier from the system.\\n    /// @param scenarioVerifierAddress The address of the scenario verifier to be deleted.\\n    function deleteScenarioVerifier(address scenarioVerifierAddress) external;\\n\\n    /// @notice Updates a scenario verifier in the system.\\n    /// @param oldScenarioVerifierAddress The address of the current scenario verifier.\\n    /// @param newScenarioVerifierAddress The address of the new scenario verifier to replace the old one.\\n    function updateScenarioVerifier(\\n        address oldScenarioVerifierAddress,\\n        address newScenarioVerifierAddress\\n    ) external;\\n\\n    /// @notice Enables a scenario verifier for use in the system.\\n    /// @param scenarioVerifierAddress The address of the scenario verifier to be enabled.\\n    function enableScenario(address scenarioVerifierAddress) external;\\n\\n    /// @notice Disables a scenario verifier in the system.\\n    /// @param scenarioVerifierAddress The address of the scenario verifier to be disabled.\\n    function disableScenario(address scenarioVerifierAddress) external;\\n}\\n\",\"keccak256\":\"0x25130d8d4bee56f1ca963d17f78dc89ae1ab6a72b697c1390b9ff28f9962a9aa\",\"license\":\"GPL-3.0\"}},\"version\":1}",
+  "bytecode": "0x60803461007457601f6103fd38819003918201601f19168301916001600160401b038311848410176100795780849260209460405283398101031261007457516001600160a01b0381169081900361007457600080546001600160a01b03191691909117905560405161036d90816100908239f35b600080fd5b634e487b7160e01b600052604160045260246000fdfe6080604052600436101561002c575b361561001f575b61001d6102e9565b005b610027610182565b610015565b6000803560e01c90816302c205f01461007f575080638b2a4df514610076578063a654897b1461006d5763ee567cd90361000e57610068610152565b61000e565b50610068610128565b506100686100fb565b9050346100c7576101003660031901126100c75761009b6100ca565b506100a46100e5565b5060643561ffff8116036100c75760a43560ff8116036100c7575061006861025e565b80fd5b600435906001600160a01b03821682036100e057565b600080fd5b604435906001600160a01b03821682036100e057565b346100e05760603660031901126100e0576101146100ca565b5061011d6100e5565b506101266102e9565b565b50346100e05760003660031901126100e0576000546040516001600160a01b039091168152602090f35b50346100e05760003660031901126100e057602060405173cc6114b983e4ed2737e9bd3961c9924e6216c7048152f35b506000368180378080368173cc6114b983e4ed2737e9bd3961c9924e6216c7045af43d82803e156101b1573d90f35b3d90fd5b90601f8019910116810190811067ffffffffffffffff8211176101d757604052565b634e487b7160e01b600052604160045260246000fd5b908160209103126100e0575180151581036100e05790565b506040513d6000823e3d90fd5b1561021957565b60405162461bcd60e51b815260206004820152601760248201527f55736572206973206e6f742077686974656c69737465640000000000000000006044820152606490fd5b6000805460405163b347e74160e01b81523360048201526102a6929091602091839160249183916001600160a01b03165af19081156102dc575b6000916102ae575b50610212565b6101266102e9565b6102cf915060203d81116102d5575b6102c781836101b5565b8101906101ed565b386102a0565b503d6102bd565b6102e4610205565b610298565b6000805460405163b347e74160e01b815233600482015261032f929091602091839160249183916001600160a01b03165af19081156102dc576000916102ae5750610212565b61012661018256fea26469706673582212203ca3ad45179d1caf5c83e907835b7056ac2090d2eb49a3296d50a167bc56b12c64736f6c63430008100033",
+  "deployedBytecode": "0x6080604052600436101561002c575b361561001f575b61001d6102e9565b005b610027610182565b610015565b6000803560e01c90816302c205f01461007f575080638b2a4df514610076578063a654897b1461006d5763ee567cd90361000e57610068610152565b61000e565b50610068610128565b506100686100fb565b9050346100c7576101003660031901126100c75761009b6100ca565b506100a46100e5565b5060643561ffff8116036100c75760a43560ff8116036100c7575061006861025e565b80fd5b600435906001600160a01b03821682036100e057565b600080fd5b604435906001600160a01b03821682036100e057565b346100e05760603660031901126100e0576101146100ca565b5061011d6100e5565b506101266102e9565b565b50346100e05760003660031901126100e0576000546040516001600160a01b039091168152602090f35b50346100e05760003660031901126100e057602060405173cc6114b983e4ed2737e9bd3961c9924e6216c7048152f35b506000368180378080368173cc6114b983e4ed2737e9bd3961c9924e6216c7045af43d82803e156101b1573d90f35b3d90fd5b90601f8019910116810190811067ffffffffffffffff8211176101d757604052565b634e487b7160e01b600052604160045260246000fd5b908160209103126100e0575180151581036100e05790565b506040513d6000823e3d90fd5b1561021957565b60405162461bcd60e51b815260206004820152601760248201527f55736572206973206e6f742077686974656c69737465640000000000000000006044820152606490fd5b6000805460405163b347e74160e01b81523360048201526102a6929091602091839160249183916001600160a01b03165af19081156102dc575b6000916102ae575b50610212565b6101266102e9565b6102cf915060203d81116102d5575b6102c781836101b5565b8101906101ed565b386102a0565b503d6102bd565b6102e4610205565b610298565b6000805460405163b347e74160e01b815233600482015261032f929091602091839160249183916001600160a01b03165af19081156102dc576000916102ae5750610212565b61012661018256fea26469706673582212203ca3ad45179d1caf5c83e907835b7056ac2090d2eb49a3296d50a167bc56b12c64736f6c63430008100033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {
+      "constructor": {
+        "details": "Constructor that sets the Nexera Verifier address.",
+        "params": {
+          "_nexeraVerifierAddress": "Address of the Nexera Verifier contract."
+        }
+      },
+      "supply(address,uint256,address)": {
+        "details": "we add this in addition to the fallback in order to get it in the generated interface",
+        "params": {
+          "_amount": "Amount of the token to supply.",
+          "_token": "Address of the token being supplied.",
+          "_user": "Address of the user on whose behalf the supply is made."
+        }
+      },
+      "supplyWithPermit(address,uint256,address,uint16,uint256,uint8,bytes32,bytes32)": {
+        "details": "we add this in addition to the fallback in order to get it in the generated interface",
+        "params": {
+          "amount": "Amount of the asset.",
+          "asset": "Address of the asset.",
+          "deadline": "Deadline after which the permit is no longer valid.",
+          "onBehalfOf": "Address of the user on whose behalf the supply is made.",
+          "permitR": "R component of the permit signature.",
+          "permitS": "S component of the permit signature.",
+          "permitV": "V component of the permit signature.",
+          "referralCode": "Referral code."
+        }
+      }
+    },
+    "title": "ProxyAavePool",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "supply(address,uint256,address)": {
+        "notice": "Delegates the supply function call to the Aave Pool."
+      },
+      "supplyWithPermit(address,uint256,address,uint16,uint256,uint8,bytes32,bytes32)": {
+        "notice": "Delegates the supplyWithPermit function call to the Aave Pool."
+      }
+    },
+    "notice": "This example contract acts as a proxy for interacting with the Aave Pool, integrating with the Nexera entrypoint verifier for gating users.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 5579,
+        "contract": "contracts/gatedExamples/ProxyAavePool.sol:ProxyAavePool",
+        "label": "nexeraVerifierAddress",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      }
+    }
+  }
+}
