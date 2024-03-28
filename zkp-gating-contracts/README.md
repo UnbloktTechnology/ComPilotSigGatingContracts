@@ -1,6 +1,6 @@
-# @nexeraprotocol/nexera-id-contracts
+# @nexeraprotocol/nexera-id-zkp-gating-contracts
 
-@nexeraprotocol/nexera-id-contracts
+@nexeraprotocol/nexera-id-zkp-gating-contracts
 
 This repository contains smart contracts developed by Nexera ID to help our customers restrict access to their smart contracts.
 

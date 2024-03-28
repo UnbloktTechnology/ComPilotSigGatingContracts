@@ -83,8 +83,12 @@ jobs:
         run: |
           echo ${{ steps.tag_release.outputs.release_tag }}
 
-          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts" | head -n1 | tr -d '"')
-          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-contracts"
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-sig-gating-contracts" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-sig-gating-contracts"
+          echo $version
+
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-zkp-gating-contracts" | head -n1 | tr -d '"')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-zkp-gating-contracts"
           echo $version
 
           version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-contracts-sdk" | head -n1 | tr -d '"')
