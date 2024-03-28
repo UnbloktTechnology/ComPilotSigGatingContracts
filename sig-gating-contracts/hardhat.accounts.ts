@@ -16,3 +16,4 @@ const namedAccounts: {
 };
 
 export default namedAccounts;
+
