@@ -1,3 +1,4 @@
 packages:
-  - "hardhat-contracts"
+  - "sig-gating-contracts"
+  - "zkp-gating-contracts"
   - "contracts-sdk"

@@ -1,2 +1,2 @@
 export const ScenarioVerifierFactoryAddress_mumbai_prod =
-  "0x5418fB03C649eb13E2DF0101C4698d0A37c55ccF" as const;
+  "0x05827A4E09075DE7E9702b31F8ABf52E4e406cFA" as const;

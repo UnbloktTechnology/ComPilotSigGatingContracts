@@ -72,11 +72,13 @@ jobs:
           POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALT: ${{ secrets.SALT }}
         run: |
-          pnpm run build:hardhat
+          pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
 
       - name: Publish to NPM
         run: |
-          pnpm --filter @nexeraprotocol/nexera-id-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-zkp-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
