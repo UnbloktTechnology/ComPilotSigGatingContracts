@@ -72,6 +72,7 @@ jobs:
           POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
