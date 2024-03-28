@@ -73,7 +73,7 @@ jobs:
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm run build:hardhat
+          pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
 
       - name: Publish to NPM

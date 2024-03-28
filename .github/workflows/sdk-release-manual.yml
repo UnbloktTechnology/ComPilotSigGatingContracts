@@ -99,7 +99,7 @@ jobs:
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm run build:hardhat && pnpm run publish-pkg:contracts
+          pnpm run build:contracts && pnpm run publish-pkg:contracts
 
       - name: Build and publish contracts infos to npm
         env:
