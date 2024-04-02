@@ -63,9 +63,9 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
     // Create Proof for ProofOfResidence and for IDScan
-    const { zkpProofOfResidence, zkpIDScan, address } =
+    const { zkpProofOfResidence, zkpIDInformation, address } =
       await get2ZKPsForUserWhitelist();
-    const zkpIDScanFormated = prepareInputs(zkpIDScan.proof);
+    const zkpIDInformationFormated = prepareInputs(zkpIDInformation.proof);
     const zkpProofOfResidenceFormated = prepareInputs(
       zkpProofOfResidence.proof
     );
@@ -111,11 +111,11 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
 
     // submit proof for IDScan
     const respIDScan = await scenarioVerifier.submitZKPResponse(
-      zkpIDScan.proof.id.toString(),
-      zkpIDScanFormated.inputs,
-      zkpIDScanFormated.pi_a,
-      zkpIDScanFormated.pi_b,
-      zkpIDScanFormated.pi_c
+      zkpIDInformation.proof.id.toString(),
+      zkpIDInformationFormated.inputs,
+      zkpIDInformationFormated.pi_a,
+      zkpIDInformationFormated.pi_b,
+      zkpIDInformationFormated.pi_c
     );
     const rcpIDScan = await respIDScan.wait();
     console.log(
@@ -145,7 +145,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
     // get the two ZKPs
-    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+    const { zkpIDInformationOnChain, zkpProofOfResidenceOnChain, address } =
       await get2ZKPsForUserWhitelist();
 
     // Check that user is not whitelisted before
@@ -157,7 +157,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     await expect(
       scenarioVerifier.allowUserForScenario([
         zkpProofOfResidenceOnChain,
-        zkpIDScanOnChain,
+        zkpIDInformationOnChain,
       ])
     ).to.emit(scenarioVerifier, "SubmitedAllZKPsForUser");
 

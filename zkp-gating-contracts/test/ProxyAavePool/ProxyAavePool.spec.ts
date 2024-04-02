@@ -69,13 +69,13 @@ describe(`ProxyAavePool`, function () {
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
     // get the two ZKPs
-    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+    const { zkpIDInformationOnChain, zkpProofOfResidenceOnChain, address } =
       await get2ZKPsForUserWhitelist();
 
     // use allowUserForScenario one call
     await scenarioVerifier.allowUserForScenario([
       zkpProofOfResidenceOnChain,
-      zkpIDScanOnChain,
+      zkpIDInformationOnChain,
     ]);
 
     // Check that user is whitelisted

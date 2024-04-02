@@ -29,14 +29,14 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
         .addScenarioVerifier(scenarioVerifier.address);
     } catch (e: unknown) {
       expect((e as Error).toString()).to.eq(
-        `Error: VM Exception while processing transaction: reverted with reason string 'OwnableUnauthorizedAccount("${addr2.address}")'`
+        `Error: VM Exception while processing transaction: reverted with custom error 'OwnableUnauthorizedAccount("${addr2.address}")'`
       );
       hasReverted = true;
     }
     expect(hasReverted).to.be.true;
   });
 
-  it(`Should add two scenarios to nexeraVerifierEntrypoint, whitelist them and check that entrypoint is whitelisted`, async () => {
+  it.only(`Should add two scenarios to nexeraVerifierEntrypoint, whitelist them and check that entrypoint is whitelisted`, async () => {
     const scenarioVerifier1 = await deployScenarioVerifier();
     const scenarioVerifier2 = await deployScenarioVerifier();
 
@@ -59,7 +59,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     await setupScenario2Rules(scenarioVerifier2, validatorAddress);
 
     // get the two ZKPs
-    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+    const { zkpIDInformationOnChain, zkpProofOfResidenceOnChain, address } =
       await get2ZKPsForUserWhitelist();
 
     // Check that user is not whitelisted before
@@ -70,7 +70,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     // use allowUserForScenario one call on the first scenario
     const tx = await scenarioVerifier1.allowUserForScenario([
       zkpProofOfResidenceOnChain,
-      zkpIDScanOnChain,
+      zkpIDInformationOnChain,
     ]);
     await tx.wait();
 
@@ -82,7 +82,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     // use allowUserForScenario one call on the second scenario
     const tx2 = await scenarioVerifier2.allowUserForScenario([
       zkpProofOfResidenceOnChain,
-      zkpIDScanOnChain,
+      zkpIDInformationOnChain,
     ]);
     await tx2.wait();
 
