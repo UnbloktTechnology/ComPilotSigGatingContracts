@@ -82,9 +82,20 @@ describe(`ExampleGatedNFTMinter`, function () {
     const signature = await signTxAuthData(txAuthData, txAuthSigner);
 
     // try to mint nft
-    await exampleGatedNFTMinter
-      .connect(testerSigner)
-      .mintNFTGated(recipient, blockExpiration, signature);
+    await expect(
+      exampleGatedNFTMinter
+        .connect(testerSigner)
+        .mintNFTGated(recipient, blockExpiration, signature)
+    )
+      .to.emit(exampleGatedNFTMinter, "NexeraIDSignatureVerified")
+      .withArgs(
+        chainID,
+        0,
+        blockExpiration,
+        exampleGatedNFTMinter.address,
+        recipient,
+        argsWithSelector
+      );
 
     const tokenId = Number(await exampleGatedNFTMinter.getLastTokenId());
     expect(tokenId === 1).to.be.true;
