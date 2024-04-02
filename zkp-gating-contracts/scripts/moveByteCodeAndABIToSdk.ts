@@ -52,7 +52,7 @@ export const moveNexeraVerifierEntrypointByteCodeAndABIToSDK = () => {
 export const moveCAQSVByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/@iden3/contracts/validators/CredentialAtomicQuerySigV2Validator.sol/CredentialAtomicQuerySigV2Validator.json"; // Replace with your JSON file's path
+    "./artifacts/contracts/validators/CredentialAtomicQuerySigV2Validator.sol/CredentialAtomicQuerySigV2Validator.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;
@@ -67,7 +67,7 @@ export const moveCAQSVByteCodeAndABIToSDK = () => {
 export const moveVerifierSigWrapperByteCodeAndABIToSDK = () => {
   // Load the JSON file
   const jsonFile =
-    "./artifacts/contracts/zkpVerifiers/circuits/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
+    "./artifacts/@iden3/contracts/lib/VerifierSigWrapper.sol/VerifierSigWrapper.json"; // Replace with your JSON file's path
   const rawData = fs.readFileSync(jsonFile);
   const jsonData = JSON.parse(rawData);
   const abi = jsonData.abi;

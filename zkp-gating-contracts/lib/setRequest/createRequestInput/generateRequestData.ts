@@ -1,13 +1,10 @@
-import { byteEncoder, createSchemaHash } from "@0xpolygonid/js-sdk";
+import { byteEncoder, calculateCoreSchemaHash } from "@0xpolygonid/js-sdk";
 import {
   getDocumentLoader,
   Merklizer,
   Path,
 } from "@iden3/js-jsonld-merklization";
-import {
-  CredentialType,
-  Environment,
-} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { CredentialType } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { getCredentialSchemaLocation } from "./getCredentialSchemaLocation";
 
 // // you can run https://go.dev/play/p/rnrRbxXTRY6 to get schema hash and claimPathKey using YOUR schema
@@ -37,7 +34,7 @@ export async function generateRequestData(
   const ldCtx = (await getDocumentLoader(opts)(url)).document;
   const ldJSONStr = JSON.stringify(ldCtx);
   const typeId = await Path.getTypeIDFromContext(ldJSONStr, credentialType);
-  const schemaHash = createSchemaHash(byteEncoder.encode(typeId));
+  const schemaHash = calculateCoreSchemaHash(byteEncoder.encode(typeId));
 
   // you can use custom IPFS
   const path = await Path.getContextPathKey(

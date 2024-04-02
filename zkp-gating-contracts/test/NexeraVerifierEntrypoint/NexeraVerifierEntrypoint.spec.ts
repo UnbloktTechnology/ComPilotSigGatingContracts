@@ -36,7 +36,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     expect(hasReverted).to.be.true;
   });
 
-  it.only(`Should add two scenarios to nexeraVerifierEntrypoint, whitelist them and check that entrypoint is whitelisted`, async () => {
+  it(`Should add two scenarios to nexeraVerifierEntrypoint, whitelist them and check that entrypoint is whitelisted`, async () => {
     const scenarioVerifier1 = await deployScenarioVerifier();
     const scenarioVerifier2 = await deployScenarioVerifier();
 

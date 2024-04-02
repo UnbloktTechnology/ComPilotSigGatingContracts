@@ -28,17 +28,17 @@ export const getSchemaExampleQueryParameters = (
   credentialType: CredentialType
 ) => {
   switch (credentialType) {
-    case "KYCAgeCredential":
-      return {
-        operator: Operators.LT, // operator
-        value: 20020101, // for operators 1-3 only first value matters
-        fieldName: "birthday",
-      };
     case "IDScan":
       return {
         operator: Operators.GT, // operator
         value: 18, // for operators 1-3 only first value matters
         fieldName: "age",
+      };
+    case "IDInformation":
+      return {
+        operator: Operators.GT, // operator
+        value: 18, // for operators 1-3 only first value matters
+        fieldName: "personalData.age",
       };
     case "IDScanSelfie":
       return {

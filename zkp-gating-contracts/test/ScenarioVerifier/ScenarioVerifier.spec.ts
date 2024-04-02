@@ -12,7 +12,7 @@ export const SIMPLE_TSF_COST = 21000n;
 const testDID =
   "did:polygonid:polygon:mumbai:2qPXXXnx37MVkfP44amJWcvcxGpLPSh7fUW6cyTDPt";
 
-describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
+describe(`ScenarioVerifier: ProofOfResidence and IDInformation`, function () {
   let scenarioVerifier: ScenarioVerifier;
   let validatorAddress: Address;
 
@@ -21,7 +21,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     ({ scenarioVerifier, validatorAddress } = await fixtureScenarioVerifier());
   });
 
-  it(`Should set requests for ProofOfResidence and IDScan`, async () => {
+  it(`Should set requests for ProofOfResidence and IDInformation`, async () => {
     // Get queries
     const queryProofOfResidence = await getSchemaExampleQuery(
       "ProofOfResidence",
@@ -58,7 +58,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
       .withArgs(2);
   });
 
-  it(`Should post zk proof for ProofOfResidence and IDScan`, async () => {
+  it(`Should post zk proof for ProofOfResidence and IDInformation`, async () => {
     // Set up Scenrario with 2 Rules
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
@@ -119,7 +119,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     );
     const rcpIDScan = await respIDScan.wait();
     console.log(
-      `IDScan gas used : ${rcpIDScan?.gasUsed}, which is ${
+      `IDInformation gas used : ${rcpIDScan?.gasUsed}, which is ${
         rcpIDScan && Number(rcpIDScan.gasUsed) / Number(SIMPLE_TSF_COST)
       } times the cost of a simple tsf`
     );
@@ -140,7 +140,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
       await scenarioVerifier.isAllowedForScenario(address);
     expect(isAllowedForScenarioAfter).to.be.true;
   });
-  it(`Should post zk proof for ProofOfResidence and IDScan using allowUserForScenario (one call)`, async () => {
+  it(`Should post zk proof for ProofOfResidence and IDInformation using allowUserForScenario (one call)`, async () => {
     // Set up Scenrario with 2 Rules
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
