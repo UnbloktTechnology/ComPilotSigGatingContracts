@@ -140,6 +140,18 @@ contract BaseTxAuthDataVerifier {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
+        /// increment nonce to prevent replay attacks
+        nonces[userAddress] += 1;
+
+        emit NexeraIDSignatureVerified(
+            block.chainid,
+            nonces[userAddress] - 1,
+            blockExpiration,
+            address(this),
+            userAddress,
+            argsWithSelector
+        );
+
         /// Verify Signature
         if (
             !SignatureChecker.isValidSignatureNow(
@@ -150,18 +162,6 @@ contract BaseTxAuthDataVerifier {
         ) {
             revert InvalidSignature();
         }
-
-        emit NexeraIDSignatureVerified(
-            block.chainid,
-            nonces[userAddress],
-            blockExpiration,
-            address(this),
-            userAddress,
-            argsWithSelector
-        );
-
-        /// increment nonce to prevent replay attacks
-        nonces[userAddress] += 1;
 
         return true;
     }
