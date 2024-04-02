@@ -73,6 +73,10 @@ contract BaseTxAuthDataVerifier {
     /// @dev Can only be called by the current owner
     /// @param _signer The address of the new signer
     function _setSigner(address _signer) internal {
+        require(
+            _signer != address(0),
+            "BaseTxAuthDataVerifier: new signer is the zero address"
+        );
         signer = _signer;
         emit SignerChanged(_signer);
     }
