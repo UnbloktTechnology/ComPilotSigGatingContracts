@@ -12,9 +12,7 @@ concurrency:
 jobs:
   environments:
     name: Testing
-    runs-on:
-      - self-hosted
-      - shared-services
+    runs-on: ubuntu-latest
     environment: vc-dev
     steps:
     - name: Generate token
