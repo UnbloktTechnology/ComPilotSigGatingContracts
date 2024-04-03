@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.3.0 (2024-04-03)
+
+
+### Features
+
+* add nexeraidsignermanager and link to BaseTxAuthDataVerifier ([#38](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues/38)) ([4375965](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/commit/43759654072d886d3f5f2c512d4fa2cc2a0600eb))
+* Feature/web3 244 smart contract fix to handle bytes inputs ([#29](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues/29)) ([0ca65c9](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/commit/0ca65c973792e4e88cb02dd8bf885b924503377e))
+
+
+
+
+
 ## [1.2.5](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.2.4...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.2.5) (2024-04-03)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
