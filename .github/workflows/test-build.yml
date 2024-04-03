@@ -64,4 +64,4 @@ jobs:
           SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build

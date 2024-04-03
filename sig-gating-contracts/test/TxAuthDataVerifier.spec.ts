@@ -6,13 +6,13 @@ import {
   Address,
   signTxAuthDataLib,
   signTxAuthDataLibEthers,
-} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
 import {
   ExampleGatedNFTMinterABI,
   ExampleMultipleInputsABI,
-} from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
+} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import {
   generateFunctionCallData,
   generateFunctionCallDataViem,
