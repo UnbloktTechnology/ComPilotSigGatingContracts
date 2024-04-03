@@ -2,11 +2,11 @@ import { expect } from "chai";
 import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../typechain";
-import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
-import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
-import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
+import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { publicActions } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 
