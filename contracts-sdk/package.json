@@ -11,6 +11,11 @@
     "lint": "prettier --write src/**/**.ts",
     "lint:check": "prettier --check src/**/**.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
+    "directory": "contracts-sdk"
+  },
   "files": [
     "dist",
     "abis",
