@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { get2ZKPsForUserWhitelist } from "../utils/get2ZKPsForUserWhitelist";
-import { ScenarioVerifier } from "../../../typechain";
+import { ScenarioVerifier } from "../../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
 import { fixtureScenarioVerifier } from "../../fixtures/fixtureScenarioVerifier";
 import { getSchemaExampleQuery } from "../../lib/setRequest/createRequestInput/getSchemaExampleQuery";
@@ -12,7 +12,7 @@ export const SIMPLE_TSF_COST = 21000n;
 const testDID =
   "did:polygonid:polygon:mumbai:2qPXXXnx37MVkfP44amJWcvcxGpLPSh7fUW6cyTDPt";
 
-describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
+describe(`ScenarioVerifier: ProofOfResidence and IDInformation`, function () {
   let scenarioVerifier: ScenarioVerifier;
   let validatorAddress: Address;
 
@@ -21,7 +21,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     ({ scenarioVerifier, validatorAddress } = await fixtureScenarioVerifier());
   });
 
-  it(`Should set requests for ProofOfResidence and IDScan`, async () => {
+  it(`Should set requests for ProofOfResidence and IDInformation`, async () => {
     // Get queries
     const queryProofOfResidence = await getSchemaExampleQuery(
       "ProofOfResidence",
@@ -58,14 +58,14 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
       .withArgs(2);
   });
 
-  it(`Should post zk proof for ProofOfResidence and IDScan`, async () => {
+  it(`Should post zk proof for ProofOfResidence and IDInformation`, async () => {
     // Set up Scenrario with 2 Rules
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
     // Create Proof for ProofOfResidence and for IDScan
-    const { zkpProofOfResidence, zkpIDScan, address } =
+    const { zkpProofOfResidence, zkpIDInformation, address } =
       await get2ZKPsForUserWhitelist();
-    const zkpIDScanFormated = prepareInputs(zkpIDScan.proof);
+    const zkpIDInformationFormated = prepareInputs(zkpIDInformation.proof);
     const zkpProofOfResidenceFormated = prepareInputs(
       zkpProofOfResidence.proof
     );
@@ -111,15 +111,15 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
 
     // submit proof for IDScan
     const respIDScan = await scenarioVerifier.submitZKPResponse(
-      zkpIDScan.proof.id.toString(),
-      zkpIDScanFormated.inputs,
-      zkpIDScanFormated.pi_a,
-      zkpIDScanFormated.pi_b,
-      zkpIDScanFormated.pi_c
+      zkpIDInformation.proof.id.toString(),
+      zkpIDInformationFormated.inputs,
+      zkpIDInformationFormated.pi_a,
+      zkpIDInformationFormated.pi_b,
+      zkpIDInformationFormated.pi_c
     );
     const rcpIDScan = await respIDScan.wait();
     console.log(
-      `IDScan gas used : ${rcpIDScan?.gasUsed}, which is ${
+      `IDInformation gas used : ${rcpIDScan?.gasUsed}, which is ${
         rcpIDScan && Number(rcpIDScan.gasUsed) / Number(SIMPLE_TSF_COST)
       } times the cost of a simple tsf`
     );
@@ -140,12 +140,12 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
       await scenarioVerifier.isAllowedForScenario(address);
     expect(isAllowedForScenarioAfter).to.be.true;
   });
-  it(`Should post zk proof for ProofOfResidence and IDScan using allowUserForScenario (one call)`, async () => {
+  it(`Should post zk proof for ProofOfResidence and IDInformation using allowUserForScenario (one call)`, async () => {
     // Set up Scenrario with 2 Rules
     await setupScenario2Rules(scenarioVerifier, validatorAddress);
 
     // get the two ZKPs
-    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+    const { zkpIDInformationOnChain, zkpProofOfResidenceOnChain, address } =
       await get2ZKPsForUserWhitelist();
 
     // Check that user is not whitelisted before
@@ -157,7 +157,7 @@ describe(`ScenarioVerifier: ProofOfResidence and IDScan`, function () {
     await expect(
       scenarioVerifier.allowUserForScenario([
         zkpProofOfResidenceOnChain,
-        zkpIDScanOnChain,
+        zkpIDInformationOnChain,
       ])
     ).to.emit(scenarioVerifier, "SubmitedAllZKPsForUser");
 

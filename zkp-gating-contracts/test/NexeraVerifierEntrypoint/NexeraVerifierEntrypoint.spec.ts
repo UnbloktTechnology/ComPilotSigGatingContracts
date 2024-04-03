@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../../typechain";
+import { NexeraVerifierEntrypoint, ScenarioVerifier } from "../../typechain";
 import { fixtureNexeraVerifierEntrypoint } from "../../fixtures/fixtureNexeraVerifierEntrypoint";
 import { deployScenarioVerifier } from "../../lib/deploy/deployScenarioVerifier";
 import { setupScenario2Rules } from "../utils/setupScenario2Rules";
@@ -29,7 +29,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
         .addScenarioVerifier(scenarioVerifier.address);
     } catch (e: unknown) {
       expect((e as Error).toString()).to.eq(
-        `Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'`
+        `Error: VM Exception while processing transaction: reverted with custom error 'OwnableUnauthorizedAccount("${addr2.address}")'`
       );
       hasReverted = true;
     }
@@ -59,7 +59,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     await setupScenario2Rules(scenarioVerifier2, validatorAddress);
 
     // get the two ZKPs
-    const { zkpIDScanOnChain, zkpProofOfResidenceOnChain, address } =
+    const { zkpIDInformationOnChain, zkpProofOfResidenceOnChain, address } =
       await get2ZKPsForUserWhitelist();
 
     // Check that user is not whitelisted before
@@ -70,7 +70,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     // use allowUserForScenario one call on the first scenario
     const tx = await scenarioVerifier1.allowUserForScenario([
       zkpProofOfResidenceOnChain,
-      zkpIDScanOnChain,
+      zkpIDInformationOnChain,
     ]);
     await tx.wait();
 
@@ -82,7 +82,7 @@ describe(`NexeraVerifierEntrypoint: test two scenarios`, function () {
     // use allowUserForScenario one call on the second scenario
     const tx2 = await scenarioVerifier2.allowUserForScenario([
       zkpProofOfResidenceOnChain,
-      zkpIDScanOnChain,
+      zkpIDInformationOnChain,
     ]);
     await tx2.wait();
 

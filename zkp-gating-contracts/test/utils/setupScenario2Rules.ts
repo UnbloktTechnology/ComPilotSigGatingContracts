@@ -13,11 +13,11 @@ export const setupScenario2Rules = async (
     validatorAddress,
     "ProofOfResidence"
   );
-  // Set Request for Rule 2: IDScan
+  // Set Request for Rule 2: IDInformation
   await setRequestForScenario(
     2,
     scenarioVerifier.address,
     validatorAddress,
-    "IDScan"
+    "IDInformation"
   );
 };

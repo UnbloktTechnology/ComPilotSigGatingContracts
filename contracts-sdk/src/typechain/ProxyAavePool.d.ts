@@ -67,8 +67,16 @@ interface ProxyAavePoolInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "Received(address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "Received"): EventFragment;
 }
+
+export type ReceivedEvent = TypedEvent<
+  [string, BigNumber] & { sender: string; amount: BigNumber }
+>;
 
 export class ProxyAavePool extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -186,7 +194,23 @@ export class ProxyAavePool extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "Received(address,uint256)"(
+      sender?: null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { sender: string; amount: BigNumber }
+    >;
+
+    Received(
+      sender?: null,
+      amount?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { sender: string; amount: BigNumber }
+    >;
+  };
 
   estimateGas: {
     aavePoolAddress(overrides?: CallOverrides): Promise<BigNumber>;

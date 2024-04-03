@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 /// @title INexeraVerifierEntrypoint
 /// @notice Interface for the Nexera Verifier Entrypoint, defining essential functions for user verification and scenario verifier management.

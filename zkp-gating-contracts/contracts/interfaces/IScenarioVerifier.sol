@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 import {IZKPVerifier} from "@iden3/contracts/interfaces/IZKPVerifier.sol";
 

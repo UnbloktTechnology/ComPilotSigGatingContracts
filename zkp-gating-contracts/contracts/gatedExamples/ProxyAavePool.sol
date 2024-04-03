@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 import {Proxy} from "@openzeppelin/contracts/proxy/Proxy.sol";
 import "../interfaces/INexeraVerifierEntrypoint.sol";
@@ -11,6 +11,9 @@ contract ProxyAavePool is Proxy {
     // Address of the Aave Pool on the Mumbai network.
     address public constant aavePoolAddress =
         0xcC6114B983E4Ed2737E9BD3961c9924e6216c704;
+
+    // Event to emit when Ether is received
+    event Received(address sender, uint amount);
 
     // Address of the Nexera Verifier.
     address public nexeraVerifierAddress;
@@ -70,6 +73,14 @@ contract ProxyAavePool is Proxy {
     /// @dev Fallback function that delegates calls to the Aave Pool.
     fallback() external payable override {
         _delegateWithChecks();
+    }
+
+    /**
+     * @dev Receive function to handle plain Ether transfers to the contract.
+     * Emits a {Received} event.
+     */
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 
     /// @dev Internal function to delegate calls to the Aave Pool after checking the implementation address and user whitelisting.

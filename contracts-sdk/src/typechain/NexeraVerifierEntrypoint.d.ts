@@ -122,7 +122,7 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "Initialized(uint8)": EventFragment;
+    "Initialized(uint64)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "ScenarioVerifierAdded(address)": EventFragment;
     "ScenarioVerifierDeleted(address)": EventFragment;
@@ -140,7 +140,7 @@ interface NexeraVerifierEntrypointInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ScenarioVerifierUpdated"): EventFragment;
 }
 
-export type InitializedEvent = TypedEvent<[number] & { version: number }>;
+export type InitializedEvent = TypedEvent<[BigNumber] & { version: BigNumber }>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -383,13 +383,13 @@ export class NexeraVerifierEntrypoint extends BaseContract {
   };
 
   filters: {
-    "Initialized(uint8)"(
+    "Initialized(uint64)"(
       version?: null
-    ): TypedEventFilter<[number], { version: number }>;
+    ): TypedEventFilter<[BigNumber], { version: BigNumber }>;
 
     Initialized(
       version?: null
-    ): TypedEventFilter<[number], { version: number }>;
+    ): TypedEventFilter<[BigNumber], { version: BigNumber }>;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,

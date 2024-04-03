@@ -51,7 +51,7 @@
     "publish-pkg:zkp-gating-contracts": "pnpm --filter @nexeraprotocol/nexera-id-zkp-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
     "publish-pkg:contracts": "pnpm run publish-pkg:sig-gating-contracts && pnpm run publish-pkg:zkp-gating-contracts",
     "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish-sdk-pkg",
-    "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts test:unit && pnpm run --filter @nexeraprotocol/nexera-id-zkp-gating-contracts test:unit",
+    "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts test:seq && pnpm run --filter @nexeraprotocol/nexera-id-zkp-gating-contracts test:seq",
     "deploy-contracts:sig-gating": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts deploy-contracts",
     "deploy-contracts:zkp-gating": "pnpm --filter @nexeraprotocol/nexera-id-zkp-gating-contracts deploy-contracts",
     "deploy-contracts": "pnpm deploy-contracts:sig-gating && pnpm deploy-contracts:zkp-gating"

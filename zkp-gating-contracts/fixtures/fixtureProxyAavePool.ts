@@ -14,7 +14,7 @@ export async function fixtureProxyAavePool() {
   await deployments.fixture([
     contractName,
     "ScenarioVerifierFactory",
-    "CredentialAtomicQuerySigValidator",
+    "CredentialAtomicQuerySigV2Validator",
   ]);
   const contractInstance = await ethers.getContractAt(
     contractName,
@@ -31,7 +31,7 @@ export async function fixtureProxyAavePool() {
       nexeraVerifierEntrypoint as NexeraVerifierEntrypoint,
     scenarioVerifier: scenarioVerifier as ScenarioVerifier,
     validatorAddress: (
-      await deployments.get("CredentialAtomicQuerySigValidator")
+      await deployments.get("CredentialAtomicQuerySigV2Validator")
     ).address as Address,
   };
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.20;
 
 import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
 import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
@@ -81,7 +81,7 @@ contract ScenarioVerifier is
         ICircuitValidator validator
     ) internal view override {
         // check that challenge input is address of sender
-        address addr = PrimitiveTypeUtils.int256ToAddress(
+        address addr = PrimitiveTypeUtils.uint256LEToAddress(
             inputs[validator.inputIndexOf("challenge")]
         );
         require(

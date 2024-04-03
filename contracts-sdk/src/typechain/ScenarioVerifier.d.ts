@@ -22,6 +22,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface ScenarioVerifierInterface extends ethers.utils.Interface {
   functions: {
     "REQUESTS_RETURN_LIMIT()": FunctionFragment;
+    "acceptOwnership()": FunctionFragment;
     "addressToId(address)": FunctionFragment;
     "allowUserForScenario(tuple[])": FunctionFragment;
     "finalizeAllowListScenario(address)": FunctionFragment;
@@ -31,9 +32,10 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     "idToAddress(uint256)": FunctionFragment;
     "initialize(address)": FunctionFragment;
     "isAllowedForScenario(address)": FunctionFragment;
+    "isProofSubmitted(address,uint64)": FunctionFragment;
     "isRuleIdRegistered(uint64)": FunctionFragment;
     "owner()": FunctionFragment;
-    "proofs(address,uint64)": FunctionFragment;
+    "pendingOwner()": FunctionFragment;
     "queryRequestWhitelist(uint64,address)": FunctionFragment;
     "registeredRuleIDs(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -47,6 +49,10 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "REQUESTS_RETURN_LIMIT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "acceptOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "addressToId", values: [string]): string;
@@ -88,13 +94,17 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "isProofSubmitted",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isRuleIdRegistered",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "proofs",
-    values: [string, BigNumberish]
+    functionFragment: "pendingOwner",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "queryRequestWhitelist",
@@ -150,6 +160,10 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "acceptOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addressToId",
     data: BytesLike
   ): Result;
@@ -183,11 +197,18 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "isProofSubmitted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isRuleIdRegistered",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "proofs", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "queryRequestWhitelist",
     data: BytesLike
@@ -227,7 +248,8 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
 
   events: {
     "AddressIdConnection(address,uint256)": EventFragment;
-    "Initialized(uint8)": EventFragment;
+    "Initialized(uint64)": EventFragment;
+    "OwnershipTransferStarted(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RequestRegistered(uint64)": EventFragment;
     "SubmitedAllZKPsForUser(address,tuple[])": EventFragment;
@@ -238,6 +260,7 @@ interface ScenarioVerifierInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "AddressIdConnection"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferStarted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RequestRegistered"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubmitedAllZKPsForUser"): EventFragment;
@@ -250,7 +273,11 @@ export type AddressIdConnectionEvent = TypedEvent<
   [string, BigNumber] & { userAddress: string; userId: BigNumber }
 >;
 
-export type InitializedEvent = TypedEvent<[number] & { version: number }>;
+export type InitializedEvent = TypedEvent<[BigNumber] & { version: BigNumber }>;
+
+export type OwnershipTransferStartedEvent = TypedEvent<
+  [string, string] & { previousOwner: string; newOwner: string }
+>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -357,6 +384,10 @@ export class ScenarioVerifier extends BaseContract {
   functions: {
     REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     addressToId(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     allowUserForScenario(
@@ -419,6 +450,12 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isProofSubmitted(
+      sender: string,
+      requestID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     isRuleIdRegistered(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -426,11 +463,7 @@ export class ScenarioVerifier extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    proofs(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    pendingOwner(overrides?: CallOverrides): Promise<[string]>;
 
     queryRequestWhitelist(
       arg0: BigNumberish,
@@ -485,6 +518,10 @@ export class ScenarioVerifier extends BaseContract {
   };
 
   REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<BigNumber>;
+
+  acceptOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -541,6 +578,12 @@ export class ScenarioVerifier extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isProofSubmitted(
+    sender: string,
+    requestID: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isRuleIdRegistered(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -548,11 +591,7 @@ export class ScenarioVerifier extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  proofs(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  pendingOwner(overrides?: CallOverrides): Promise<string>;
 
   queryRequestWhitelist(
     arg0: BigNumberish,
@@ -604,6 +643,8 @@ export class ScenarioVerifier extends BaseContract {
 
   callStatic: {
     REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    acceptOwnership(overrides?: CallOverrides): Promise<void>;
 
     addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -657,6 +698,12 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isProofSubmitted(
+      sender: string,
+      requestID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     isRuleIdRegistered(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -664,11 +711,7 @@ export class ScenarioVerifier extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    proofs(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    pendingOwner(overrides?: CallOverrides): Promise<string>;
 
     queryRequestWhitelist(
       arg0: BigNumberish,
@@ -737,13 +780,29 @@ export class ScenarioVerifier extends BaseContract {
       { userAddress: string; userId: BigNumber }
     >;
 
-    "Initialized(uint8)"(
+    "Initialized(uint64)"(
       version?: null
-    ): TypedEventFilter<[number], { version: number }>;
+    ): TypedEventFilter<[BigNumber], { version: BigNumber }>;
 
     Initialized(
       version?: null
-    ): TypedEventFilter<[number], { version: number }>;
+    ): TypedEventFilter<[BigNumber], { version: BigNumber }>;
+
+    "OwnershipTransferStarted(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
+
+    OwnershipTransferStarted(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousOwner: string; newOwner: string }
+    >;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -903,6 +962,10 @@ export class ScenarioVerifier extends BaseContract {
   estimateGas: {
     REQUESTS_RETURN_LIMIT(overrides?: CallOverrides): Promise<BigNumber>;
 
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     addressToId(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     allowUserForScenario(
@@ -949,6 +1012,12 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isProofSubmitted(
+      sender: string,
+      requestID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isRuleIdRegistered(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -956,11 +1025,7 @@ export class ScenarioVerifier extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    proofs(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    pendingOwner(overrides?: CallOverrides): Promise<BigNumber>;
 
     queryRequestWhitelist(
       arg0: BigNumberish,
@@ -1019,6 +1084,10 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    acceptOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     addressToId(
       arg0: string,
       overrides?: CallOverrides
@@ -1070,6 +1139,12 @@ export class ScenarioVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isProofSubmitted(
+      sender: string,
+      requestID: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isRuleIdRegistered(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -1077,11 +1152,7 @@ export class ScenarioVerifier extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    proofs(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    pendingOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     queryRequestWhitelist(
       arg0: BigNumberish,
