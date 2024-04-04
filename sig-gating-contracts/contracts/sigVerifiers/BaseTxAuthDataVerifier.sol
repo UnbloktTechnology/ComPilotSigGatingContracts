@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.18;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
@@ -73,6 +73,10 @@ contract BaseTxAuthDataVerifier {
     /// @dev Can only be called by the current owner
     /// @param _signer The address of the new signer
     function _setSigner(address _signer) internal {
+        require(
+            _signer != address(0),
+            "BaseTxAuthDataVerifier: new signer is the zero address"
+        );
         signer = _signer;
         emit SignerChanged(_signer);
     }
@@ -136,6 +140,18 @@ contract BaseTxAuthDataVerifier {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
+        /// increment nonce to prevent replay attacks
+        nonces[userAddress] += 1;
+
+        emit NexeraIDSignatureVerified(
+            block.chainid,
+            nonces[userAddress] - 1,
+            blockExpiration,
+            address(this),
+            userAddress,
+            argsWithSelector
+        );
+
         /// Verify Signature
         if (
             !SignatureChecker.isValidSignatureNow(
@@ -146,18 +162,6 @@ contract BaseTxAuthDataVerifier {
         ) {
             revert InvalidSignature();
         }
-
-        emit NexeraIDSignatureVerified(
-            block.chainid,
-            nonces[userAddress],
-            blockExpiration,
-            address(this),
-            userAddress,
-            argsWithSelector
-        );
-
-        /// increment nonce to prevent replay attacks
-        nonces[userAddress] += 1;
 
         return true;
     }

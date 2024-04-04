@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity 0.8.18;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -21,6 +21,9 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
     // EIP-1271 Magic Value for a valid signature
     // bytes4(keccak256("isValidSignature(bytes32,bytes)")
     bytes4 private constant MAGIC_VALUE = 0x1626ba7e;
+
+    // EIP-1271 Non valid value
+    bytes4 private constant NON_VALID = 0xffffffff;
 
     // Event emitted when the signer is changed
     event SignerChanged(address indexed newSigner);
@@ -78,7 +81,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
         if (recoveredSigner == _signer) {
             return MAGIC_VALUE;
         } else {
-            return 0xffffffff;
+            return NON_VALID;
         }
     }
 }
