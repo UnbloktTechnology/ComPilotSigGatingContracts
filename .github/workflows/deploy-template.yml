@@ -72,7 +72,7 @@ jobs:
         run:
           pnpm deploy-${{ inputs.NETWORK }}
 
-      - name: Create release branch
+      - name: Create branch
         run: git checkout -b contracts/${{ inputs.NETWORK }}-deployment-${{ github.run_number }}
 
       - name: Initialize mandatory git config
@@ -83,7 +83,7 @@ jobs:
       - name: Prepare commit
         run: |
           git add .
-          git commit -m "Change staging to main branch in schema path files"
+          git commit -m "Update ${{ inputs.NETWORK }} deployment"
 
       - name: Push new branch
         run: git push origin contracts/${{ inputs.NETWORK }}-deployment-${{ github.run_number }}

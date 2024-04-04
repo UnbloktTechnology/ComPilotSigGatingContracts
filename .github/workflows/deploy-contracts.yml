@@ -2,19 +2,6 @@ name: Deploy contracts
 
 on:
   workflow_call:
-    secrets:
-      MUMBAI_PROVIDER_URL:
-        description: "Polygon Mumbai provider URL"
-        required: true
-      POLYGON_MAINNET_PROVIDER_URL:
-        description: "Polygon Mainnet provider URL"
-        required: true
-      DEPLOYMENT_MNEMONIC:
-        description: "Deployment Mnemonic"
-        required: true
-      SALT:
-        description: "Salt for deterministic deployments"
-        required: true
 
 jobs:
   deploy:
