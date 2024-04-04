@@ -46,6 +46,7 @@
     "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
     "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish-sdk-pkg",
     "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts test:seq",
+    "version:patch": "node tooling/version.js",
     "copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
     "deploy-contracts": "pnpm -r deploy-contracts",
     "deploy-mumbai": "pnpm -r deploy-mumbai",

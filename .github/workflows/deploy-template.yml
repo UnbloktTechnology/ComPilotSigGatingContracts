@@ -62,10 +62,10 @@ jobs:
           pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
-      # TODO: missing version update, needs correct placement
+      # TODO: should this be at this step?
       - name: Update version
         run: |
-          echo update version
+          pnpm run version:patch
 
       # TODO: should this be at this step?
       - name: Deploy contracts
