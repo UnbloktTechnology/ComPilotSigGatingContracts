@@ -11,6 +11,7 @@ import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches you
  * @dev NFT minting contract with gated access based on off-chain signature verification.
  * This contract extends ERC721 for NFT functionality, TxAuthDataVerifier for signature verification,
  * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     uint256 private _tokenIds;

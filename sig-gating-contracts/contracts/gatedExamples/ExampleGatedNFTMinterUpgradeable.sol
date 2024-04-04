@@ -12,6 +12,8 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
  * and OwnableUpgradeable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
  *
  * The contract is designed to be used with a proxy for upgradeability.
+ *
+ * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTMinterUpgradeable is
     ERC721Upgradeable,
