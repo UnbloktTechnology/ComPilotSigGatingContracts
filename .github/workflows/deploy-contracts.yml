@@ -1,6 +1,21 @@
 name: Deploy contracts
+
 on:
   workflow_call:
+    secrets:
+      MUMBAI_PROVIDER_URL:
+        description: "Polygon Mumbai provider URL"
+        required: true
+      POLYGON_MAINNET_PROVIDER_URL:
+        description: "Polygon Mainnet provider URL"
+        required: true
+      DEPLOYMENT_MNEMONIC:
+        description: "Deployment Mnemonic"
+        required: true
+      SALT:
+        description: "Salt for deterministic deployments"
+        required: true
+
 jobs:
   deploy:
     strategy:
@@ -16,4 +31,8 @@ jobs:
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
+      MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+      POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
+      DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+      SALT: ${{ secrets.SALT }}
     secrets: inherit
