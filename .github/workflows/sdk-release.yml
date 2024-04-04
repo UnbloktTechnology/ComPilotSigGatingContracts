@@ -75,10 +75,9 @@ jobs:
           SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
       - name: Publish to NPM
         run: |
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
-          pnpm --filter @nexeraprotocol/nexera-id-zkp-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/

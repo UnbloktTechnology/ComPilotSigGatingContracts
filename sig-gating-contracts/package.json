@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [
@@ -8,7 +8,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NexeraProtocol/NexeraIDContracts.git",
+    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
     "directory": "sig-gating-contracts"
   },
   "scripts": {
@@ -44,7 +44,7 @@
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@nexeraprotocol/nexera-id-contracts-sdk": "workspace:*",
+    "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk": "workspace:*",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
