@@ -33,7 +33,7 @@ This contract extends ERC721Upgradeable for NFT functionality, TxAuthDataVerifie
 This contract demonstrates a contract inheriting from TxAuthDataVerifier to update variables with signature verification.
 This contract tests more complex inputs such as bytes inputs or no inputs
 
-- Non Gated Example  NFT Minter for comparaison
+- Non Gated Example  NFT Minter for comparison
 
 #### Verifiers
 
