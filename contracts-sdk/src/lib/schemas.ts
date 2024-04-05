@@ -13,7 +13,7 @@ export enum NEXERA_CHAINS {
   ETHEREUM = "1",
   GOERLI = "5",
   POLYGON = "137",
-  MUMBAI = "80001",
+  AMOY = "80002",
   AVALANCHE = "43114",
   FUJI = "43113",
   ARBITRUM = "42161",

@@ -5,7 +5,7 @@ dotenv.config();
 
 // Default values
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
-const DEFAULT_MUMBAI_URL = "https://rpc.ankr.com/polygon_mumbai";
+const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
@@ -15,8 +15,7 @@ const DEPLOYMENT_MNEMONIC = process.env.DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
-const MUMBAI_PROVIDER_URL =
-  process.env.MUMBAI_PROVIDER_URL || DEFAULT_MUMBAI_URL;
+const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
 
 export const networks: NetworksUserConfig = {
   //prod
@@ -26,10 +25,10 @@ export const networks: NetworksUserConfig = {
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
-  mumbai_prod: {
+  amoy_prod: {
     live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   sepolia_prod: {
@@ -45,10 +44,10 @@ export const networks: NetworksUserConfig = {
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
-  mumbai_staging: {
+  amoy_staging: {
     live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   sepolia_staging: {
@@ -64,10 +63,10 @@ export const networks: NetworksUserConfig = {
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
-  mumbai_dev: {
+  amoy_dev: {
     live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   sepolia_dev: {
@@ -80,7 +79,7 @@ export const networks: NetworksUserConfig = {
   hardhat: {
     live: false,
     forking: {
-      url: `${MUMBAI_PROVIDER_URL}`,
+      url: `${AMOY_PROVIDER_URL}`,
       // using fixed block number is supposed to improve test performance
       blockNumber: 41591456,
     },

@@ -7,10 +7,10 @@ on:
         required: true
         type: string
         description: "Network"
-      MUMBAI_PROVIDER_URL:
+      AMOY_PROVIDER_URL:
         required: true
         type: string
-        description: "Polygon Mumbai provider URL"
+        description: "Polygon Amoy provider URL"
       POLYGON_MAINNET_PROVIDER_URL:
         required: true
         type: string
@@ -25,7 +25,7 @@ on:
         description: "Salt for deterministic deployments"
 
 env:
-  MUMBAI_PROVIDER_URL: ${{ inputs.MUMBAI_PROVIDER_URL }}
+  AMOY_PROVIDER_URL: ${{ inputs.AMOY_PROVIDER_URL }}
   POLYGON_MAINNET_PROVIDER_URL: ${{ inputs.POLYGON_MAINNET_PROVIDER_URL }}
   DEPLOYMENT_MNEMONIC: ${{ inputs.DEPLOYMENT_MNEMONIC }}
   SALT: ${{ inputs.SALT }}

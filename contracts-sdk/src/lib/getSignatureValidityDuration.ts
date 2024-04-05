@@ -14,6 +14,7 @@ const blockTimes: Record<string, number> = {
   "43113": 3, // Avalanche Fuji Testnet
   "137": 2, // Polygon Mainnet
   "80001": 2, // Polygon Mumbai Testnet
+  "80002": 2, // Polygon Amoy Testnet
   "8453": 2, // Base
   "84531": 2, // Base Goerli
   "84532": 2, // Base Sepolia

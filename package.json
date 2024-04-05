@@ -49,7 +49,7 @@
     "version:patch": "node tooling/version.js",
     "copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
     "deploy-contracts": "pnpm -r deploy-contracts",
-    "deploy-mumbai": "pnpm -r deploy-mumbai",
+    "deploy-amoy": "pnpm -r deploy-amoy",
     "deploy-sepolia": "pnpm -r deploy-sepolia"
   }
 }
