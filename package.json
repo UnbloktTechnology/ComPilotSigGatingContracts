@@ -50,6 +50,7 @@
     "copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
     "deploy-contracts": "pnpm -r deploy-contracts",
     "deploy-amoy": "pnpm -r deploy-amoy",
+    "deploy-mumbai": "pnpm -r deploy-mumbai",
     "deploy-sepolia": "pnpm -r deploy-sepolia"
   }
 }
