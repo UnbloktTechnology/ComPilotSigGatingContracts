@@ -62,15 +62,18 @@ jobs:
           pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
-      # TODO: should this be at this step?
-      - name: Update version
-        run: |
-          pnpm run version:patch
+      # Commented for now because we prefer to bump it manually
+      #   - name: Update Signer Manager version
+      #     run: |
+      #       pnpm run version:patch
 
-      # TODO: should this be at this step?
       - name: Deploy contracts
-        run:
-          pnpm deploy-${{ inputs.NETWORK }}
+        run: pnpm deploy-${{ inputs.NETWORK }}
+
+      - name: Update deployed addresses in sdk
+        run: |
+          pnpm copy-info-to-sdk
+          pnpm lint
 
       - name: Create branch
         run: git checkout -b contracts/${{ inputs.NETWORK }}-deployment-${{ github.run_number }}
