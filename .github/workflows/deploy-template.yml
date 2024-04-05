@@ -7,28 +7,12 @@ on:
         required: true
         type: string
         description: "Network"
-      AMOY_PROVIDER_URL:
-        required: true
-        type: string
-        description: "Polygon Amoy provider URL"
-      POLYGON_MAINNET_PROVIDER_URL:
-        required: true
-        type: string
-        description: "Polygon Mainnet provider URL"
-      DEPLOYMENT_MNEMONIC:
-        required: true
-        type: string
-        description: "Deployment Mnemonic"
-      SALT:
-        required: true
-        type: string
-        description: "Salt for deterministic deployments"
 
 env:
-  AMOY_PROVIDER_URL: ${{ inputs.AMOY_PROVIDER_URL }}
-  POLYGON_MAINNET_PROVIDER_URL: ${{ inputs.POLYGON_MAINNET_PROVIDER_URL }}
-  DEPLOYMENT_MNEMONIC: ${{ inputs.DEPLOYMENT_MNEMONIC }}
-  SALT: ${{ inputs.SALT }}
+  AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
+  POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
+  DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+  SALT: ${{ secrets.SALT }}
   PNPM_VERSION: 8.15.2
   NODE_VERSION: 20.11.0
 
