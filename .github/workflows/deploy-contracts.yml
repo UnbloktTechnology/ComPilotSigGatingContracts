@@ -10,7 +10,7 @@ jobs:
       matrix:
         network:
           - sepolia
-          - mumbai
+          - amoy
         # - fuji
         #  - avalanche
         #  - polygon
@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
-      MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+      AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
       POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
       DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
       SALT: ${{ secrets.SALT }}
