@@ -1,5 +1,5 @@
 {
-  "version": "1.3.3",
+  "version": "1.3.4",
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk",
   "main": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk.esm.js",
