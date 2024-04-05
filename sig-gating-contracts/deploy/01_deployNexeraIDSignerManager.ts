@@ -2,7 +2,7 @@ import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.1";
+const version = "0.1.2";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";

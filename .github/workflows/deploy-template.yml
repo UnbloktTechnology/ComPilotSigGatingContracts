@@ -72,7 +72,7 @@ jobs:
 
       - name: Check for changes
         id: changes
-        run: |          
+        run: |
           if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
               echo "New files detected"
               echo "status=new" >> $GITHUB_OUTPUT
@@ -109,6 +109,6 @@ jobs:
         with:
           head: contracts/${{ inputs.NETWORK }}-deployment-${{ github.run_number }}
           base: main
-          title: "chore: contracts/${{ inputs.NETWORK } deployment into main"
+          title: "chore: contracts/${{ inputs.NETWORK }} deployment into main"
           body: |
             Automated pull request: This PR was created in response workflow running.
