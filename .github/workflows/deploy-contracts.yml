@@ -6,9 +6,10 @@ on:
 jobs:
   deploy:
     strategy:
-#      max-parallel: 1 # Avoid weird issues with git when some run pushes in the meantime the other is running.
+      #      max-parallel: 1 # Avoid weird issues with git when some run pushes in the meantime the other is running.
       matrix:
         network:
+          - mumbai
           - sepolia
           - amoy
         # - fuji

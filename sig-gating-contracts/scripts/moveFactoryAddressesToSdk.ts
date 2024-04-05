@@ -30,6 +30,16 @@ export const moveAllFactoryAddressesToSdk = () => {
   moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_dev");
   moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_staging");
   moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_prod");
+  // Mumbai
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_dev");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_staging");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "mumbai_prod");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_dev");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_staging");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "mumbai_prod");
+  moveFactoryAddressToSdk("NexeraIDSignerManager", "mumbai_dev");
+  moveFactoryAddressToSdk("NexeraIDSignerManager", "mumbai_staging");
+  moveFactoryAddressToSdk("NexeraIDSignerManager", "mumbai_prod");
   // Sepolia
   moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_dev");
   moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_staging");
