@@ -34,14 +34,14 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
-    function getLastTokenId() public view returns (uint256) {
+    function lastTokenId() public view returns (uint256) {
         return _tokenIds;
     }
 
     /// @dev Internal function to mint a new NFT to a specified recipient.
     /// @param recipient The address that will receive the newly minted NFT.
     /// @return newItemId The token ID of the newly minted NFT.
-    function mintNFT(address recipient) internal returns (uint256) {
+    function _mintNFT(address recipient) internal returns (uint256) {
         _tokenIds += 1;
         uint256 newItemId = _tokenIds;
         _mint(recipient, newItemId);
@@ -60,7 +60,7 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
         uint256 _blockExpiration,
         bytes calldata _signature
     ) public requireTxDataAuth(_blockExpiration, _signature) returns (uint256) {
-        return mintNFT(recipient);
+        return _mintNFT(recipient);
     }
 
     /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
@@ -80,6 +80,6 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
         requireTxDataAuthWithAddress(_blockExpiration, _signature, userAddress)
         returns (uint256)
     {
-        return mintNFT(recipient);
+        return _mintNFT(recipient);
     }
 }

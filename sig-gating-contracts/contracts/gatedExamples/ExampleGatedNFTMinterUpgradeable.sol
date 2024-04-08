@@ -43,7 +43,7 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
-    function getLastTokenId() public view returns (uint256) {
+    function lastTokenId() public view returns (uint256) {
         return _tokenIds;
     }
 

@@ -112,7 +112,7 @@ describe(`NexeraIDSignerManager`, function () {
     ).to.be.revertedWith("InvalidSignature");
 
     // Check no new minted token id
-    const tokenId2 = Number(await exampleGatedNFTMinter.getLastTokenId());
+    const tokenId2 = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId2 === 1).to.be.true;
   });
 });

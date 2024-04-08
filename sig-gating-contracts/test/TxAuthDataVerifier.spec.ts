@@ -42,7 +42,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // try to mint nft
     await exampleNFTMinter.connect(testerSigner).mintNFT(recipient);
 
-    const tokenId = Number(await exampleNFTMinter.getLastTokenId());
+    const tokenId = Number(await exampleNFTMinter.lastTokenId());
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
@@ -97,7 +97,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         argsWithSelector
       );
 
-    const tokenId = Number(await exampleGatedNFTMinter.getLastTokenId());
+    const tokenId = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;

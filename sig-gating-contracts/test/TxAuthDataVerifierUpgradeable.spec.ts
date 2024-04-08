@@ -77,7 +77,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       .mintNFTGated(recipient, blockExpiration, signature);
 
     const tokenId = Number(
-      await exampleGatedNFTMinterUpgradeable.getLastTokenId()
+      await exampleGatedNFTMinterUpgradeable.lastTokenId()
     );
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinterUpgradeable.ownerOf(tokenId);
