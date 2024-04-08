@@ -1,9 +1,14 @@
-export const ExampleGatedNFTMinterABI = [
+export const ExampleGatedNFTMinterExternalCallABI = [
   {
     inputs: [
       {
         internalType: "address",
         name: "signerAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_externalContractCaller",
         type: "address",
       },
     ],
@@ -208,6 +213,19 @@ export const ExampleGatedNFTMinterABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "externalContractCaller",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -322,6 +340,11 @@ export const ExampleGatedNFTMinterABI = [
         type: "address",
       },
       {
+        internalType: "address",
+        name: "userAddress",
+        type: "address",
+      },
+      {
         internalType: "uint256",
         name: "_blockExpiration",
         type: "uint256",
@@ -332,7 +355,7 @@ export const ExampleGatedNFTMinterABI = [
         type: "bytes",
       },
     ],
-    name: "mintNFTGated",
+    name: "mintNFTGatedWithAddress",
     outputs: [
       {
         internalType: "uint256",
@@ -479,19 +502,6 @@ export const ExampleGatedNFTMinterABI = [
       },
     ],
     name: "setApprovalForAll",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_signer",
-        type: "address",
-      },
-    ],
-    name: "setSigner",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

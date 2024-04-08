@@ -12,6 +12,7 @@ import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFT
 import {
   ExampleGatedNFTMinterABI,
   ExampleMultipleInputsABI,
+  ExampleGatedNFTMinterExternalCallABI,
 } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import {
   generateFunctionCallData,
@@ -24,6 +25,7 @@ import { fixtureExampleMultipleInputs } from "../fixtures/fixtureExampleMultiple
 import { deployExampleGatedNFTMinterWithEOA } from "../lib/deploy/deployExampleGatedNFTMinter";
 import { Wallet } from "ethers";
 import { setupThreeAccounts } from "./utils/fundAccounts";
+import { fixtureExampleGatedNFTMinterExternalCall } from "../fixtures/fixtureExampleGatedNFTMinterExternalCall";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -403,17 +405,20 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
       .to.be.true;
   });
-  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with custom address for contract to be able to call it`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTMinterExternalCall with a signature from the signer - with custom address for contract to be able to call it`, async () => {
     const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [txAuthSigner, _testerSigner, externalContract] =
+      await ethers.getSigners();
     const [_, ___] = await hre.viem.getWalletClients();
+    const { exampleGatedNFTMinterExternalCall } =
+      await fixtureExampleGatedNFTMinterExternalCall();
 
     // Build Signature
     const recipient = tester;
 
     const txAuthInput = {
-      contractAbi: Array.from(ExampleGatedNFTMinterABI),
-      contractAddress: exampleGatedNFTMinter.address as Address,
+      contractAbi: Array.from(ExampleGatedNFTMinterExternalCallABI),
+      contractAddress: exampleGatedNFTMinterExternalCall.address as Address,
       functionName: "mintNFTGatedWithAddress",
       args: [recipient, recipient],
       userAddress: tester as Address,
@@ -425,8 +430,8 @@ describe(`ExampleGatedNFTMinter`, function () {
     );
 
     // try to mint nft
-    const tx = await exampleGatedNFTMinter
-      .connect(testerSigner)
+    const tx = await exampleGatedNFTMinterExternalCall
+      .connect(externalContract)
       .mintNFTGatedWithAddress(
         recipient,
         recipient,
@@ -439,7 +444,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Check new minted token id
     const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
-    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
+    const tokenOwner = await exampleGatedNFTMinterExternalCall.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
 
     // Also check for signagure verified emitted event
