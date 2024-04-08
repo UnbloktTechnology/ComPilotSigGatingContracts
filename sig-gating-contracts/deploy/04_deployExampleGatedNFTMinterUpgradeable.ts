@@ -9,7 +9,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  console.log("deployer", deployer);
+
   // Fetch deployed Signer Manager
   const signerManagerAddress = (await deployments.get("NexeraIDSignerManager"))
     .address;
