@@ -18,17 +18,17 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
 contract BaseTxAuthDataVerifier {
     /// @notice These are used to decompose msgData
     /// @notice This is the length for the expected signature
-    uint256 private constant SIGNATURE_LENGTH = 65;
+    uint256 private constant _SIGNATURE_LENGTH = 65;
     /// @notice This completes the signature into a multiple of 32
-    uint256 private constant SIGNATURE_SUFFIX = 31;
+    uint256 private constant _SIGNATURE_SUFFIX = 31;
     /// @notice The complete length of the signature related data includes a 32 length field indicating the length,
     // as well as the signature itself completed with 31 zeros to be a multiple of 32
-    uint256 private constant SIGNATURE_OFFSET =
-        SIGNATURE_LENGTH + BYTES_32_LENGTH + SIGNATURE_SUFFIX;
-    uint256 private constant BYTES_32_LENGTH = 32;
+    uint256 private constant _SIGNATURE_OFFSET =
+        _SIGNATURE_LENGTH + _BYTES_32_LENGTH + _SIGNATURE_SUFFIX;
+    uint256 private constant _BYTES_32_LENGTH = 32;
 
     /// @notice Address of the off-chain service that signs the transactions
-    address private signer;
+    address private _signerAddress;
 
     /// @notice Mapping to track the nonces of users to prevent replay attacks
     /// @dev Maps a user address to their current nonce
@@ -77,20 +77,20 @@ contract BaseTxAuthDataVerifier {
             _signer != address(0),
             "BaseTxAuthDataVerifier: new signer is the zero address"
         );
-        signer = _signer;
+        _signerAddress = _signer;
         emit SignerChanged(_signer);
     }
 
     /// @notice Retrieves the signer address
     /// @return The signer address
-    function getSignerAddress() public view returns (address) {
-        return signer;
+    function txAuthDataSignerAddress() public view returns (address) {
+        return _signerAddress;
     }
 
     /// @notice Retrieves the current nonce for a given user
     /// @param user The address of the user
     /// @return The current nonce of the user
-    function getUserNonce(address user) public view returns (uint256) {
+    function txAuthDataUserNonce(address user) public view returns (uint256) {
         return nonces[user];
     }
 
@@ -120,19 +120,23 @@ contract BaseTxAuthDataVerifier {
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
         bytes calldata argsWithSelector = msgData[:msgData.length -
-            SIGNATURE_OFFSET];
+            _SIGNATURE_OFFSET];
 
         /// Check signature hasn't expired
         if (block.number >= blockExpiration) {
             revert BlockExpired();
         }
 
+        /// Read nonce value and increment it (in storage) to prevent replay attacks
+        uint256 userNonce = nonces[userAddress]++;
+
+        /// Build tx auth data
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: argsWithSelector,
             contractAddress: address(this),
             userAddress: userAddress,
             chainID: block.chainid,
-            nonce: nonces[userAddress],
+            nonce: userNonce,
             blockExpiration: blockExpiration
         });
 
@@ -140,12 +144,9 @@ contract BaseTxAuthDataVerifier {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
-        /// increment nonce to prevent replay attacks
-        nonces[userAddress] += 1;
-
         emit NexeraIDSignatureVerified(
             block.chainid,
-            nonces[userAddress] - 1,
+            userNonce,
             blockExpiration,
             address(this),
             userAddress,
@@ -155,7 +156,7 @@ contract BaseTxAuthDataVerifier {
         /// Verify Signature
         if (
             !SignatureChecker.isValidSignatureNow(
-                signer,
+                _signerAddress,
                 ethSignedMessageHash,
                 _signature
             )

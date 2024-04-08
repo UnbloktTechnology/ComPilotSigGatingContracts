@@ -24,13 +24,10 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getLastTokenId()": FunctionFragment;
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
-    "getSignerAddress()": FunctionFragment;
-    "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "lastTokenId()": FunctionFragment;
     "mintNFTGated(address,uint256,bytes)": FunctionFragment;
-    "mintNFTGatedWithAddress(address,address,uint256,bytes)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -44,6 +41,8 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "txAuthDataSignerAddress()": FunctionFragment;
+    "txAuthDataUserNonce(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -54,10 +53,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLastTokenId",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getMessageHash",
@@ -73,24 +68,16 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "getSignerAddress",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserNonce",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintNFTGated",
-    values: [string, BigNumberish, BytesLike]
+    functionFragment: "lastTokenId",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "mintNFTGatedWithAddress",
-    values: [string, string, BigNumberish, BytesLike]
+    functionFragment: "mintNFTGated",
+    values: [string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
@@ -129,6 +116,14 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "txAuthDataSignerAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "txAuthDataUserNonce",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -137,19 +132,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getLastTokenId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getMessageHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSignerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserNonce",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -157,11 +140,11 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintNFTGated",
+    functionFragment: "lastTokenId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "mintNFTGatedWithAddress",
+    functionFragment: "mintNFTGated",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -193,6 +176,14 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "txAuthDataSignerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "txAuthDataUserNonce",
     data: BytesLike
   ): Result;
 
@@ -307,8 +298,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getLastTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -321,26 +310,16 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    lastTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    mintNFTGatedWithAddress(
-      recipient: string,
-      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -410,6 +389,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
   approve(
@@ -425,8 +411,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
   getMessageHash(
     _txAuthData: {
       chainID: BigNumberish;
@@ -439,26 +423,16 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getSignerAddress(overrides?: CallOverrides): Promise<string>;
-
-  getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  lastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
   mintNFTGated(
     recipient: string,
-    _blockExpiration: BigNumberish,
-    _signature: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  mintNFTGatedWithAddress(
-    recipient: string,
-    userAddress: string,
     _blockExpiration: BigNumberish,
     _signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -523,6 +497,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+  txAuthDataUserNonce(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   callStatic: {
     approve(
       to: string,
@@ -537,8 +518,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -551,26 +530,16 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getSignerAddress(overrides?: CallOverrides): Promise<string>;
-
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    lastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintNFTGatedWithAddress(
-      recipient: string,
-      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: CallOverrides
@@ -629,6 +598,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -763,8 +739,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getLastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -777,26 +751,16 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    lastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    mintNFTGatedWithAddress(
-      recipient: string,
-      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -866,6 +830,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -885,8 +856,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getLastTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getMessageHash(
       _txAuthData: {
         chainID: BigNumberish;
@@ -899,29 +868,16 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getUserNonce(
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    lastTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintNFTGatedWithAddress(
-      recipient: string,
-      userAddress: string,
       _blockExpiration: BigNumberish,
       _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -993,6 +949,15 @@ export class ExampleGatedNFTMinter extends BaseContract {
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    txAuthDataSignerAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

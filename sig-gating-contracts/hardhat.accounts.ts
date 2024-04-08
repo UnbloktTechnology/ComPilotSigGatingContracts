@@ -13,6 +13,9 @@ const namedAccounts: {
   txAuthSigner: {
     default: 0,
   },
+  externalContract: {
+    default: 2,
+  },
 };
 
 export default namedAccounts;

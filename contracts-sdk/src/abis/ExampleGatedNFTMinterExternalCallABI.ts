@@ -1,6 +1,17 @@
-export const ExampleGatedNFTMinterUpgradeableABI = [
+export const ExampleGatedNFTMinterExternalCallABI = [
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "address",
+        name: "signerAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_externalContractCaller",
+        type: "address",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
@@ -62,19 +73,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
       },
     ],
     name: "ApprovalForAll",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "version",
-        type: "uint8",
-      },
-    ],
-    name: "Initialized",
     type: "event",
   },
   {
@@ -215,6 +213,19 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "externalContractCaller",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -288,19 +299,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
     inputs: [
       {
         internalType: "address",
-        name: "signerAddress",
-        type: "address",
-      },
-    ],
-    name: "initialize",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "owner",
         type: "address",
       },
@@ -332,35 +330,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
-      },
-    ],
-    name: "mintNFTGated",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -541,11 +510,11 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
     inputs: [
       {
         internalType: "address",
-        name: "_signer",
+        name: "_externalContractCaller",
         type: "address",
       },
     ],
-    name: "setSigner",
+    name: "setExternalCaller",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

@@ -12,6 +12,7 @@ import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFT
 import {
   ExampleGatedNFTMinterABI,
   ExampleMultipleInputsABI,
+  ExampleGatedNFTMinterExternalCallABI,
 } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import {
   generateFunctionCallData,
@@ -24,6 +25,7 @@ import { fixtureExampleMultipleInputs } from "../fixtures/fixtureExampleMultiple
 import { deployExampleGatedNFTMinterWithEOA } from "../lib/deploy/deployExampleGatedNFTMinter";
 import { Wallet } from "ethers";
 import { setupThreeAccounts } from "./utils/fundAccounts";
+import { fixtureExampleGatedNFTMinterExternalCall } from "../fixtures/fixtureExampleGatedNFTMinterExternalCall";
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
@@ -42,7 +44,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // try to mint nft
     await exampleNFTMinter.connect(testerSigner).mintNFT(recipient);
 
-    const tokenId = Number(await exampleNFTMinter.getLastTokenId());
+    const tokenId = Number(await exampleNFTMinter.lastTokenId());
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
@@ -75,7 +77,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
-      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
 
@@ -97,7 +99,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         argsWithSelector
       );
 
-    const tokenId = Number(await exampleGatedNFTMinter.getLastTokenId());
+    const tokenId = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
@@ -130,7 +132,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
-      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
 
@@ -370,7 +372,9 @@ describe(`ExampleGatedNFTMinter`, function () {
       args: [recipient],
       userAddress: tester as Address,
       chainID: await txAuthWalletClient.getChainId(),
-      nonce: Number(await contract.read.getUserNonce([tester as Address])),
+      nonce: Number(
+        await contract.read.txAuthDataUserNonce([tester as Address])
+      ),
     };
 
     const signatureResponse = await signTxAuthDataLibEthers(
@@ -401,17 +405,20 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
       .to.be.true;
   });
-  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with custom address for contract to be able to call it`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTMinterExternalCall with a signature from the signer - with custom address for contract to be able to call it`, async () => {
     const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const [txAuthSigner, _testerSigner, externalContract] =
+      await ethers.getSigners();
     const [_, ___] = await hre.viem.getWalletClients();
+    const { exampleGatedNFTMinterExternalCall } =
+      await fixtureExampleGatedNFTMinterExternalCall();
 
     // Build Signature
     const recipient = tester;
 
     const txAuthInput = {
-      contractAbi: Array.from(ExampleGatedNFTMinterABI),
-      contractAddress: exampleGatedNFTMinter.address as Address,
+      contractAbi: Array.from(ExampleGatedNFTMinterExternalCallABI),
+      contractAddress: exampleGatedNFTMinterExternalCall.address as Address,
       functionName: "mintNFTGatedWithAddress",
       args: [recipient, recipient],
       userAddress: tester as Address,
@@ -423,8 +430,8 @@ describe(`ExampleGatedNFTMinter`, function () {
     );
 
     // try to mint nft
-    const tx = await exampleGatedNFTMinter
-      .connect(testerSigner)
+    const tx = await exampleGatedNFTMinterExternalCall
+      .connect(externalContract)
       .mintNFTGatedWithAddress(
         recipient,
         recipient,
@@ -437,7 +444,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Check new minted token id
     const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
-    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
+    const tokenOwner = await exampleGatedNFTMinterExternalCall.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
 
     // Also check for signagure verified emitted event
@@ -545,7 +552,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
-      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
 
@@ -610,7 +617,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
-      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
 
@@ -677,7 +684,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
-      nonce: Number(await exampleGatedNFTMinter.getUserNonce(tester)),
+      nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
     const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
@@ -693,7 +700,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // set signer
     await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
 
-    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinter.txAuthDataSignerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -703,7 +710,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       exampleGatedNFTMinter.connect(address3).setSigner(address3.address)
     ).to.be.revertedWith("Ownable: caller is not the owner");
 
-    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinter.txAuthDataSignerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
 });

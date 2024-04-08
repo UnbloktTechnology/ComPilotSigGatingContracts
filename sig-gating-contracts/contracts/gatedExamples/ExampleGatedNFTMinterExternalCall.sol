@@ -7,29 +7,41 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches your file structure
 
 /**
- * @title Example Gated NFT Minter
+ * @title Example Gated NFT Minter (External Call)
  * @dev NFT minting contract with gated access based on off-chain signature verification.
  * This contract extends ERC721 for NFT functionality, TxAuthDataVerifier for signature verification,
  * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
- * @notice This is an example contract, not intended for deployment.
+ *
+ * This Smart contract is meant to be called from another smart contract that has exclusive access to it.
+ * In this usecase, the userAddress should be in the input and not _msgSender
  */
-contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
+contract ExampleGatedNFTMinterExternalCall is
+    ERC721,
+    TxAuthDataVerifier,
+    Ownable
+{
     uint256 private _tokenIds;
+    address public externalContractCaller;
 
     /// @notice Initializes the contract by setting a name, symbol, and signer for TxAuthDataVerifier.
     /// @param signerAddress The address allowed to sign transaction data for minting authorization.
     constructor(
-        address signerAddress
+        address signerAddress,
+        address _externalContractCaller
     )
-        ERC721("MyExampleGatedNFTMinter", "GNFT")
+        ERC721("MyExampleGatedNFTMinterExternalCall", "GNFT")
         TxAuthDataVerifier(signerAddress)
-    {}
+    {
+        externalContractCaller = _externalContractCaller;
+    }
 
-    /// @notice Sets a new signer address
+    /// @notice Sets a new externalContractCaller address
     /// @dev Can only be called by the current owner
-    /// @param _signer The address of the new signer
-    function setSigner(address _signer) public onlyOwner {
-        _setSigner(_signer);
+    /// @param _externalContractCaller The address of the new externalContractCaller
+    function setExternalCaller(
+        address _externalContractCaller
+    ) public onlyOwner {
+        externalContractCaller = _externalContractCaller;
     }
 
     /// @notice Retrieves the current value of the token ID counter.
@@ -53,14 +65,24 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
     /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
     /// @param recipient The address to which the NFT will be minted.
+    /// @param userAddress The address requesting the signature (in case a contract wants to call this)
     /// @param _blockExpiration The block number after which the request is considered expired.
     /// @param _signature The signature provided for verification.
     /// @return The ID of the newly minted NFT upon successful verification and minting.
-    function mintNFTGated(
+    function mintNFTGatedWithAddress(
         address recipient,
+        address userAddress,
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) returns (uint256) {
+    )
+        public
+        requireTxDataAuthWithAddress(_blockExpiration, _signature, userAddress)
+        returns (uint256)
+    {
+        require(
+            _msgSender() == externalContractCaller,
+            "only the set externalContractCaller can call this"
+        );
         return _mintNFT(recipient);
     }
 }
