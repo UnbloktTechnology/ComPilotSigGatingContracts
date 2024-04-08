@@ -20,10 +20,10 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
 
     // EIP-1271 Magic Value for a valid signature
     // bytes4(keccak256("isValidSignature(bytes32,bytes)")
-    bytes4 private constant MAGIC_VALUE = 0x1626ba7e;
+    bytes4 private constant _MAGIC_VALUE = 0x1626ba7e;
 
     // EIP-1271 Non valid value
-    bytes4 private constant NON_VALID = 0xffffffff;
+    bytes4 private constant _NON_VALID = 0xffffffff;
 
     // Event emitted when the signerAddress is changed
     event SignerChanged(address indexed newSigner);
@@ -65,7 +65,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
      * @dev See {IERC1271-isValidSignature}.
      * @param hash The hash of the data signed.
      * @param signature The signature bytes.
-     * @return magicValue bytes4 constant `MAGIC_VALUE` if the signature is valid.
+     * @return magicValue bytes4 constant `_MAGIC_VALUE` if the signature is valid.
      */
     function isValidSignature(
         bytes32 hash,
@@ -73,9 +73,9 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
     ) external view override returns (bytes4) {
         address recoveredSigner = ECDSA.recover(hash, signature);
         if (recoveredSigner == signerAddress) {
-            return MAGIC_VALUE;
+            return _MAGIC_VALUE;
         } else {
-            return NON_VALID;
+            return _NON_VALID;
         }
     }
 }
