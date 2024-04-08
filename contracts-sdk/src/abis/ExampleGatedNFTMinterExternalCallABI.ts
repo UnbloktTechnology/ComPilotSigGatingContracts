@@ -509,6 +509,19 @@ export const ExampleGatedNFTMinterExternalCallABI = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "_externalContractCaller",
+        type: "address",
+      },
+    ],
+    name: "setExternalCaller",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",

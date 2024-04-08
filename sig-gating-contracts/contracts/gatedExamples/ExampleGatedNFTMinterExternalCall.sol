@@ -35,6 +35,15 @@ contract ExampleGatedNFTMinterExternalCall is
         externalContractCaller = _externalContractCaller;
     }
 
+    /// @notice Sets a new externalContractCaller address
+    /// @dev Can only be called by the current owner
+    /// @param _externalContractCaller The address of the new externalContractCaller
+    function setExternalCaller(
+        address _externalContractCaller
+    ) public onlyOwner {
+        externalContractCaller = _externalContractCaller;
+    }
+
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
