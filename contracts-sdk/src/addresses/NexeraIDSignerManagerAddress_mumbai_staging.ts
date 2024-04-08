@@ -1,2 +1,2 @@
 export const NexeraIDSignerManagerAddress_mumbai_staging =
-  "0x35a16a6B2e688bf53f758f02995BF53a419f9F51" as const;
+  "0xcF6bEBf865DDae3DCaaE6057F65A064bEA71C3e3" as const;
