@@ -42,7 +42,7 @@ export const getNonceEthers = async (
   provider: ethers.providers.Provider
 ) => {
   const contract = new ethers.Contract(contractAddress, contractABI, provider);
-  const nonce = await contract.getUserNonce(userAddress);
+  const nonce = await contract.txAuthDataUserNonce(userAddress);
   return Number(nonce);
 };
 

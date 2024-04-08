@@ -294,25 +294,6 @@ export const ExampleGatedNFTMinterABI = [
     inputs: [
       {
         internalType: "address",
-        name: "user",
-        type: "address",
-      },
-    ],
-    name: "getUserNonce",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "owner",
         type: "address",
       },
@@ -550,19 +531,6 @@ export const ExampleGatedNFTMinterABI = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "signerAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "bytes4",
@@ -647,6 +615,38 @@ export const ExampleGatedNFTMinterABI = [
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "txAuthDataSignerAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "txAuthDataUserNonce",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ] as const;

@@ -176,25 +176,6 @@ export const ExampleMultipleInputsABI = [
     inputs: [
       {
         internalType: "address",
-        name: "user",
-        type: "address",
-      },
-    ],
-    name: "getUserNonce",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "",
         type: "address",
       },
@@ -244,8 +225,21 @@ export const ExampleMultipleInputsABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
-    name: "signerAddress",
+    name: "txAuthDataSignerAddress",
     outputs: [
       {
         internalType: "address",
@@ -260,13 +254,19 @@ export const ExampleMultipleInputsABI = [
     inputs: [
       {
         internalType: "address",
-        name: "newOwner",
+        name: "user",
         type: "address",
       },
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "txAuthDataUserNonce",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

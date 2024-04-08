@@ -26,7 +26,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getLastTokenId()": FunctionFragment;
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
-    "getUserNonce(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mintNFTGated(address,uint256,bytes)": FunctionFragment;
     "mintNFTGatedWithAddress(address,address,uint256,bytes)": FunctionFragment;
@@ -38,12 +37,13 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setSigner(address)": FunctionFragment;
-    "signerAddress()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "txAuthDataSignerAddress()": FunctionFragment;
+    "txAuthDataUserNonce(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -71,10 +71,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
         functionCallData: BytesLike;
       }
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserNonce",
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -109,10 +105,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setSigner", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "signerAddress",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -129,6 +121,14 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "txAuthDataSignerAddress",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "txAuthDataUserNonce",
+    values: [string]
+  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -142,10 +142,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getMessageHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserNonce",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -178,10 +174,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setSigner", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "signerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -193,6 +185,14 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "txAuthDataSignerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "txAuthDataUserNonce",
     data: BytesLike
   ): Result;
 
@@ -321,8 +321,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -385,8 +383,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    signerAddress(overrides?: CallOverrides): Promise<[string]>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -410,6 +406,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
   approve(
@@ -438,8 +441,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     },
     overrides?: CallOverrides
   ): Promise<string>;
-
-  getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   isApprovedForAll(
     owner: string,
@@ -500,8 +501,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  signerAddress(overrides?: CallOverrides): Promise<string>;
-
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -522,6 +521,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+  txAuthDataUserNonce(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   callStatic: {
     approve(
@@ -550,8 +556,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       },
       overrides?: CallOverrides
     ): Promise<string>;
-
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -607,8 +611,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     setSigner(_signer: string, overrides?: CallOverrides): Promise<void>;
 
-    signerAddress(overrides?: CallOverrides): Promise<string>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -629,6 +631,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -777,8 +786,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -841,8 +848,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    signerAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -865,6 +870,13 @@ export class ExampleGatedNFTMinter extends BaseContract {
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
@@ -896,11 +908,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
         userAddress: string;
         functionCallData: BytesLike;
       },
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserNonce(
-      user: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -969,8 +976,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    signerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -993,6 +998,15 @@ export class ExampleGatedNFTMinter extends BaseContract {
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    txAuthDataSignerAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

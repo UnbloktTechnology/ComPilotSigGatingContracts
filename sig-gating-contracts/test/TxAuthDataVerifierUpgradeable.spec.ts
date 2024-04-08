@@ -64,7 +64,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -112,7 +112,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -245,7 +245,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -317,7 +317,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration: 0,
     };
@@ -345,7 +345,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       .connect(deployer)
       .setSigner(address3.address);
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.signerAddress();
+    const newSigner =
+      await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -361,7 +362,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       );
     }
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.signerAddress();
+    const newSigner =
+      await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
 });

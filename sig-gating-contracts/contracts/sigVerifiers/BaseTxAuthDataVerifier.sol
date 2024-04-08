@@ -9,7 +9,7 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
  * @dev Provides mechanisms for verifying transaction authentication data, including signature verification and nonce management.
  * This contract is designed to be extended by other contracts requiring transaction authentication based on digital signatures.
  * It includes functionality for:
- * - Verifying transaction signatures against a specified signerAddress address.
+ * - Verifying transaction signatures against a specified signer address.
  * - Ensuring transactions have not expired based on their block expiration.
  * - Incrementing nonces to prevent replay attacks.
  *
@@ -28,7 +28,7 @@ contract BaseTxAuthDataVerifier {
     uint256 private constant _BYTES_32_LENGTH = 32;
 
     /// @notice Address of the off-chain service that signs the transactions
-    address public signerAddress;
+    address private _signerAddress;
 
     /// @notice Mapping to track the nonces of users to prevent replay attacks
     /// @dev Maps a user address to their current nonce
@@ -44,7 +44,7 @@ contract BaseTxAuthDataVerifier {
         bytes functionCallData
     );
 
-    // Event emitted when the signerAddress is changed
+    // Event emitted when the signer is changed
     event SignerChanged(address indexed newSigner);
 
     /// @notice Custom error for handling signature expiry
@@ -69,22 +69,28 @@ contract BaseTxAuthDataVerifier {
         bytes functionCallData;
     }
 
-    /// @notice Sets a new signerAddress address
+    /// @notice Sets a new signer address
     /// @dev Can only be called by the current owner
-    /// @param _signerAddress The address of the new signerAddress
-    function _setSigner(address _signerAddress) internal {
+    /// @param _signer The address of the new signer
+    function _setSigner(address _signer) internal {
         require(
-            _signerAddress != address(0),
-            "BaseTxAuthDataVerifier: new signerAddress is the zero address"
+            _signer != address(0),
+            "BaseTxAuthDataVerifier: new signer is the zero address"
         );
-        signerAddress = _signerAddress;
-        emit SignerChanged(_signerAddress);
+        _signerAddress = _signer;
+        emit SignerChanged(_signer);
+    }
+
+    /// @notice Retrieves the signer address
+    /// @return The signer address
+    function txAuthDataSignerAddress() public view returns (address) {
+        return _signerAddress;
     }
 
     /// @notice Retrieves the current nonce for a given user
     /// @param user The address of the user
     /// @return The current nonce of the user
-    function getUserNonce(address user) public view returns (uint256) {
+    function txAuthDataUserNonce(address user) public view returns (uint256) {
         return nonces[user];
     }
 
@@ -150,7 +156,7 @@ contract BaseTxAuthDataVerifier {
         /// Verify Signature
         if (
             !SignatureChecker.isValidSignatureNow(
-                signerAddress,
+                _signerAddress,
                 ethSignedMessageHash,
                 _signature
             )

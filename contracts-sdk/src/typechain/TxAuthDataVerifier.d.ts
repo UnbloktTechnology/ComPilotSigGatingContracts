@@ -21,9 +21,9 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
   functions: {
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
-    "getUserNonce(address)": FunctionFragment;
     "nonces(address)": FunctionFragment;
-    "signerAddress()": FunctionFragment;
+    "txAuthDataSignerAddress()": FunctionFragment;
+    "txAuthDataUserNonce(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -39,27 +39,27 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
       }
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getUserNonce",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "signerAddress",
+    functionFragment: "txAuthDataSignerAddress",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "txAuthDataUserNonce",
+    values: [string]
   ): string;
 
   decodeFunctionResult(
     functionFragment: "getMessageHash",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserNonce",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "signerAddress",
+    functionFragment: "txAuthDataSignerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "txAuthDataUserNonce",
     data: BytesLike
   ): Result;
 
@@ -141,11 +141,14 @@ export class TxAuthDataVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    signerAddress(overrides?: CallOverrides): Promise<[string]>;
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
   getMessageHash(
@@ -160,11 +163,14 @@ export class TxAuthDataVerifier extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  signerAddress(overrides?: CallOverrides): Promise<string>;
+  txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+  txAuthDataUserNonce(
+    user: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   callStatic: {
     getMessageHash(
@@ -179,11 +185,14 @@ export class TxAuthDataVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    signerAddress(overrides?: CallOverrides): Promise<string>;
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -247,11 +256,14 @@ export class TxAuthDataVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUserNonce(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    signerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+    txAuthDataSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -267,16 +279,18 @@ export class TxAuthDataVerifier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getUserNonce(
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     nonces(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    signerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    txAuthDataSignerAddress(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    txAuthDataUserNonce(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
   };
 }
