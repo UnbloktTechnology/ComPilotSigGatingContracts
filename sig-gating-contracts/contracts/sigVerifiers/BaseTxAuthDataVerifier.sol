@@ -121,12 +121,16 @@ contract BaseTxAuthDataVerifier {
             revert BlockExpired();
         }
 
+        /// Read nonce value and increment it (in storage) to prevent replay attacks
+        uint256 userNonce = nonces[userAddress]++;
+
+        /// Build tx auth data
         TxAuthData memory txAuthData = TxAuthData({
             functionCallData: argsWithSelector,
             contractAddress: address(this),
             userAddress: userAddress,
             chainID: block.chainid,
-            nonce: nonces[userAddress],
+            nonce: userNonce,
             blockExpiration: blockExpiration
         });
 
@@ -134,12 +138,9 @@ contract BaseTxAuthDataVerifier {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
-        /// increment nonce to prevent replay attacks
-        nonces[userAddress] += 1;
-
         emit NexeraIDSignatureVerified(
             block.chainid,
-            nonces[userAddress] - 1,
+            userNonce,
             blockExpiration,
             address(this),
             userAddress,
