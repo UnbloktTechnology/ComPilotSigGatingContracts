@@ -345,7 +345,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       .connect(deployer)
       .setSigner(address3.address);
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinterUpgradeable.signerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -361,7 +361,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       );
     }
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinterUpgradeable.signerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
 });

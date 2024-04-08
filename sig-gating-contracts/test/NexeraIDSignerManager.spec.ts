@@ -24,7 +24,7 @@ describe(`NexeraIDSignerManager`, function () {
     // set signer
     await nexeraIDSignerManager.connect(deployer).setSigner(address3.address);
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -34,7 +34,7 @@ describe(`NexeraIDSignerManager`, function () {
       nexeraIDSignerManager.connect(address3).setSigner(address3.address)
     ).to.be.revertedWith("Ownable: caller is not the owner");
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
   it(`Should check that signerManager admin can change the signer and sig auth behavior changes accordingly`, async () => {
@@ -50,7 +50,7 @@ describe(`NexeraIDSignerManager`, function () {
       .connect(deployer)
       .setSigner(secondSignerAddress);
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner.toLocaleLowerCase() === secondSignerAddress).to.be.true;
 
     // Build Signature

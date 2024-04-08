@@ -298,19 +298,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getSignerAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -580,6 +567,19 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
     name: "setSigner",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "signerAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

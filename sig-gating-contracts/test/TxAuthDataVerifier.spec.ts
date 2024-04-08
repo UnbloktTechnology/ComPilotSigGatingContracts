@@ -693,7 +693,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // set signer
     await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
 
-    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinter.signerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -703,7 +703,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       exampleGatedNFTMinter.connect(address3).setSigner(address3.address)
     ).to.be.revertedWith("Ownable: caller is not the owner");
 
-    const newSigner = await exampleGatedNFTMinter.getSignerAddress();
+    const newSigner = await exampleGatedNFTMinter.signerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
 });
