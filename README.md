@@ -2,13 +2,21 @@
 
 Repository for the NexeraID Signature Based Smart Contracts
 
-This repository contains smart contracts developed by Nexera ID to help our customers restrict access to their smart contracts.
+This solution helps on-chain protocols gate access to their smart contracts on a per-transaction basis.
 
-Signature Based Gating: users are verified in our back-end and receive authorization signatures through our api.
+The client protocol will integrate NexeraID’s signature-based gating smart contracts in their own smart contracts.
+
+Every time a user wants to call the protocol’s smart contract, they will have to obtain a signature from NexeraID’s API. They can only obtain this signature if they satisfy conditions set by the protocol in the NexeraID Dashboard. These conditions can be based on KYC conditions, but also inputs from the transaction itself.
+
+Once the signature is fetched from the API, it will be added to the user’s inputs in the blockchain call. Then, this signature will be verified on chain using the smart contract that NexeraID provides, integrated into the protocol.
+
+![End to End flow](./images/smartcontractgating-flow.png)
 
 ## Signature Based Gating
 
 `./sig-gating-contracts`
+
+More details about smart contract architecture in this [README](./sig-gating-contracts/README.md)
 
 ## SDK
 
