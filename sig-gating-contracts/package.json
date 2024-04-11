@@ -15,7 +15,7 @@
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
     "coverage": "hardhat coverage",
-    "deploy-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia",
+    "deploy-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia && deploy-mumbai",
     "deploy-amoy": "hardhat deploy --tags testnet --network amoy_dev && hardhat deploy --tags testnet --network amoy_staging && hardhat deploy --tags testnet --network amoy_prod",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia_dev && hardhat deploy --tags testnet --network sepolia_staging && hardhat deploy --tags testnet --network sepolia_prod",
     "deploy-mumbai": "hardhat deploy --tags testnet --network mumbai_dev && hardhat deploy --tags testnet --network mumbai_staging && hardhat deploy --tags testnet --network mumbai_prod",
