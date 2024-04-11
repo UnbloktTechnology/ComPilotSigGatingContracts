@@ -363,7 +363,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const contract = getContract({
       address: exampleGatedNFTMinter.address as Address,
       abi: ExampleGatedNFTMinterABI,
-      publicClient: txAuthWalletClient,
+      client: { public: txAuthWalletClient },
     });
     const txAuthInput = {
       contractAbi: Array.from(ExampleGatedNFTMinterABI),

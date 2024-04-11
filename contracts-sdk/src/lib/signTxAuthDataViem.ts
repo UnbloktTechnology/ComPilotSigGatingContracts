@@ -57,7 +57,7 @@ export const getNonce = async (
   const contract = getContract({
     address: contractAddress,
     abi: abi,
-    publicClient: client,
+    client: { public: client },
   });
   return Number(await contract.read.txAuthDataUserNonce([userAddress]));
 };

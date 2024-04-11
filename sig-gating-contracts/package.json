@@ -35,7 +35,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@nomicfoundation/hardhat-viem": "^1.0.3",
+    "@nomicfoundation/hardhat-viem": "^2.0.0",
     "@openzeppelin/contracts": "^4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
     "@openzeppelin/upgrades": "2.8.0",
@@ -68,6 +68,6 @@
     "ts-node": "^10.9.2",
     "typechain": "^5.2.0",
     "typescript": "^5.3.3",
-    "viem": "^1.21.4"
+    "viem": "^2.9.16"
   }
 }
