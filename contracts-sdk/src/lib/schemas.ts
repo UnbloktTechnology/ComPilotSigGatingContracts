@@ -13,7 +13,7 @@ export enum NEXERA_CHAINS {
   ETHEREUM = "1",
   GOERLI = "5",
   POLYGON = "137",
-  MUMBAI = "80001",
+  AMOY = "80002",
   AVALANCHE = "43114",
   FUJI = "43113",
   ARBITRUM = "42161",
@@ -46,12 +46,15 @@ export type FunctionCallData = String0x;
 export type Address = z.infer<typeof AddressSchema>;
 
 export type CredentialType =
-  | "KYCAgeCredential"
-  | "ID3"
-  | "IDScan"
-  | "IDScanPassport"
-  | "IDScanSelfie"
-  | "ProofOfResidence";
+  | "AMLScreeningsResults"
+  | "ProofOfResidence"
+  | "SelfieImage"
+  | "IDImage"
+  | "IDInformation"
+  | "ID3" // this is for backwards compatibility
+  | "IDScan" // this is for backwards compatibility
+  | "IDScanSelfie" // this is for backwards compatibility
+  | "IDScanPassport"; // this is for backwards compatibility
 
 export type Environment = "local" | "dev" | "stage" | "prod" | "branch";
 

@@ -21,7 +21,7 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.16",
+    version: "0.8.20",
     settings: {
       optimizer: {
         enabled: true,
@@ -35,7 +35,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      polygonMumbai: `${process.env.ETHERSCAN_MUMBAI_API_KEY}`,
+      polygonAmoy: `${process.env.ETHERSCAN_AMOY_API_KEY}`,
     },
   },
   networks,

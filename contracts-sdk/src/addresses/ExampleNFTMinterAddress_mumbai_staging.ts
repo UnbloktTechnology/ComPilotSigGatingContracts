@@ -1,2 +1,2 @@
 export const ExampleNFTMinterAddress_mumbai_staging =
-  "0xF3a3Bc7E098732B29E9cE010010dCcA467860E4e" as const;
+  "0xC9A1c1bA059a3856f0d88f0908D6a2C8315bcF79" as const;

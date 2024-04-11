@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 /// @title Example  NFT Minter
 /// @notice This contract demonstrates an NFT minting process that is not gated.
+/// @notice This is an example contract, not intended for deployment.
 /// @dev Inherits from OpenZeppelin's ERC721 for NFT functionality.
 contract ExampleNFTMinter is ERC721 {
     uint256 private _tokenIds;
@@ -15,7 +16,7 @@ contract ExampleNFTMinter is ERC721 {
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
-    function getLastTokenId() public view returns (uint256) {
+    function lastTokenId() public view returns (uint256) {
         return _tokenIds;
     }
 

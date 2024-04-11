@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "../sigVerifiers/TxAuthDataVerifierUpgradeable.sol"; // Ensure this path matches your file structure
@@ -12,6 +12,8 @@ import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/Own
  * and OwnableUpgradeable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
  *
  * The contract is designed to be used with a proxy for upgradeability.
+ *
+ * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTMinterUpgradeable is
     ERC721Upgradeable,
@@ -43,7 +45,7 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
-    function getLastTokenId() public view returns (uint256) {
+    function lastTokenId() public view returns (uint256) {
         return _tokenIds;
     }
 

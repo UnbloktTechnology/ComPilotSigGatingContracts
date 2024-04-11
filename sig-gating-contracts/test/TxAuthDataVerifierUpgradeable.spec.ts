@@ -5,11 +5,11 @@ import { ExampleGatedNFTMinterUpgradeable } from "../typechain";
 import {
   Address,
   signTxAuthDataLibEthers,
-} from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinterUpgradeable } from "../fixtures/fixtureExampleGatedNFTMinterUpgradeable";
 
-import { ExampleGatedNFTMinterUpgradeableABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
-import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { ExampleGatedNFTMinterUpgradeableABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
+import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import {
   generateFunctionCallData,
   generateFunctionCallDataViem,
@@ -64,7 +64,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -77,7 +77,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       .mintNFTGated(recipient, blockExpiration, signature);
 
     const tokenId = Number(
-      await exampleGatedNFTMinterUpgradeable.getLastTokenId()
+      await exampleGatedNFTMinterUpgradeable.lastTokenId()
     );
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinterUpgradeable.ownerOf(tokenId);
@@ -112,7 +112,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -245,7 +245,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration,
     };
@@ -317,7 +317,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       userAddress: tester as Address,
       chainID,
       nonce: Number(
-        await exampleGatedNFTMinterUpgradeable.getUserNonce(tester)
+        await exampleGatedNFTMinterUpgradeable.txAuthDataUserNonce(tester)
       ),
       blockExpiration: 0,
     };
@@ -345,7 +345,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       .connect(deployer)
       .setSigner(address3.address);
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    const newSigner =
+      await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -361,7 +362,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       );
     }
 
-    const newSigner = await exampleGatedNFTMinterUpgradeable.getSignerAddress();
+    const newSigner =
+      await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
 });

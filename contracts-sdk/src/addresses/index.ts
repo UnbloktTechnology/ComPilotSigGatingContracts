@@ -2,16 +2,6 @@
 
 // Mumbai
 
-// ScenarioVerifierFactory
-export * from "./ScenarioVerifierFactoryAddress_mumbai_dev";
-export * from "./ScenarioVerifierFactoryAddress_mumbai_staging";
-export * from "./ScenarioVerifierFactoryAddress_mumbai_prod";
-
-// VerifierEntrypointFactory
-export * from "./VerifierEntrypointFactoryAddress_mumbai_dev";
-export * from "./VerifierEntrypointFactoryAddress_mumbai_staging";
-export * from "./VerifierEntrypointFactoryAddress_mumbai_prod";
-
 // ExampleGatedNFTMinter
 export * from "./ExampleGatedNFTMinterAddress_mumbai_dev";
 export * from "./ExampleGatedNFTMinterAddress_mumbai_staging";
@@ -27,17 +17,24 @@ export * from "./NexeraIDSignerManagerAddress_mumbai_dev";
 export * from "./NexeraIDSignerManagerAddress_mumbai_staging";
 export * from "./NexeraIDSignerManagerAddress_mumbai_prod";
 
+// Amoy
+
+// ExampleGatedNFTMinter
+export * from "./ExampleGatedNFTMinterAddress_amoy_dev";
+export * from "./ExampleGatedNFTMinterAddress_amoy_staging";
+export * from "./ExampleGatedNFTMinterAddress_amoy_prod";
+
+// ExampleNFTMinter
+export * from "./ExampleNFTMinterAddress_amoy_dev";
+export * from "./ExampleNFTMinterAddress_amoy_staging";
+export * from "./ExampleNFTMinterAddress_amoy_prod";
+
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_amoy_dev";
+export * from "./NexeraIDSignerManagerAddress_amoy_staging";
+export * from "./NexeraIDSignerManagerAddress_amoy_prod";
+
 // Sepolia
-
-// ScenarioVerifierFactory
-export * from "./ScenarioVerifierFactoryAddress_sepolia_dev";
-export * from "./ScenarioVerifierFactoryAddress_sepolia_staging";
-export * from "./ScenarioVerifierFactoryAddress_sepolia_prod";
-
-// VerifierEntrypointFactory
-export * from "./VerifierEntrypointFactoryAddress_sepolia_dev";
-export * from "./VerifierEntrypointFactoryAddress_sepolia_staging";
-export * from "./VerifierEntrypointFactoryAddress_sepolia_prod";
 
 // ExampleGatedNFTMinter
 export * from "./ExampleGatedNFTMinterAddress_sepolia_dev";

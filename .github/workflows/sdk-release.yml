@@ -11,7 +11,7 @@ permissions:
   packages: write
 
 env:
-  MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+  AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
   TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
   POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
   DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build
         env:
-          MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+          AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
           TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
           POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
           DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
@@ -75,10 +75,14 @@ jobs:
           SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk build
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
-      - name: Publish to NPM
+      - name: Publish to public NPM
+        env:
+          NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
         run: |
-          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
-          pnpm --filter @nexeraprotocol/nexera-id-zkp-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
-          pnpm --filter @nexeraprotocol/nexera-id-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+          echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
+
+          pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
+
+          pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/

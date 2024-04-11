@@ -2,11 +2,11 @@ import { expect } from "chai";
 import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../typechain";
-import { Address } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
-import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-contracts-sdk/abis";
-import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-contracts-sdk/lib";
+import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
+import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { publicActions } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 
@@ -24,7 +24,7 @@ describe(`NexeraIDSignerManager`, function () {
     // set signer
     await nexeraIDSignerManager.connect(deployer).setSigner(address3.address);
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner === address3.address).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
@@ -34,7 +34,7 @@ describe(`NexeraIDSignerManager`, function () {
       nexeraIDSignerManager.connect(address3).setSigner(address3.address)
     ).to.be.revertedWith("Ownable: caller is not the owner");
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner !== address3.address).to.be.true;
   });
   it(`Should check that signerManager admin can change the signer and sig auth behavior changes accordingly`, async () => {
@@ -50,7 +50,7 @@ describe(`NexeraIDSignerManager`, function () {
       .connect(deployer)
       .setSigner(secondSignerAddress);
 
-    const newSigner = await nexeraIDSignerManager.getSignerAddress();
+    const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner.toLocaleLowerCase() === secondSignerAddress).to.be.true;
 
     // Build Signature
@@ -112,7 +112,7 @@ describe(`NexeraIDSignerManager`, function () {
     ).to.be.revertedWith("InvalidSignature");
 
     // Check no new minted token id
-    const tokenId2 = Number(await exampleGatedNFTMinter.getLastTokenId());
+    const tokenId2 = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId2 === 1).to.be.true;
   });
 });

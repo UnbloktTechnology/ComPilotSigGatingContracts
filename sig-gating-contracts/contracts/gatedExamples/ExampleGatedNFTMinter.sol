@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -11,6 +11,7 @@ import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches you
  * @dev NFT minting contract with gated access based on off-chain signature verification.
  * This contract extends ERC721 for NFT functionality, TxAuthDataVerifier for signature verification,
  * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     uint256 private _tokenIds;
@@ -34,14 +35,14 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     /// @notice Retrieves the current value of the token ID counter.
     /// @dev Returns the last token ID that was minted.
     /// @return The current value of the token ID counter, which corresponds to the last minted token ID.
-    function getLastTokenId() public view returns (uint256) {
+    function lastTokenId() public view returns (uint256) {
         return _tokenIds;
     }
 
     /// @dev Internal function to mint a new NFT to a specified recipient.
     /// @param recipient The address that will receive the newly minted NFT.
     /// @return newItemId The token ID of the newly minted NFT.
-    function mintNFT(address recipient) internal returns (uint256) {
+    function _mintNFT(address recipient) internal returns (uint256) {
         _tokenIds += 1;
         uint256 newItemId = _tokenIds;
         _mint(recipient, newItemId);
@@ -60,26 +61,6 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
         uint256 _blockExpiration,
         bytes calldata _signature
     ) public requireTxDataAuth(_blockExpiration, _signature) returns (uint256) {
-        return mintNFT(recipient);
-    }
-
-    /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
-    /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
-    /// @param recipient The address to which the NFT will be minted.
-    /// @param userAddress The address requesting the signature (in case a contract wants to call this)
-    /// @param _blockExpiration The block number after which the request is considered expired.
-    /// @param _signature The signature provided for verification.
-    /// @return The ID of the newly minted NFT upon successful verification and minting.
-    function mintNFTGatedWithAddress(
-        address recipient,
-        address userAddress,
-        uint256 _blockExpiration,
-        bytes calldata _signature
-    )
-        public
-        requireTxDataAuthWithAddress(_blockExpiration, _signature, userAddress)
-        returns (uint256)
-    {
-        return mintNFT(recipient);
+        return _mintNFT(recipient);
     }
 }

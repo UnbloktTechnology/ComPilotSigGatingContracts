@@ -5,7 +5,7 @@ on:
     types: [opened, reopened, synchronize, edited]
 
 env:
-  MUMBAI_PROVIDER_URL: ${{ secrets.MUMBAI_PROVIDER_URL }}
+  AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
   TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
   POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
   DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}

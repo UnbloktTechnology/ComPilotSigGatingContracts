@@ -59,7 +59,7 @@ export const getNonce = async (
     abi: abi,
     publicClient: client,
   });
-  return Number(await contract.read.getUserNonce([userAddress]));
+  return Number(await contract.read.txAuthDataUserNonce([userAddress]));
 };
 export const signTxAuthDataLib = async (
   txAuthWalletClient: WalletClientExtended,

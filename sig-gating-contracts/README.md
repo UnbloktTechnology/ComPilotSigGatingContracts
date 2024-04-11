@@ -2,21 +2,15 @@
 
 @nexeraprotocol/nexera-id-sig-gating-contracts
 
-Signature Based Gating: users are verified in our back-end and receive authorization signatures through our api
+Signature Based Gating: users are verified in our back-end and receive authorization signatures through our api.
 
-## Signature Based Gating Contracts
+## Smart Contract Architecture Overview
 
-From the [docs](https://docs.nexera.id/smartcontractgating/):
+![Architecture Overview](../images/NexeraID%20Smart%20Contract%20Architecture%20Overview.png)
 
-NexeraID's signature based gating solution is based on the unified user profile that each customer has in the NexeraID Dashboard. Rather than having separate on-chain and off-chain lists, a customer is allowed (or denied) access to a smart contract based on their status in the NexeraID Dashboard.
+## Contracts Files
 
-The user authenticates with their wallet (1) and prepares an action (2). Then the front end generates a transaction and requests a signature through the NexeraID API (3). The API checks with the NexeraID user profile (4), and if the user is approved, the API signs the transaction and returns it to the front end (5). The front end constructs the final transaction and presents it to the user for their signature (6). The user publishes the transaction which is sent to the signature verifier smart contract, `TxAuthDataVerifier` (7). If the signature is valid, the transaction is sent to the gated smart contract.
-
-Instructions can be found [here](https://docs.nexera.id/developing/gating/smartcontract)
-
-### Contracts
-
-#### Examples
+### Examples
 
 `./contracts/gatedExamples/` contains examples of an NFT Minter using our signature based gating contracts.
 /**
@@ -33,9 +27,9 @@ This contract extends ERC721Upgradeable for NFT functionality, TxAuthDataVerifie
 This contract demonstrates a contract inheriting from TxAuthDataVerifier to update variables with signature verification.
 This contract tests more complex inputs such as bytes inputs or no inputs
 
-- Non Gated Example  NFT Minter for comparaison
+- Non Gated Example  NFT Minter for comparison
 
-#### Verifiers
+### Verifiers
 
 `./contracts/sigVerifiers/` contains the smart contracts used to verify signatures
 
@@ -46,7 +40,7 @@ It includes functionality for:
 - Verifying transaction signatures against a specified signer address.
 - Ensuring transactions have not expired based on their block expiration.
 - Incrementing nonces to prevent replay attacks.
-- The contract utilizes OZ SignatureChecker for signature verification (compatible with both EOA and smart contract signers).
+- The contract utilizes OZ SignatureChecker for signature verification (compatible with both EOA and smart contract signers). We recommend our customers set this to point to our deployed NexeraIDSignerManager contract.
 
 - Transaction Authentication Data Verifier
 Contract for verifying transaction authentication data, including signature verification and nonce management.
@@ -57,12 +51,14 @@ Upgradeable contract for verifying transaction authentication data, including si
 It extends `BaseTxAuthDataVerifier` to provide core functionality for transaction data verification.
 It is intended to be deployed behind a proxy for upgradeability.
 
-#### Signer Manager
+### Signer Manager
 
 `./contracts/signerManager/NexeraIDSignerManager.sol` is a smart contract that we use to manage the signer address used in our API.
 
 That way, if this address is compromised, we can change it without every customer having to call _setSigner.
 
-### Sig Gating Tests
+This smart contract will be deployed by us and will eventually be controlled by a Gnosis MultiSig.
+
+## Sig Gating Tests
 
 `./test/` features tests for signature gating using our examples.

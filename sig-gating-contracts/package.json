@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
-  "version": "1.0.1",
+  "version": "1.1.5",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [
@@ -8,16 +8,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NexeraProtocol/NexeraIDContracts.git",
+    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
     "directory": "sig-gating-contracts"
   },
   "scripts": {
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
     "coverage": "hardhat coverage",
-    "deploy-contracts": "pnpm deploy-mumbai && pnpm deploy-sepolia",
-    "deploy-mumbai": "hardhat deploy --tags testnet --network mumbai_dev && hardhat deploy --tags testnet --network mumbai_staging && hardhat deploy --tags testnet --network mumbai_prod",
+    "deploy-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia && deploy-mumbai",
+    "deploy-amoy": "hardhat deploy --tags testnet --network amoy_dev && hardhat deploy --tags testnet --network amoy_staging && hardhat deploy --tags testnet --network amoy_prod",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia_dev && hardhat deploy --tags testnet --network sepolia_staging && hardhat deploy --tags testnet --network sepolia_prod",
+    "deploy-mumbai": "hardhat deploy --tags testnet --network mumbai_dev && hardhat deploy --tags testnet --network mumbai_staging && hardhat deploy --tags testnet --network mumbai_prod",
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
@@ -44,7 +45,7 @@
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@nexeraprotocol/nexera-id-contracts-sdk": "workspace:*",
+    "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk": "workspace:*",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.6",

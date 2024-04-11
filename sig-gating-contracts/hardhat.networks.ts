@@ -5,6 +5,7 @@ dotenv.config();
 
 // Default values
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
+const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
 const DEFAULT_MUMBAI_URL = "https://rpc.ankr.com/polygon_mumbai";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
 const DEFAULT_MNEMONIC =
@@ -15,6 +16,7 @@ const DEPLOYMENT_MNEMONIC = process.env.DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
+const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
 const MUMBAI_PROVIDER_URL =
   process.env.MUMBAI_PROVIDER_URL || DEFAULT_MUMBAI_URL;
 
@@ -24,6 +26,12 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
+    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+  },
+  amoy_prod: {
+    live: true,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   mumbai_prod: {
@@ -45,6 +53,12 @@ export const networks: NetworksUserConfig = {
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
+  amoy_staging: {
+    live: true,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
+    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+  },
   mumbai_staging: {
     live: true,
     chainId: 80001,
@@ -64,6 +78,12 @@ export const networks: NetworksUserConfig = {
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
+  amoy_dev: {
+    live: true,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
+    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+  },
   mumbai_dev: {
     live: true,
     chainId: 80001,
@@ -80,9 +100,9 @@ export const networks: NetworksUserConfig = {
   hardhat: {
     live: false,
     forking: {
-      url: `${MUMBAI_PROVIDER_URL}`,
+      url: `${AMOY_PROVIDER_URL}`,
       // using fixed block number is supposed to improve test performance
-      blockNumber: 41591456,
+      blockNumber: 5499570,
     },
     // Nexera ID Test address is set up with tokens to test the Pool
     accounts: { mnemonic: TEST_MNEMONIC },

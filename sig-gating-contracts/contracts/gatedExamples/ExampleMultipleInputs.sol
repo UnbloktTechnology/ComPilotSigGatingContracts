@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -8,6 +8,7 @@ import "../sigVerifiers/TxAuthDataVerifier.sol"; // Ensure this path matches you
 /// @title Example Multiple Inputs Contract
 /// @dev This contract demonstrates a contract inheriting from TxAuthDataVerifier to update variables with signature verification.
 /// @notice This contract allows updating certain variables only after verifying the transaction authenticity with a signature.
+/// @notice This is an example contract, not intended for deployment.
 contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
     uint256 intVariable;
     address addressVariable;
