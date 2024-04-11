@@ -1,2 +1,2 @@
 export const ExampleNFTMinterAddress_sepolia_prod =
-  "0x2fb5C2eE1527c89D35Df7D0B7bA9128afe0162AB" as const;
+  "0xc1071283efEb418Ff3e039eF81724E975bb1734D" as const;
