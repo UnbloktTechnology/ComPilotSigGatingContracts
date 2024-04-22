@@ -32,7 +32,6 @@
     ]
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-viem": "^2.0.0",
     "viem": "^2.9.16",
     "zod": "^3.22.4"
   },

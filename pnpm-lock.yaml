@@ -36,9 +36,6 @@ importers:
 
   contracts-sdk:
     dependencies:
-      '@nomicfoundation/hardhat-viem':
-        specifier: ^2.0.0
-        version: 2.0.0(hardhat@2.22.2)(typescript@5.4.5)(viem@2.9.16)(zod@3.22.4)
       ethers:
         specifier: ^5.7.2
         version: 5.7.2
@@ -57,7 +54,7 @@ importers:
     dependencies:
       '@nomicfoundation/hardhat-viem':
         specifier: ^2.0.0
-        version: 2.0.0(hardhat@2.22.2)(typescript@5.4.5)(viem@2.9.16)(zod@3.22.4)
+        version: 2.0.0(hardhat@2.22.2)(typescript@5.4.5)(viem@2.9.16)
       '@openzeppelin/contracts':
         specifier: ^4.9.5
         version: 4.9.6
@@ -2339,14 +2336,14 @@ packages:
       '@nomicfoundation/ethereumjs-rlp': 5.0.4
       ethereum-cryptography: 0.1.3
 
-  /@nomicfoundation/hardhat-viem@2.0.0(hardhat@2.22.2)(typescript@5.4.5)(viem@2.9.16)(zod@3.22.4):
+  /@nomicfoundation/hardhat-viem@2.0.0(hardhat@2.22.2)(typescript@5.4.5)(viem@2.9.16):
     resolution: {integrity: sha512-ilXQKTc1jWHqJ66fAN6TIyCRyormoChOn1yQTCGoBQ+G6QcVCu5FTaGL2r0KUOY4IkTohtphK+UXQrKcxQX5Yw==}
     peerDependencies:
       hardhat: ^2.17.0
       typescript: ~5.0.0
       viem: ^2.7.6
     dependencies:
-      abitype: 0.9.10(typescript@5.4.5)(zod@3.22.4)
+      abitype: 0.9.10(typescript@5.4.5)
       hardhat: 2.22.2(ts-node@10.9.2)(typescript@5.4.5)
       lodash.memoize: 4.1.2
       typescript: 5.4.5
@@ -3735,7 +3732,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /abitype@0.9.10(typescript@5.4.5)(zod@3.22.4):
+  /abitype@0.9.10(typescript@5.4.5):
     resolution: {integrity: sha512-FIS7U4n7qwAT58KibwYig5iFG4K61rbhAqaQh/UWj8v1Y8mjX3F8TC9gd8cz9yT1TYel9f8nS5NO5kZp2RW0jQ==}
     peerDependencies:
       typescript: '>=5.0.4'
@@ -3747,7 +3744,6 @@ packages:
         optional: true
     dependencies:
       typescript: 5.4.5
-      zod: 3.22.4
     dev: false
 
   /abitype@1.0.0(typescript@5.4.5)(zod@3.22.4):
