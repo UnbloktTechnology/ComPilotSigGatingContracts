@@ -32,9 +32,11 @@
     ]
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-viem": "^2.0.0",
     "viem": "^2.9.16",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5"
   },
   "peerDependencies": {
     "ethers": "^5.7.2"
