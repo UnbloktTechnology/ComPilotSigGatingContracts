@@ -287,6 +287,11 @@ export const ExampleMultipleInputsABI = [
         type: "bytes",
       },
       {
+        internalType: "bytes",
+        name: "_bytesVariable2",
+        type: "bytes",
+      },
+      {
         internalType: "uint256",
         name: "_blockExpiration",
         type: "uint256",

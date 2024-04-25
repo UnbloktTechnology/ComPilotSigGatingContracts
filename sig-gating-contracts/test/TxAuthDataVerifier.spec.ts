@@ -463,12 +463,13 @@ describe(`ExampleGatedNFTMinter`, function () {
     const testNumber = 2;
     const testAddress = tester;
     const testByteString = "0x224455";
+    const testByteString2 = "0x2244556677";
 
     const txAuthInput = {
       contractAbi: Array.from(ExampleMultipleInputsABI),
       contractAddress: exampleMultipleInputs.address as Address,
       functionName: "updateVariables",
-      args: [testNumber, testAddress, testByteString],
+      args: [testNumber, testAddress, testByteString, testByteString2],
       userAddress: tester as Address,
     };
 
@@ -483,6 +484,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         testNumber,
         testAddress,
         testByteString,
+        testByteString2,
         signatureResponse.blockExpiration,
         signatureResponse.signature
       );
@@ -594,6 +596,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const testNumber = 2;
     const testAddress = tester;
     const testByteString = "0x224455";
+    const testByteString2 = "0x22445566";
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
     if (!txAuthSigner.provider) {
@@ -604,7 +607,14 @@ describe(`ExampleGatedNFTMinter`, function () {
     const functionCallData = await generateFunctionCallData(
       ExampleMultipleInputsABI,
       "updateVariables",
-      [testNumber, testAddress, testByteString, blockExpiration, "0x1234"]
+      [
+        testNumber,
+        testAddress,
+        testByteString,
+        testByteString2,
+        blockExpiration,
+        "0x1234",
+      ]
     );
 
     // remove 96 bytes (2 bytes fake sig + 32 bytes offset + 32 bytes length + 30 bytes suffix) for the signature
@@ -627,7 +637,14 @@ describe(`ExampleGatedNFTMinter`, function () {
         await generateFunctionCallData(
           ExampleMultipleInputsABI,
           "updateVariables",
-          [testNumber, testAddress, testByteString, blockExpiration, "0x1234"]
+          [
+            testNumber,
+            testAddress,
+            testByteString,
+            testByteString2,
+            blockExpiration,
+            "0x1234",
+          ]
         )
       ).slice(0, -128), // wrong recipient value
       contractAddress: tester as Address,
@@ -650,6 +667,7 @@ describe(`ExampleGatedNFTMinter`, function () {
             testNumber,
             testAddress,
             testByteString,
+            testByteString2,
             blockExpiration,
             signature
           )
