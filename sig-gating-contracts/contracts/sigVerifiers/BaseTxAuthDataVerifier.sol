@@ -128,7 +128,10 @@ contract BaseTxAuthDataVerifier {
         }
 
         /// Read nonce value and increment it (in storage) to prevent replay attacks
-        uint256 userNonce = nonces[userAddress]++;
+        uint256 userNonce;
+        unchecked {
+            userNonce = nonces[userAddress]++;
+        }
 
         /// Build tx auth data
         TxAuthData memory txAuthData = TxAuthData({
