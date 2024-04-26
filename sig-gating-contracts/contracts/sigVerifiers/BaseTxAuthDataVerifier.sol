@@ -102,8 +102,6 @@ contract BaseTxAuthDataVerifier {
      *
      * @param msgData The full calldata including the function selector and arguments.
      * @param userAddress The address of the user who signed the transaction.
-     * @param blockExpiration The block number until which the transaction is considered valid.
-     * @param _signature The signature of the user authorizing the transaction.
      * @return A boolean value indicating whether the transaction was successfully verified.
      *
      * Requirements:
@@ -114,13 +112,24 @@ contract BaseTxAuthDataVerifier {
      */
     function _verifyTxAuthData(
         bytes calldata msgData,
-        address userAddress,
-        uint256 blockExpiration,
-        bytes memory _signature
+        address userAddress
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
         bytes calldata argsWithSelector = msgData[:msgData.length -
             _SIGNATURE_OFFSET];
+        uint256 blockExpiration = uint256(
+            bytes32(
+                msg.data[msg.data.length -
+                    _BYTES_32_LENGTH -
+                    _BYTES_32_LENGTH -
+                    _SIGNATURE_OFFSET:msg.data.length -
+                    _BYTES_32_LENGTH -
+                    _SIGNATURE_OFFSET]
+            )
+        );
+        bytes calldata signature = msg.data[msg.data.length -
+            _SIGNATURE_LENGTH -
+            _SIGNATURE_SUFFIX:msg.data.length - _SIGNATURE_SUFFIX];
 
         /// Check signature hasn't expired
         if (block.number >= blockExpiration) {
@@ -158,7 +167,7 @@ contract BaseTxAuthDataVerifier {
             !SignatureChecker.isValidSignatureNow(
                 _signerAddress,
                 ethSignedMessageHash,
-                _signature
+                signature
             )
         ) {
             revert InvalidSignature();

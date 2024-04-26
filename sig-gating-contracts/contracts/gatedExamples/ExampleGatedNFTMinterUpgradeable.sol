@@ -70,7 +70,7 @@ contract ExampleGatedNFTMinterUpgradeable is
         address recipient,
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) returns (uint256) {
+    ) public requireTxDataAuth returns (uint256) {
         return mintNFT(recipient);
     }
 
@@ -86,11 +86,7 @@ contract ExampleGatedNFTMinterUpgradeable is
         address userAddress,
         uint256 _blockExpiration,
         bytes calldata _signature
-    )
-        public
-        requireTxDataAuthWithAddress(_blockExpiration, _signature, userAddress)
-        returns (uint256)
-    {
+    ) public requireTxDataAuthWithAddress(userAddress) returns (uint256) {
         return mintNFT(recipient);
     }
 }

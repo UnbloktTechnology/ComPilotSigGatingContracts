@@ -74,11 +74,7 @@ contract ExampleGatedNFTMinterExternalCall is
         address userAddress,
         uint256 _blockExpiration,
         bytes calldata _signature
-    )
-        public
-        requireTxDataAuthWithAddress(_blockExpiration, _signature, userAddress)
-        returns (uint256)
-    {
+    ) public requireTxDataAuthWithAddress(userAddress) returns (uint256) {
         require(
             _msgSender() == externalContractCaller,
             "only the set externalContractCaller can call this"

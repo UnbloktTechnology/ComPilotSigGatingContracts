@@ -52,7 +52,7 @@ contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
         bytes memory _bytesVariable2,
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) {
+    ) public requireTxDataAuth {
         intVariable = _intVariable;
         addressVariable = _addressVariable;
         bytesVariable = _bytesVariable;
@@ -62,7 +62,7 @@ contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
     function updateVariablesNoInput(
         uint256 _blockExpiration,
         bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) {
+    ) public requireTxDataAuth {
         intVariable = 1;
         addressVariable = address(this);
         bytesVariable = "0x11";
