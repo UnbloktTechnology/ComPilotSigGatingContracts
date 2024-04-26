@@ -31,7 +31,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
      */
     constructor(address initialSigner, address initialOwner) {
         _setSigner(initialSigner);
-        transferOwnership(initialOwner);
+        _transferOwnership(initialOwner);
     }
 
     /**
