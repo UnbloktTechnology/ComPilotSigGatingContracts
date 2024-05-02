@@ -84,17 +84,23 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     const signature = await signTxAuthData(txAuthData, txAuthSigner);
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
+        recipient
+      );
 
-    const finalSig_ = lengthSig + signature.slice(2) + '0'.repeat(62);
+    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // try to mint nft
     await testerSigner.sendTransaction({
@@ -158,17 +164,23 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     const signature = await signTxAuthDataViem(txAuthData, txAuthWalletClient);
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
+        recipient
+      );
 
-    const finalSig_ = lengthSig + signature.slice(2) + '0'.repeat(62);
+    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // try to mint nft
     const tx = await testerSigner.sendTransaction({
@@ -178,7 +190,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     const transactionReceipt = await tx.wait();
 
-    const eventsData = transactionReceipt.logs.map((log) => exampleGatedNFTMinterUpgradeable.interface.parseLog(log));
+    const eventsData = transactionReceipt.logs.map((log) =>
+      exampleGatedNFTMinterUpgradeable.interface.parseLog(log)
+    );
 
     const tokenId = Number(eventsData[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
@@ -206,28 +220,36 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       txAuthInput
     );
 
-
     // Encoding the blockExpiration (uint256) and signature (bytes)
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(), 32
+      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
+      32
     );
 
     const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(), 32
+      ethers.BigNumber.from(96).toHexString(),
+      32
     );
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
+        recipient
+      );
 
-    const finalSig_ = lengthSig + signatureResponse.signature.slice(2) + '0'.repeat(62);
+    const finalSig_ =
+      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -237,7 +259,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     const transactionReceipt = await tx.wait();
 
-    const eventsData = transactionReceipt.logs.map((log) => exampleGatedNFTMinterUpgradeable.interface.parseLog(log));
+    const eventsData = transactionReceipt.logs.map((log) =>
+      exampleGatedNFTMinterUpgradeable.interface.parseLog(log)
+    );
 
     const tokenId = Number(eventsData[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
@@ -245,10 +269,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(tokenOwner === tester).to.be.true;
 
     // Also check for signagure verified emitted event
-    expect(eventsData[0].args?.userAddress === tester).to.be
-      .true;
-    expect(eventsData[0].name === "NexeraIDSignatureVerified")
-      .to.be.true;
+    expect(eventsData[0].args?.userAddress === tester).to.be.true;
+    expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer -  with custom address for contract to be able to call it`, async () => {
     const { tester } = await getNamedAccounts();
@@ -271,29 +293,37 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       txAuthInput
     );
 
-
     // Encoding the blockExpiration (uint256) and signature (bytes)
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(), 32
+      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
+      32
     );
 
     const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(), 32
+      ethers.BigNumber.from(96).toHexString(),
+      32
     );
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGatedWithAddress(
-      recipient,
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGatedWithAddress(
+        recipient,
+        recipient
+      );
 
-    const finalSig_ = lengthSig + signatureResponse.signature.slice(2) + '0'.repeat(62);
+    const finalSig_ =
+      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -303,7 +333,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     const transactionReceipt = await tx.wait();
 
-    const eventsData = transactionReceipt.logs.map((log) => exampleGatedNFTMinterUpgradeable.interface.parseLog(log));
+    const eventsData = transactionReceipt.logs.map((log) =>
+      exampleGatedNFTMinterUpgradeable.interface.parseLog(log)
+    );
 
     const tokenId = Number(eventsData[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
@@ -311,10 +343,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(tokenOwner === tester).to.be.true;
 
     // Also check for signagure verified emitted event
-    expect(eventsData[0].args?.userAddress === tester).to.be
-      .true;
-    expect(eventsData[0].name === "NexeraIDSignatureVerified")
-      .to.be.true;
+    expect(eventsData[0].args?.userAddress === tester).to.be.true;
+    expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinterUpgradeable with a wrong signature from the signer`, async () => {
     const { tester } = await getNamedAccounts();
@@ -363,12 +393,10 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     // Build Wrong Values
     const wrongValues = {
-      functionCallData: (
-        await generateFunctionCallData(
-          ExampleGatedNFTMinterUpgradeableABI,
-          "mintNFTGated",
-          [txAuthSigner.address]
-        )
+      functionCallData: await generateFunctionCallData(
+        ExampleGatedNFTMinterUpgradeableABI,
+        "mintNFTGated",
+        [txAuthSigner.address]
       ), // wrong recipient value
       contractAddress: tester as Address,
       userAddress: txAuthSigner.address as Address,
@@ -377,32 +405,37 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     };
 
     for (const wrongValueKey of Object.keys(wrongValues)) {
-
       const signature = await signTxAuthData(
         //@ts-ignore
         { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
         txAuthSigner
       );
 
-
       const lengthSig = ethers.utils.hexZeroPad(
-        ethers.BigNumber.from(65).toHexString(), 32
+        ethers.BigNumber.from(65).toHexString(),
+        32
       );
 
-      const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
-        recipient
-      );
+      const unsignedTx =
+        await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
+          recipient
+        );
 
-      const finalSig_ = lengthSig + signature.slice(2) + '0'.repeat(62);
+      const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
       // Complete data
-      const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+      const txData =
+        unsignedTx.data +
+        abiEncodedBlockExpiration.slice(2) +
+        length.slice(2) +
+        finalSig_.slice(2);
 
       // try to mint nft
-      await expect(testerSigner.sendTransaction({
-        to: exampleGatedNFTMinterUpgradeable.address,
-        data: txData,
-      })
+      await expect(
+        testerSigner.sendTransaction({
+          to: exampleGatedNFTMinterUpgradeable.address,
+          data: txData,
+        })
       ).to.be.revertedWith("InvalidSignature");
     }
   });
@@ -454,17 +487,23 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinterUpgradeable.populateTransaction.mintNFTGated(
+        recipient
+      );
 
-    const finalSig_ = lengthSig + signature.slice(2) + '0'.repeat(62);
+    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // try to mint nft
     await expect(

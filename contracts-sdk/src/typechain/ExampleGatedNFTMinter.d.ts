@@ -28,7 +28,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "lastTokenId()": FunctionFragment;
     "mintNFTGated(address)": FunctionFragment;
-    "mintNFTGatedEIP(address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -78,10 +77,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintNFTGated",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintNFTGatedEIP",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -150,10 +145,6 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "mintNFTGated",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintNFTGatedEIP",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -332,11 +323,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    mintNFTGatedEIP(
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -448,11 +434,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  mintNFTGatedEIP(
-    recipient: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -554,11 +535,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     lastTokenId(overrides?: CallOverrides): Promise<BigNumber>;
 
     mintNFTGated(
-      recipient: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintNFTGatedEIP(
       recipient: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -782,11 +758,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    mintNFTGatedEIP(
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -898,11 +869,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
     lastTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mintNFTGated(
-      recipient: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintNFTGatedEIP(
       recipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

@@ -72,25 +72,32 @@ describe(`NexeraIDSignerManager`, function () {
 
     // Encoding the blockExpiration (uint256) and signature (bytes)
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(), 32
+      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
+      32
     );
 
     const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(), 32
+      ethers.BigNumber.from(96).toHexString(),
+      32
     );
 
     const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx = await exampleGatedNFTMinter.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx =
+      await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
 
-    const finalSig_ = lengthSig + signatureResponse.signature.slice(2) + '0'.repeat(62);
+    const finalSig_ =
+      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData = unsignedTx.data + abiEncodedBlockExpiration.slice(2) + length.slice(2) + finalSig_.slice(2);
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      length.slice(2) +
+      finalSig_.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -100,7 +107,9 @@ describe(`NexeraIDSignerManager`, function () {
 
     const transactionReceipt = await tx.wait();
 
-    const eventsData = transactionReceipt.logs.map((log) => exampleGatedNFTMinter.interface.parseLog(log));
+    const eventsData = transactionReceipt.logs.map((log) =>
+      exampleGatedNFTMinter.interface.parseLog(log)
+    );
 
     // Check new minted token id
     const tokenId = Number(eventsData[1].args?.tokenId);
@@ -109,10 +118,8 @@ describe(`NexeraIDSignerManager`, function () {
     expect(tokenOwner === tester).to.be.true;
 
     // Also check for signature verified emitted event
-    expect(eventsData[0].args?.userAddress === tester).to.be
-      .true;
-    expect(eventsData[0].name === "NexeraIDSignatureVerified")
-      .to.be.true;
+    expect(eventsData[0].args?.userAddress === tester).to.be.true;
+    expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
 
     // Now try with old signer that should fail
 
@@ -125,25 +132,32 @@ describe(`NexeraIDSignerManager`, function () {
 
     // Encoding the blockExpiration (uint256) and signature (bytes)
     const abiEncodedBlockExpiration2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse2.blockExpiration).toHexString(), 32
+      ethers.BigNumber.from(signatureResponse2.blockExpiration).toHexString(),
+      32
     );
 
     const length2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(), 32
+      ethers.BigNumber.from(96).toHexString(),
+      32
     );
 
     const lengthSig2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(), 32
+      ethers.BigNumber.from(65).toHexString(),
+      32
     );
 
-    const unsignedTx2 = await exampleGatedNFTMinter.populateTransaction.mintNFTGated(
-      recipient
-    );
+    const unsignedTx2 =
+      await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
 
-    const finalSig2 = lengthSig2 + signatureResponse2.signature.slice(2) + '0'.repeat(62);
+    const finalSig2 =
+      lengthSig2 + signatureResponse2.signature.slice(2) + "0".repeat(62);
 
     // Complete data
-    const txData2 = unsignedTx2.data + abiEncodedBlockExpiration2.slice(2) + length2.slice(2) + finalSig2.slice(2);
+    const txData2 =
+      unsignedTx2.data +
+      abiEncodedBlockExpiration2.slice(2) +
+      length2.slice(2) +
+      finalSig2.slice(2);
 
     await expect(
       testerSigner.sendTransaction({
