@@ -69,11 +69,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       [recipient]
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
       ethers.BigNumber.from(blockExpiration).toHexString(),
       32
@@ -90,22 +85,14 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     const signature = await signTxAuthData(txAuthData, txAuthSigner);
 
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signature.slice(2);
 
     // try to mint nft
     await expect(
@@ -149,11 +136,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       [recipient]
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
       ethers.BigNumber.from(blockExpiration).toHexString(),
       32
@@ -170,22 +152,14 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     const signature = await signTxAuthDataViem(txAuthData, txAuthWalletClient);
 
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signature.slice(2);
 
     // try to mint nft
     const tx = await testerSigner.sendTransaction({
@@ -231,28 +205,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -291,28 +251,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx2 =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig2 =
-      lengthSig2 + signatureResponse2.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData2 =
       unsignedTx2.data +
       abiEncodedBlockExpiration2.slice(2) +
-      length2.slice(2) +
-      finalSig2.slice(2);
+      signatureResponse2.signature.slice(2);
 
     // try to mint nft
     const tx2 = await testerSigner.sendTransaction({
@@ -363,28 +309,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -423,28 +355,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig2 = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx2 =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig2 =
-      lengthSig2 + signatureResponse2.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData2 =
       unsignedTx2.data +
       abiEncodedBlockExpiration2.slice(2) +
-      length2.slice(2) +
-      finalSig2.slice(2);
+      signatureResponse2.signature.slice(2);
 
     // try to mint nft
     const tx2 = await testerSigner.sendTransaction({
@@ -499,30 +417,16 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinterWithEOA.populateTransaction.mintNFTGated(
         recipient
       );
 
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
-
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -583,28 +487,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -658,31 +548,17 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleGatedNFTMinterExternalCall.populateTransaction.mintNFTGatedWithAddress(
         recipient,
         recipient
       );
 
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
-
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await externalContract.sendTransaction({
@@ -737,16 +613,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleMultipleInputs.populateTransaction.updateVariables(
         testNumber,
@@ -755,15 +621,11 @@ describe(`ExampleGatedNFTMinter`, function () {
         testByteString2
       );
 
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
-
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -803,28 +665,14 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
-
     const unsignedTx =
       await exampleMultipleInputs.populateTransaction.updateVariablesNoInput();
-
-    const finalSig_ =
-      lengthSig + signatureResponse.signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signatureResponse.signature.slice(2);
 
     // Send tx
     const tx = await testerSigner.sendTransaction({
@@ -854,11 +702,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       ExampleGatedNFTMinterABI,
       "mintNFTGated",
       [recipient]
-    );
-
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
     );
 
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
@@ -895,22 +738,14 @@ describe(`ExampleGatedNFTMinter`, function () {
         txAuthSigner as unknown as Wallet
       );
 
-      const lengthSig = ethers.utils.hexZeroPad(
-        ethers.BigNumber.from(65).toHexString(),
-        32
-      );
-
       const unsignedTx =
         await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-      const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
       // Complete data
       const txData =
         unsignedTx.data +
         abiEncodedBlockExpiration.slice(2) +
-        length.slice(2) +
-        finalSig_.slice(2);
+        signature.slice(2);
 
       await expect(
         testerSigner.sendTransaction({
@@ -941,16 +776,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       ExampleMultipleInputsABI,
       "updateVariables",
       [testNumber, testAddress, testByteString, testByteString2]
-    );
-
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
-    const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(blockExpiration).toHexString(),
-      32
     );
 
     const txAuthData = {
@@ -988,16 +813,6 @@ describe(`ExampleGatedNFTMinter`, function () {
         32
       );
 
-      const length = ethers.utils.hexZeroPad(
-        ethers.BigNumber.from(96).toHexString(),
-        32
-      );
-
-      const lengthSig = ethers.utils.hexZeroPad(
-        ethers.BigNumber.from(65).toHexString(),
-        32
-      );
-
       const unsignedTx =
         await exampleMultipleInputs.populateTransaction.updateVariables(
           testNumber,
@@ -1006,14 +821,11 @@ describe(`ExampleGatedNFTMinter`, function () {
           testByteString2
         );
 
-      const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
-
       // Complete data
       const txData =
         unsignedTx.data +
         abiEncodedBlockExpiration.slice(2) +
-        length.slice(2) +
-        finalSig_.slice(2);
+        signature.slice(2);
 
       await expect(
         testerSigner.sendTransaction({
@@ -1041,11 +853,6 @@ describe(`ExampleGatedNFTMinter`, function () {
       [recipient]
     );
 
-    const length = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(96).toHexString(),
-      32
-    );
-
     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
       ethers.BigNumber.from(blockExpiration).toHexString(),
       32
@@ -1059,24 +866,17 @@ describe(`ExampleGatedNFTMinter`, function () {
       nonce: Number(await exampleGatedNFTMinter.txAuthDataUserNonce(tester)),
       blockExpiration,
     };
-    const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
 
-    const lengthSig = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(65).toHexString(),
-      32
-    );
+    const signature = await signTxAuthData(wrongTxAuthData, txAuthSigner);
 
     const unsignedTx =
       await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    const finalSig_ = lengthSig + signature.slice(2) + "0".repeat(62);
 
     // Complete data
     const txData =
       unsignedTx.data +
       abiEncodedBlockExpiration.slice(2) +
-      length.slice(2) +
-      finalSig_.slice(2);
+      signature.slice(2);
 
     await expect(
       testerSigner.sendTransaction({

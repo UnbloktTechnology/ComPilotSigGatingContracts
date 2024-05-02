@@ -17,18 +17,14 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
  */
 contract BaseTxAuthDataVerifier {
     /// @notice These are used to decompose msgData
-    /// @notice This is the length for the expected signature
-    uint256 private constant _SIGNATURE_LENGTH = 65;
-    /// @notice This completes the signature into a multiple of 32
-    uint256 private constant _SIGNATURE_SUFFIX = 31;
-    /// @notice The complete length of the signature related data includes a 32 length field indicating the length,
-    // as well as the signature itself completed with 31 zeros to be a multiple of 32
-    uint256 private constant _SIGNATURE_OFFSET =
-        _SIGNATURE_LENGTH + _BYTES_32_LENGTH + _SIGNATURE_SUFFIX;
-    /// @notice The offset for the extra data in the calldata
-    uint256 private constant _EXTRA_DATA_OFFSET = _SIGNATURE_OFFSET + _BYTES_32_LENGTH + _BYTES_32_LENGTH;
 
     uint256 private constant _BYTES_32_LENGTH = 32;
+
+    /// @notice This is the length for the expected signature
+    uint256 private constant _SIGNATURE_LENGTH = 65;
+
+    /// @notice The offset for the extra data in the calldata
+    uint256 private constant _EXTRA_DATA_LENGTH = _SIGNATURE_LENGTH + _BYTES_32_LENGTH;
 
     /// @notice Address of the off-chain service that signs the transactions
     address private _signerAddress;
@@ -118,22 +114,16 @@ contract BaseTxAuthDataVerifier {
         address userAddress
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
-        bytes calldata argsWithSelector = msgData[:msgData.length -
-            _EXTRA_DATA_OFFSET];
+        bytes calldata argsWithSelector = msgData[:msgData.length - _EXTRA_DATA_LENGTH];
 
         uint256 blockExpiration = uint256(
             bytes32(
-                msg.data[msg.data.length -
-                    _BYTES_32_LENGTH -
-                    _BYTES_32_LENGTH -
-                    _SIGNATURE_OFFSET:msg.data.length -
-                    _BYTES_32_LENGTH -
-                    _SIGNATURE_OFFSET]
+                msgData[msgData.length - _EXTRA_DATA_LENGTH:
+                msgData.length - _SIGNATURE_LENGTH]
             )
         );
-        bytes calldata signature = msg.data[msg.data.length -
-            _SIGNATURE_LENGTH -
-            _SIGNATURE_SUFFIX:msg.data.length - _SIGNATURE_SUFFIX];
+
+        bytes calldata signature = msgData[msgData.length - _SIGNATURE_LENGTH:];
 
         /// Check signature hasn't expired
         if (block.number >= blockExpiration) {
