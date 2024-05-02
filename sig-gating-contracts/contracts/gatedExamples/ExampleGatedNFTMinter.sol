@@ -59,14 +59,4 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     ) public requireTxDataAuth returns (uint256) {
         return _mintNFT(recipient);
     }
-
-    /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
-    /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
-    /// @param recipient The address to which the NFT will be minted.
-    /// @return The ID of the newly minted NFT upon successful verification and minting.
-    function mintNFTGatedEIP(
-        address recipient
-    ) public requireTxDataAuth returns (uint256) {
-        return _mintNFT(recipient);
-    }
 }
