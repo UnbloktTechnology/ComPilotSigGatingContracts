@@ -65,13 +65,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinterUpgradeable.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -145,13 +140,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinterUpgradeable.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -375,13 +365,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinterUpgradeable.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -468,13 +453,8 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const wrongTxAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinterUpgradeable.address as Address,
       userAddress: tester as Address,
       chainID,

@@ -79,13 +79,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -126,7 +121,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         blockExpiration,
         exampleGatedNFTMinter.address,
         recipient,
-        argsWithSelector
+        functionCallData as `0x${string}`
       );
 
     const tokenId = Number(await exampleGatedNFTMinter.lastTokenId());
@@ -164,13 +159,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -876,13 +866,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -968,13 +953,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const txAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,
@@ -1071,13 +1051,8 @@ describe(`ExampleGatedNFTMinter`, function () {
       32
     );
 
-    // Remove the placeholder for the signature
-    const argsWithSelector = (functionCallData +
-      abiEncodedBlockExpiration.slice(2) +
-      length.slice(2)) as `0x${string}`;
-
     const wrongTxAuthData = {
-      functionCallData: argsWithSelector,
+      functionCallData: functionCallData as `0x${string}`,
       contractAddress: exampleGatedNFTMinter.address as Address,
       userAddress: tester as Address,
       chainID,

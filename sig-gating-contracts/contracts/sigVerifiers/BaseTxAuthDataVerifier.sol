@@ -25,6 +25,9 @@ contract BaseTxAuthDataVerifier {
     // as well as the signature itself completed with 31 zeros to be a multiple of 32
     uint256 private constant _SIGNATURE_OFFSET =
         _SIGNATURE_LENGTH + _BYTES_32_LENGTH + _SIGNATURE_SUFFIX;
+    /// @notice The offset for the extra data in the calldata
+    uint256 private constant _EXTRA_DATA_OFFSET = _SIGNATURE_OFFSET + _BYTES_32_LENGTH + _BYTES_32_LENGTH;
+
     uint256 private constant _BYTES_32_LENGTH = 32;
 
     /// @notice Address of the off-chain service that signs the transactions
@@ -116,7 +119,8 @@ contract BaseTxAuthDataVerifier {
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
         bytes calldata argsWithSelector = msgData[:msgData.length -
-            _SIGNATURE_OFFSET];
+            _EXTRA_DATA_OFFSET];
+
         uint256 blockExpiration = uint256(
             bytes32(
                 msg.data[msg.data.length -

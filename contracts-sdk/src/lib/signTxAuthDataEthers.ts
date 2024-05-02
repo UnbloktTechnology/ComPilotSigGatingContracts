@@ -72,23 +72,8 @@ export const signTxAuthDataLibEthers = async (
     [...txAuthInput.args]
   );
 
-  const length = ethers.utils.hexZeroPad(
-    ethers.BigNumber.from(96).toHexString(),
-    32
-  );
-
-  const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-    ethers.BigNumber.from(blockExpiration).toHexString(),
-    32
-  );
-
-  // Remove the placeholder for the signature
-  const argsWithSelector = (functionCallData +
-    abiEncodedBlockExpiration.slice(2) +
-    length.slice(2)) as `0x${string}`;
-
   const txAuthData = {
-    functionCallData: argsWithSelector,
+    functionCallData: functionCallData as `0x${string}`,
     contractAddress: txAuthInput.contractAddress,
     userAddress: txAuthInput.userAddress,
     chainID,
