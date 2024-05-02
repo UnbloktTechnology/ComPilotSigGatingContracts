@@ -63,13 +63,9 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
     /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
     /// @param recipient The address to which the NFT will be minted.
-    /// @param _blockExpiration The block number after which the request is considered expired.
-    /// @param _signature The signature provided for verification.
     /// @return The ID of the newly minted NFT upon successful verification and minting.
     function mintNFTGated(
-        address recipient,
-        uint256 _blockExpiration,
-        bytes calldata _signature
+        address recipient
     ) public requireTxDataAuth returns (uint256) {
         return mintNFT(recipient);
     }
@@ -78,14 +74,10 @@ contract ExampleGatedNFTMinterUpgradeable is
     /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
     /// @param recipient The address to which the NFT will be minted.
     /// @param userAddress The address requesting the signature (in case a contract wants to call this)
-    /// @param _blockExpiration The block number after which the request is considered expired.
-    /// @param _signature The signature provided for verification.
     /// @return The ID of the newly minted NFT upon successful verification and minting.
     function mintNFTGatedWithAddress(
         address recipient,
-        address userAddress,
-        uint256 _blockExpiration,
-        bytes calldata _signature
+        address userAddress
     ) public requireTxDataAuthWithAddress(userAddress) returns (uint256) {
         return mintNFT(recipient);
     }

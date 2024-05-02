@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
 import type { Abi } from "viem";
 import {
@@ -91,12 +92,23 @@ export const signTxAuthDataLib = async (
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as unknown as Abi,
     txAuthInput.functionName,
-    [...txAuthInput.args, blockExpiration, "0x1234"]
+    [...txAuthInput.args]
   );
 
-  // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
-  // = 128 characters
-  const argsWithSelector = functionCallData.slice(0, -128) as Address;
+  const length = ethers.utils.hexZeroPad(
+    ethers.BigNumber.from(96).toHexString(),
+    32
+  );
+
+  const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
+    ethers.BigNumber.from(blockExpiration).toHexString(),
+    32
+  );
+
+  // Remove the placeholder for the signature
+  const argsWithSelector = (functionCallData +
+    abiEncodedBlockExpiration.slice(2) +
+    length.slice(2)) as `0x${string}`;
 
   const txAuthData = {
     functionCallData: argsWithSelector,

@@ -69,11 +69,23 @@ export const signTxAuthDataLibEthers = async (
   const functionCallData = generateFunctionCallDataEthers(
     contractInterface,
     txAuthInput.functionName,
-    [...txAuthInput.args, blockExpiration, "0x1234"]
+    [...txAuthInput.args]
+  );
+
+  const length = ethers.utils.hexZeroPad(
+    ethers.BigNumber.from(96).toHexString(),
+    32
+  );
+
+  const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
+    ethers.BigNumber.from(blockExpiration).toHexString(),
+    32
   );
 
   // Remove the placeholder for the signature
-  const argsWithSelector = functionCallData.slice(0, -128) as Address;
+  const argsWithSelector = (functionCallData +
+    abiEncodedBlockExpiration.slice(2) +
+    length.slice(2)) as `0x${string}`;
 
   const txAuthData = {
     functionCallData: argsWithSelector,

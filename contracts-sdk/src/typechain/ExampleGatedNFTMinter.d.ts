@@ -27,7 +27,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
     "getMessageHash((uint256,uint256,uint256,address,address,bytes))": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "lastTokenId()": FunctionFragment;
-    "mintNFTGated(address,uint256,bytes)": FunctionFragment;
+    "mintNFTGated(address)": FunctionFragment;
     "mintNFTGatedEIP(address)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -78,7 +78,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintNFTGated",
-    values: [string, BigNumberish, BytesLike]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "mintNFTGatedEIP",
@@ -329,8 +329,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -447,8 +445,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
   mintNFTGated(
     recipient: string,
-    _blockExpiration: BigNumberish,
-    _signature: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -559,8 +555,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -785,8 +779,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -907,8 +899,6 @@ export class ExampleGatedNFTMinter extends BaseContract {
 
     mintNFTGated(
       recipient: string,
-      _blockExpiration: BigNumberish,
-      _signature: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
