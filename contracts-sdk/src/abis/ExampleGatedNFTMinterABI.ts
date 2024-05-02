@@ -321,16 +321,6 @@ export const ExampleGatedNFTMinterABI = [
         name: "recipient",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
-      },
     ],
     name: "mintNFTGated",
     outputs: [

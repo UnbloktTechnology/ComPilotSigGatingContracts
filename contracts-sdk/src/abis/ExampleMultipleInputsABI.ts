@@ -291,16 +291,6 @@ export const ExampleMultipleInputsABI = [
         name: "_bytesVariable2",
         type: "bytes",
       },
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
-      },
     ],
     name: "updateVariables",
     outputs: [],
@@ -308,18 +298,7 @@ export const ExampleMultipleInputsABI = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
-      },
-    ],
+    inputs: [],
     name: "updateVariablesNoInput",
     outputs: [],
     stateMutability: "nonpayable",

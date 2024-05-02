@@ -341,16 +341,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
         name: "recipient",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
-      },
     ],
     name: "mintNFTGated",
     outputs: [
@@ -374,16 +364,6 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
         internalType: "address",
         name: "userAddress",
         type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_blockExpiration",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_signature",
-        type: "bytes",
       },
     ],
     name: "mintNFTGatedWithAddress",

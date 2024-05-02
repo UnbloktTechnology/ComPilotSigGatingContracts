@@ -69,14 +69,11 @@ export const signTxAuthDataLibEthers = async (
   const functionCallData = generateFunctionCallDataEthers(
     contractInterface,
     txAuthInput.functionName,
-    [...txAuthInput.args, blockExpiration, "0x1234"]
+    [...txAuthInput.args]
   );
 
-  // Remove the placeholder for the signature
-  const argsWithSelector = functionCallData.slice(0, -128) as Address;
-
   const txAuthData = {
-    functionCallData: argsWithSelector,
+    functionCallData: functionCallData as `0x${string}`,
     contractAddress: txAuthInput.contractAddress,
     userAddress: txAuthInput.userAddress,
     chainID,
