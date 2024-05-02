@@ -1,4 +1,6 @@
 import { ethers, getNamedAccounts } from "hardhat";
+
+// deployExampleGatedNFTMinterWithEOA
 export const deployExampleGatedNFTMinterWithEOA = async () => {
   // Get the ContractFactory and Signers here
   const [deployer] = await ethers.getSigners();
