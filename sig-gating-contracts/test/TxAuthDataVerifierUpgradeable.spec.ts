@@ -80,9 +80,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     // try to mint nft
     await testerSigner.sendTransaction({
@@ -142,9 +140,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     // try to mint nft
     const tx = await testerSigner.sendTransaction({
@@ -401,9 +397,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     // try to mint nft
     await expect(
