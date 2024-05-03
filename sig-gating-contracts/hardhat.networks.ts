@@ -6,7 +6,6 @@ dotenv.config();
 // Default values
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
-const DEFAULT_MUMBAI_URL = "https://rpc.ankr.com/polygon_mumbai";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
@@ -17,8 +16,6 @@ const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
 const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
-const MUMBAI_PROVIDER_URL =
-  process.env.MUMBAI_PROVIDER_URL || DEFAULT_MUMBAI_URL;
 
 export const networks: NetworksUserConfig = {
   //prod
@@ -32,12 +29,6 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  mumbai_prod: {
-    live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   sepolia_prod: {
@@ -59,12 +50,6 @@ export const networks: NetworksUserConfig = {
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
-  mumbai_staging: {
-    live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
   sepolia_staging: {
     live: true,
     chainId: 11155111,
@@ -82,12 +67,6 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  mumbai_dev: {
-    live: true,
-    chainId: 80001,
-    url: `${MUMBAI_PROVIDER_URL}`,
     accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
   },
   sepolia_dev: {
