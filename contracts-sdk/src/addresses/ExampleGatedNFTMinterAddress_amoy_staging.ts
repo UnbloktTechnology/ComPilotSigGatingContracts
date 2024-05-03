@@ -1,2 +1,2 @@
 export const ExampleGatedNFTMinterAddress_amoy_staging =
-  "0xd47Ffc468aD8a8D48A7D54CF8A77923d2d58e9FB" as const;
+  "0x78B1c49Bb4d0D0aAc211710f05596B5e40543483" as const;

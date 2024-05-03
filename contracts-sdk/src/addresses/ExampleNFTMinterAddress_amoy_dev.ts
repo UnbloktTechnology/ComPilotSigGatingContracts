@@ -1,2 +1,2 @@
 export const ExampleNFTMinterAddress_amoy_dev =
-  "0x9c1Cc1712b11cA717752364809867D3E69DB7D94" as const;
+  "0xD0397B414c2C5F5E2a134d9b74D6cFE296959559" as const;
