@@ -1,2 +1,2 @@
 export const NexeraIDSignerManagerAddress_amoy_prod =
-  "0xcF6bEBf865DDae3DCaaE6057F65A064bEA71C3e3" as const;
+  "0x916709a9051F813df2b8569FB18fD602853c74aa" as const;

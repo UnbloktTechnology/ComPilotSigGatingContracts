@@ -143,5 +143,3 @@ describe(`NexeraIDSignerManager`, function () {
     expect(tokenId2 === 1).to.be.true;
   });
 });
-
-
