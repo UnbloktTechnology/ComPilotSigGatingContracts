@@ -70,28 +70,42 @@ describe(`NexeraIDSignerManager`, function () {
       txAuthInput
     );
 
-    // try to mint nft
-    const tx = await exampleGatedNFTMinter
-      .connect(testerSigner)
-      .mintNFTGated(
-        recipient,
-        signatureResponse.blockExpiration,
-        signatureResponse.signature
-      );
+    // Encoding the blockExpiration (uint256) and signature (bytes)
+    const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
+      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
+      32
+    );
+
+    const unsignedTx =
+      await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
+
+    // Complete data
+    const txData =
+      unsignedTx.data +
+      abiEncodedBlockExpiration.slice(2) +
+      signatureResponse.signature.slice(2);
+
+    // Send tx
+    const tx = await testerSigner.sendTransaction({
+      to: exampleGatedNFTMinter.address,
+      data: txData,
+    });
 
     const transactionReceipt = await tx.wait();
 
+    const eventsData = transactionReceipt.logs.map((log) =>
+      exampleGatedNFTMinter.interface.parseLog(log)
+    );
+
     // Check new minted token id
-    const tokenId = Number(transactionReceipt.events?.[1].args?.tokenId);
+    const tokenId = Number(eventsData[1].args?.tokenId);
     expect(tokenId === 1).to.be.true;
     const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
 
-    // Also check for signagure verified emitted event
-    expect(transactionReceipt.events?.[0].args?.userAddress === tester).to.be
-      .true;
-    expect(transactionReceipt.events?.[0].event === "NexeraIDSignatureVerified")
-      .to.be.true;
+    // Also check for signature verified emitted event
+    expect(eventsData[0].args?.userAddress === tester).to.be.true;
+    expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
 
     // Now try with old signer that should fail
 
@@ -101,14 +115,27 @@ describe(`NexeraIDSignerManager`, function () {
       txAuthWalletClient.extend(publicActions),
       txAuthInput
     );
+
+    // Encoding the blockExpiration (uint256) and signature (bytes)
+    const abiEncodedBlockExpiration2 = ethers.utils.hexZeroPad(
+      ethers.BigNumber.from(signatureResponse2.blockExpiration).toHexString(),
+      32
+    );
+
+    const unsignedTx2 =
+      await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
+
+    // Complete data
+    const txData2 =
+      unsignedTx2.data +
+      abiEncodedBlockExpiration2.slice(2) +
+      signatureResponse2.signature.slice(2);
+
     await expect(
-      exampleGatedNFTMinter
-        .connect(testerSigner)
-        .mintNFTGated(
-          recipient,
-          signatureResponse2.blockExpiration,
-          signatureResponse2.signature
-        )
+      testerSigner.sendTransaction({
+        to: exampleGatedNFTMinter.address,
+        data: txData2,
+      })
     ).to.be.revertedWith("InvalidSignature");
 
     // Check no new minted token id
@@ -116,3 +143,5 @@ describe(`NexeraIDSignerManager`, function () {
     expect(tokenId2 === 1).to.be.true;
   });
 });
+
+

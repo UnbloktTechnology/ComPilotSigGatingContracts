@@ -13,6 +13,7 @@ contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
     uint256 intVariable;
     address addressVariable;
     bytes bytesVariable;
+    bytes bytesVariable2;
 
     /// @dev Initializes the contract by setting a signer address for the TxAuthDataVerifier.
     /// @param signerAddress The address used for transaction data signature verification.
@@ -42,24 +43,19 @@ contract ExampleMultipleInputs is TxAuthDataVerifier, Ownable {
     /// @param _intVariable The new value for the integer variable.
     /// @param _addressVariable The new value for the address variable.
     /// @param _bytesVariable The new value for the bytes variable.
-    /// @param _blockExpiration The block number until which the transaction is considered valid.
-    /// @param _signature The signature proving the authenticity of the transaction data.
     function updateVariables(
         uint256 _intVariable,
         address _addressVariable,
         bytes memory _bytesVariable,
-        uint256 _blockExpiration,
-        bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) {
+        bytes memory _bytesVariable2
+    ) public requireTxDataAuth {
         intVariable = _intVariable;
         addressVariable = _addressVariable;
         bytesVariable = _bytesVariable;
+        bytesVariable2 = _bytesVariable2;
     }
 
-    function updateVariablesNoInput(
-        uint256 _blockExpiration,
-        bytes calldata _signature
-    ) public requireTxDataAuth(_blockExpiration, _signature) {
+    function updateVariablesNoInput() public requireTxDataAuth {
         intVariable = 1;
         addressVariable = address(this);
         bytesVariable = "0x11";

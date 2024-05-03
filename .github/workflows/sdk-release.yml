@@ -77,6 +77,11 @@ jobs:
           pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
+      - name: Publish to private NPM
+        run: |
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+
       - name: Publish to public NPM
         env:
           NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}

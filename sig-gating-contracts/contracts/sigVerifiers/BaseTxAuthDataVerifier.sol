@@ -17,15 +17,14 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
  */
 contract BaseTxAuthDataVerifier {
     /// @notice These are used to decompose msgData
+
+    uint256 private constant _BYTES_32_LENGTH = 32;
+
     /// @notice This is the length for the expected signature
     uint256 private constant _SIGNATURE_LENGTH = 65;
-    /// @notice This completes the signature into a multiple of 32
-    uint256 private constant _SIGNATURE_SUFFIX = 31;
-    /// @notice The complete length of the signature related data includes a 32 length field indicating the length,
-    // as well as the signature itself completed with 31 zeros to be a multiple of 32
-    uint256 private constant _SIGNATURE_OFFSET =
-        _SIGNATURE_LENGTH + _BYTES_32_LENGTH + _SIGNATURE_SUFFIX;
-    uint256 private constant _BYTES_32_LENGTH = 32;
+
+    /// @notice The offset for the extra data in the calldata
+    uint256 private constant _EXTRA_DATA_LENGTH = _SIGNATURE_LENGTH + _BYTES_32_LENGTH;
 
     /// @notice Address of the off-chain service that signs the transactions
     address private _signerAddress;
@@ -102,8 +101,6 @@ contract BaseTxAuthDataVerifier {
      *
      * @param msgData The full calldata including the function selector and arguments.
      * @param userAddress The address of the user who signed the transaction.
-     * @param blockExpiration The block number until which the transaction is considered valid.
-     * @param _signature The signature of the user authorizing the transaction.
      * @return A boolean value indicating whether the transaction was successfully verified.
      *
      * Requirements:
@@ -114,13 +111,19 @@ contract BaseTxAuthDataVerifier {
      */
     function _verifyTxAuthData(
         bytes calldata msgData,
-        address userAddress,
-        uint256 blockExpiration,
-        bytes memory _signature
+        address userAddress
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
-        bytes calldata argsWithSelector = msgData[:msgData.length -
-            _SIGNATURE_OFFSET];
+        bytes calldata argsWithSelector = msgData[:msgData.length - _EXTRA_DATA_LENGTH];
+
+        uint256 blockExpiration = uint256(
+            bytes32(
+                msgData[msgData.length - _EXTRA_DATA_LENGTH:
+                msgData.length - _SIGNATURE_LENGTH]
+            )
+        );
+
+        bytes calldata signature = msgData[msgData.length - _SIGNATURE_LENGTH:];
 
         /// Check signature hasn't expired
         if (block.number >= blockExpiration) {
@@ -128,7 +131,10 @@ contract BaseTxAuthDataVerifier {
         }
 
         /// Read nonce value and increment it (in storage) to prevent replay attacks
-        uint256 userNonce = nonces[userAddress]++;
+        uint256 userNonce;
+        unchecked {
+            userNonce = nonces[userAddress]++;
+        }
 
         /// Build tx auth data
         TxAuthData memory txAuthData = TxAuthData({
@@ -158,7 +164,7 @@ contract BaseTxAuthDataVerifier {
             !SignatureChecker.isValidSignatureNow(
                 _signerAddress,
                 ethSignedMessageHash,
-                _signature
+                signature
             )
         ) {
             revert InvalidSignature();

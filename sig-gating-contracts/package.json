@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
-  "version": "1.1.5",
+  "version": "2.0.3",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [
@@ -15,10 +15,9 @@
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
     "coverage": "hardhat coverage",
-    "deploy-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia && deploy-mumbai",
+    "deploy-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia",
     "deploy-amoy": "hardhat deploy --tags testnet --network amoy_dev && hardhat deploy --tags testnet --network amoy_staging && hardhat deploy --tags testnet --network amoy_prod",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia_dev && hardhat deploy --tags testnet --network sepolia_staging && hardhat deploy --tags testnet --network sepolia_prod",
-    "deploy-mumbai": "hardhat deploy --tags testnet --network mumbai_dev && hardhat deploy --tags testnet --network mumbai_staging && hardhat deploy --tags testnet --network mumbai_prod",
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
@@ -35,7 +34,7 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "@nomicfoundation/hardhat-viem": "^1.0.3",
+    "@nomicfoundation/hardhat-viem": "^2.0.0",
     "@openzeppelin/contracts": "^4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
     "@openzeppelin/upgrades": "2.8.0",
@@ -67,7 +66,7 @@
     "solidity-coverage": "^0.8.11",
     "ts-node": "^10.9.2",
     "typechain": "^5.2.0",
-    "typescript": "^5.3.3",
-    "viem": "^1.21.4"
+    "typescript": "5.4.5",
+    "viem": "^2.9.31"
   }
 }

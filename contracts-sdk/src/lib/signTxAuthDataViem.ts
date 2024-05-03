@@ -57,7 +57,7 @@ export const getNonce = async (
   const contract = getContract({
     address: contractAddress,
     abi: abi,
-    publicClient: client,
+    client: { public: client },
   });
   return Number(await contract.read.txAuthDataUserNonce([userAddress]));
 };
@@ -91,15 +91,11 @@ export const signTxAuthDataLib = async (
   const functionCallData = generateFunctionCallDataViem(
     txAuthInput.contractAbi as unknown as Abi,
     txAuthInput.functionName,
-    [...txAuthInput.args, blockExpiration, "0x1234"]
+    [...txAuthInput.args]
   );
 
-  // remove 64 bytes (32 bytes for the length and 32 bytes for the fake signature itself)
-  // = 128 characters
-  const argsWithSelector = functionCallData.slice(0, -128) as Address;
-
   const txAuthData = {
-    functionCallData: argsWithSelector,
+    functionCallData: functionCallData as `0x${string}`,
     contractAddress: txAuthInput.contractAddress,
     userAddress: txAuthInput.userAddress,
     chainID,

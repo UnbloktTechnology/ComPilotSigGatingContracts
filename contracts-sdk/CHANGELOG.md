@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@2.0.1...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@2.0.2) (2024-05-03)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
+## [2.0.1](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@2.0.0...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@2.0.1) (2024-05-03)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
+# [2.0.0](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.8...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@2.0.0) (2024-05-02)
+
+
+### Features
+
+* **release:** bump package version ([#81](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues/81)) ([7a30b28](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/commit/7a30b284f8f1d77a72e7b335367de5e044b6c50d))
+
+
+### BREAKING CHANGES
+
+* **release:** security audit fixes, optimizations
+
+
+
+
+
+## [1.4.8](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.7...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.8) (2024-05-02)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
+## [1.4.7](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.6...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.7) (2024-04-24)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
+## [1.4.6](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.5...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.6) (2024-04-23)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
+## [1.4.5](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.4...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.5) (2024-04-11)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
+
+
+
+
+
 ## [1.4.4](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.3...@nexeraprotocol/nexera-id-sig-gating-contracts-sdk@1.4.4) (2024-04-11)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts-sdk
