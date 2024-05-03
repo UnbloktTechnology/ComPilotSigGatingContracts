@@ -90,9 +90,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     // try to mint nft
     await expect(
@@ -157,9 +155,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     // try to mint nft
     const tx = await testerSigner.sendTransaction({
@@ -874,9 +870,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     // Complete data
     const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signature.slice(2);
+      unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
 
     await expect(
       testerSigner.sendTransaction({
@@ -904,5 +898,3 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(newSigner !== address3.address).to.be.true;
   });
 });
-
-
