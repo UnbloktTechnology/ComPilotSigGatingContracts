@@ -1,2 +1,2 @@
 export const ExampleGatedNFTMinterAddress_sepolia_dev =
-  "0x5c68CA046782bf732AEdf90a4FAEfCb9EEe1ac52" as const;
+  "0x2466d5EcfE27b38826C0790DE94b4C986caE6908" as const;
