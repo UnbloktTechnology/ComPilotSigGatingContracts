@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { encodeFunctionData, encodePacked, getContract, keccak256 } from "viem";
 import type { Abi } from "viem";
 import {
