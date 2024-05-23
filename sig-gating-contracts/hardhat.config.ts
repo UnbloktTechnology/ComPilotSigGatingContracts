@@ -8,7 +8,6 @@ import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
-import "@openzeppelin/hardhat-upgrades";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 
