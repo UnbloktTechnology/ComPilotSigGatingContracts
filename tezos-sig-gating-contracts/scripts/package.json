@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-      "signdata": "tsc && node signData.js"
+      "signdata": "tsc && node signData.js",
+      "signauthdata": "tsc && node signAuthData.js"
     },
     "dependencies": {
       "@taquito/signer": "^19.2.0",
