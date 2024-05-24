@@ -25,12 +25,12 @@ compile: ## compile contracts to Michelson
 	@mkdir -p compiled
 	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.tz, -m Verifier)
 	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.json, -m Verifier --michelson-format json)
-#	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m C)
+	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m SignerManager)
 
 test: ## run tests (SUITE=asset_approve make test)
 ifndef SUITE
 	@$(call test,TxAuthDataVerifier.test.mligo)
-#	@$(call test,NexeraIDSignerManager.test.mligo)
+	@$(call test,NexeraIDSignerManager.test.mligo)
 else
 	@$(call test,$(SUITE).test.mligo)
 endif

@@ -54,7 +54,7 @@ let test_verifier_signature_verify =
     // DEPLOY
     let initial_storage = { 
         owner = owner1;
-        signerAddress = owner2;
+        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); //owner2;
         result = (None : bool option)
     } in
     let {taddr = verifier_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of TxAuthDataVerifier.Verifier) initial_storage 0tez in
