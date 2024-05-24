@@ -57,14 +57,15 @@ let test_verifier_signature_verify_using_signer_manager =
     // call VERIFY entrypoint 
     let () = Test.set_source owner1 in
     let exp_date : timestamp = ("1970-01-01t00:10:00Z" : timestamp) in
+    let functioncall: bytes = 0x01020304 in
     let my_key : key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key) in
     let my_sig : signature = ("edsigtampb8YY3UkdAokz4KG6VUDHwEYxT88uStfJ7odA71xbPZUioeNJtzBcRSJh9zRE3rjyspVrsWk7P4Wkogj4TgeQ7kQpgd" :
    signature) in
     let exp_date_bytes : bytes = Bytes.pack exp_date in 
     let key_bytes : bytes = Bytes.pack my_key in
-    let data : bytes = Bytes.concat exp_date_bytes (Bytes.concat key_bytes 0x01020304) in
+    let data : bytes = Bytes.concat exp_date_bytes (Bytes.concat key_bytes functioncall) in
     let p = {
-        msgData = (data, exp_date, my_key, my_sig);
+        msgData = (data, exp_date, functioncall, my_key, my_sig);
         // msgData: bytes;
         userAddress = owner3; 
     } in

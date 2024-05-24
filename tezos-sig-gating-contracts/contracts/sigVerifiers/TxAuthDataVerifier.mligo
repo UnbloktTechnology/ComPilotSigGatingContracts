@@ -42,31 +42,28 @@ module Verifier = struct
     /// @notice Generates a hash of the given `TxAuthData`
     /// @param _txAuthData The transaction authentication data to hash
     /// @return The keccak256 hash of the encoded `TxAuthData`
-    let getMessageHash(authData: txAuthData) : bytes =
-        Crypto.keccak (
-                Bytes.pack authData
-                // (
-                //     _txAuthData.chainID,
-                //     _txAuthData.nonce,
-                //     _txAuthData.blockExpiration,
-                //     _txAuthData.contractAddress,
-                //     _txAuthData.userAddress,
-                //     _txAuthData.functionCallData
-                // )
-            )
+    // let getMessageHash(authData: txAuthData) : bytes =
+    //     Crypto.keccak (
+    //             Bytes.pack authData
+    //             // (
+    //             //     _txAuthData.chainID,
+    //             //     _txAuthData.nonce,
+    //             //     _txAuthData.blockExpiration,
+    //             //     _txAuthData.contractAddress,
+    //             //     _txAuthData.userAddress,
+    //             //     _txAuthData.functionCallData
+    //             // )
+    //         )
 
 
     type verifyTxAuthData_param = {
-        msgData: bytes * timestamp * key * signature;
+        msgData: bytes * timestamp * bytes * key * signature;
         // msgData: bytes;
         userAddress: address; 
     }
     [@entry]
     let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : ret = 
-        let (payload, expiration, k, signature) : bytes * timestamp * key * signature = p.msgData in
-        // let () = failwith payload in
-                // // let data_size = Bytes.size data in
-        // let data = Bytes.slice 32n data_size data in
+        let (payload, expiration, functioncall, k, signature) : bytes * timestamp * bytes * key * signature = p.msgData in
 
         // EXPIRATION DATE
         let expiration_date = Bytes.slice 0n 4n payload in
@@ -86,12 +83,10 @@ module Verifier = struct
         let () = Assert.Error.assert (key = k) "missmatch key" in
 
         // FUCNTIONCALL - TODO
+        // let payload_size = Bytes.size payload in
+        // let dataFunctionCall = Bytes.slice 43n (abs(payload_size - 43n)) payload in
         let dataFunctionCall = Bytes.slice 43n 4n payload in // 01020304
-        // let key: key = match (Bytes.unpack dataKey: key option) with
-        // | None -> failwith "Wrong key format" 
-        // | Some k -> k
-        // in
-        let () = Assert.Error.assert (dataFunctionCall = 0x01020304) "missmatch functioncall" in
+        let () = Assert.Error.assert (dataFunctionCall = functioncall) "missmatch functioncall" in
 
 
         // let message : txAuthData = {
@@ -104,8 +99,7 @@ module Verifier = struct
         // } in
         // /// Get Hash
         // let messageHash = getMessageHash(message) in
-        // change format ?
-        // let ethSignedMessageHash = toEthSignedMessageHash(messageHash) in
+
         
         // VERIFY signer key corresponds to signerAddress 
         let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
