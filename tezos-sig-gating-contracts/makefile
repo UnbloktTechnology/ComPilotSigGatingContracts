@@ -12,7 +12,7 @@ endif
 compile = $(LIGO) compile contract --library . --project-root ./contracts ./contracts/$(1) -o ./compiled/$(2) $(3) 
 # ^ Compile contracts to Michelson or Micheline
 
-test = @$(LIGO) run test $(project_root) ./test/$(1)
+test = @$(LIGO) run test $(project_root) ./test/$(1) --no-warn
 # ^ run given test file
 
 
@@ -38,6 +38,10 @@ endif
 sign:
 	@echo "Running deploy script\n"
 	@cd scripts && npm run signdata
+
+signauthdata:
+	@echo "Running deploy script\n"
+	@cd scripts && npm run signauthdata
 
 scripts_install:
 	@echo "Installing deploy script dependencies"
