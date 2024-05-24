@@ -23,6 +23,11 @@ module Verifier = struct
         functionCallData: bytes
     }
 
+    let is_implicit (elt : address) : bool =
+        let pack_elt : bytes = Bytes.pack elt in
+        let is_imp : bytes = Bytes.sub 6n 1n pack_elt in
+        (is_imp = 0x00)
+
     [@entry]
     let setSigner(newSigner: address) (s: storage) : ret =
         let _ = Assert.Error.assert (Tezos.get_sender() = s.owner) Errors.only_owner in
@@ -78,15 +83,15 @@ module Verifier = struct
         | None -> failwith "Wrong key format" 
         | Some k -> k
         in
-        let () = assert_with_error (key = k) "missmatch key" in
+        let () = Assert.Error.assert (key = k) "missmatch key" in
 
         // FUCNTIONCALL - TODO
-        let dataFunctionCall = Bytes.slice 43n 4n payload in // 050a0000002100988e7ca0d3e87fd497699d2a757f6f2e6f7b63de2e0440b9df6a2cc87e184c2e
+        let dataFunctionCall = Bytes.slice 43n 4n payload in // 01020304
         // let key: key = match (Bytes.unpack dataKey: key option) with
         // | None -> failwith "Wrong key format" 
         // | Some k -> k
         // in
-        let () = assert_with_error (dataFunctionCall = 0x01020304) "missmatch functioncall" in
+        let () = Assert.Error.assert (dataFunctionCall = 0x01020304) "missmatch functioncall" in
 
 
         // let message : txAuthData = {
@@ -101,11 +106,23 @@ module Verifier = struct
         // let messageHash = getMessageHash(message) in
         // change format ?
         // let ethSignedMessageHash = toEthSignedMessageHash(messageHash) in
-        let kh : key_hash = Crypto.hash_key k in
-        let _signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
+        
+        // VERIFY signer key corresponds to signerAddress 
+        let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
+            //calls isValidSignature of the smart contract             
+            let r = Tezos.call_view "isValidSignature" (key, payload, signature) s.signerAddress in
+            match r with
+            | None -> failwith "ERROR: unknown isValidSignature view in the smart contract"
+            | Some status -> Assert.assert (status)
+        else   // case signerAddress is a implicit account
+            let kh : key_hash = Crypto.hash_key k in
+            let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
+            Assert.Error.assert (signer_address_from_key = s.signerAddress) "missmatch key and signerAddress"
+        in
+
         let is_valid = Crypto.check k signature payload in 
         let _ = Assert.Error.assert (is_valid) Errors.invalid_signature in
-        // Verify Signature
+        // Verify Signature - SignatureChecker TODO
             // !SignatureChecker.isValidSignatureNow(
             //     s.signerAddress,
             //     messageHash,
