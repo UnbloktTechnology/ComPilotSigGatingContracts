@@ -1,13 +1,9 @@
 module Verifier = struct
     type storage = {
         owner: address;
-        signerAddress: address; // TODO - Pourquoi un seul signer authorisé ??
-        result: bool option;
-        
-        nonces: (address, nat) big_map // TODO - a quoi ca sert ? 
-        // un message signé (off-chain) avec l'état du nonce du signer est considéré 
-        // comme valide tant que le signer ne verifie pas un autre message !! 
-        // Que se passe-t-il s'il ya 2 signature qui considère le même nonce ? seulement 1 des 2 signatures sera valide :(
+        signerAddress: address; 
+        result: bool option;    // TODO - remove    
+        nonces: (address, nat) big_map 
     }
     type ret = operation list * storage
 
@@ -23,7 +19,7 @@ module Verifier = struct
 
     type txAuthData = {
         // chainID: nat;
-        // nonce: nat;
+        nonce: nat;
         blockExpiration: timestamp;
         contractAddress: address;
         userAddress: address;
@@ -98,9 +94,9 @@ module Verifier = struct
         let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
 
         // NONCE
-        let current_nonce, new_nonces = match Big_map.find_opt signer_address_from_key s.nonces with
-        | None -> (0n, Big_map.update signer_address_from_key (Some(1n)) s.nonces)
-        | Some nse -> (nse, Big_map.update signer_address_from_key (Some(nse + 1n)) s.nonces)
+        let current_nonce, new_nonces = match Big_map.find_opt p.userAddress s.nonces with
+        | None -> (0n, Big_map.update p.userAddress (Some(1n)) s.nonces)
+        | Some nse -> (nse, Big_map.update p.userAddress (Some(nse + 1n)) s.nonces)
         in
         let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
 
