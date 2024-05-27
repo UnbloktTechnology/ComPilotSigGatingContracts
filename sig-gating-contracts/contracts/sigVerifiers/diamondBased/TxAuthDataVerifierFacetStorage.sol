@@ -15,11 +15,10 @@ library TxAuthDataVerifierFacetStorage {
     uint256 private constant _BYTES_32_LENGTH = 32;
 
     /// @notice This is the length for the expected signature
-    uint256 private constant _SIGNATURE_LENGTH = 65;
+    uint256 constant _SIGNATURE_LENGTH = 65;
 
     /// @notice The offset for the extra data in the calldata
-    uint256 private constant _EXTRA_DATA_LENGTH =
-        _SIGNATURE_LENGTH + _BYTES_32_LENGTH;
+    uint256 constant _EXTRA_DATA_LENGTH = _SIGNATURE_LENGTH + _BYTES_32_LENGTH;
 
     struct Layout {
         address _signerAddress;
