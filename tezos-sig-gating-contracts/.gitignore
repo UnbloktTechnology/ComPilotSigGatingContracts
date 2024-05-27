@@ -6,3 +6,4 @@ ligo.esy.lock
 compiled
 scripts/node_modules
 scripts/*.js
+scripts/package-lock.json

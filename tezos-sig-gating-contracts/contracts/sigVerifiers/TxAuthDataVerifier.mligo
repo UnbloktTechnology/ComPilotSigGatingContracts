@@ -1,17 +1,24 @@
 module Verifier = struct
     type storage = {
         owner: address;
-        signerAddress: address;
+        signerAddress: address; // TODO - Pourquoi un seul signer authorisé ??
         result: bool option;
+        
+        nonces: (address, nat) big_map // TODO - a quoi ca sert ? 
+        // un message signé (off-chain) avec l'état du nonce du signer est considéré 
+        // comme valide tant que le signer ne verifie pas un autre message !! 
+        // Que se passe-t-il s'il ya 2 signature qui considère le même nonce ? seulement 1 des 2 signatures sera valide :(
     }
     type ret = operation list * storage
 
     module Errors = struct
         let only_owner = "OnlyOwner"
-        let zero_address  = "BaseTxAuthDataVerifier: new signer is the zero address"
+        // let zero_address  = "BaseTxAuthDataVerifier: new signer is the zero address"
         let block_expired = "BlockExpired"
         let invalid_signature = "InvalidSignature"
         let unmatch_expiration_date = "UnmatchExpirationDate"
+        let invalid_nonce = "InvalidNonce"
+        let parameter_missmatch = "hash of given parameters (nonce, expiration, key, functioncall) does not match the payload hash"
     end
 
     type txAuthData = {
@@ -57,38 +64,15 @@ module Verifier = struct
 
 
     type verifyTxAuthData_param = {
-        msgData: bytes * timestamp * bytes * key * signature;
+        msgData: bytes * nat * timestamp * bytes * key * signature;
         // msgData: bytes;
         userAddress: address; 
     }
     [@entry]
     let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : ret = 
-        let (payload, expiration, functioncall, k, signature) : bytes * timestamp * bytes * key * signature = p.msgData in
 
-        // EXPIRATION DATE
-        let expiration_date = Bytes.slice 0n 4n payload in
-        let exp_timestamp: timestamp = match (Bytes.unpack expiration_date: timestamp option) with
-        | None -> failwith "Wrong time format" 
-        | Some tt -> tt
-        in
-        let _ = Assert.Error.assert (exp_timestamp = expiration) Errors.unmatch_expiration_date in
-        let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
-
-        // PUBLIC KEY
-        let dataKey = Bytes.slice 4n 39n payload in // 050a0000002100988e7ca0d3e87fd497699d2a757f6f2e6f7b63de2e0440b9df6a2cc87e184c2e
-        let key: key = match (Bytes.unpack dataKey: key option) with
-        | None -> failwith "Wrong key format" 
-        | Some k -> k
-        in
-        let () = Assert.Error.assert (key = k) "missmatch key" in
-
-        // FUCNTIONCALL - TODO
-        // let payload_size = Bytes.size payload in
-        // let dataFunctionCall = Bytes.slice 43n (abs(payload_size - 43n)) payload in
-        let dataFunctionCall = Bytes.slice 43n 4n payload in // 01020304
-        let () = Assert.Error.assert (dataFunctionCall = functioncall) "missmatch functioncall" in
-
-
+        
+        let (payload, nonce, expiration, functioncall, k, signature) : bytes * nat * timestamp * bytes * key * signature = p.msgData in
         // let message : txAuthData = {
         //     // chainID = block.chainid,
         //     // nonce = userNonce,
@@ -100,17 +84,62 @@ module Verifier = struct
         // /// Get Hash
         // let messageHash = getMessageHash(message) in
 
+        // VERIFY parameters correspond to payload hash
+        let nonce_b = Bytes.pack nonce in
+        let expiration_b = Bytes.pack expiration in
+        let key_b = Bytes.pack k in
+        let functioncall_b = functioncall in
+        let expected_bytes = Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat key_b functioncall_b)) in
+        let expected_payload = Crypto.keccak(expected_bytes) in
+        let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
+
+        // Retrieve signer address from public key
+        let kh : key_hash = Crypto.hash_key k in
+        let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
+
+        // NONCE
+        let current_nonce, new_nonces = match Big_map.find_opt signer_address_from_key s.nonces with
+        | None -> (0n, Big_map.update signer_address_from_key (Some(1n)) s.nonces)
+        | Some nse -> (nse, Big_map.update signer_address_from_key (Some(nse + 1n)) s.nonces)
+        in
+        let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
+
+        // // EXPIRATION DATE
+        // let expiration_date = Bytes.slice 0n 4n payload in
+        // let exp_timestamp: timestamp = match (Bytes.unpack expiration_date: timestamp option) with
+        // | None -> failwith "Wrong time format" 
+        // | Some tt -> tt
+        // in
+        // let _ = Assert.Error.assert (exp_timestamp = expiration) Errors.unmatch_expiration_date in
+        let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
+
+        // // PUBLIC KEY
+        // let dataKey = Bytes.slice 4n 39n payload in // 050a0000002100988e7ca0d3e87fd497699d2a757f6f2e6f7b63de2e0440b9df6a2cc87e184c2e
+        // let key: key = match (Bytes.unpack dataKey: key option) with
+        // | None -> failwith "Wrong key format" 
+        // | Some k -> k
+        // in
+        // let () = Assert.Error.assert (key = k) "missmatch key" in
+
+        // // FUCNTIONCALL - TODO
+        // // let payload_size = Bytes.size payload in
+        // // let dataFunctionCall = Bytes.slice 43n (abs(payload_size - 43n)) payload in
+        // let dataFunctionCall = Bytes.slice 43n 4n payload in // 01020304
+        // let () = Assert.Error.assert (dataFunctionCall = functioncall) "missmatch functioncall" in
+
+
+
+
         
         // VERIFY signer key corresponds to signerAddress 
         let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
             //calls isValidSignature of the smart contract             
-            let r = Tezos.call_view "isValidSignature" (key, payload, signature) s.signerAddress in
+            let r = Tezos.call_view "isValidSignature" (k, payload, signature) s.signerAddress in
             match r with
             | None -> failwith "ERROR: unknown isValidSignature view in the smart contract"
             | Some status -> Assert.assert (status)
         else   // case signerAddress is a implicit account
-            let kh : key_hash = Crypto.hash_key k in
-            let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
+
             Assert.Error.assert (signer_address_from_key = s.signerAddress) "missmatch key and signerAddress"
         in
 
@@ -123,5 +152,5 @@ module Verifier = struct
             //     signature
             // )
 
-        [], { s with result=Some(true) }
+        [], { s with result=Some(true); nonces=new_nonces }
 end

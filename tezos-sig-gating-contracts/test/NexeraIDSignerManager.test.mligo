@@ -47,25 +47,29 @@ let test_verifier_signature_verify_using_signer_manager =
     let initial_storage = { 
         owner = owner1;
         signerAddress = signer_manager_address;
-        result = (None : bool option)
+        result = (None : bool option);
+        nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let {taddr = verifier_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of TxAuthDataVerifier.Verifier) initial_storage 0tez in
     let verifier_contract = Test.Next.Typed_address.to_contract verifier_taddr in
     let _verifier_address : address = Tezos.address verifier_contract in
 
-
     // call VERIFY entrypoint 
     let () = Test.set_source owner1 in
+    let nonce = 0n in
     let exp_date : timestamp = ("1970-01-01t00:10:00Z" : timestamp) in
     let functioncall: bytes = 0x01020304 in
     let my_key : key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key) in
-    let my_sig : signature = ("edsigtampb8YY3UkdAokz4KG6VUDHwEYxT88uStfJ7odA71xbPZUioeNJtzBcRSJh9zRE3rjyspVrsWk7P4Wkogj4TgeQ7kQpgd" :
+    let my_sig : signature = ("edsigtbwuz1xp5h7TojQcT5QcoUhwEf2HMhnv1ixWjWHHQ7vv8HGdtMTKG3VUsDMeSvvxaEPudAoaHFsGpiQfabUUVzAosGFZDn" :
    signature) in
+    let nonce_bytes : bytes = Bytes.pack nonce in 
     let exp_date_bytes : bytes = Bytes.pack exp_date in 
     let key_bytes : bytes = Bytes.pack my_key in
-    let data : bytes = Bytes.concat exp_date_bytes (Bytes.concat key_bytes functioncall) in
+    // let data : bytes = Bytes.concat exp_date_bytes (Bytes.concat key_bytes functioncall) in
+    let data : bytes = Bytes.concat nonce_bytes (Bytes.concat exp_date_bytes (Bytes.concat key_bytes functioncall)) in
+    let data_hash = Crypto.keccak data in
     let p = {
-        msgData = (data, exp_date, functioncall, my_key, my_sig);
+        msgData = (data_hash, nonce, exp_date, functioncall, my_key, my_sig);
         // msgData: bytes;
         userAddress = owner3; 
     } in
