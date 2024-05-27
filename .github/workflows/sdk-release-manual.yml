@@ -91,7 +91,7 @@ jobs:
           pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk"
           echo $version
 
-      - name: Build and publish contracts to npm
+      - name: Build
         env:
           AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
           TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
@@ -100,15 +100,20 @@ jobs:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALT: ${{ secrets.SALT }}
         run: |
-          pnpm run build:contracts && pnpm run publish-pkg:contracts
+          pnpm run build:contracts
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
 
-      - name: Build and publish contracts infos to npm
-        env:
-          AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
-          TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
-          POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
-          DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SALT: ${{ secrets.SALT }}
+      - name: Publish to private NPM
         run: |
-          pnpm run publish-pkg:sdk
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+
+      - name: Publish to public NPM
+        env:
+          NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
+
+          pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
+
+          pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
