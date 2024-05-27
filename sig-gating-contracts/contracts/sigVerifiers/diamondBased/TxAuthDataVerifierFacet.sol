@@ -155,16 +155,16 @@ contract TxAuthDataVerifierFacet is Context {
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
         bytes calldata argsWithSelector = msgData[:msgData.length -
-            _EXTRA_DATA_LENGTH];
+            TxAuthDataVerifierFacetStorage.layout()._EXTRA_DATA_LENGTH];
 
         uint256 blockExpiration = uint256(
             bytes32(
-                msgData[msgData.length - _EXTRA_DATA_LENGTH:msgData.length -
-                    _SIGNATURE_LENGTH]
+                msgData[msgData.length - TxAuthDataVerifierFacetStorage.layout()._EXTRA_DATA_LENGTH:msgData.length -
+                    TxAuthDataVerifierFacetStorage.layout()._SIGNATURE_LENGTH]
             )
         );
 
-        bytes calldata signature = msgData[msgData.length - _SIGNATURE_LENGTH:];
+        bytes calldata signature = msgData[msgData.length - TxAuthDataVerifierFacetStorage.layout()._SIGNATURE_LENGTH:];
 
         /// Check signature hasn't expired
         if (block.number >= blockExpiration) {
