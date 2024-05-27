@@ -2,7 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import {TxAuthDataVerifierFacetStorage} from "./TxAuthDataVerifierFacetStorage.sol";
 
 /**
  * @title Base Transaction Authentication Data Verifier
@@ -15,7 +17,7 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
  *
  * The contract utilizes OZ SignatureChecker for signature verification.
  */
-contract TxAuthDataVerifierFacet {
+contract TxAuthDataVerifierFacet is Context {
     using TxAuthDataVerifierFacetStorage for TxAuthDataVerifierFacetStorage.Layout;
 
     /// @dev Event emitted when a signature is verified
@@ -56,7 +58,11 @@ contract TxAuthDataVerifierFacet {
     /// @notice Initializes the `TxAuthDataVerifier` contract
     /// @param _signer The address of the off-chain service responsible for signing transactions
     function initialize(address _signer) external {
-        require(TxAuthDataVerifierFacetStorage.layout()._signerAddress == address(0), "Cannot initialize again");
+        require(
+            TxAuthDataVerifierFacetStorage.layout()._signerAddress ==
+                address(0),
+            "Cannot initialize again"
+        );
         _setSigner(_signer);
     }
 
@@ -148,12 +154,13 @@ contract TxAuthDataVerifierFacet {
         address userAddress
     ) internal returns (bool) {
         /// Decompose msgData into the different parts we want
-        bytes calldata argsWithSelector = msgData[:msgData.length - _EXTRA_DATA_LENGTH];
+        bytes calldata argsWithSelector = msgData[:msgData.length -
+            _EXTRA_DATA_LENGTH];
 
         uint256 blockExpiration = uint256(
             bytes32(
-                msgData[msgData.length - _EXTRA_DATA_LENGTH:
-                msgData.length - _SIGNATURE_LENGTH]
+                msgData[msgData.length - _EXTRA_DATA_LENGTH:msgData.length -
+                    _SIGNATURE_LENGTH]
             )
         );
 
@@ -167,7 +174,9 @@ contract TxAuthDataVerifierFacet {
         /// Read nonce value and increment it (in storage) to prevent replay attacks
         uint256 userNonce;
         unchecked {
-            userNonce = TxAuthDataVerifierFacetStorage.layout().nonces[userAddress]++;
+            userNonce = TxAuthDataVerifierFacetStorage.layout().nonces[
+                userAddress
+            ]++;
         }
 
         /// Build tx auth data
