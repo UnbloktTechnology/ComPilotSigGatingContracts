@@ -151,7 +151,7 @@ let test_failure_verify_twice =
     | None -> Test.Next.Assert.failwith "ERROR: signature unknown status"
     | Some res -> Test.Next.Assert.assert (res)
     in 
-    let () = match Big_map.find_opt initial_storage.signerAddress current_storage.nonces with
+    let () = match Big_map.find_opt owner3 current_storage.nonces with
     | None -> Test.Next.Assert.failwith "ERROR: nonce should exist if firt Verify succeeded"
     | Some nse -> Test.Next.Assert.assert (nse = 1n)
     in 
