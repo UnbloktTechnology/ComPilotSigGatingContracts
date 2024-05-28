@@ -28,39 +28,40 @@ let test_repro_mint_offchain =
     let {taddr = nftminter_taddr; code = _ ; size = _} = orig_nftminter in 
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
+    let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
 
     // call MINT_OFFCHAIN entrypoint 
     let () = Test.set_source owner1 in
     let my_key : key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key) in
-    let my_sig : signature = ("edsigu4Hogk5eBBCRW1y8hpSyrrwnDmVaGFJWoSi3S3tPoCcX8bCoTkBPVwCYrkyNoHJF4QxdaZrWbvbzYtf7MBAN2D7KNijXt3" :
+    let my_sig : signature = ("edsigu36vhhH7zeF6PhRkzTUUuR1935diGvM629mfDYGYGRkJyjaawoyoRdzMBbm8hd7Vypaxi4FZKNvDoTACGNBrLPES35HVpV" :
    signature) in
     // FUNCTIONCALL (ENTRYPOINT) 
-    let functioncall : bytes = match (Tezos.get_entrypoint_opt "%mint_offchain" nftminter_address: NFTMINTER.NftMinter.mint contract option) with
-    | Some e -> Bytes.pack e 
-    | None -> Test.Next.Assert.failwith("Error entrypoint not found")
-    in
+    let functioncall_contract = nftminter_address in
+    let functioncall_name = "%mint_offchain" in
     let functioncall_params: NFTMINTER.NftMinter.mint = {
       owner=owner3;
       token_id=6n
     } in
+    let functioncall_contract_bytes : bytes = Bytes.pack functioncall_contract in
+    let functioncall_name_bytes : bytes = Bytes.pack functioncall_name in
+    let () = Test.Next.IO.log("functioncall_name_bytes=", functioncall_name_bytes) in
     let functioncall_params_bytes : bytes = Bytes.pack functioncall_params in
     let () = Test.Next.IO.log("functioncall_params_bytes=", functioncall_params_bytes) in
     // debug
-    let ep : NFTMINTER.NftMinter.mint contract = match Bytes.unpack functioncall with
-    | Some c -> c
-    | None -> failwith "error unpacking entrypoint"
-    in
-    let () = Test.Next.IO.log("functioncall ep=", functioncall) in
-    let () = Test.Next.IO.log("decoded ep=", ep) in
-
+    // let ep : NFTMINTER.NftMinter.mint contract = match Bytes.unpack functioncall with
+    // | Some c -> c
+    // | None -> failwith "error unpacking entrypoint"
+    // in
+    // let () = Test.Next.IO.log("functioncall ep=", functioncall) in
+    // let () = Test.Next.IO.log("decoded ep=", ep) in
     let key_bytes : bytes = Bytes.pack my_key in
     // let data : bytes = Bytes.concat key_bytes functioncall in
-    let data : bytes = Bytes.concat key_bytes (Bytes.concat functioncall functioncall_params_bytes) in
-    // let () = Test.Next.IO.log("data=", data) in
+    let data : bytes = Bytes.concat key_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)) in
+    let () = Test.Next.IO.log("data=", data) in
     let data_hash = Crypto.keccak data in
-    // let () = Test.Next.IO.log("data_hash=", data_hash) in
+    let () = Test.Next.IO.log("data_hash=", data_hash) in
     let p = {
-        msgData = (data_hash, functioncall, functioncall_params_bytes, my_key, my_sig);
+        msgData = (data_hash, functioncall_contract, functioncall_name, functioncall_params_bytes, my_key, my_sig);
         userAddress = owner3;
         token_id = 6n;        
     } in

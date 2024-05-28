@@ -50,6 +50,17 @@ function convert_key(key_str : string) {
   return packed.bytes;
 }
 
+function convert_string(str : string) {
+  const data: MichelsonData = {
+      string: str
+  };
+  const typ: MichelsonType = {
+      prim: "string"
+  };
+  const packed = packDataBytes(data, typ);
+  return packed.bytes;
+}
+
 function convert_nat(nat_str : string) {
   const data: MichelsonData = {
       int: nat_str
@@ -61,17 +72,30 @@ function convert_nat(nat_str : string) {
   return packed.bytes;
 }
 
+function convert_address(addr_str : string) {
+  const data: MichelsonData = {
+      string: addr_str
+  };
+  const typ: MichelsonType = {
+      prim: "address"
+  };
+  const packed = packDataBytes(data, typ);
+  return packed.bytes;
+}
+
 async function main() {
     const Tezos = new TezosToolkit(RPC_ENDPOINT);
     const signer = new InMemorySigner("edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU");
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    // const functioncall_contract = "KT1.....";
+    const functioncall_contract = "KT1PiWtasZ42mXt39H11GTx54xKq9JMMtwsR";
     // const functioncall_entrypoint = "Mint";
     // const functioncall_args_recipient = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
     // const functioncall_args_tokenid = "0";
-    const functioncall = "050a000000230194816d5f32e5c6cb9926b6b0615b9fb3a23ae2b7006d696e745f6f6666636861696e";
+    
+    // const functioncall = "050a000000230143602c6da71e1daa1f087e423c112323075a06c4006d696e745f6f6666636861696e";
+    const functioncall_name = "%mint_offchain";
     const functioncall_params = "0507070a0000001600004c8408407ebb2be65120a765cd2cbf341b9860a70006"
     // const functioncall = "01020304";
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
@@ -86,9 +110,12 @@ async function main() {
     // const nonce_bytes = convert_nat(nonce);
     // console.log("nonce_bytes=", nonce_bytes);
     // const exp_date_bytes = convert_timestamp(exp_date);
+    const functioncall_contract_bytes = convert_address(functioncall_contract);
+    const functioncall_name_bytes = convert_string(functioncall_name);
+    console.log("functioncall_name_bytes=", functioncall_name_bytes);
     const key_bytes = convert_key(dataKey);
     // const payload = nonce_bytes + exp_date_bytes + key_bytes + functioncall;
-    const payload = key_bytes + functioncall + functioncall_params;
+    const payload = key_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params;
     console.log("payload=", payload);
     const payload_hash = keccak256(payload);
     console.log("payload_hash=", payload_hash);

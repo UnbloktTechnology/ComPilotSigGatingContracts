@@ -21,14 +21,36 @@ module NftMinter = struct
     token_id : nat;
   }
 
+  type calldata = address * string * bytes
+  let dispatch (address, name, args: calldata) : operation option =
+    if (Tezos.get_self_address() = address) then
+      if name = "%mint_offchain" then
+        let ep_mint_offchain: mint contract = Tezos.self "%mint_offchain" in
+        let args_decoded: mint = match (Bytes.unpack args: mint option) with
+        | Some data -> data
+        | None -> failwith "[dispatch] Cannot unpack functioncall args"
+        in 
+        Some(Tezos.Next.Operation.transaction args_decoded 0mutez ep_mint_offchain)
+      else
+        None
+    else
+      let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" address in
+      let op : operation  = match external_dispatch_opt with
+      | Some ep -> Tezos.Next.Operation.transaction (address, name, args) 0mutez ep
+      | None -> failwith "[dispatch] calldata should point to a contract with a dispatch entrypoint"
+      in
+      Some(op)
+
   type verifyTxAuthData_param = {
-      msgData: bytes * bytes * bytes * key * signature;
+      msgData: bytes * address * string * bytes * key * signature;
       userAddress: address; 
   }
   let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : ret = 
-      let (payload, functioncall, args,  k, signature) : bytes * bytes * bytes * key * signature = p.msgData in
+      let (payload, contractAddress, name, args,  k, signature) : bytes * address * string * bytes * key * signature = p.msgData in
       let key_b = Bytes.pack k in
-      let expected_bytes = Bytes.concat key_b (Bytes.concat functioncall args) in
+      let contract_b = Bytes.pack contractAddress in
+      let name_b = Bytes.pack name in
+      let expected_bytes = Bytes.concat key_b (Bytes.concat contract_b (Bytes.concat name_b args)) in
       let expected_payload = Crypto.keccak(expected_bytes) in
       let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
 
@@ -41,23 +63,34 @@ module NftMinter = struct
       let is_valid = Crypto.check k signature payload in 
       let _ = Assert.Error.assert (is_valid) Errors.invalid_signature in
       //TODO
-      // let ep_opt : mint contract option = Bytes.unpack functioncall in
-      let ep_opt : mint contract option = Tezos.get_entrypoint_opt "%mint_offchain" (Tezos.get_self_address()) in
-      let op : operation  = match ep_opt with
-      | Some ep -> 
-          let args: mint = match (Bytes.unpack args: mint option) with
-          | Some data -> data
-          | None -> failwith "[VerifyTxAuthData] Cannot unpack functioncall args"
-          in 
-          let op : operation = Tezos.Next.Operation.transaction args 0mutez ep in
-          op
-      | None -> failwith "[VerifyTxAuthData] mint_offchain entrypoint not found"
+      // let ep_test = Tezos.get_entrypoint "%mint_offchain" (Tezos.get_self_address()) in
+      // let args_decoded: mint = match (Bytes.unpack args: mint option) with
+      // | Some data -> data
+      // | None -> failwith "[VerifyTxAuthData] Cannot unpack functioncall args"
+      // in 
+      // let _op : operation = Tezos.Next.Operation.transaction args_decoded 0mutez ep_test in
+      let op_opt = dispatch (contractAddress, name, args) in
+      let op = match op_opt with
+      | Some op -> op
+      | None -> failwith "Error: invalid payload ! could not dispatch calldata"
       in
+      // let ep_opt : mint contract option = Bytes.unpack functioncall in
+      // let ep_opt : mint contract option = Tezos.get_entrypoint_opt "%mint_offchain" (Tezos.get_self_address()) in
+      // let op : operation  = match ep_opt with
+      // | Some ep -> 
+      //     let args: mint = match (Bytes.unpack args: mint option) with
+      //     | Some data -> data
+      //     | None -> failwith "[VerifyTxAuthData] Cannot unpack functioncall args"
+      //     in 
+      //     let op : operation = Tezos.Next.Operation.transaction args 0mutez ep in
+      //     op
+      // | None -> failwith "[VerifyTxAuthData] mint_offchain entrypoint not found"
+      // in
       [op], s
       // [], s
 
   type mint_offchain = {
-      msgData: bytes * bytes * bytes * key * signature;
+      msgData: bytes * address * string * bytes * key * signature;
       userAddress: address; 
       token_id : nat;
   }
