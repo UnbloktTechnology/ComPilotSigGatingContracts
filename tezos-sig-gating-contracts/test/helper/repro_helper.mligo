@@ -1,6 +1,6 @@
 #import "./bootstrap.mligo" "Bootstrap"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../contracts/examples/nftminter.mligo" "NFTMINTER"
+#import "../../contracts/examples/reproduction.mligo" "NFTMINTER"
 
 module FA2_NFT = FA2.NFTExtendable
 
@@ -33,9 +33,9 @@ let get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3
         (1n, ({token_id=1n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
         (2n, ({token_id=2n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
         (3n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (4n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (5n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (6n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (4n, ({token_id=4n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (5n, ({token_id=5n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (6n, ({token_id=6n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
     ] : FA2_NFT.TZIP12.tokenMetadata) in
 
     let metadata =Big_map.literal [
@@ -59,7 +59,6 @@ let get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3
     let nft_extension_initial = { 
         admin = owner3;
         signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); // /TODO replace hard coded as a parameter
-        nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let initial_storage : NFTMINTER.NftMinter.storage = {
         extension      = nft_extension_initial;

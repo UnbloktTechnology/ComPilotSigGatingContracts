@@ -147,6 +147,6 @@ module Verifier = struct
             //     messageHash,
             //     signature
             // )
-
+        // let op : operation = Tezos.get_entrypoint_opt 
         [], { s with result=Some(true); nonces=new_nonces }
 end

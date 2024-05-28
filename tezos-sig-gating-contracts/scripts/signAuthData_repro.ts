@@ -71,22 +71,24 @@ async function main() {
     // const functioncall_entrypoint = "Mint";
     // const functioncall_args_recipient = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
     // const functioncall_args_tokenid = "0";
-    const functioncall = "050a0000001a010ccd06e97c8d7b5ead96c873b7de732f7d29ebf7006d696e74";
+    const functioncall = "050a000000230194816d5f32e5c6cb9926b6b0615b9fb3a23ae2b7006d696e745f6f6666636861696e";
+    const functioncall_params = "0507070a0000001600004c8408407ebb2be65120a765cd2cbf341b9860a70006"
     // const functioncall = "01020304";
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
-    const exp_date = "1970-01-01T00:10:00.00Z";
-    const nonce = "0";
+    // const exp_date = "1970-01-01T00:10:00.00Z";
+    // const nonce = "0";
 
     // display public key
     const signerPublicKey = await signer.publicKey();
     console.log("signerPublicKey=", signerPublicKey);
 
     // display payload
-    const nonce_bytes = convert_nat(nonce);
-    console.log("nonce_bytes=", nonce_bytes);
-    const exp_date_bytes = convert_timestamp(exp_date);
+    // const nonce_bytes = convert_nat(nonce);
+    // console.log("nonce_bytes=", nonce_bytes);
+    // const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    const payload = nonce_bytes + exp_date_bytes + key_bytes + functioncall;
+    // const payload = nonce_bytes + exp_date_bytes + key_bytes + functioncall;
+    const payload = key_bytes + functioncall + functioncall_params;
     console.log("payload=", payload);
     const payload_hash = keccak256(payload);
     console.log("payload_hash=", payload_hash);

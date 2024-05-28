@@ -4,7 +4,8 @@
     "description": "",
     "scripts": {
       "signdata": "tsc && node signData.js",
-      "signauthdata": "tsc && node signAuthData.js"
+      "signauthdata": "tsc && node signAuthData.js",
+      "repro": "tsc && node signAuthData_repro.js"
     },
     "dependencies": {
       "@taquito/signer": "^19.2.0",
