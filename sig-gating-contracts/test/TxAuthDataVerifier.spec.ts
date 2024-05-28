@@ -49,8 +49,8 @@ describe(`ExampleGatedNFTMinter`, function () {
     const tokenOwner = await exampleNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
   });
-  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
+  it.only(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
     const [txAuthSigner, testerSigner] = await ethers.getSigners();
 
     // Build Signature

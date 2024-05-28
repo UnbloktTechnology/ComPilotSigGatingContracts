@@ -10,11 +10,17 @@ const namedAccounts: {
   tester: {
     default: 1,
   },
-  txAuthSigner: {
-    default: 0,
-  },
   externalContract: {
     default: 2,
+  },
+  signerManagerController: {
+    default: 3,
+  },
+  pauser: {
+    default: 4,
+  },
+  txAuthSignerAddress: {
+    default: 5,
   },
 };
 
