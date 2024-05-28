@@ -7,9 +7,14 @@ import {INexeraIDSignerManager} from "./INexeraIDSignerManager.sol";
 contract SignerManagerProxyOwner is AccessControl {
     INexeraIDSignerManager public signerManager;
 
+    // Roles
     bytes32 public constant SIGNER_MANAGER_CONTROLLER_ROLE =
         keccak256("SIGNER_MANAGER_CONTROLLER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+
+    // Non-existant address to pause signer
+    address private constant ONE_ADDRESS =
+        0x0000000000000000000000000000000000000001;
 
     constructor(address signerManagerAddress) {
         signerManager = INexeraIDSignerManager(signerManagerAddress);
@@ -37,6 +42,7 @@ contract SignerManagerProxyOwner is AccessControl {
     function changeSignerManagerControllerRole(
         address account
     ) external onlyRole(SIGNER_MANAGER_CONTROLLER_ROLE) {
+        grantRole(DEFAULT_ADMIN_ROLE, account);
         grantRole(SIGNER_MANAGER_CONTROLLER_ROLE, account);
     }
 
@@ -49,6 +55,6 @@ contract SignerManagerProxyOwner is AccessControl {
 
     // Function to pause the SignerManager by setting the signer to a null address
     function pauseSignerManager() external onlyRole(PAUSER_ROLE) {
-        signerManager.setSigner(address(0));
+        signerManager.setSigner(ONE_ADDRESS);
     }
 }

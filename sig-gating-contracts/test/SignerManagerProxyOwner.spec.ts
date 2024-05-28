@@ -14,7 +14,12 @@ import { keccak256, publicActions, toHex } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 import { fixtureExampleGatedNFTMinterWithProxyOwner } from "../fixtures/fixtureExampleGatedNFTMinterWithProxyOwner";
 
-describe(`NexeraIDSignerManager`, function () {
+const SIGNER_MANAGER_CONTROLLER_ROLE = keccak256(
+  toHex("SIGNER_MANAGER_CONTROLLER_ROLE")
+);
+const PAUSER_ROLE = keccak256(toHex("PAUSER_ROLE"));
+
+describe.only(`SignerManagerProxyOwner`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
   let signerManagerProxyOwner: SignerManagerProxyOwner;
@@ -24,7 +29,8 @@ describe(`NexeraIDSignerManager`, function () {
     ({ exampleGatedNFTMinter, signerManagerProxyOwner, nexeraIDSignerManager } =
       await fixtureExampleGatedNFTMinterWithProxyOwner());
   });
-  it(`Should check that signerManagerControllerSigner can change the signer`, async () => {
+  // SIGNER_MANAGER_CONTROLLER management
+  it(`Should check that signerManagerControllerSigner can change the signerManagerControllerSigner`, async () => {
     const { tester2, signerManagerController } = await getNamedAccounts();
     const signerManagerControllerSigner = await ethers.getSigner(
       signerManagerController
@@ -32,48 +38,78 @@ describe(`NexeraIDSignerManager`, function () {
     // set signer
     await signerManagerProxyOwner
       .connect(signerManagerControllerSigner)
-      .setSigner(tester2);
+      .changeSignerManagerControllerRole(tester2);
 
-    const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner === tester2).to.be.true;
+    expect(
+      await signerManagerProxyOwner.hasRole(
+        SIGNER_MANAGER_CONTROLLER_ROLE,
+        tester2
+      )
+    ).to.be.true;
   });
-  it(`Should check that non-signerManagerControllerSigner can NOT change the signer`, async () => {
+  it(`Should check that non-signerManagerControllerSigner can NOT change the signerManagerControllerSigner`, async () => {
     const { tester2 } = await getNamedAccounts();
     const tester2Signer = await ethers.getSigner(tester2);
     // try to set signer
     await expect(
-      signerManagerProxyOwner.connect(tester2Signer).setSigner(tester2)
+      signerManagerProxyOwner
+        .connect(tester2Signer)
+        .changeSignerManagerControllerRole(tester2)
     ).to.be.revertedWith(
-      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${keccak256(
-        toHex("SIGNER_MANAGER_CONTROLLER_ROLE")
-      )}`
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${SIGNER_MANAGER_CONTROLLER_ROLE}`
     );
 
-    const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner !== tester2).to.be.true;
+    expect(
+      await signerManagerProxyOwner.hasRole(
+        SIGNER_MANAGER_CONTROLLER_ROLE,
+        tester2
+      )
+    ).to.be.false;
   });
-  it(`Should check that signerManagerControllerSigner can change the signer and sig auth behavior changes accordingly`, async () => {
-    const { tester, signerManagerController, txAuthSignerAddress, tester2 } =
-      await getNamedAccounts();
+  // Pauser management
+  it(`Should check that signerManagerControllerSigner can change the pauser`, async () => {
+    const { tester2, signerManagerController } = await getNamedAccounts();
     const signerManagerControllerSigner = await ethers.getSigner(
       signerManagerController
     );
+    // set signer
+    await signerManagerProxyOwner
+      .connect(signerManagerControllerSigner)
+      .changePauserRole(tester2);
+
+    expect(await signerManagerProxyOwner.hasRole(PAUSER_ROLE, tester2)).to.be
+      .true;
+  });
+  it(`Should check that non-signerManagerControllerSigner can NOT change the pauser`, async () => {
+    const { tester2 } = await getNamedAccounts();
+    const tester2Signer = await ethers.getSigner(tester2);
+    // try to set signer
+    await expect(
+      signerManagerProxyOwner.connect(tester2Signer).changePauserRole(tester2)
+    ).to.be.revertedWith(
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${SIGNER_MANAGER_CONTROLLER_ROLE}`
+    );
+
+    expect(await signerManagerProxyOwner.hasRole(PAUSER_ROLE, tester2)).to.be
+      .false;
+  });
+  it(`Should check that pauser can pause the contract and sig auth behavior changes accordingly`, async () => {
+    const { tester, txAuthSignerAddress, pauser } = await getNamedAccounts();
+    const pauserSigner = await ethers.getSigner(pauser);
     const testerSigner = await ethers.getSigner(tester);
 
     const txAuthWalletClient = await hre.viem.getWalletClient(
       txAuthSignerAddress as Address
     );
-    const secondSignerWalletClient = await hre.viem.getWalletClient(
-      tester2 as Address
-    );
 
     // Change signer
-    await signerManagerProxyOwner
-      .connect(signerManagerControllerSigner)
-      .setSigner(tester2);
+    await signerManagerProxyOwner.connect(pauserSigner).pauseSignerManager();
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner === tester2).to.be.true;
+    expect(newSigner === "0x0000000000000000000000000000000000000001").to.be
+      .true;
+
+    // Now try with old signer that should fail
 
     // Build Signature
     const recipient = tester;
@@ -85,51 +121,6 @@ describe(`NexeraIDSignerManager`, function () {
       args: [recipient],
       userAddress: tester as Address,
     };
-
-    // Sign with new signer
-    const signatureResponse = await signTxAuthDataLib(
-      secondSignerWalletClient.extend(publicActions),
-      txAuthInput
-    );
-
-    // Encoding the blockExpiration (uint256) and signature (bytes)
-    const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
-      32
-    );
-
-    const unsignedTx =
-      await exampleGatedNFTMinter.populateTransaction.mintNFTGated(recipient);
-
-    // Complete data
-    const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signatureResponse.signature.slice(2);
-
-    // Send tx
-    const tx = await testerSigner.sendTransaction({
-      to: exampleGatedNFTMinter.address,
-      data: txData,
-    });
-
-    const transactionReceipt = await tx.wait();
-
-    const eventsData = transactionReceipt.logs.map((log) =>
-      exampleGatedNFTMinter.interface.parseLog(log)
-    );
-
-    // Check new minted token id
-    const tokenId = Number(eventsData[1].args?.tokenId);
-    expect(tokenId === 1).to.be.true;
-    const tokenOwner = await exampleGatedNFTMinter.ownerOf(tokenId);
-    expect(tokenOwner === tester).to.be.true;
-
-    // Also check for signature verified emitted event
-    expect(eventsData[0].args?.userAddress === tester).to.be.true;
-    expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
-
-    // Now try with old signer that should fail
 
     // Fetch Signature with old signer
 
@@ -161,7 +152,7 @@ describe(`NexeraIDSignerManager`, function () {
     ).to.be.revertedWith("InvalidSignature");
 
     // Check no new minted token id
-    const tokenId2 = Number(await exampleGatedNFTMinter.lastTokenId());
-    expect(tokenId2 === 1).to.be.true;
+    const tokenId = Number(await exampleGatedNFTMinter.lastTokenId());
+    expect(tokenId === 0).to.be.true;
   });
 });

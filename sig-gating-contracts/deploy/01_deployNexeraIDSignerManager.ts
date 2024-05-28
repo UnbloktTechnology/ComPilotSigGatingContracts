@@ -10,7 +10,7 @@ const mainEnv = "mainnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSignerAddress } = await getNamedAccounts();
+  const { deployer, txAuthSignerAddress, s } = await getNamedAccounts();
   console.log("deployer", deployer);
   console.log("txAuthSignerAddress", txAuthSignerAddress);
 
@@ -32,6 +32,14 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   });
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
+
+  // //
+  // const signerManager = await ethers.getContractAt(contractName, deployResult.address);
+
+  // console.log(`\nTransferring ownership of ${contractName} to ${newOwner}...`);
+  // const tx = await signerManager.transferOwnership(newOwner);
+  // await tx.wait();
+  // console.log(`Ownership of ${contractName} transferred to ${newOwner}`);
 
   return true;
 };
