@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import hre, { getNamedAccounts, network, ethers } from "hardhat";
+import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter } from "../typechain";
 import {
@@ -37,7 +37,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   it(`Should check that user can call the NON GATED ExampleNFTMinter for gas comparaison purposes`, async () => {
     const { exampleNFTMinter } = await fixtureExampleNFTMinter();
     const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
+    const testerSigner = await ethers.getSigner(tester);
 
     const recipient = tester;
 
@@ -49,9 +49,10 @@ describe(`ExampleGatedNFTMinter`, function () {
     const tokenOwner = await exampleNFTMinter.ownerOf(tokenId);
     expect(tokenOwner === tester).to.be.true;
   });
-  it.only(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer`, async () => {
     const { tester, txAuthSignerAddress } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -115,9 +116,11 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(tokenOwner === tester).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with Viem`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
 
     // Build Signature
     const recipient = tester;
@@ -175,10 +178,11 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(tokenOwner === tester).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with viem lib function`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
-
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
     // Build Signature
     const recipient = tester;
 
@@ -279,9 +283,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(eventsData2[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with ethers lib function`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -383,9 +387,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(eventsData2[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Deploy manually another NFT minter but using EOA instead of SignerManager smart contract as signer
     const exampleGatedNFTMinterWithEOA =
@@ -447,10 +451,12 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - custom nonce and chainId`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
-
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
     // Build Signature
     const recipient = tester;
 
@@ -515,10 +521,12 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinterExternalCall with a signature from the signer - with custom address for contract to be able to call it`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, _testerSigner, externalContract] =
-      await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress, externalContract } =
+      await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
+    const externalContractSigner = await ethers.getSigner(externalContract);
+
     const { exampleGatedNFTMinterExternalCall } =
       await fixtureExampleGatedNFTMinterExternalCall();
 
@@ -557,7 +565,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       signatureResponse.signature.slice(2);
 
     // Send tx
-    const tx = await externalContract.sendTransaction({
+    const tx = await externalContractSigner.sendTransaction({
       to: exampleGatedNFTMinterExternalCall.address,
       data: txData,
     });
@@ -579,9 +587,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
@@ -629,15 +637,15 @@ describe(`ExampleGatedNFTMinter`, function () {
       data: txData,
     });
 
-    const transactionReceipt = await tx.wait();
+    await tx.wait();
 
     const bytesVariable = await exampleMultipleInputs.getBytesVariable();
     expect(testByteString === bytesVariable).to.be.true;
   });
   it(`Should check that user can call the ExampleMultipleInputs - no input - with a signature from the signer - with lib function`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
@@ -682,8 +690,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     expect(1 == Number(intVar)).to.be.true;
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with a wrong signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -731,7 +740,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       const signature = await signTxAuthData(
         //@ts-ignore
         { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-        txAuthSigner as unknown as Wallet
+        txAuthSigner
       );
 
       const unsignedTx =
@@ -752,8 +761,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     }
   });
   it(`Should check that user can NOT call the ExampleMultipleInputs with a wrong signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
     const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
 
     // Build Signature
@@ -800,7 +810,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       const signature = await signTxAuthData(
         //@ts-ignore
         { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-        txAuthSigner as unknown as Wallet
+        txAuthSigner
       );
 
       // Encoding the blockExpiration (uint256) and signature (bytes)
@@ -832,8 +842,9 @@ describe(`ExampleGatedNFTMinter`, function () {
     }
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinter with an expired signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -880,21 +891,23 @@ describe(`ExampleGatedNFTMinter`, function () {
     ).to.be.revertedWith("BlockExpired");
   });
   it(`Should check that admin can change the signer`, async () => {
-    const [deployer, _testerSigner, address3] = await ethers.getSigners();
+    const { tester2, deployer } = await getNamedAccounts();
+    const deployerSigner = await ethers.getSigner(deployer);
     // set signer
-    await exampleGatedNFTMinter.connect(deployer).setSigner(address3.address);
+    await exampleGatedNFTMinter.connect(deployerSigner).setSigner(tester2);
 
     const newSigner = await exampleGatedNFTMinter.txAuthDataSignerAddress();
-    expect(newSigner === address3.address).to.be.true;
+    expect(newSigner === tester2).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
-    const [_deployer, _testerSigner, address3] = await ethers.getSigners();
+    const { tester2 } = await getNamedAccounts();
+    const tester2Signer = await ethers.getSigner(tester2);
     // try to set signer
     await expect(
-      exampleGatedNFTMinter.connect(address3).setSigner(address3.address)
+      exampleGatedNFTMinter.connect(tester2Signer).setSigner(tester2)
     ).to.be.revertedWith("Ownable: caller is not the owner");
 
     const newSigner = await exampleGatedNFTMinter.txAuthDataSignerAddress();
-    expect(newSigner !== address3.address).to.be.true;
+    expect(newSigner !== tester2).to.be.true;
   });
 });

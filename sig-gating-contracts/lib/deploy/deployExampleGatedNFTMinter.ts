@@ -3,10 +3,9 @@ import { ethers, getNamedAccounts } from "hardhat";
 // deployExampleGatedNFTMinterWithEOA.
 export const deployExampleGatedNFTMinterWithEOA = async () => {
   // Get the ContractFactory and Signers here
-  const [deployer] = await ethers.getSigners();
-  const { txAuthSigner } = await getNamedAccounts();
+  const { txAuthSignerAddress, deployer } = await getNamedAccounts();
 
-  console.log("Deploying contract with the account:", deployer.address);
+  console.log("Deploying contract with the account:", deployer);
 
   // Make sure to replace 'ExampleGatedNFTMinter' with the actual contract name
   const ExampleGatedNFTMinter = await ethers.getContractFactory(
@@ -15,7 +14,7 @@ export const deployExampleGatedNFTMinterWithEOA = async () => {
 
   // Deploy the contract
   const exampleGatedNFTMinter = await ExampleGatedNFTMinter.deploy(
-    txAuthSigner
+    txAuthSignerAddress
   );
 
   await exampleGatedNFTMinter.deployed();

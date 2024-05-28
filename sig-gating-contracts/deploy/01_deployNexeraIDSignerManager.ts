@@ -10,9 +10,9 @@ const mainEnv = "mainnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSigner } = await getNamedAccounts();
+  const { deployer, txAuthSignerAddress } = await getNamedAccounts();
   console.log("deployer", deployer);
-  console.log("txAuthSigner", txAuthSigner);
+  console.log("txAuthSignerAddress", txAuthSignerAddress);
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
@@ -24,7 +24,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       process.env.SALT || "SALT"
     ),
     from: deployer,
-    args: [txAuthSigner, deployer],
+    args: [txAuthSignerAddress, deployer],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,
