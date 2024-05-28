@@ -22,7 +22,8 @@ module NftMinter = struct
   }
 
   type calldata = address * string * bytes
-  let dispatch (address, name, args: calldata) : operation option =
+  [@entry]
+  let dispatch (address, name, args: calldata)(s: storage) : ret =
     if (Tezos.get_self_address() = address) then
       if name = "%mint_offchain" then
         let ep_mint_offchain: mint contract = Tezos.self "%mint_offchain" in
@@ -30,16 +31,16 @@ module NftMinter = struct
         | Some data -> data
         | None -> failwith "[dispatch] Cannot unpack functioncall args"
         in 
-        Some(Tezos.Next.Operation.transaction args_decoded 0mutez ep_mint_offchain)
+        [Tezos.Next.Operation.transaction args_decoded 0mutez ep_mint_offchain], s
       else
-        None
+        failwith "[dispatch] entrypoint not found"
     else
       let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" address in
       let op : operation  = match external_dispatch_opt with
       | Some ep -> Tezos.Next.Operation.transaction (address, name, args) 0mutez ep
       | None -> failwith "[dispatch] calldata should point to a contract with a dispatch entrypoint"
       in
-      Some(op)
+      [op], s
 
   type verifyTxAuthData_param = {
       msgData: bytes * address * string * bytes * key * signature;
@@ -47,47 +48,33 @@ module NftMinter = struct
   }
   let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : ret = 
       let (payload, contractAddress, name, args,  k, signature) : bytes * address * string * bytes * key * signature = p.msgData in
+      // VERIFY PAYLOAD
       let key_b = Bytes.pack k in
       let contract_b = Bytes.pack contractAddress in
       let name_b = Bytes.pack name in
       let expected_bytes = Bytes.concat key_b (Bytes.concat contract_b (Bytes.concat name_b args)) in
       let expected_payload = Crypto.keccak(expected_bytes) in
       let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
-
-      // Retrieve signer address from public key
+      // VERIFY signer: Retrieve signer address from public key
       let kh : key_hash = Crypto.hash_key k in
       let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
       let () = Assert.Error.assert (signer_address_from_key = s.extension.signerAddress) "missmatch key and signerAddress" in
-
       // VERIFY SIGNATURE
       let is_valid = Crypto.check k signature payload in 
       let _ = Assert.Error.assert (is_valid) Errors.invalid_signature in
-      //TODO
-      // let ep_test = Tezos.get_entrypoint "%mint_offchain" (Tezos.get_self_address()) in
-      // let args_decoded: mint = match (Bytes.unpack args: mint option) with
-      // | Some data -> data
-      // | None -> failwith "[VerifyTxAuthData] Cannot unpack functioncall args"
-      // in 
-      // let _op : operation = Tezos.Next.Operation.transaction args_decoded 0mutez ep_test in
-      let op_opt = dispatch (contractAddress, name, args) in
-      let op = match op_opt with
-      | Some op -> op
-      | None -> failwith "Error: invalid payload ! could not dispatch calldata"
+      // DISPATCH CALLDATA
+      let internal_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" (Tezos.get_self_address ()) in
+      let op : operation  = match internal_dispatch_opt with
+      | Some ep -> Tezos.Next.Operation.transaction (contractAddress, name, args) 0mutez ep
+      | None -> failwith "[verifyTxAuthData] missing dispatch entrypoint"
       in
-      // let ep_opt : mint contract option = Bytes.unpack functioncall in
-      // let ep_opt : mint contract option = Tezos.get_entrypoint_opt "%mint_offchain" (Tezos.get_self_address()) in
-      // let op : operation  = match ep_opt with
-      // | Some ep -> 
-      //     let args: mint = match (Bytes.unpack args: mint option) with
-      //     | Some data -> data
-      //     | None -> failwith "[VerifyTxAuthData] Cannot unpack functioncall args"
-      //     in 
-      //     let op : operation = Tezos.Next.Operation.transaction args 0mutez ep in
-      //     op
-      // | None -> failwith "[VerifyTxAuthData] mint_offchain entrypoint not found"
+
+      // let op_opt = dispatch (contractAddress, name, args) in
+      // let op = match op_opt with
+      // | Some op -> op
+      // | None -> failwith "Error: invalid payload ! could not dispatch calldata"
       // in
       [op], s
-      // [], s
 
   type mint_offchain = {
       msgData: bytes * address * string * bytes * key * signature;
