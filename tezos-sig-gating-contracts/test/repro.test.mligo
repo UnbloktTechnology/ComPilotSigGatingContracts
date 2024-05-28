@@ -33,7 +33,7 @@ let test_repro_mint_offchain =
     // call MINT_OFFCHAIN entrypoint 
     let () = Test.set_source owner1 in
     let my_key : key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key) in
-    let my_sig : signature = ("edsigu36vhhH7zeF6PhRkzTUUuR1935diGvM629mfDYGYGRkJyjaawoyoRdzMBbm8hd7Vypaxi4FZKNvDoTACGNBrLPES35HVpV" :
+    let my_sig : signature = ("edsigtsH7ds7vSG4hKTiixCSU4Pwbd6Wy3UXk6Zn3KDtkzdzQVFaoP5qRZuyfcJ132hiruggC7P1Nzz1gSmwupH8LhS8wMzVhKM" :
    signature) in
     // FUNCTIONCALL (ENTRYPOINT) 
     let functioncall_contract = nftminter_address in

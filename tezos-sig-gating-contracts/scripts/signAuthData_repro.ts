@@ -89,7 +89,7 @@ async function main() {
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    const functioncall_contract = "KT1PiWtasZ42mXt39H11GTx54xKq9JMMtwsR";
+    const functioncall_contract = "KT1NcNdY5wEWQpwxh2xhCLDusUTiTwgKWKDC";
     // const functioncall_entrypoint = "Mint";
     // const functioncall_args_recipient = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
     // const functioncall_args_tokenid = "0";
