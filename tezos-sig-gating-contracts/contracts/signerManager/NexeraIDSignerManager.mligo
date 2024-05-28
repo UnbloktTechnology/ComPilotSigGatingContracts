@@ -1,19 +1,37 @@
 module SignerManager = struct
     type storage = {
         owner: address; // should be multisig
+        pauser: address;
         signerAddress: address;
+        pause: bool
     }
     type ret = operation list * storage
 
     module Errors = struct
         let only_owner = "OnlyOwner"
+        let not_pauser = "OnlyPauser"
+        let already_paused= "AlreadyPaused"
+        let already_unpaused= "AlreadyUnpaused"
         let invalid_signer = "InvalidSigner"
     end
 
     [@entry]
+    let pause(_p: unit) (s: storage) : ret =
+        let _ = Assert.Error.assert (Tezos.get_sender() = s.pauser) Errors.not_pauser in
+        let _ = Assert.Error.assert (s.pause = false) Errors.already_paused in
+        let op = Tezos.emit "%pause" true in
+        [op], { s with pause = true}
+
+    [@entry]
+    let unpause(_p: unit) (s: storage) : ret =
+        let _ = Assert.Error.assert (Tezos.get_sender() = s.pauser) Errors.not_pauser in
+        let _ = Assert.Error.assert (s.pause = true) Errors.already_unpaused in
+        let op = Tezos.emit "%pause" false in
+        [op], { s with pause = false}
+
+    [@entry]
     let setSigner(newSigner: address) (s: storage) : ret =
         let _ = Assert.Error.assert (Tezos.get_sender() = s.owner) Errors.only_owner in
-        // let _ = assert_with_error (newSigner <> 0) zero_address in  
         let op = Tezos.emit "%setSigner" newSigner in
         [op], { s with signerAddress = newSigner}
 

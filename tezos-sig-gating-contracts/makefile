@@ -26,7 +26,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.tz, -m Verifier)
 	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.json, -m Verifier --michelson-format json)
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m SignerManager)
-	@$(call compile,examples/nftminter.mligo,nftminter.tz,)
+	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
+	@$(call compile,examples/reproduction.mligo,reproduction.tz, -m NftMinter)
 
 
 test: ## run tests (SUITE=asset_approve make test)
@@ -34,6 +35,7 @@ ifndef SUITE
 	@$(call test,TxAuthDataVerifier.test.mligo)
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,nftminter.test.mligo)
+	@$(call test,repro.test.mligo)
 else
 	@$(call test,$(SUITE).test.mligo)
 endif
@@ -45,6 +47,10 @@ sign:
 signauthdata:
 	@echo "Running deploy script\n"
 	@cd scripts && npm run signauthdata
+
+repro:
+	@echo "Running deploy script\n"
+	@cd scripts && npm run repro
 
 scripts_install:
 	@echo "Installing deploy script dependencies"

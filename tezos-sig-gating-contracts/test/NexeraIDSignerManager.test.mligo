@@ -30,13 +30,143 @@ end
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TESTS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+let test_signermanager_pause =
+    let (owner1, _owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = false
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
+    let () = AssertHelper.tx_success r in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause) in
+    ()
+
+let test_signermanager_failure_pause_not_pauser =
+    let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = false
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE fails
+    let () = Test.set_source owner2 in
+    let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManager.Errors.not_pauser in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause = false) in
+    ()
+
+let test_signermanager_failure_pause_already_paused =
+    let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = true
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE fails
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManager.Errors.already_paused in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause = true) in
+    ()
+
+let test_signermanager_unpause =
+    let (owner1, _owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = true
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
+    let () = AssertHelper.tx_success r in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause = false) in
+    ()
+
+let test_signermanager_failure_unpause_not_pauser =
+    let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = true
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE fails
+    let () = Test.set_source owner2 in
+    let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManager.Errors.not_pauser in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause = true) in
+    ()
+
+let test_signermanager_failure_unpause_already_unpaused =
+    let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
+    // DEPLOY SignerManager
+    let initial_storage = { 
+        owner = owner1;
+        signerAddress = owner3;
+        pauser = owner1;
+        pause = false
+    } in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
+    let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
+    let _signer_manager_address : address = Tezos.address signer_manager_contract in
+    // PAUSE fails
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManager.Errors.already_unpaused in
+    // VERIFY 
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let () = Test.Next.Assert.assert (current_storage.pause = false) in
+    ()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 let test_verifier_signature_verify_using_signer_manager =
     let (owner1, _owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
 
     // DEPLOY SignerManager
     let initial_storage = { 
         owner = owner1;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address)
+        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        pauser = owner1;
+        pause = false
     } in
     let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManager) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
