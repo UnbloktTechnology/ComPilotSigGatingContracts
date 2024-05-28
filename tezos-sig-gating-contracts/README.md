@@ -52,7 +52,13 @@ for a given signer(privatekey) and a payload, this script produces a signature o
 
 
 
-
+## Bug reproduction
+- fill payload in test file
+- `make test` copy functioncall and functioncall_params
+- in script signAuthData_repro.ts, paste the 2 fields
+- `make repro` copy signature
+- in test file, paste the signature
+- `make test`
 
 
 
