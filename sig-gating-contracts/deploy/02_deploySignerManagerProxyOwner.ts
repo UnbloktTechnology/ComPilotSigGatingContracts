@@ -1,11 +1,15 @@
 import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
+import { keccak256, pad, toHex } from "viem";
 
 const version = "0.1.0";
 const contractName = "SignerManagerProxyOwner";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
+
+const DEFAULT_ADMIN_ROLE = pad("0x00", { size: 32 });
+const PAUSER_ROLE = keccak256(toHex("PAUSER_ROLE"));
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
@@ -47,7 +51,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log(
     `\nTransferring SIGNER_MANAGER_CONTROLLER_ROLE of ${contractName} to ${signerManagerController}...`
   );
-  const tx = await signerManagerProxyOwner.changeSignerManagerControllerRole(
+  const tx = await signerManagerProxyOwner.grantRole(
+    DEFAULT_ADMIN_ROLE,
     signerManagerController
   );
   await tx.wait();
@@ -56,7 +61,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   );
 
   console.log(`\nTransferring PAUSER_ROLE of ${contractName} to ${pauser}...`);
-  const tx2 = await signerManagerProxyOwner.changePauserRole(pauser);
+  const tx2 = await signerManagerProxyOwner.grantRole(PAUSER_ROLE, pauser);
   await tx2.wait();
   console.log(`PAUSER_ROLE of ${contractName} transferred to ${pauser}`);
 

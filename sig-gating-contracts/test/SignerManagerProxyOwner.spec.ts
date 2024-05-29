@@ -10,14 +10,12 @@ import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib"
 
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
-import { keccak256, publicActions, toHex } from "viem";
+import { keccak256, pad, publicActions, toHex } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 import { fixtureExampleGatedNFTMinterWithProxyOwner } from "../fixtures/fixtureExampleGatedNFTMinterWithProxyOwner";
 
-const SIGNER_MANAGER_CONTROLLER_ROLE = keccak256(
-  toHex("SIGNER_MANAGER_CONTROLLER_ROLE")
-);
 const PAUSER_ROLE = keccak256(toHex("PAUSER_ROLE"));
+const DEFAULT_ADMIN_ROLE = pad("0x00", { size: 32 });
 
 describe(`SignerManagerProxyOwner`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
@@ -29,7 +27,7 @@ describe(`SignerManagerProxyOwner`, function () {
     ({ exampleGatedNFTMinter, signerManagerProxyOwner, nexeraIDSignerManager } =
       await fixtureExampleGatedNFTMinterWithProxyOwner());
   });
-  // SIGNER_MANAGER_CONTROLLER management
+  // DEFAULT_ADMIN_ROLE/SIGNER_MANAGER_CONTROLLER management
   it(`Should check that signerManagerControllerSigner can change the signerManagerControllerSigner`, async () => {
     const { tester2, signerManagerController } = await getNamedAccounts();
     const signerManagerControllerSigner = await ethers.getSigner(
@@ -38,14 +36,10 @@ describe(`SignerManagerProxyOwner`, function () {
     // set signer
     await signerManagerProxyOwner
       .connect(signerManagerControllerSigner)
-      .changeSignerManagerControllerRole(tester2);
+      .grantRole(DEFAULT_ADMIN_ROLE, tester2);
 
-    expect(
-      await signerManagerProxyOwner.hasRole(
-        SIGNER_MANAGER_CONTROLLER_ROLE,
-        tester2
-      )
-    ).to.be.true;
+    expect(await signerManagerProxyOwner.hasRole(DEFAULT_ADMIN_ROLE, tester2))
+      .to.be.true;
   });
   it(`Should check that non-signerManagerControllerSigner can NOT change the signerManagerControllerSigner`, async () => {
     const { tester2 } = await getNamedAccounts();
@@ -54,17 +48,13 @@ describe(`SignerManagerProxyOwner`, function () {
     await expect(
       signerManagerProxyOwner
         .connect(tester2Signer)
-        .changeSignerManagerControllerRole(tester2)
+        .grantRole(DEFAULT_ADMIN_ROLE, tester2)
     ).to.be.revertedWith(
-      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${SIGNER_MANAGER_CONTROLLER_ROLE}`
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
     );
 
-    expect(
-      await signerManagerProxyOwner.hasRole(
-        SIGNER_MANAGER_CONTROLLER_ROLE,
-        tester2
-      )
-    ).to.be.false;
+    expect(await signerManagerProxyOwner.hasRole(DEFAULT_ADMIN_ROLE, tester2))
+      .to.be.false;
   });
   // Pauser management
   it(`Should check that signerManagerControllerSigner can change the pauser`, async () => {
@@ -75,7 +65,7 @@ describe(`SignerManagerProxyOwner`, function () {
     // set signer
     await signerManagerProxyOwner
       .connect(signerManagerControllerSigner)
-      .changePauserRole(tester2);
+      .grantRole(PAUSER_ROLE, tester2);
 
     expect(await signerManagerProxyOwner.hasRole(PAUSER_ROLE, tester2)).to.be
       .true;
@@ -85,9 +75,11 @@ describe(`SignerManagerProxyOwner`, function () {
     const tester2Signer = await ethers.getSigner(tester2);
     // try to set signer
     await expect(
-      signerManagerProxyOwner.connect(tester2Signer).changePauserRole(tester2)
+      signerManagerProxyOwner
+        .connect(tester2Signer)
+        .grantRole(PAUSER_ROLE, tester2)
     ).to.be.revertedWith(
-      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${SIGNER_MANAGER_CONTROLLER_ROLE}`
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
     );
 
     expect(await signerManagerProxyOwner.hasRole(PAUSER_ROLE, tester2)).to.be

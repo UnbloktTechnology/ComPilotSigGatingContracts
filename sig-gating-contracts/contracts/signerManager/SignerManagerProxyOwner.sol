@@ -7,15 +7,14 @@ import {INexeraIDSignerManager} from "./INexeraIDSignerManager.sol";
 /**
  * @title SignerManagerProxyOwner
  * @dev A contract to manage the NexeraID Signer Manager contract with role-based access control.
- * SIGNER_MANAGER_CONTROLLER_ROLE controls changing the sigenrAddress on the NexeraID Signer Manager
+ * DEFAULT_ADMIN_ROLE controls changing the signerAddress on the NexeraID Signer Manager and can manage PAUSER_ROLE.
+ * It is refered to as DEFAULT_ADMIN_ROLE in the docs
  * PAUSER_ROLE can only pause the contract (change the address to ONE_ADDRESS)
  */
 contract SignerManagerProxyOwner is AccessControl {
     INexeraIDSignerManager public signerManager;
 
     // Roles
-    bytes32 public constant SIGNER_MANAGER_CONTROLLER_ROLE =
-        keccak256("SIGNER_MANAGER_CONTROLLER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
     // Non-existant address to pause signer
@@ -26,37 +25,21 @@ contract SignerManagerProxyOwner is AccessControl {
         signerManager = INexeraIDSignerManager(signerManagerAddress);
 
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(SIGNER_MANAGER_CONTROLLER_ROLE, msg.sender);
         _setupRole(PAUSER_ROLE, msg.sender);
     }
 
     // Function to set a new signer in the SignerManager contract
     function setSigner(
         address newSigner
-    ) external onlyRole(SIGNER_MANAGER_CONTROLLER_ROLE) {
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         signerManager.setSigner(newSigner);
     }
 
     // Function to transfer ownership of the SignerManager contract
     function transferOwnership(
         address newOwner
-    ) external onlyRole(SIGNER_MANAGER_CONTROLLER_ROLE) {
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         signerManager.transferOwnership(newOwner);
-    }
-
-    // Function to change the SIGNER_MANAGER_CONTROLLER_ROLE
-    function changeSignerManagerControllerRole(
-        address account
-    ) external onlyRole(SIGNER_MANAGER_CONTROLLER_ROLE) {
-        grantRole(DEFAULT_ADMIN_ROLE, account);
-        grantRole(SIGNER_MANAGER_CONTROLLER_ROLE, account);
-    }
-
-    // Function to change the PAUSER_ROLE
-    function changePauserRole(
-        address account
-    ) external onlyRole(SIGNER_MANAGER_CONTROLLER_ROLE) {
-        grantRole(PAUSER_ROLE, account);
     }
 
     // Function to pause the SignerManager by setting the signer to a null address

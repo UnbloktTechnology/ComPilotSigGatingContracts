@@ -10,9 +10,11 @@ import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib"
 
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
-import { keccak256, publicActions, toHex } from "viem";
+import { publicActions, pad } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 import { fixtureExampleGatedNFTMinterWithProxyOwner } from "../fixtures/fixtureExampleGatedNFTMinterWithProxyOwner";
+
+const DEFAULT_ADMIN_ROLE = pad("0x00", { size: 32 });
 
 describe(`NexeraIDSignerManager`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
@@ -44,9 +46,7 @@ describe(`NexeraIDSignerManager`, function () {
     await expect(
       signerManagerProxyOwner.connect(tester2Signer).setSigner(tester2)
     ).to.be.revertedWith(
-      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${keccak256(
-        toHex("SIGNER_MANAGER_CONTROLLER_ROLE")
-      )}`
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
     );
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
