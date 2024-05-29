@@ -85,6 +85,33 @@ describe(`SignerManagerProxyOwner`, function () {
     expect(await signerManagerProxyOwner.hasRole(PAUSER_ROLE, tester2)).to.be
       .false;
   });
+  // SignerManager ownership management
+  it(`Should check that signerManagerControllerSigner can change the signerManager owner`, async () => {
+    const { tester2, signerManagerController } = await getNamedAccounts();
+    const signerManagerControllerSigner = await ethers.getSigner(
+      signerManagerController
+    );
+    // set signer
+    await signerManagerProxyOwner
+      .connect(signerManagerControllerSigner)
+      .transferSignerManagerOwnership(tester2);
+
+    expect((await nexeraIDSignerManager.owner()) == tester2).to.be.true;
+  });
+  it(`Should check that non-signerManagerControllerSigner can NOT change the signerManager owner`, async () => {
+    const { tester2 } = await getNamedAccounts();
+    const tester2Signer = await ethers.getSigner(tester2);
+    // try to set signer
+    await expect(
+      signerManagerProxyOwner
+        .connect(tester2Signer)
+        .transferSignerManagerOwnership(tester2)
+    ).to.be.revertedWith(
+      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
+    );
+
+    expect((await nexeraIDSignerManager.owner()) == tester2).to.be.false;
+  });
   it(`Should check that pauser can pause the contract and sig auth behavior changes accordingly`, async () => {
     const { tester, txAuthSignerAddress, pauser, signerManagerController } =
       await getNamedAccounts();

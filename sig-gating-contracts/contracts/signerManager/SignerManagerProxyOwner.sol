@@ -36,7 +36,7 @@ contract SignerManagerProxyOwner is AccessControl {
     }
 
     // Function to transfer ownership of the SignerManager contract
-    function transferOwnership(
+    function transferSignerManagerOwnership(
         address newOwner
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         signerManager.transferOwnership(newOwner);
