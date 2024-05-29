@@ -33,14 +33,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
-  // //
-  // const signerManager = await ethers.getContractAt(contractName, deployResult.address);
-
-  // console.log(`\nTransferring ownership of ${contractName} to ${newOwner}...`);
-  // const tx = await signerManager.transferOwnership(newOwner);
-  // await tx.wait();
-  // console.log(`Ownership of ${contractName} transferred to ${newOwner}`);
-
   return true;
 };
 

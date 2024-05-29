@@ -19,7 +19,7 @@ const SIGNER_MANAGER_CONTROLLER_ROLE = keccak256(
 );
 const PAUSER_ROLE = keccak256(toHex("PAUSER_ROLE"));
 
-describe.only(`SignerManagerProxyOwner`, function () {
+describe(`SignerManagerProxyOwner`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
   let signerManagerProxyOwner: SignerManagerProxyOwner;

@@ -58,11 +58,12 @@ describe(`ExampleGatedNFTMinter`, function () {
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
     const blockExpiration = block.number + 50;
-    //let provider = new ethers.providers.JsonRpcProvider();
+
     if (!txAuthSigner.provider) {
       throw new Error("missing provider on signer");
     }
     const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
+
     // encode function data with a fake value for the signature
     const functionCallData = await generateFunctionCallData(
       ExampleGatedNFTMinterABI,
