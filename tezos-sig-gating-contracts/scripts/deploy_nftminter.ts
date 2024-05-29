@@ -4,7 +4,7 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "./helper";
 import nftMinterContract from "../compiled/nftminter.json";
 
-const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com";
+const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; 
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
