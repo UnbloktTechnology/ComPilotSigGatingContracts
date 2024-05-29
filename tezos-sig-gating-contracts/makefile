@@ -27,6 +27,7 @@ compile: ## compile contracts to Michelson
 	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.json, -m Verifier --michelson-format json)
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m SignerManager)
 	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
+	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
 	@$(call compile,examples/reproduction.mligo,reproduction.tz, -m NftMinter)
 
 
@@ -41,18 +42,26 @@ else
 endif
 
 sign:
-	@echo "Running deploy script\n"
+	@echo "Running sign script\n"
 	@cd scripts && npm run signdata
 
 signauthdata:
-	@echo "Running deploy script\n"
+	@echo "Running sign script\n"
 	@cd scripts && npm run signauthdata
 
 repro:
-	@echo "Running deploy script\n"
+	@echo "Running sign script\n"
 	@cd scripts && npm run repro
 
 scripts_install:
 	@echo "Installing deploy script dependencies"
 	@cd scripts && npm install
 	@echo ""
+
+deploy:
+	@echo "Running deploy script\n"
+	@cd scripts && npm run deploy
+
+mint:
+	@echo "Running mint script\n"
+	@cd scripts && npm run mint
