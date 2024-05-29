@@ -16,7 +16,6 @@ module NftMinter = struct
   (* Extension *)
   module Errors = struct
       let only_owner = "OnlyOwner"
-      // let zero_address  = "BaseTxAuthDataVerifier: new signer is the zero address"
       let block_expired = "BlockExpired"
       let invalid_signature = "InvalidSignature"
       let unmatch_expiration_date = "UnmatchExpirationDate"
@@ -32,7 +31,6 @@ module NftMinter = struct
   [@entry]
   let setSigner(newSigner: address) (s: storage) : ret =
       let _ = Assert.Error.assert (Tezos.get_sender() = s.extension.admin) Errors.only_owner in
-      // let _ = assert_with_error (newSigner <> 0) zero_address in  
       let op = Tezos.emit "%setSigner" newSigner in
       [op], { s with extension = { s.extension with signerAddress = newSigner } }
 
@@ -45,56 +43,53 @@ module NftMinter = struct
     token_id : nat;
   }
 
-
+  type calldata = address * string * bytes
+  [@entry]
+  let dispatch (address, name, args: calldata)(s: storage) : ret =
+    if (Tezos.get_self_address() = address) then
+      if name = "%mint_offchain" then
+        let ep_mint_offchain: mint contract = Tezos.self "%mint_offchain" in
+        let args_decoded: mint = match (Bytes.unpack args: mint option) with
+        | Some data -> data
+        | None -> failwith "[dispatch] Cannot unpack functioncall args"
+        in 
+        [Tezos.Next.Operation.transaction args_decoded 0mutez ep_mint_offchain], s
+      else
+        failwith "[dispatch] entrypoint not found"
+    else
+      let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" address in
+      let op : operation  = match external_dispatch_opt with
+      | Some ep -> Tezos.Next.Operation.transaction (address, name, args) 0mutez ep
+      | None -> failwith "[dispatch] calldata should point to a contract with a dispatch entrypoint"
+      in
+      [op], s
 
   type verifyTxAuthData_param = {
-      msgData: bytes * nat * timestamp * bytes * key * signature;
+      msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
       userAddress: address; 
   }
-  let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : bool * storage = 
-      let (payload, nonce, expiration, functioncall, k, signature) : bytes * nat * timestamp * bytes * key * signature = p.msgData in
-
+  let verifyTxAuthData (p: verifyTxAuthData_param)(s: storage) : ret = 
+      let (payload, nonce, expiration, contractAddress, name, args, k, signature) : bytes * nat * timestamp * address * string * bytes * key * signature = p.msgData in
       // VERIFY parameters correspond to payload hash
       let nonce_b = Bytes.pack nonce in
       let expiration_b = Bytes.pack expiration in
       let key_b = Bytes.pack k in
-      let functioncall_b = functioncall in
-      let expected_bytes = Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat key_b functioncall_b)) in
+      let contract_b = Bytes.pack contractAddress in
+      let name_b = Bytes.pack name in
+      let expected_bytes = Bytes.concat key_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args)))) in
       let expected_payload = Crypto.keccak(expected_bytes) in
       let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
-
-      // Retrieve signer address from public key
+      // VERIFY signer: Retrieve signer address from public key
       let kh : key_hash = Crypto.hash_key k in
       let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
-
-      // TODO - cannot unpack type contract
-      // let op = match (Bytes.unpack functioncall : mint contract option) with
-      // | Some cntr ->       
-      //   let args: mint = {owner=signer_address_from_key; token_id=0n} in 
-      //   let op : operation = Tezos.Next.Operation.transaction args 0mutez cntr in
-      //   op
-      // | None -> failwith "[VerifyTxAuthData] Error: cannot unpack entrypoint"
-      // in
-      //TODO
-      // let ep_opt : mint contract option = Tezos.get_entrypoint_opt "%mint" (Tezos.get_self_address()) in
-      // let op : operation  = match ep_opt with
-      // | Some ep -> 
-      //     let args: mint = {owner=signer_address_from_key; token_id=0n} in 
-      //     let op : operation = Tezos.Next.Operation.transaction args 0mutez ep in
-      //     op
-      // | None -> failwith "[VerifyTxAuthData] Miojnt entrypoint not found"
-      // in
-
       // NONCE
       let current_nonce, new_nonces = match Big_map.find_opt p.userAddress s.extension.nonces with
       | None -> (0n, Big_map.update p.userAddress (Some(1n)) s.extension.nonces)
       | Some nse -> (nse, Big_map.update p.userAddress (Some(nse + 1n)) s.extension.nonces)
       in
       let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
-
       // EXPIRATION
       let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
-      
       // VERIFY signer key corresponds to signerAddress 
       let () = if (not is_implicit(s.extension.signerAddress)) then // case signerAddress is a smart contract
           //calls isValidSignature of the smart contract             
@@ -105,31 +100,38 @@ module NftMinter = struct
       else   // case signerAddress is a implicit account
           Assert.Error.assert (signer_address_from_key = s.extension.signerAddress) "missmatch key and signerAddress"
       in
-
       // VERIFY SIGNATURE
       let is_valid = Crypto.check k signature payload in 
       let _ = Assert.Error.assert (is_valid) Errors.invalid_signature in
-      is_valid, { s with extension = { s.extension with nonces=new_nonces } }
+      // DISPATCH CALLDATA
+      let internal_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" (Tezos.get_self_address ()) in
+      let op : operation  = match internal_dispatch_opt with
+      | Some ep -> Tezos.Next.Operation.transaction (contractAddress, name, args) 0mutez ep
+      | None -> failwith "[verifyTxAuthData] missing dispatch entrypoint"
+      in
+      [op], { s with extension = { s.extension with nonces=new_nonces } }
 
 
   type mint_offchain = {
-      msgData: bytes * nat * timestamp * bytes * key * signature;
+      msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
       userAddress: address; 
-      token_id : nat;
   }
   [@entry]
-  let mint_offchain (mint : mint_offchain) (s : storage): ret =
+  let exec_offchain (mint : mint_offchain) (s : storage): ret =
       let param = {
           msgData = mint.msgData;
           userAddress = mint.userAddress; 
       } in
-      let _isSignatureValid, new_storage = verifyTxAuthData param s in 
-      // Apply MINT
-      let () = NFT.Assertions.assert_token_exist new_storage.token_metadata mint.token_id in
-      let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id new_storage.ledger)) in
-      let s = NFT.set_balance new_storage mint.userAddress mint.token_id in
-      [], s
+      verifyTxAuthData param s 
 
+  [@entry]
+  let mint_offchain (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    // Apply MINT
+    let () = NFT.Assertions.assert_token_exist s.token_metadata mint.token_id in
+    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.ledger)) in
+    let s = NFT.set_balance s mint.owner mint.token_id in
+    [], s
 
   [@entry]
   let mint (mint : mint) (s : storage): ret =

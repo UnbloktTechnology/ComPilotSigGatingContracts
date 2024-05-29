@@ -75,7 +75,7 @@ let test_repro_mint_offchain =
     let () = Assert.assert (current_storage.extension.admin = owner3) in
     let () = 
         match Big_map.find_opt 6n current_storage.ledger with
-        | Some ownr6 -> Assert.assert (ownr6 = p.userAddress) 
+        | Some ownr6 -> Assert.assert (ownr6 = functioncall_params.owner) 
         | None -> Test.Next.Assert.failwith "Wrong owner ! Mint did not work"
     in
     ()
