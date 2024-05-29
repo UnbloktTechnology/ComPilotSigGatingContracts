@@ -94,9 +94,13 @@ describe(`SignerManagerProxyOwner`, function () {
       .false;
   });
   it(`Should check that pauser can pause the contract and sig auth behavior changes accordingly`, async () => {
-    const { tester, txAuthSignerAddress, pauser } = await getNamedAccounts();
+    const { tester, txAuthSignerAddress, pauser, signerManagerController } =
+      await getNamedAccounts();
     const pauserSigner = await ethers.getSigner(pauser);
     const testerSigner = await ethers.getSigner(tester);
+    const signerManagerControllerSigner = await ethers.getSigner(
+      signerManagerController
+    );
 
     const txAuthWalletClient = await hre.viem.getWalletClient(
       txAuthSignerAddress as Address
@@ -154,5 +158,10 @@ describe(`SignerManagerProxyOwner`, function () {
     // Check no new minted token id
     const tokenId = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId === 0).to.be.true;
+
+    // Change back signer
+    await signerManagerProxyOwner
+      .connect(signerManagerControllerSigner)
+      .setSigner(txAuthSignerAddress);
   });
 });
