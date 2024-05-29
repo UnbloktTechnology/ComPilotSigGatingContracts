@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import {INexeraIDSignerManager} from "./INexeraIDSignerManager.sol";
 
+/**
+ * @title SignerManagerProxyOwner
+ * @dev A contract to manage the NexeraID Signer Manager contract with role-based access control.
+ * SIGNER_MANAGER_CONTROLLER_ROLE controls changing the sigenrAddress on the NexeraID Signer Manager
+ * PAUSER_ROLE can only pause the contract (change the address to ONE_ADDRESS)
+ */
 contract SignerManagerProxyOwner is AccessControl {
     INexeraIDSignerManager public signerManager;
 
