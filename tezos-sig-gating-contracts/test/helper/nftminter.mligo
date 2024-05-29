@@ -33,9 +33,9 @@ let get_nftminter_initial_storage (nft_extension_initial, owner1, owner2, owner3
         (1n, ({token_id=1n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
         (2n, ({token_id=2n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
         (3n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (4n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (5n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-        (6n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (4n, ({token_id=4n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (5n, ({token_id=5n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
+        (6n, ({token_id=6n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
     ] : FA2_NFT.TZIP12.tokenMetadata) in
 
     let metadata =Big_map.literal [

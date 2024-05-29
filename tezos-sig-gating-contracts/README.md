@@ -14,12 +14,21 @@ In this case the transaction fee is paid by the user.
 The transaction could also be executed by an operator on behalf of the user. In this case the transaction fee is paid by the operator.
 
 
-### Remark on transaction ordering
+### Limitation: Remark on transaction ordering
 
 When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
 
 ![](./pictures/nexera%20transaction%20ordering.png)
 
+
+## Deployments
+
+The *nft minter* contract has been deployed 
+
+| network  | address                                 |
+|----------|-----------------------------------------|
+| Ghostnet | KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF    |
+| Mainnet  | N/A                                     |
 
 
 ## Contracts code
@@ -50,7 +59,10 @@ make sign
 ```
 for a given signer(privatekey) and a payload, this script produces a signature of the given payload signed by the public key (related to the privetkey) 
 
-
+### deploy contract on ghostnet
+```
+make deploy
+```
 
 ## Bug reproduction
 - fill payload in test file

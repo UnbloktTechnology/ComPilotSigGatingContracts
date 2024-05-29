@@ -4,14 +4,19 @@
     "description": "",
     "scripts": {
       "signdata": "tsc && node signData.js",
-      "signauthdata": "tsc && node signAuthData.js",
-      "repro": "tsc && node signAuthData_repro.js"
+      "sign": "tsc && node signAuthData.js",
+      "repro": "tsc && node signAuthData_repro.js",
+      "deploy": "tsc && node deploy_nftminter.js",
+      "mint": "tsc && node mint_offchain.js"
     },
     "dependencies": {
       "@taquito/signer": "^19.2.0",
       "@taquito/taquito": "^19.2.0",
       "@taquito/utils": "^19.2.0",
-      "keccak": "3.0.4"
+      "keccak": "3.0.4",
+      "@ledgerhq/hw-transport-node-hid": "^6.27.9",
+      "@taquito/ledger-signer": "^15.0.1",
+      "@types/fs-extra": "^9.0.13"
     },
     "devDependencies": {
       "typescript": "^5.2.2"
