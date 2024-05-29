@@ -4,8 +4,8 @@
 
 module FA2_NFT = FA2.NFTExtendable
 
-// requires 7 addresses
-let get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3) =
+// requires the initial extension + 7 addresses (4 users 3 operators)
+let get_nftminter_initial_storage (nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) =
     let baker = Test.nth_bootstrap_account 0 in
     let () = Test.set_baker baker in
     let owners = [owner1; owner2; owner3; owner4] in
@@ -56,11 +56,11 @@ let get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3
     }|}]);
     ] 
     in
-    let nft_extension_initial = { 
-        admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); // /TODO replace hard coded as a parameter
-        nonces = (Big_map.empty: (address, nat) big_map)
-    } in
+    // let nft_extension_initial = { 
+    //     admin = owner3;
+    //     signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); // /TODO replace hard coded as a parameter
+    //     nonces = (Big_map.empty: (address, nat) big_map)
+    // } in
     let initial_storage : NFTMINTER.NftMinter.storage = {
         extension      = nft_extension_initial;
         ledger         = ledger;
@@ -70,7 +70,7 @@ let get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3
     } in
     initial_storage, owners, ops
 
-let boot_nftminter (owner1, owner2, owner3, owner4, op1, op2, op3) = 
-    let initial_storage, _owners, _ops = get_nftminter_initial_storage (owner1, owner2, owner3, owner4, op1, op2, op3) in
+let boot_nftminter (nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) = 
+    let initial_storage, _owners, _ops = get_nftminter_initial_storage (nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
     let orig_fa2 = Test.Next.Originate.contract (contract_of NFTMINTER.NftMinter) initial_storage 0tez in
     orig_fa2
