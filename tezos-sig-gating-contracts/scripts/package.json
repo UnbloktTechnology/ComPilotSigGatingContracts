@@ -16,7 +16,8 @@
       "keccak": "3.0.4",
       "@ledgerhq/hw-transport-node-hid": "^6.27.9",
       "@taquito/ledger-signer": "^15.0.1",
-      "@types/fs-extra": "^9.0.13"
+      "@types/fs-extra": "^9.0.13",
+      "fs-extra": "^11.2.0"
     },
     "devDependencies": {
       "typescript": "^5.2.2"

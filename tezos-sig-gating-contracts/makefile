@@ -41,13 +41,13 @@ else
 	@$(call test,$(SUITE).test.mligo)
 endif
 
-sign:
+signdata:
 	@echo "Running sign script\n"
 	@cd scripts && npm run signdata
 
-signauthdata:
+sign:
 	@echo "Running sign script\n"
-	@cd scripts && npm run signauthdata
+	@cd scripts && npm run sign
 
 repro:
 	@echo "Running sign script\n"
