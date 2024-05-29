@@ -65,7 +65,7 @@ This smart contract will be deployed by us and will eventually be controlled by 
 
 It allos two levels of permissions:
 
-- SIGNER_MANAGER_CONTROLLER_ROLE controls changing the sigenrAddress on the NexeraID Signer Manager (should be controlled by a more secure address)
+- DEFAULT_ADMIN (controlled by SIGNER_MANAGER_CONTROLLER_ADDRESS) controls changing the signerAddress on the NexeraID Signer Manager (should be controlled by a more secure address)
 - PAUSER_ROLE can only pause the contract (change the address to ONE_ADDRESS) - sould be controlled by a faster address than SIGNER_MANAGER_CONTROLLER_ROLE
 
 This smart contract will be deployed by us and will trasnfer SIGNER_MANAGER_CONTROLLER_ROLE to a Gnosis MultiSig and PAUSER_ROLE to a human (see Addresses section).
