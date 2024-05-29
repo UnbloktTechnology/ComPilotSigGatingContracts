@@ -21,6 +21,11 @@ module NftMinter = struct
       let unmatch_expiration_date = "UnmatchExpirationDate"
       let invalid_nonce = "InvalidNonce"
       let parameter_missmatch = "hash of given parameters (nonce, expiration, key, functioncall) does not match the payload hash"
+      let invalid_calldata_wrong_name = "[dispatch] entrypoint not found"
+      let invalid_calldata_wrong_arguments = "[dispatch] Cannot unpack calldata arguments into the expected type"
+      let invalid_calldata_contract_not_dispatcher = "[dispatch] calldata should point to a contract with a dispatch entrypoint"
+      let not_expected_signer = "missmatch between key and signerAddress"
+      let missing_isvalidsignature_view = "The signerAddress contract should have a isValidSignature view"
   end
 
   let is_implicit (elt : address) : bool =
@@ -51,16 +56,16 @@ module NftMinter = struct
         let ep_mint_offchain: mint contract = Tezos.self "%mint_offchain" in
         let args_decoded: mint = match (Bytes.unpack args: mint option) with
         | Some data -> data
-        | None -> failwith "[dispatch] Cannot unpack functioncall args"
+        | None -> failwith Errors.invalid_calldata_wrong_arguments
         in 
         [Tezos.Next.Operation.transaction args_decoded 0mutez ep_mint_offchain], s
       else
-        failwith "[dispatch] entrypoint not found"
+        failwith Errors.invalid_calldata_wrong_name
     else
       let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" address in
       let op : operation  = match external_dispatch_opt with
       | Some ep -> Tezos.Next.Operation.transaction (address, name, args) 0mutez ep
-      | None -> failwith "[dispatch] calldata should point to a contract with a dispatch entrypoint"
+      | None -> failwith Errors.invalid_calldata_contract_not_dispatcher
       in
       [op], s
 
@@ -95,10 +100,10 @@ module NftMinter = struct
           //calls isValidSignature of the smart contract             
           let r = Tezos.call_view "isValidSignature" (k, payload, signature) s.extension.signerAddress in
           match r with
-          | None -> failwith "ERROR: unknown isValidSignature view in the smart contract"
+          | None -> failwith Errors.missing_isvalidsignature_view
           | Some status -> Assert.assert (status)
       else   // case signerAddress is a implicit account
-          Assert.Error.assert (signer_address_from_key = s.extension.signerAddress) "missmatch key and signerAddress"
+          Assert.Error.assert (signer_address_from_key = s.extension.signerAddress) Errors.not_expected_signer
       in
       // VERIFY SIGNATURE
       let is_valid = Crypto.check k signature payload in 
@@ -107,7 +112,7 @@ module NftMinter = struct
       let internal_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" (Tezos.get_self_address ()) in
       let op : operation  = match internal_dispatch_opt with
       | Some ep -> Tezos.Next.Operation.transaction (contractAddress, name, args) 0mutez ep
-      | None -> failwith "[verifyTxAuthData] missing dispatch entrypoint"
+      | None -> failwith Errors.invalid_calldata_contract_not_dispatcher
       in
       [op], { s with extension = { s.extension with nonces=new_nonces } }
 

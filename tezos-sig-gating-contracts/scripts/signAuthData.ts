@@ -89,8 +89,8 @@ async function main() {
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    const functioncall_contract = "KT1Q132rM83LDesPR46dXmTHhdmqCyUSCtoa";
-    const functioncall_name = "%mint_offchain";
+    const functioncall_contract = "KT1TxCgFtHoDCWUveFUd88zNPA3UiCktn5LZ";
+    const functioncall_name = "%foobar";
     const functioncall_params = "0507070a0000001600004c8408407ebb2be65120a765cd2cbf341b9860a70006";
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
     const exp_date = "1970-01-01T00:10:00.00Z";
@@ -108,7 +108,6 @@ async function main() {
     console.log("nonce_bytes=", nonce_bytes);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    // const payload = nonce_bytes + exp_date_bytes + key_bytes + functioncall;
     const payload = key_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params;
     console.log("payload=", payload);
     const payload_hash = keccak256(payload);
