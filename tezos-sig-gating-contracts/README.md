@@ -57,7 +57,11 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
 
 ### Example of a proxy contract
 
-TODO
+The verification of the signature and the controls (expiration) can be splitted into 2 contracts
+- a proxy that verifies the signature and dispatch the `calldata`
+- a fa2 contract that accept a `calldata` (only from the proxy) and process it
+  
+![](./pictures/nexera%20proxynftminter.png)
 
 ## Deployments
 
