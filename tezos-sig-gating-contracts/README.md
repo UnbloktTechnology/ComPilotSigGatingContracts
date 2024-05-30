@@ -37,6 +37,7 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
 + userAddress
     - user
 
+![](./pictures/nexera%20exec_offchain%20format.png)
 
 ## Smart contract architecture
 
