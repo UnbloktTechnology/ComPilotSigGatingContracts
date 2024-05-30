@@ -14,11 +14,47 @@ In this case the transaction fee is paid by the user.
 The transaction could also be executed by an operator on behalf of the user. In this case the transaction fee is paid by the operator.
 
 
-### Limitation: Remark on transaction ordering
+### off-chain signture workflow
 
-When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
+For a given calldata, the user receives from Nexera 
+- payload hash (keccak(key, nonce, expiration, calldata))
+- nonce
+- expiration date
+- public key
+- signature
 
-![](./pictures/nexera%20transaction%20ordering.png)
+![](./pictures/nexera%20forge%20sig%20workflow.png)
+
+
+Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects the following parameter
++ msgData
+    - payload hash (keccak(key, nonce, expiration, calldata))
+    - nonce
+    - expiration date
+    - calldata
+    - public key
+    - signature
++ userAddress
+    - user
+
+
+## Smart contract architecture
+
+### Example of a standard TZIP-12 NFT token (using FA2 lib)
+
+![](./pictures/nexera%20nftminter%20entrypoints.png)
+
+| function name    | parameters |
+|------------------|------------|
+| setSigner        | address  |
+| mint             | mint     |
+| dispatch         | calldata |
+| exec_offchain    | { msgData: bytes * nat * timestamp * address * string * bytes * key * signature; userAddress: address; } |  
+| transfer         | FA2.SingleAssetExtendable.TZIP12.transfer 	FA2.SingleAssetExtendable |
+| balance_of       | FA2.SingleAssetExtendable.TZIP12.balance_of 	FA2.SingleAssetExtendable |
+| update_operators | FA2.SingleAssetExtendable.TZIP12.update_operators |
+
+### Example of a proxy contract
 
 
 ## Deployments
@@ -45,7 +81,7 @@ Install node modules for interacting with smart contracts in TypeScript `make sc
 ```
 make compile
 ```
-The compilation produces 2 files (TZ file and JSON file) which are  stored in the `compiled` folder.
+The compilation produces 2 files (TZ file and JSON file) which are  stored in the `compiled` folder. The contract in JSON format is used by scripts for deployment and interactions. 
 
 ### Testing
 ```
@@ -53,24 +89,50 @@ make test
 ```
 Launch LIGO tests
 
-### integration testing
+### Integration testing
+
+#### off-chain signing
+The script `signAuthData.ts` is a tool to sign a payload. (For the moment the inputs must be specified inside the file. Need improvment !).
+Fill
 ```
 make sign
 ```
-for a given signer(privatekey) and a payload, this script produces a signature of the given payload signed by the public key (related to the privetkey) 
+for a given signer(privatekey) and a payload, this script produces a signature of the given payload signed by the public key (related to the private key)
+This command should display something like this. 
+```
+sig= {
+  bytes: '4829ce5f20426c2e4f2107cba21c466fa06b5db70d25ff2ff3af8ee74ee7a489',
+  sig: 'sigtnFrMku2Yae9V4rQ6mp6bFVMJ32d5eurqAExNzcfDkTUnYHfMbLkjdANR2veQLszQdaJ6ijA1xS48BuKDW4uLscKVyrcW',
+  prefixSig: 'edsigu4biyQyoJUmgCg49Y8d13tY1887xbiXWEWuygizbfZmQncUtAFWRqns5R1eijsXERx7CDcW5zdvCnvE6yMr36PwiGVKCSu',
+  sbytes: '4829ce5f20426c2e4f2107cba21c466fa06b5db70d25ff2ff3af8ee74ee7a489eb5d72f6e40744c43dc5bb8534d18a530669af464ef3ed7d38340eae0cf4c850230bccb71495e6214f36991e0635dec25fa6d534d3179f42f96b100317f8f40c'
+}
+```
+The `prefixSig` field is the signature that must be used when invoking the contract.
 
-### deploy contract on ghostnet
+#### deploy contract on ghostnet
+This command deploys the `NftMinter` contract on Ghostnet. It uses the `deploy_nftminter.ts` script. (For the moment the initial storage of the contract must be specified in the file. Need improvment).
 ```
 make deploy
 ```
 
-## Bug reproduction
-- fill payload in test file
-- `make test` copy functioncall and functioncall_params
-- in script signAuthData_repro.ts, paste the 2 fields
-- `make repro` copy signature
-- in test file, paste the signature
-- `make test`
+#### interact
+
+Once the contract is deployed , we can interact with it. 
+The following command invoke the `Exec_offchain` entrypoint of the `NftMinter` contract. 
+(For the moment the parameters (nonce, expiration, calldata, public key, signature, useraddress) must be specified in the file. The signature parameter can be forged with the `make sign` command. Need improvment).
+```
+make mint
+```
+
+Once the transaction is accepted, you can check on an indexer (TZKT for example)
+For example, [our ghosnet contract](https://ghostnet.tzkt.io/KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF/operations/)
 
 
+## Limitations
+
+### Remark on transaction ordering
+
+When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
+
+![](./pictures/nexera%20transaction%20ordering.png)
 
