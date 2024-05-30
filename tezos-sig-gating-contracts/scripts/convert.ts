@@ -56,23 +56,28 @@ export function convert_address(addr_str : string) {
 }
 
 export function convert_mint(owner_str : string, token_id : string ) {
-    const data: MichelsonData = [{
-        string: owner_str,
-        int: token_id
-    }];
-    const typ: MichelsonType = {
-        prim: 'pair',
-        args: [
-            { prim: 'address' },
-            { prim: 'nat' }
-        ]
-    };
-    const packed = packDataBytes(data, typ);
+    const data = `(Pair "${owner_str}" ${token_id})`
+    const type = `(pair address nat)`;
+    const p = new Parser();
+    const dataJSON = p.parseMichelineExpression(data);
+    const typeJSON = p.parseMichelineExpression(type);
+    const packed = packDataBytes(dataJSON as MichelsonData, typeJSON as MichelsonType);
     return packed.bytes;
-    // const type = `(pair address nat)`;
-    // // We first use the `Parser` class and its `parseMichelineExpression` method to transform the Michelson data and type into their JSON representation
-    // const p = new Parser();
-    // const dataJSON = p.parseMichelineExpression(data);
-    // const typeJSON = p.parseMichelineExpression(type);
-    // console.log(dataJSON)
 }
+
+// export function convert_mint(owner_str : string, token_id : string ) {
+//     const data: MichelsonData = [{
+//         string: owner_str,
+//         int: token_id
+//     }];
+//     const typ: MichelsonType = {
+//         prim: 'pair',
+//         args: [
+//             { prim: 'address',annots:["%owner"] },
+//             { prim: 'nat',annots:["%token_id"] }
+//         ],
+//         annots: ["%mint"]
+//     };
+//     const packed = packDataBytes(data, typ);
+//     return packed.bytes;
+// }
