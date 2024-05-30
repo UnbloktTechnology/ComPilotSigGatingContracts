@@ -3,9 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-      "signdata": "tsc && node signData.js",
       "sign": "tsc && node signAuthData.js",
-      "repro": "tsc && node signAuthData_repro.js",
       "deploy": "tsc && node deploy_nftminter.js",
       "mint": "tsc && node mint_offchain.js"
     },

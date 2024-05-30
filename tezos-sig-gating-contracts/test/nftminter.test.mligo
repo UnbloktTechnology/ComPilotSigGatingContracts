@@ -137,7 +137,7 @@ let test_nftminter_mint_offchain =
     } in
     // EXEC_OFFCHAIN entrypoint call 
     let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
-    let () = Test.Next.IO.log(r) in
+    // let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
