@@ -27,11 +27,14 @@ compile: ## compile contracts to Michelson
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.json, -m SignerManager --michelson-format json)
 	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
+	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
+	@$(call compile,examples/fa2_for_proxy.mligo,fa2_for_proxy.tz, -m NftMinterForProxy)
 
 test: ## run tests (SUITE=asset_approve make test)
 ifndef SUITE
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,nftminter.test.mligo)
+	@$(call test,proxy.test.mligo)
 
 else
 	@$(call test,$(SUITE).test.mligo)

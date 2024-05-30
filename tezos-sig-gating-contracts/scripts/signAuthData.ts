@@ -19,11 +19,11 @@ async function main() {
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    const functioncall_contract = "KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
-    const functioncall_name = "%mint_offchain";
+    const functioncall_contract = "KT1JEcJLsmE75vGFSUzG3ne9W3k97GpEUsRU"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_name = "%mint"; // "%mint_offchain";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-      token_id: "2"
+      token_id: "6"
     };
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
     const exp_date = "2025-01-01T00:00:00.00Z";
@@ -42,11 +42,12 @@ async function main() {
     const key_bytes = convert_key(dataKey);
     const payload = key_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
-    // console.log("functioncall_name_bytes=", functioncall_name_bytes);
-    // console.log("nonce_bytes=", nonce_bytes);
-    // console.log("exp_date_bytes=", exp_date_bytes);
-    // console.log("payload=", payload);
-    // console.log("payload_hash=", payload_hash);
+    console.log("functioncall_name_bytes=", functioncall_name_bytes);
+    console.log("functioncall_params_bytes=", functioncall_params_bytes);
+    console.log("nonce_bytes=", nonce_bytes);
+    console.log("exp_date_bytes=", exp_date_bytes);
+    console.log("payload=", payload);
+    console.log("payload_hash=", payload_hash);
     
     // SIGN
     let signature = await signer.sign(payload_hash);
