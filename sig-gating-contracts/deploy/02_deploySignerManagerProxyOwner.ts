@@ -2,6 +2,7 @@ import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { keccak256, pad, toHex } from "viem";
+import { getMultiSigAddress } from "../lib/getMultiSigAddress";
 
 const version = "0.1.0";
 const contractName = "SignerManagerProxyOwner";
@@ -12,12 +13,20 @@ const DEFAULT_ADMIN_ROLE = pad("0x00", { size: 32 });
 const PAUSER_ROLE = keccak256(toHex("PAUSER_ROLE"));
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments } = hre;
+  const { deployments, getChainId } = hre;
   const { deploy } = deployments;
   const { deployer, txAuthSignerAddress, signerManagerController, pauser } =
     await getNamedAccounts();
   console.log("deployer", deployer);
   console.log("txAuthSignerAddress", txAuthSignerAddress);
+
+  // Get the chain ID
+  const chainId = await getChainId();
+  console.log(`Chain ID: ${chainId}`);
+
+  // Get SIGNER_MANAGER_CONTROLLER depending on network
+  const SIGNER_MANAGER_CONTROLLER =
+    getMultiSigAddress(chainId) || signerManagerController;
 
   // Fetch deployed Signer Manager
   const signerManagerAddress = (await deployments.get("NexeraIDSignerManager"))
@@ -25,7 +34,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log("signerManagerAddress", signerManagerAddress);
 
   // 1. Deploy SignerManagerProxyOwner
-
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
   console.log(`\n--------------------------------------------------------`);
@@ -49,15 +57,15 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   );
 
   console.log(
-    `\nTransferring SIGNER_MANAGER_CONTROLLER_ROLE of ${contractName} to ${signerManagerController}...`
+    `\nTransferring SIGNER_MANAGER_CONTROLLER_ROLE of ${contractName} to ${SIGNER_MANAGER_CONTROLLER}...`
   );
   const tx = await signerManagerProxyOwner.grantRole(
     DEFAULT_ADMIN_ROLE,
-    signerManagerController
+    SIGNER_MANAGER_CONTROLLER
   );
   await tx.wait();
   console.log(
-    `SIGNER_MANAGER_CONTROLLER_ROLE of ${contractName} transferred to ${signerManagerController}`
+    `SIGNER_MANAGER_CONTROLLER_ROLE of ${contractName} transferred to ${SIGNER_MANAGER_CONTROLLER}`
   );
 
   console.log(`\nTransferring PAUSER_ROLE of ${contractName} to ${pauser}...`);

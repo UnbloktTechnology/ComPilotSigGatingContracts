@@ -11,7 +11,8 @@ const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
 // env variables
-const DEPLOYMENT_MNEMONIC = process.env.DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
+const TESTNET_SIG_DEPLOYMENT_MNEMONIC =
+  process.env.TESTNET_SIG_DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
@@ -23,57 +24,57 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   amoy_prod: {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia_prod: {
     live: true,
     chainId: 11155111,
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   // staging
   polygon_main_staging: {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   amoy_staging: {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia_staging: {
     live: true,
     chainId: 11155111,
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //dev
   polygon_main_dev: {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   amoy_dev: {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia_dev: {
     live: true,
     chainId: 11155111,
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   // local
   hardhat: {

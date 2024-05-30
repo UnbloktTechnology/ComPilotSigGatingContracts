@@ -2,7 +2,7 @@ import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.4";
+const version = "0.1.5";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
@@ -10,7 +10,7 @@ const mainEnv = "mainnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSignerAddress, s } = await getNamedAccounts();
+  const { deployer, txAuthSignerAddress } = await getNamedAccounts();
   console.log("deployer", deployer);
   console.log("txAuthSignerAddress", txAuthSignerAddress);
 
@@ -21,7 +21,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const deployResult = await deploy(contractName, {
     contract: contractName,
     deterministicDeployment: ethers.utils.formatBytes32String(
-      process.env.SALT || "SALT"
+      (process.env.SALT || "SALT") + version
     ),
     from: deployer,
     args: [txAuthSignerAddress, deployer],
