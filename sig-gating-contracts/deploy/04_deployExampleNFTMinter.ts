@@ -9,9 +9,8 @@ const testEnv = "testnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSigner } = await getNamedAccounts();
+  const { deployer } = await getNamedAccounts();
   console.log("deployer", deployer);
-  console.log("txAuthSigner", txAuthSigner);
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);

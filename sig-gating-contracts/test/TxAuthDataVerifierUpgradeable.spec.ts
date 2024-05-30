@@ -28,8 +28,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
       await fixtureExampleGatedNFTMinterUpgradeable());
   });
   it(`Should not be able to be intialized twice`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
 
     // try to mint nft
     expect(exampleGatedNFTMinterUpgradeable.initialize(tester)).to.revertedWith(
@@ -37,8 +36,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     );
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -96,10 +96,11 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(tokenOwner === tester).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer - with Viem`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
-
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
     // Build Signature
     const recipient = tester;
     const block = await ethers.provider.getBlock("latest");
@@ -160,10 +161,11 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(tokenOwner === tester).to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer - with lib function`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [_, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, ___] = await hre.viem.getWalletClients();
-
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
     // Build Signature
     const recipient = tester;
 
@@ -219,9 +221,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer -  with custom address for contract to be able to call it`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
-    const [_, ___] = await hre.viem.getWalletClients();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -279,8 +281,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinterUpgradeable with a wrong signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -354,8 +357,9 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     }
   });
   it(`Should check that user can NOT call the ExampleGatedNFTMinterUpgradeable with an expired signature from the signer`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [txAuthSigner, testerSigner] = await ethers.getSigners();
+    const { tester, txAuthSignerAddress } = await getNamedAccounts();
+    const testerSigner = await ethers.getSigner(tester);
+    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
 
     // Build Signature
     const recipient = tester;
@@ -408,23 +412,24 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
     ).to.be.revertedWith("InvalidSignature");
   });
   it(`Should check that admin can change the signer`, async () => {
-    const [deployer, _testerSigner, address3] = await ethers.getSigners();
-    // try to mint nft
+    const { tester2, deployer } = await getNamedAccounts();
+    const deployerSigner = await ethers.getSigner(deployer); // try to mint nft
     await exampleGatedNFTMinterUpgradeable
-      .connect(deployer)
-      .setSigner(address3.address);
+      .connect(deployerSigner)
+      .setSigner(tester2);
 
     const newSigner =
       await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
-    expect(newSigner === address3.address).to.be.true;
+    expect(newSigner === tester2).to.be.true;
   });
   it(`Should check that non-admin can NOT change the signer`, async () => {
-    const [_deployer, _testerSigner, address3] = await ethers.getSigners();
+    const { tester2 } = await getNamedAccounts();
+    const tester2Signer = await ethers.getSigner(tester2);
     // try to mint nft
     try {
       await exampleGatedNFTMinterUpgradeable
-        .connect(address3)
-        .setSigner(address3.address);
+        .connect(tester2Signer)
+        .setSigner(tester2);
     } catch (e) {
       expect((e as Error).toString().substring(0, 112)).to.eq(
         "Error: VM Exception while processing transaction: reverted with reason string 'Ownable: caller is not the owner'"
@@ -433,6 +438,6 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
     const newSigner =
       await exampleGatedNFTMinterUpgradeable.txAuthDataSignerAddress();
-    expect(newSigner !== address3.address).to.be.true;
+    expect(newSigner !== tester2).to.be.true;
   });
 });

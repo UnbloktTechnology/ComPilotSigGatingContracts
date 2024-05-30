@@ -7,14 +7,23 @@ const namedAccounts: {
   deployer: {
     default: 0,
   },
-  tester: {
+  signerManagerController: {
     default: 1,
   },
-  txAuthSigner: {
-    default: 0,
+  pauser: {
+    default: 2,
+  },
+  txAuthSignerAddress: {
+    default: 3,
+  },
+  tester: {
+    default: 4,
+  },
+  tester2: {
+    default: 5,
   },
   externalContract: {
-    default: 2,
+    default: 6,
   },
 };
 
