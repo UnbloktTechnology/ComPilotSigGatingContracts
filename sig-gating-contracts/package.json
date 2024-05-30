@@ -37,6 +37,7 @@
     "@nomicfoundation/hardhat-viem": "^2.0.0",
     "@openzeppelin/contracts": "^4.9.5",
     "@openzeppelin/contracts-upgradeable": "^4.9.5",
+    "@solidstate/contracts": "^0.0.59",
     "hardhat-deploy": "0.11.12",
     "hardhat-deploy-ethers": "0.3.0-beta.13"
   },

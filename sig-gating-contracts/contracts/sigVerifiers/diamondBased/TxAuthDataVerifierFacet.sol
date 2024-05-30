@@ -57,7 +57,7 @@ contract TxAuthDataVerifierFacet is Context {
 
     /// @notice Initializes the `TxAuthDataVerifier` contract
     /// @param _signer The address of the off-chain service responsible for signing transactions
-    function initialize(address _signer) internal {
+    function initializeTxAuthDataVerifier(address _signer) internal {
         require(
             TxAuthDataVerifierFacetStorage.layout()._signerAddress ==
                 address(0),
