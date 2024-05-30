@@ -17,20 +17,18 @@ function keccak256(data : string) {
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
 
-  //set alice key
+  //set signer
   Tezos.setProvider({
     signer: await InMemorySigner.fromSecretKey(
       "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
     ),
   });
-  // related address
   // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
-  
   try {
+    // INPUTS
     const functioncall_contract = "KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
     const functioncall_name = "%mint_offchain";
-    // const functioncall_params_bytes = "0507070a000000160000dd3a6a5b3d553afe28e786454bc813b3ba38a0dc0307";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2"
@@ -38,20 +36,18 @@ async function main() {
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
     const exp_date = "2025-01-01T00:00:00.00Z";
     const nonce = "0";
-    const signature = "edsigu69KiiWBUztmWX1ihtoUaeCK62EGqKwTN27n4V3RrgeiPoc3Y9YdyRJkekXFz7zLUYceVkZmTe5WquwYKYSocG1u3nxNgg";
+    const signature = "edsigu4biyQyoJUmgCg49Y8d13tY1887xbiXWEWuygizbfZmQncUtAFWRqns5R1eijsXERx7CDcW5zdvCnvE6yMr36PwiGVKCSu";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
 
+    // Prepare arguments
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
     const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
-    console.log("functioncall_params_bytes: ", functioncall_params_bytes);
-    console.log(functioncall_params_bytes == "0507070a000000160000dd3a6a5b3d553afe28e786454bc813b3ba38a0dc0307");
     const nonce_bytes = convert_nat(nonce);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
     const payload = key_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
-    console.log("payload_hash=", payload_hash);
 
     const args = {
       msgData: { 
@@ -66,17 +62,16 @@ async function main() {
       },
       userAddress: userAddress
     };
+    // CALL contract
     const cntr = await Tezos.contract.at(nftMinterAddress);
-    // const op = await cntr.methodsObject.exec_offchain(args).send();
-    const tx = await cntr.methodsObject.exec_offchain(args).toTransferParams(); //({gasLimit:5000});
-    console.log("tx: ", tx);
-    const est = await Tezos.estimate.transfer(tx);
-    console.log("est: ", est);
+    const op = await cntr.methodsObject.exec_offchain(args).send();
+    // const tx = await cntr.methodsObject.exec_offchain(args).toTransferParams(); //({gasLimit:5000});
+    // const est = await Tezos.estimate.transfer(tx);
     console.log(
       `Waiting for Exec_offchain on ${nftMinterAddress} to be confirmed...`
     );
-    // await op.confirmation(2);
-    // console.log("confirmed: signed message applied: ", op.hash);
+    await op.confirmation(2);
+    console.log("tx confirmed: ", op.hash);
   } catch (error: any) {
     console.log(error);
   }
