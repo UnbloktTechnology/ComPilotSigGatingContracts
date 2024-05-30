@@ -44,18 +44,19 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
 
 ![](./pictures/nexera%20nftminter%20entrypoints.png)
 
-| function name    | parameters |
-|------------------|------------|
-| setSigner        | address  |
-| mint             | mint     |
-| dispatch         | calldata |
-| exec_offchain    | { msgData: bytes * nat * timestamp * address * string * bytes * key * signature; userAddress: address; } |  
-| transfer         | FA2.SingleAssetExtendable.TZIP12.transfer 	FA2.SingleAssetExtendable |
-| balance_of       | FA2.SingleAssetExtendable.TZIP12.balance_of 	FA2.SingleAssetExtendable |
-| update_operators | FA2.SingleAssetExtendable.TZIP12.update_operators |
+| function name    | parameters | module     |
+|------------------|------------|------------|
+| setSigner        | address    | NFTMINTER  |
+| mint             | mint       | NFTMINTER  |
+| dispatch         | calldata   | NFTMINTER  |
+| exec_offchain    | { msgData: bytes * nat * timestamp * address * string * bytes * key * signature; userAddress: address; } |  NFTMINTER  |
+| transfer         | FA2.NFTExtendable.TZIP12.transfer |	FA2.NFTExtendable |
+| balance_of       | FA2.NFTExtendable.TZIP12.balance_of |	FA2.NFTExtendable |
+| update_operators | FA2.NFTExtendable.TZIP12.update_operators | FA2.NFTExtendable |
 
 ### Example of a proxy contract
 
+TODO
 
 ## Deployments
 
@@ -125,7 +126,7 @@ make mint
 ```
 
 Once the transaction is accepted, you can check on an indexer (TZKT for example)
-For example, [our ghosnet contract](https://ghostnet.tzkt.io/KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF/operations/)
+For example, [our ghostnet contract](https://ghostnet.tzkt.io/KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF/operations/)
 
 
 ## Limitations
