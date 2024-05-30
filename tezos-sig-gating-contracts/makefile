@@ -23,20 +23,16 @@ install: ## install dependencies
 .PHONY: test compile
 compile: ## compile contracts to Michelson
 	@mkdir -p compiled
-	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.tz, -m Verifier)
-	@$(call compile,sigVerifiers/TxAuthDataVerifier.mligo,TxAuthDataVerifier.json, -m Verifier --michelson-format json)
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m SignerManager)
+	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.json, -m SignerManager --michelson-format json)
 	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
-	@$(call compile,examples/reproduction.mligo,reproduction.tz, -m NftMinter)
-
 
 test: ## run tests (SUITE=asset_approve make test)
 ifndef SUITE
-	@$(call test,TxAuthDataVerifier.test.mligo)
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,nftminter.test.mligo)
-	@$(call test,repro.test.mligo)
+
 else
 	@$(call test,$(SUITE).test.mligo)
 endif
