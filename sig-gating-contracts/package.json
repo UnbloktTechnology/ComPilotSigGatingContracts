@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
-  "version": "2.1.2",
+  "version": "2.1.4",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [
@@ -48,7 +48,7 @@
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
-    "@openzeppelin/hardhat-upgrades": "^3.1.0",
+    "@openzeppelin/hardhat-upgrades": "^1.28.0",
     "@typechain/ethers-v5": "^7.2.0",
     "@typechain/hardhat": "^2.3.1",
     "@types/chai": "^4.3.11",
