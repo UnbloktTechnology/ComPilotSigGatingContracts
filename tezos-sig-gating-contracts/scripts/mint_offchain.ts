@@ -27,7 +27,7 @@ async function main() {
 
   try {
     // INPUTS
-    const functioncall_contract = "KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_contract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
     const functioncall_name = "%mint_offchain";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
@@ -36,31 +36,37 @@ async function main() {
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
     const exp_date = "2025-01-01T00:00:00.00Z";
     const nonce = "0";
-    const signature = "edsigu4biyQyoJUmgCg49Y8d13tY1887xbiXWEWuygizbfZmQncUtAFWRqns5R1eijsXERx7CDcW5zdvCnvE6yMr36PwiGVKCSu";
+    const signature = "edsigtr83y4ww5wzMrAyqXiDmNsaPEtZtxGdTW5TdbuFYLj3iByXRKYH59yWtCbZaMV4J5qThy79xbWhKGbJxRrtZPAbxxXZdYJ";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
 
     // Prepare arguments
+    const user_bytes = convert_address(userAddress);
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
     const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
     const nonce_bytes = convert_nat(nonce);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload = key_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
-
+    
+    console.log("user_bytes=", user_bytes);
+    console.log("functioncall_name_bytes=", functioncall_name_bytes);
+    console.log("functioncall_params_bytes=", functioncall_params_bytes);
+    console.log("nonce_bytes=", nonce_bytes);
+    console.log("exp_date_bytes=", exp_date_bytes);
+    console.log("payload=", payload);
+    console.log("payload_hash=", payload_hash);
     const args = {
-      msgData: { 
-        0: payload_hash, 
-        1: nonce, 
-        2: exp_date, 
-        3: functioncall_contract, 
-        4: functioncall_name, 
-        5: functioncall_params_bytes, 
-        6: dataKey, 
-        7: signature
-      },
-      userAddress: userAddress
+      payload: payload_hash, 
+      userAddress: userAddress, 
+      nonce: nonce, 
+      expiration: exp_date, 
+      contractAddress: functioncall_contract, 
+      name: functioncall_name, 
+      args: functioncall_params_bytes, 
+      publicKey: dataKey, 
+      signature: signature
     };
     // CALL contract
     const cntr = await Tezos.contract.at(nftMinterAddress);

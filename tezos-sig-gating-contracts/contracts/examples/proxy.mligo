@@ -51,19 +51,29 @@ module ProxyVerifier = struct
       in
       [op], s
 
-  type tx_auth_data = {
-      msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
-      userAddress: address; 
+  type txAuthData = {
+      // msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
+      payload: bytes;   // hash of the following fields (except signature)
+      userAddress: address;   // user address (used to check nonce)
+      nonce: nat;   // nonce of the userAddress when forging the signature
+      expiration: timestamp;  // expiration date
+      contractAddress: address;  // calldata contract address
+      name: string;   // name of the entrypoint of the calldata (for example "%mint")
+      args: bytes;   // arguments for the entrypoint of the calldata 
+      publicKey: key;     // public key that signed the payload 
+      signature: signature;   // signature of the payload signed by the given public key
   }
-  let verifyTxAuthData (p: tx_auth_data)(s: storage) : ret = 
-      let (payload, nonce, expiration, contractAddress, name, args, k, signature) : bytes * nat * timestamp * address * string * bytes * key * signature = p.msgData in
+  let verifyTxAuthData (p: txAuthData)(s: storage) : ret = 
+      // let (payload, nonce, expiration, contractAddress, name, args, k, signature) : bytes * nat * timestamp * address * string * bytes * key * signature = p.msgData in
+      let { payload; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
       // VERIFY parameters correspond to payload hash
+      let user_b = Bytes.pack userAddress in
       let nonce_b = Bytes.pack nonce in
       let expiration_b = Bytes.pack expiration in
       let key_b = Bytes.pack k in
       let contract_b = Bytes.pack contractAddress in
       let name_b = Bytes.pack name in
-      let expected_bytes = Bytes.concat key_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args)))) in
+      let expected_bytes = Bytes.concat key_b (Bytes.concat user_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args))))) in
       let expected_payload = Crypto.keccak(expected_bytes) in
       let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
       // VERIFY signer: Retrieve signer address from public key
@@ -98,13 +108,8 @@ module ProxyVerifier = struct
       in
       [op], { s with nonces=new_nonces }
 
-
-  // type exec_offchain_param = {
-  //     msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
-  //     userAddress: address; 
-  // }
   [@entry]
-  let exec_offchain (p : tx_auth_data) (s : storage): ret =
+  let exec_offchain (p : txAuthData) (s : storage): ret =
       verifyTxAuthData p s 
 
 
