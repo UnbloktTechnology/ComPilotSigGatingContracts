@@ -10,7 +10,7 @@ const testEnv = "testnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, txAuthSignerAddress } = await getNamedAccounts();
   console.log("deployer", deployer);
 
   // 1. Deploy Diamond
@@ -39,13 +39,18 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     exampleGatedNFTFacetAddress
   );
 
-  //3. filter and cut
+  // 3. filter and cut
   const exampleDiamond = await ethers.getContractAt(
     contractName,
     deployResult.address
   );
   const deployerSigner = await ethers.getSigner(deployer);
   await filterAndCut(exampleDiamond, deployerSigner, [exampleGatedNFTFacet]);
+
+  // 4. init facet
+  await exampleGatedNFTFacet.initializeExampleGatedNFTFacet(
+    txAuthSignerAddress
+  );
 
   return true;
 };

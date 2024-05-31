@@ -17,19 +17,9 @@ import {ExampleGatedNFTFacetStorage} from "./ExampleGatedNFTFacetStorage.sol";
  * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTFacet is SolidStateERC721, TxAuthDataVerifierFacet {
-    //uint256 private _tokenIds;
-
-    /// @notice Initializes the contract by setting a name, symbol, and signer for TxAuthDataVerifier.
-    /// @param signerAddress The address allowed to sign transaction data for minting authorization.
-    // constructor(
-    //     address signerAddress
-    // ) ERC721("MyExampleGatedNFTMinter", "GNFT") TxAuthDataVerifierFacet {
-    //     initializeTxAuthDataVerifier(signerAddress);
-    // }
-
     /// @notice Initializes the `ExampleGatedNFTFacet` contract
     /// @param signerAddress The address of the off-chain service responsible for signing transactions
-    function initializeExampleGatedNFTFacet(address signerAddress) internal {
+    function initializeExampleGatedNFTFacet(address signerAddress) external {
         initializeTxAuthDataVerifier(signerAddress);
     }
 
