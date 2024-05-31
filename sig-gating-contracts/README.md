@@ -57,18 +57,7 @@ It is intended to be deployed behind a proxy for upgradeability.
 
 That way, if this address is compromised, we can change it without every customer having to call _setSigner.
 
-This smart contract will be deployed by us and will eventually be controlled by the SignerManagerProxyOwner.
-
-### Signer Manager Proxy Owner
-
-`./contracts/signerManager/SignerManagerProxyOwner.sol` is a smart contract that we use to manage NexeraIDSignerManager.
-
-It allos two levels of permissions:
-
-- DEFAULT_ADMIN (controlled by SIGNER_MANAGER_CONTROLLER_ADDRESS) controls changing the signerAddress on the NexeraID Signer Manager (should be controlled by a more secure address)
-- PAUSER_ROLE can only pause the contract (change the address to ONE_ADDRESS) - sould be controlled by a faster address than SIGNER_MANAGER_CONTROLLER_ROLE
-
-This smart contract will be deployed by us and will trasnfer SIGNER_MANAGER_CONTROLLER_ROLE to a Gnosis MultiSig and PAUSER_ROLE to a human (see Addresses section).
+This smart contract will be deployed by us and will eventually be controlled by the SIGNER_MANAGER_CONTROLLER_ADDRESS.
 
 ## Addresses/Roles
 
@@ -76,9 +65,7 @@ DEPLOYER_ADDRESS: deploys example contracts and signerManager, setup in git secr
 
 TX_SIGNER_ADDRESS: signs txAuthData in our api back end, setup and secured by Amazon Secrets Manager
 
-PAUSER_ADDRESS: can pause the SignerManager Contract in case of a hack, is an address controlled by 2-3 people who can react fast (ledger or MM) =>PAUSER_ROLE
-
-SIGNER_MANAGER_CONTROLLER_ADDRESS: can change the TX_SIGNER_ADDRESS and PAUSER_ADDRESS on the SignerManager contract, is a MultiSig gnosis address => SIGNER_MANAGER_CONTROLLER_ROLE
+SIGNER_MANAGER_CONTROLLER_ADDRESS: can change the TX_SIGNER_ADDRESS on the SignerManager contract, is a MultiSig gnosis address => SIGNER_MANAGER_CONTROLLER_ROLE
 
 ## Sig Gating Tests
 

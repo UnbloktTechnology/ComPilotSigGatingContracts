@@ -10,9 +10,13 @@ const mainEnv = "mainnet";
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
   const { deploy } = deployments;
-  const { deployer, txAuthSignerAddress, s } = await getNamedAccounts();
+  const { deployer, txAuthSignerAddress, signerManagerController } =
+    await getNamedAccounts();
+  const deployerSigner = await ethers.getSigner(deployer);
   console.log("deployer", deployer);
   console.log("txAuthSignerAddress", txAuthSignerAddress);
+
+  // 1. Deploy NexeraIDSignerManager
 
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
@@ -32,6 +36,30 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   });
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
+
+  //2. Transfer ownership to right signerManagerController
+  const signerManager = await ethers.getContractAt(
+    contractName,
+    deployResult.address
+  );
+  // check if it is not already the owner
+  const owner = await signerManager.owner();
+  if (owner !== signerManagerController) {
+    console.log(
+      `\nTransferring ownership of ${contractName} to ${signerManagerController}...`
+    );
+    const tx = await signerManager
+      .connect(deployerSigner)
+      .transferOwnership(signerManagerController);
+    await tx.wait();
+    console.log(
+      `ownership of ${contractName} transferred to ${signerManagerController}`
+    );
+  } else {
+    console.log(
+      `${signerManagerController} is already the owner of ${contractName}`
+    );
+  }
 
   return true;
 };
