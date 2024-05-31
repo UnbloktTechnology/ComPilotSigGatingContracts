@@ -27,15 +27,13 @@ For a given calldata, the user receives from Nexera
 
 
 Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects the following parameter
-+ msgData
-    - payload hash (keccak(key, nonce, expiration, calldata))
-    - nonce
-    - expiration date
-    - calldata
-    - public key
-    - signature
-+ userAddress
-    - user
+  - payload hash
+  - user address
+  - nonce
+  - expiration date
+  - calldata (contract, entrypoint name, arguments)
+  - public key
+  - signature
 
 ![](./pictures/nexera%20exec_offchain%20format.png)
 
@@ -69,7 +67,7 @@ The *nft minter* contract has been deployed
 
 | network  | address                                 |
 |----------|-----------------------------------------|
-| Ghostnet | KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF    |
+| Ghostnet | KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk    | 
 | Mainnet  | N/A                                     |
 
 
