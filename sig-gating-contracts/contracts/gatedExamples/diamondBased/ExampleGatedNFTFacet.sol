@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
-import "@solidstate/contracts/token/ERC721/base/ERC721Base.sol";
+import "@solidstate/contracts/token/ERC721/SolidStateERC721.sol";
 
 import "../../sigVerifiers/diamondBased/TxAuthDataVerifierFacet.sol"; // Ensure this path matches your file structure
 
@@ -16,7 +16,7 @@ import {ExampleGatedNFTFacetStorage} from "./ExampleGatedNFTFacetStorage.sol";
  * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
  * @notice This is an example contract, not intended for deployment.
  */
-contract ExampleGatedNFTFacet is ERC721Base, TxAuthDataVerifierFacet {
+contract ExampleGatedNFTFacet is SolidStateERC721, TxAuthDataVerifierFacet {
     //uint256 private _tokenIds;
 
     /// @notice Initializes the contract by setting a name, symbol, and signer for TxAuthDataVerifier.
@@ -66,30 +66,5 @@ contract ExampleGatedNFTFacet is ERC721Base, TxAuthDataVerifierFacet {
         address recipient
     ) public requireTxDataAuth returns (uint256) {
         return _mintNFT(recipient);
-    }
-
-    function _handleApproveMessageValue(
-        address operator,
-        uint256 tokenId,
-        uint256 value
-    ) internal override {
-        require(operator != address(0), "operator should ot be null");
-    }
-
-    function _handleTransferMessageValue(
-        address from,
-        address to,
-        uint256 tokenId,
-        uint256 value
-    ) internal override {
-        require(to != address(0), "to should ot be null");
-    }
-
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal override {
-        require(to != address(0), "to should ot be null");
     }
 }
