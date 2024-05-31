@@ -2,7 +2,7 @@ import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.1.4";
+const version = "0.1.6";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
@@ -12,23 +12,23 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const { deployer, txAuthSignerAddress, signerManagerController } =
     await getNamedAccounts();
-  const deployerSigner = await ethers.getSigner(deployer);
-  console.log("deployer", deployer);
-  console.log("txAuthSignerAddress", txAuthSignerAddress);
 
   // 1. Deploy NexeraIDSignerManager
-
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
   console.log(`\n--------------------------------------------------------`);
 
+  console.log("deployer", deployer);
+  console.log("txAuthSignerAddress", txAuthSignerAddress);
+  console.log("signerManagerController", signerManagerController);
+
   const deployResult = await deploy(contractName, {
     contract: contractName,
     deterministicDeployment: ethers.utils.formatBytes32String(
-      process.env.SALT || "SALT"
+      (process.env.SALT || "SALT") + version
     ),
     from: deployer,
-    args: [txAuthSignerAddress, deployer],
+    args: [txAuthSignerAddress, signerManagerController],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,
@@ -36,30 +36,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   });
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
-
-  //2. Transfer ownership to right signerManagerController
-  const signerManager = await ethers.getContractAt(
-    contractName,
-    deployResult.address
-  );
-  // check if it is not already the owner
-  const owner = await signerManager.owner();
-  if (owner !== signerManagerController) {
-    console.log(
-      `\nTransferring ownership of ${contractName} to ${signerManagerController}...`
-    );
-    const tx = await signerManager
-      .connect(deployerSigner)
-      .transferOwnership(signerManagerController);
-    await tx.wait();
-    console.log(
-      `ownership of ${contractName} transferred to ${signerManagerController}`
-    );
-  } else {
-    console.log(
-      `${signerManagerController} is already the owner of ${contractName}`
-    );
-  }
+  console.log(`\n--------------------------------------------------------`);
 
   return true;
 };
