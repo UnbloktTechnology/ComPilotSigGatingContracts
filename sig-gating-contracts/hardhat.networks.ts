@@ -19,58 +19,21 @@ const POLYGON_MAINNET_PROVIDER_URL =
 const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
 
 export const networks: NetworksUserConfig = {
-  //prod
-  polygon_main_prod: {
+  //mainnets
+  polygon_main: {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  amoy_prod: {
+  //testnets
+  amoy: {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  sepolia_prod: {
-    live: true,
-    chainId: 11155111,
-    url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  // staging
-  polygon_main_staging: {
-    live: true,
-    chainId: 137,
-    url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  amoy_staging: {
-    live: true,
-    chainId: 80002,
-    url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  sepolia_staging: {
-    live: true,
-    chainId: 11155111,
-    url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  //dev
-  polygon_main_dev: {
-    live: true,
-    chainId: 137,
-    url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  amoy_dev: {
-    live: true,
-    chainId: 80002,
-    url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
-  },
-  sepolia_dev: {
+  sepolia: {
     live: true,
     chainId: 11155111,
     url: SEPOLIA_PROVIDER_URL,
