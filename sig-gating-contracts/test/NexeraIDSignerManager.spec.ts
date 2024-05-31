@@ -1,30 +1,23 @@
 import { expect } from "chai";
 import hre, { getNamedAccounts, ethers } from "hardhat";
 
-import {
-  ExampleGatedNFTMinter,
-  NexeraIDSignerManager,
-  SignerManagerProxyOwner,
-} from "../typechain";
+import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { publicActions, pad } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
-import { fixtureExampleGatedNFTMinterWithProxyOwner } from "../fixtures/fixtureExampleGatedNFTMinterWithProxyOwner";
-
-const DEFAULT_ADMIN_ROLE = pad("0x00", { size: 32 });
+import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
 describe(`NexeraIDSignerManager`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
   let exampleGatedNFTMinter: ExampleGatedNFTMinter;
-  let signerManagerProxyOwner: SignerManagerProxyOwner;
 
   beforeEach(async () => {
     await setupThreeAccounts();
-    ({ exampleGatedNFTMinter, signerManagerProxyOwner, nexeraIDSignerManager } =
-      await fixtureExampleGatedNFTMinterWithProxyOwner());
+    ({ exampleGatedNFTMinter, nexeraIDSignerManager } =
+      await fixtureExampleGatedNFTMinter());
   });
   it(`Should check that signerManagerControllerSigner can change the signer`, async () => {
     const { tester2, signerManagerController } = await getNamedAccounts();
@@ -32,7 +25,7 @@ describe(`NexeraIDSignerManager`, function () {
       signerManagerController
     );
     // set signer
-    await signerManagerProxyOwner
+    await nexeraIDSignerManager
       .connect(signerManagerControllerSigner)
       .setSigner(tester2);
 
@@ -44,10 +37,8 @@ describe(`NexeraIDSignerManager`, function () {
     const tester2Signer = await ethers.getSigner(tester2);
     // try to set signer
     await expect(
-      signerManagerProxyOwner.connect(tester2Signer).setSigner(tester2)
-    ).to.be.revertedWith(
-      `AccessControl: account ${tester2.toLocaleLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
-    );
+      nexeraIDSignerManager.connect(tester2Signer).setSigner(tester2)
+    ).to.be.revertedWith(`Ownable: caller is not the owner`);
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
     expect(newSigner !== tester2).to.be.true;
@@ -68,7 +59,7 @@ describe(`NexeraIDSignerManager`, function () {
     );
 
     // Change signer
-    await signerManagerProxyOwner
+    await nexeraIDSignerManager
       .connect(signerManagerControllerSigner)
       .setSigner(tester2);
 
@@ -165,7 +156,7 @@ describe(`NexeraIDSignerManager`, function () {
     expect(tokenId2 === 1).to.be.true;
 
     // Change back signer
-    await signerManagerProxyOwner
+    await nexeraIDSignerManager
       .connect(signerManagerControllerSigner)
       .setSigner(txAuthSignerAddress);
   });
