@@ -3,7 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getMultiSigAddress } from "../lib/getMultiSigAddress";
 
-const version = "0.1.6";
+const version = "0.1.7";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
@@ -14,7 +14,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployer, txAuthSignerAddress, signerManagerController } =
     await getNamedAccounts();
 
-  // Deploy NexeraIDSignerManager
+  // 1. Deploy NexeraIDSignerManager
   console.log(`\n--------------------------------------------------------`);
   console.log(`Deploying ${contractName}...`);
   console.log(`\n--------------------------------------------------------`);
@@ -31,13 +31,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log("txAuthSignerAddress", txAuthSignerAddress);
   console.log("SIGNER_MANAGER_CONTROLLER", SIGNER_MANAGER_CONTROLLER);
 
+  // Note: because of deterministic deployments, we first use the deployer in the constructor
+  // because it is the same for all networks and after deployment we set the SIGNER_MANAGER_CONTROLLER
+  // which is different on every network
   const deployResult = await deploy(contractName, {
     contract: contractName,
     deterministicDeployment: ethers.utils.formatBytes32String(
       (process.env.SALT || "SALT") + version
     ),
     from: deployer,
-    args: [txAuthSignerAddress, SIGNER_MANAGER_CONTROLLER],
+    args: [txAuthSignerAddress, deployer],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,
@@ -45,6 +48,31 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   });
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
+
+  //2. Transfer ownership to right SIGNER_MANAGER_CONTROLLER
+  const signerManager = await ethers.getContractAt(
+    contractName,
+    deployResult.address
+  );
+  // check if it is not already the owner
+  const owner = await signerManager.owner();
+  if (owner !== SIGNER_MANAGER_CONTROLLER) {
+    console.log(
+      `\nTransferring ownership of ${contractName} to ${SIGNER_MANAGER_CONTROLLER}...`
+    );
+    const deployerSigner = await ethers.getSigner(deployer);
+    const tx = await signerManager
+      .connect(deployerSigner)
+      .transferOwnership(SIGNER_MANAGER_CONTROLLER);
+    await tx.wait();
+    console.log(
+      `ownership of ${contractName} transferred to ${SIGNER_MANAGER_CONTROLLER}`
+    );
+  } else {
+    console.log(
+      `${SIGNER_MANAGER_CONTROLLER} is already the owner of ${contractName}`
+    );
+  }
   console.log(`\n--------------------------------------------------------`);
 
   return true;
