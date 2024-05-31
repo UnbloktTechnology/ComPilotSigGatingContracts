@@ -19,8 +19,9 @@ async function main() {
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    const functioncall_contract = "KT1JEcJLsmE75vGFSUzG3ne9W3k97GpEUsRU"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
-    const functioncall_name = "%mint"; // "%mint_offchain";
+    const userAddress = "tz1SccDTZWrqoqQscvjeMTBvf6zSK4snmrup"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+    const functioncall_contract = "KT1JEcJLsmE75vGFSUzG3ne9W3k97GpEUsRU"; //"KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_name = "%mint"; //"%mint"; // "%mint_offchain";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "6"
@@ -34,14 +35,16 @@ async function main() {
     console.log("signerPublicKey=", signerPublicKey);
 
     // display payload
+    const user_bytes = convert_address(userAddress);
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
     const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
     const nonce_bytes = convert_nat(nonce);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload = key_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
+    console.log("user_bytes=", user_bytes);
     console.log("functioncall_name_bytes=", functioncall_name_bytes);
     console.log("functioncall_params_bytes=", functioncall_params_bytes);
     console.log("nonce_bytes=", nonce_bytes);
