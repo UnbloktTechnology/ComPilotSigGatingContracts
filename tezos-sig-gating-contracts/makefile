@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 
+PROJECT=$(notdir $(CURDIR))
+
 help:
 	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -64,3 +66,28 @@ deploy:
 mint:
 	@echo "Running mint script\n"
 	@cd scripts && npm run mint
+
+#######################################
+#            SANDBOX                  #
+#######################################
+sandbox-start: ##@Sandbox - Start Flextesa sandbox
+	@./scripts/run-sandbox $(PROJECT)
+
+sandbox-stop: ##@Sandbox - Stop Flextesa sandbox
+	@docker stop $(PROJECT)-sandbox
+
+localsign:  ##@Sandbox - User Bob signs data
+	@echo "Running sign script (local)\n"
+	@cd scripts && npm run localsign
+
+localdeploy:   ##@Sandbox - Alice deploys a NftMinter
+	@echo "Running deploy script (local)\n"
+	@cd scripts && npm run localdeploy
+
+localmint:   ##@Sandbox - Alice sends a message (signed offchain by bob) to the  NftMinter contract.
+	@echo "Running mint script (local)\n"
+	@cd scripts && npm run localmint
+
+localdisplay:   ##@Sandbox - Alice storage of the  NftMinter contract.
+	@echo "Running display script (local)\n"
+	@cd scripts && npm run localdisplay

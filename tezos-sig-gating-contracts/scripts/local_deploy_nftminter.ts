@@ -4,7 +4,7 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "./helper";
 import nftMinterContract from "../compiled/nftminter.json";
 
-const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
+const RPC_ENDPOINT = "http://localhost:20000/"; // "https://oxfordnet.ecadinfra.com"; "
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
@@ -12,13 +12,13 @@ async function main() {
   //set alice key
   Tezos.setProvider({
     signer: await InMemorySigner.fromSecretKey(
-      "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
+      "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
     ),
   });
   // related address
-  // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
+  // const signerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
   const ledger = new MichelsonMap();
-  ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
+  ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
 
   const token_metadata = new MichelsonMap();
   const token_info_0 = new MichelsonMap();
@@ -57,8 +57,8 @@ async function main() {
   const operators = new MichelsonMap();
 
   const extension = {
-    admin : "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
-    signerAddress : "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
+    admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
     nonces : new MichelsonMap(),
   }
 

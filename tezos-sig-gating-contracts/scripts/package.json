@@ -5,7 +5,11 @@
     "scripts": {
       "sign": "tsc && node signAuthData.js",
       "deploy": "tsc && node deploy_nftminter.js",
-      "mint": "tsc && node mint_offchain.js"
+      "mint": "tsc && node mint_offchain.js",
+      "localsign": "tsc && node local_sign.js",
+      "localdeploy": "tsc && node local_deploy_nftminter.js",
+      "localmint": "tsc && node local_mint_offchain.js",
+      "localdisplay": "tsc && node local_display_storage.js"
     },
     "dependencies": {
       "@taquito/signer": "^19.2.0",
