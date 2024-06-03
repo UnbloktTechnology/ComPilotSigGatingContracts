@@ -34,7 +34,7 @@ describe.only(`ExampleGatedNFTFacet`, function () {
     await setupThreeAccounts();
     ({ exampleGatedNFTDiamond } = await fixtureExampleDiamond());
   });
-  it.only(`Should check that user can call the ExampleGatedNFTDiamond with a signature from the signer`, async () => {
+  it(`Should check that user can call the ExampleGatedNFTDiamond with a signature from the signer`, async () => {
     const { tester, txAuthSignerAddress } = await getNamedAccounts();
     const testerSigner = await ethers.getSigner(tester);
     const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
@@ -78,7 +78,6 @@ describe.only(`ExampleGatedNFTFacet`, function () {
     // Complete data
     const txData =
       unsignedTx.data + abiEncodedBlockExpiration.slice(2) + signature.slice(2);
-    console.log("clear");
 
     // try to mint nft
     await expect(

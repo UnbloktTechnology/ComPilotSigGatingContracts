@@ -48,7 +48,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await filterAndCut(exampleDiamond, deployerSigner, [exampleGatedNFTFacet]);
 
   // 4. init facet
-  await exampleGatedNFTFacet.initializeExampleGatedNFTFacet(
+  const exampleGatedNFTFacetInDiamond = await ethers.getContractAt(
+    "ExampleGatedNFTFacet",
+    deployResult.address
+  );
+  await exampleGatedNFTFacetInDiamond.initializeExampleGatedNFTFacet(
     txAuthSignerAddress
   );
 
