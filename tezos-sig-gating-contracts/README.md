@@ -110,6 +110,15 @@ docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for fran
 docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for user
 ```
 
+### Scenario
+
+Launch a single test script that deploys a contract and executes a "mint off chain".
+```
+make integration-test
+```
+
+### Manual (separate scripts)
+
 #### deploy a NftMinter
 
 Once the sandbox is running we can deploy a contract. The script `local_deploy_nftminter.ts` deploys a contract (NftMinter) on behalf of alice (considered as admin). This script can be launch with `make localdeploy`.

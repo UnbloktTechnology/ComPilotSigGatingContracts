@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
+      "test": "tsc && mocha tests --timeout 10000",
       "sign": "tsc && node signAuthData.js",
       "deploy": "tsc && node deploy_nftminter.js",
       "mint": "tsc && node mint_offchain.js",
@@ -19,7 +20,12 @@
       "@ledgerhq/hw-transport-node-hid": "^6.27.9",
       "@taquito/ledger-signer": "^15.0.1",
       "@types/fs-extra": "^9.0.13",
-      "fs-extra": "^11.2.0"
+      "@types/mocha": "^10.0.6",
+      "@types/chai": "^4.3.11",
+      "fs-extra": "^11.2.0",
+      "chai": "^4.4.1",
+      "ts-node": "^10.9.2",
+      "mocha": "^10.4.0"
     },
     "devDependencies": {
       "typescript": "^5.2.2"
