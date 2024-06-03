@@ -506,74 +506,7 @@ describe.only(`ExampleGatedNFTFacet`, function () {
     expect(eventsData[0].args?.userAddress === tester).to.be.true;
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
-  //   it(`Should check that user can call the ExampleGatedNFTDiamondExternalCall with a signature from the signer - with custom address for contract to be able to call it`, async () => {
-  //     const { tester, txAuthSignerAddress, externalContract } =
-  //       await getNamedAccounts();
-  //     const testerSigner = await ethers.getSigner(tester);
-  //     const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
-  //     const externalContractSigner = await ethers.getSigner(externalContract);
 
-  //     const { exampleGatedNFTDiamondExternalCall } =
-  //       await fixtureExampleGatedNFTMinterExternalCall();
-
-  //     // Build Signature
-  //     const recipient = tester;
-
-  //     const txAuthInput = {
-  //       contractAbi: Array.from(ExampleGatedNFTMinterExternalCallABI),
-  //       contractAddress: exampleGatedNFTDiamondExternalCall.address as Address,
-  //       functionName: "mintNFTGatedWithAddress",
-  //       args: [recipient, recipient],
-  //       userAddress: tester as Address,
-  //     };
-
-  //     const signatureResponse = await signTxAuthDataLibEthers(
-  //       txAuthSigner as unknown as Wallet,
-  //       txAuthInput
-  //     );
-
-  //     // Encoding the blockExpiration (uint256) and signature (bytes)
-  //     const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-  //       ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
-  //       32
-  //     );
-
-  //     const unsignedTx =
-  //       await exampleGatedNFTDiamondExternalCall.populateTransaction.mintNFTGatedWithAddress(
-  //         recipient,
-  //         recipient
-  //       );
-
-  //     // Complete data
-  //     const txData =
-  //       unsignedTx.data +
-  //       abiEncodedBlockExpiration.slice(2) +
-  //       signatureResponse.signature.slice(2);
-
-  //     // Send tx
-  //     const tx = await externalContractSigner.sendTransaction({
-  //       to: exampleGatedNFTDiamondExternalCall.address,
-  //       data: txData,
-  //     });
-
-  //     const transactionReceipt = await tx.wait();
-
-  //     const eventsData = transactionReceipt.logs.map((log) =>
-  //       exampleGatedNFTDiamondExternalCall.interface.parseLog(log)
-  //     );
-
-  //     // Check new minted token id
-  //     const tokenId = Number(eventsData[1].args?.tokenId);
-  //     expect(tokenId === 1).to.be.true;
-  //     const tokenOwner = await exampleGatedNFTDiamondExternalCall.ownerOf(
-  //       tokenId
-  //     );
-  //     expect(tokenOwner === tester).to.be.true;
-
-  //     // Also check for signagure verified emitted event
-  //     expect(eventsData[0].args?.userAddress === tester).to.be.true;
-  //     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
-  //   });
   it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
     const { tester, txAuthSignerAddress } = await getNamedAccounts();
     const testerSigner = await ethers.getSigner(tester);
