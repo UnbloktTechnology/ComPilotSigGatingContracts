@@ -828,7 +828,7 @@ describe.only(`ExampleGatedNFTFacet`, function () {
     // try to set signer
     await expect(
       exampleGatedNFTDiamond.connect(tester2Signer).setSigner(tester2)
-    ).to.be.revertedWith("Ownable: caller is not the owner");
+    ).to.be.revertedWith("Ownable__NotOwner");
 
     const newSigner = await exampleGatedNFTDiamond.txAuthDataSignerAddress();
     expect(newSigner !== tester2).to.be.true;

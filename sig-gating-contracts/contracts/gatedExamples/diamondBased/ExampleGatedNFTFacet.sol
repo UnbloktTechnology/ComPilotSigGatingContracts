@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 // import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
 import "@solidstate/contracts/token/ERC721/SolidStateERC721.sol";
+import "@solidstate/contracts/access/ownable/SafeOwnable.sol";
 
 import "../../sigVerifiers/diamondBased/TxAuthDataVerifierFacet.sol"; // Ensure this path matches your file structure
 
@@ -16,7 +17,11 @@ import {ExampleGatedNFTFacetStorage} from "./ExampleGatedNFTFacetStorage.sol";
  * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
  * @notice This is an example contract, not intended for deployment.
  */
-contract ExampleGatedNFTFacet is SolidStateERC721, TxAuthDataVerifierFacet {
+contract ExampleGatedNFTFacet is
+    SolidStateERC721,
+    TxAuthDataVerifierFacet,
+    SafeOwnable
+{
     /// @notice Initializes the `ExampleGatedNFTFacet` contract
     /// @param signerAddress The address of the off-chain service responsible for signing transactions
     function initializeExampleGatedNFTFacet(address signerAddress) external {
@@ -26,7 +31,7 @@ contract ExampleGatedNFTFacet is SolidStateERC721, TxAuthDataVerifierFacet {
     /// @notice Sets a new signer address
     /// @dev Can only be called by the current owner
     /// @param _signer The address of the new signer
-    function setSigner(address _signer) public {
+    function setSigner(address _signer) public onlyOwner {
         _setSigner(_signer);
     }
 
