@@ -91,6 +91,21 @@ export const ExampleGatedNFTFacetABI = [
   },
   {
     inputs: [],
+    name: "Ownable__NotOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "Ownable__NotTransitiveOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "SafeOwnable__NotNomineeOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "SolidStateERC721__PayableApproveNotSupported",
     type: "error",
   },
@@ -208,6 +223,25 @@ export const ExampleGatedNFTFacetABI = [
       {
         indexed: true,
         internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
         name: "newSigner",
         type: "address",
       },
@@ -239,6 +273,13 @@ export const ExampleGatedNFTFacetABI = [
     ],
     name: "Transfer",
     type: "event",
+  },
+  {
+    inputs: [],
+    name: "acceptOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
@@ -424,6 +465,32 @@ export const ExampleGatedNFTFacetABI = [
         internalType: "string",
         name: "",
         type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "nomineeOwner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -658,6 +725,19 @@ export const ExampleGatedNFTFacetABI = [
     name: "transferFrom",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
