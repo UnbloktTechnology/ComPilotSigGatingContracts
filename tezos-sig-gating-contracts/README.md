@@ -93,7 +93,67 @@ make test
 ```
 Launch LIGO tests
 
-### Integration testing
+### Integration testing LOCALHOST
+
+- Run the sandbox `make sandbox-start`
+- Check default available users `docker exec tezos-sig-gating-contracts-sandbox oxfordbox info`
+
+Two extra users have been added (in script `run-sandbox`). We can check existing addresses
+```
+docker exec tezos-sig-gating-contracts-sandbox octez-client list known contracts
+```
+We can also check the balance for these accounts with
+```
+docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for alice
+docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for bob
+docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for frank
+docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for user
+```
+
+#### deploy a NftMinter
+
+Once the sandbox is running we can deploy a contract. The script `local_deploy_nftminter.ts` deploys a contract (NftMinter) on behalf of alice (considered as admin). This script can be launch with `make localdeploy`.
+
+```
+docker exec tezos-sig-gating-contracts-sandbox octez-client list known contracts
+```
+
+#### off-chain signing
+
+The script `local_sign.ts` is a tool to sign a payload on behalf of bob. (For the moment the inputs must be specified inside the file. Need improvment !).
+```
+make localsign
+```
+for a given signer(privatekey) and a payload, this script produces a signature of the given payload signed by the public key (related to the private key)
+This command should display something like this. 
+```
+sig= {
+  bytes: '4829ce5f20426c2e4f2107cba21c466fa06b5db70d25ff2ff3af8ee74ee7a489',
+  sig: 'sigtnFrMku2Yae9V4rQ6mp6bFVMJ32d5eurqAExNzcfDkTUnYHfMbLkjdANR2veQLszQdaJ6ijA1xS48BuKDW4uLscKVyrcW',
+  prefixSig: 'edsigu4biyQyoJUmgCg49Y8d13tY1887xbiXWEWuygizbfZmQncUtAFWRqns5R1eijsXERx7CDcW5zdvCnvE6yMr36PwiGVKCSu',
+  sbytes: '4829ce5f20426c2e4f2107cba21c466fa06b5db70d25ff2ff3af8ee74ee7a489eb5d72f6e40744c43dc5bb8534d18a530669af464ef3ed7d38340eae0cf4c850230bccb71495e6214f36991e0635dec25fa6d534d3179f42f96b100317f8f40c'
+}
+```
+The `prefixSig` field is the signature that must be used when invoking the contract.
+
+#### mint local
+
+`make localmint`:    Alice sends a message (signed offchain by bob) to the  NftMinter contract. (the message is a call data asking user to mint asset 1).
+
+Expected output:
+```
+Waiting for Exec_offchain on KT1UgwgtRhh2FYwoc38sPKDsqPkjDRpEoFio to be confirmed...
+tx confirmed:  ooTY3qhAMvhNwpnxA2roTaMiuxuVKy8RwueB9sfYJmUPCC2bhW4
+```
+
+#### display contract storage !
+TODO need improvment
+Verify that the asset 1 is owned by "user". The following command display the owners for 3 first assets.
+```
+make localdisplay
+```
+
+### Integration testing TESTNET
 
 #### off-chain signing
 The script `signAuthData.ts` is a tool to sign a payload. (For the moment the inputs must be specified inside the file. Need improvment !).
