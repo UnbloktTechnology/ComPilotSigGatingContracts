@@ -21,15 +21,16 @@
   },
   "pnpm": {
     "overrides": {
+      "@babel/helpers": "7.24.5",
       "hardhat-deploy": "0.11.12",
       "hardhat-deploy-ethers": "0.3.0-beta.13"
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
-    "@babel/preset-react": "^7.23.3",
-    "@babel/preset-typescript": "^7.23.3",
+    "@babel/core": "7.24.5",
+    "@babel/preset-env": "7.24.5",
+    "@babel/preset-react": "7.24.1",
+    "@babel/preset-typescript": "7.24.1",
     "@preconstruct/cli": "^2.8.4",
     "copyfiles": "^2.4.1",
     "lerna": "^8.1.2"
