@@ -76,6 +76,10 @@ sandbox-start: ##@Sandbox - Start Flextesa sandbox
 sandbox-stop: ##@Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
+integration-test:
+	@echo "Running integration test script\n"
+	@cd scripts && npm run test
+
 localsign:  ##@Sandbox - User Bob signs data
 	@echo "Running sign script (local)\n"
 	@cd scripts && npm run localsign
