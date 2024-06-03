@@ -9,17 +9,13 @@ import {
 } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleDiamond } from "../fixtures/fixtureExampleDiamond";
 
-import {
-  ExampleGatedNFTFacetABI,
-  ExampleMultipleInputsABI,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
+import { ExampleGatedNFTFacetABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import {
   generateFunctionCallData,
   generateFunctionCallDataViem,
 } from "./utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "./utils/signTxAuthData";
 import { getContract, publicActions } from "viem";
-import { fixtureExampleMultipleInputs } from "../fixtures/fixtureExampleMultipleInputs";
 import { deployExampleGatedNFTMinterWithEOA } from "../lib/deploy/deployExampleGatedNFTMinter";
 import { Wallet } from "ethers";
 import { setupThreeAccounts } from "./utils/fundAccounts";

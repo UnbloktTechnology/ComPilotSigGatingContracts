@@ -1,20 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
 import "@solidstate/contracts/token/ERC721/SolidStateERC721.sol";
 import "@solidstate/contracts/access/ownable/SafeOwnable.sol";
-
 import "../../sigVerifiers/diamondBased/TxAuthDataVerifierFacet.sol"; // Ensure this path matches your file structure
-
 import {ExampleGatedNFTFacetStorage} from "./ExampleGatedNFTFacetStorage.sol";
 
 /**
- * @title Example Gated NFT Minter
+ * @title Example Gated NFT Minter Facet
  * @dev NFT minting contract with gated access based on off-chain signature verification.
  * This contract extends ERC721 for NFT functionality, TxAuthDataVerifier for signature verification,
- * and Ownable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ * and SafeOwnable for ownership management. It uses a counter to assign unique token IDs to minted NFTs.
+ * This contract is designed to be used as a facet in a Diamond Standard (EIP-2535) implementation.
  * @notice This is an example contract, not intended for deployment.
  */
 contract ExampleGatedNFTFacet is
@@ -42,9 +39,11 @@ contract ExampleGatedNFTFacet is
         return ExampleGatedNFTFacetStorage.layout()._tokenIds;
     }
 
-    /// @dev Internal function to mint a new NFT to a specified recipient.
-    /// @param recipient The address that will receive the newly minted NFT.
-    /// @return newItemId The token ID of the newly minted NFT.
+    /**
+     * @dev Internal function to mint a new NFT to a specified recipient.
+     * @param recipient The address that will receive the newly minted NFT.
+     * @return newItemId The token ID of the newly minted NFT.
+     */
     function _mintNFT(address recipient) internal returns (uint256) {
         ExampleGatedNFTFacetStorage.layout()._tokenIds += 1;
         uint256 newItemId = ExampleGatedNFTFacetStorage.layout()._tokenIds;
@@ -53,10 +52,12 @@ contract ExampleGatedNFTFacet is
         return newItemId;
     }
 
-    /// @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
-    /// @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
-    /// @param recipient The address to which the NFT will be minted.
-    /// @return The ID of the newly minted NFT upon successful verification and minting.
+    /**
+     * @notice Mints a new NFT to a specified recipient, using an optimized signature verification process.
+     * @dev Leverages the `requireTxDataAuth` modifier for efficient signature verification.
+     * @param recipient The address to which the NFT will be minted.
+     * @return The ID of the newly minted NFT upon successful verification and minting.
+     */
     function mintNFTGated(
         address recipient
     ) public requireTxDataAuth returns (uint256) {

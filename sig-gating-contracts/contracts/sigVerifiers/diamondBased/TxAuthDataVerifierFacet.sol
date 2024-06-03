@@ -7,15 +7,16 @@ import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/Signa
 import {TxAuthDataVerifierFacetStorage} from "./TxAuthDataVerifierFacetStorage.sol";
 
 /**
- * @title Base Transaction Authentication Data Verifier
- * @dev Provides mechanisms for verifying transaction authentication data, including signature verification and nonce management.
+ * @title TxAuthDataVerifierFacet
+ * @dev This is a facet contract to be used in the context of the Diamond Standard (EIP-2535).
+ * It provides mechanisms for verifying transaction authentication data, including signature verification and nonce management.
  * This contract is designed to be extended by other contracts requiring transaction authentication based on digital signatures.
  * It includes functionality for:
  * - Verifying transaction signatures against a specified signer address.
  * - Ensuring transactions have not expired based on their block expiration.
  * - Incrementing nonces to prevent replay attacks.
  *
- * The contract utilizes OZ SignatureChecker for signature verification.
+ * The contract utilizes OpenZeppelin's SignatureChecker for signature verification.
  */
 contract TxAuthDataVerifierFacet is Context {
     using TxAuthDataVerifierFacetStorage for TxAuthDataVerifierFacetStorage.Layout;
@@ -30,7 +31,7 @@ contract TxAuthDataVerifierFacet is Context {
         bytes functionCallData
     );
 
-    // Event emitted when the signer is changed
+    /// @dev Event emitted when the signer is changed
     event SignerChanged(address indexed newSigner);
 
     /// @notice Custom error for handling signature expiry
@@ -55,7 +56,7 @@ contract TxAuthDataVerifierFacet is Context {
         bytes functionCallData;
     }
 
-    /// @notice Initializes the `TxAuthDataVerifier` contract
+    /// @notice Initializes the `TxAuthDataVerifierFacet` contract
     /// @param _signer The address of the off-chain service responsible for signing transactions
     function initializeTxAuthDataVerifier(address _signer) internal {
         require(
@@ -73,10 +74,10 @@ contract TxAuthDataVerifierFacet is Context {
      *
      * Authentication is successful if the following conditions are met:
      * - The signature is valid and corresponds to the address returned by `_msgSender()`.
-     * - The current block number is less than the specified `_blockExpiration`.
+     * - The current block number is less than the specified `blockExpiration`.
      *
      * Requirements:
-     * - The transaction must not have expired, as indicated by `_blockExpiration`.
+     * - The transaction must not have expired, as indicated by `blockExpiration`.
      * - The provided signature must be valid and correctly match the caller's address, as determined by `_msgSender()`.
      *
      * Emits a `NexeraIDSignatureVerified` event upon successful verification, indicating that the transaction has been authenticated.
@@ -98,7 +99,7 @@ contract TxAuthDataVerifierFacet is Context {
      * @param userAddress The Ethereum address of the user who is supposed to have signed the transaction. This address is used to recover the signer from the signature and compare it for equality.
      *
      * Requirements:
-     * - The transaction must not have expired, as indicated by `_blockExpiration`.
+     * - The transaction must not have expired, as indicated by `blockExpiration`.
      * - The signature must correctly match the provided `userAddress`.
      *
      * Emits a `NexeraIDSignatureVerified` event upon successful verification of the transaction.
@@ -109,7 +110,6 @@ contract TxAuthDataVerifierFacet is Context {
     }
 
     /// @notice Sets a new signer address
-    /// @dev Can only be called by the current owner
     /// @param _signer The address of the new signer
     function _setSigner(address _signer) internal {
         require(
@@ -137,7 +137,6 @@ contract TxAuthDataVerifierFacet is Context {
      * @dev Verifies the authenticity and validity of a transaction's authorization data.
      * This function checks if the transaction signature is valid, has not expired, and is signed by the correct user.
      * It also ensures that the transaction has not been replayed by checking and incrementing the nonce.
-     * Emits a {NexeraIDSignatureVerified} event upon successful verification.
      *
      * @param msgData The full calldata including the function selector and arguments.
      * @param userAddress The address of the user who signed the transaction.
@@ -147,7 +146,7 @@ contract TxAuthDataVerifierFacet is Context {
      * - The current block number must be less than `blockExpiration`.
      * - The signature must be valid and correspond to `userAddress`.
      *
-     * Emits a {NexeraIDSignatureVerified} event.
+     * Emits a `NexeraIDSignatureVerified` event upon successful verification.
      */
     function _verifyTxAuthData(
         bytes calldata msgData,
@@ -239,11 +238,14 @@ contract TxAuthDataVerifierFacet is Context {
 
     /**
      * @dev Returns an Ethereum Signed Message, created from a `hash`. This
-     * produces hash corresponding to the one signed with the
+     * produces a hash corresponding to the one signed with the
      * https://eth.wiki/json-rpc/API#eth_sign[`eth_sign`]
      * JSON-RPC method as part of EIP-191.
      *
-     * This is copied from OZ in order to be compatible with both v4 and v5
+     * This is copied from OpenZeppelin to be compatible with both v4 and v5.
+     *
+     * @param hash The hash to be signed.
+     * @return message The Ethereum Signed Message hash.
      */
     function toEthSignedMessageHash(
         bytes32 hash
