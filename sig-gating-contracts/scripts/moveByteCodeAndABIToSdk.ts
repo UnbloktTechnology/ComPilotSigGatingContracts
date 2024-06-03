@@ -60,11 +60,24 @@ export const moveExampleGatedNFTMinterExternalCallABIToSDK = () => {
   //saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
 };
 
+export const moveNexeraIDSignerManagerABIToSDK = () => {
+  // Load the JSON file
+  const jsonFile =
+    "./artifacts/contracts/signerManager/NexeraIDSignerManager.sol/NexeraIDSignerManager.json"; // Replace with your JSON file's path
+  const rawData = fs.readFileSync(jsonFile);
+  const jsonData = JSON.parse(rawData);
+  const abi = jsonData.abi;
+  const unprocessedByteCode = jsonData.bytecode;
+  saveContractABI("NexeraIDSignerManager", abi);
+  //saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
+};
+
 export const moveByteCodeAndABIToSdk = () => {
   moveExampleGatedNFTMinterABIToSDK();
   moveExampleNFTMinterABIToSDK();
   moveExampleGatedNFTMinterUpgradeableABIToSDK();
   moveExampleMultipleInputsABIToSDK();
   moveExampleGatedNFTMinterExternalCallABIToSDK();
+  moveNexeraIDSignerManagerABIToSDK();
 };
 moveByteCodeAndABIToSdk();

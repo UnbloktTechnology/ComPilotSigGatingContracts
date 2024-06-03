@@ -19,26 +19,14 @@ export const moveFactoryAddressToSdk = (
   }
 };
 
-export const moveAllFactoryAddressesToSdk = () => {
+export const moveAllContractAddressesToSdk = () => {
   // Amoy
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "amoy_dev");
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "amoy_staging");
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "amoy_prod");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "amoy_dev");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "amoy_staging");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "amoy_prod");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_dev");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_staging");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy_prod");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "amoy");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "amoy");
+  moveFactoryAddressToSdk("NexeraIDSignerManager", "amoy");
   // Sepolia
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_dev");
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_staging");
-  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia_prod");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_dev");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_staging");
-  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia_prod");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "sepolia_dev");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "sepolia_staging");
-  moveFactoryAddressToSdk("NexeraIDSignerManager", "sepolia_prod");
+  moveFactoryAddressToSdk("ExampleGatedNFTMinter", "sepolia");
+  moveFactoryAddressToSdk("ExampleNFTMinter", "sepolia");
+  moveFactoryAddressToSdk("NexeraIDSignerManager", "sepolia");
 };
-moveAllFactoryAddressesToSdk();
+moveAllContractAddressesToSdk();
