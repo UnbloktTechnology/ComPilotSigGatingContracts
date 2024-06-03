@@ -12,7 +12,6 @@ import { fixtureExampleDiamond } from "../fixtures/fixtureExampleDiamond";
 import {
   ExampleGatedNFTFacetABI,
   ExampleMultipleInputsABI,
-  ExampleGatedNFTMinterExternalCallABI,
 } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import {
   generateFunctionCallData,
@@ -20,14 +19,12 @@ import {
 } from "./utils/generateFunctionCallData";
 import { signTxAuthData, signTxAuthDataViem } from "./utils/signTxAuthData";
 import { getContract, publicActions } from "viem";
-import { fixtureExampleNFTMinter } from "../fixtures/fixtureExampleNFTMinter";
 import { fixtureExampleMultipleInputs } from "../fixtures/fixtureExampleMultipleInputs";
 import { deployExampleGatedNFTMinterWithEOA } from "../lib/deploy/deployExampleGatedNFTMinter";
 import { Wallet } from "ethers";
 import { setupThreeAccounts } from "./utils/fundAccounts";
-//import { fixtureExampleGatedNFTMinterExternalCall } from "../fixtures/fixtureExampleGatedNFTMinterExternalCall";
 
-describe.only(`ExampleGatedNFTFacet`, function () {
+describe(`ExampleGatedNFTFacet`, function () {
   let exampleGatedNFTDiamond: ExampleGatedNFTFacet;
 
   beforeEach(async () => {
@@ -507,109 +504,6 @@ describe.only(`ExampleGatedNFTFacet`, function () {
     expect(eventsData[0].name === "NexeraIDSignatureVerified").to.be.true;
   });
 
-  it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
-    const { tester, txAuthSignerAddress } = await getNamedAccounts();
-    const testerSigner = await ethers.getSigner(tester);
-    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
-    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
-
-    // Build Signature
-    const testNumber = 2;
-    const testAddress = tester;
-    const testByteString = "0x224455";
-    const testByteString2 = "0x2244556677";
-
-    const txAuthInput = {
-      contractAbi: Array.from(ExampleMultipleInputsABI),
-      contractAddress: exampleMultipleInputs.address as Address,
-      functionName: "updateVariables",
-      args: [testNumber, testAddress, testByteString, testByteString2],
-      userAddress: tester as Address,
-    };
-
-    const signatureResponse = await signTxAuthDataLibEthers(
-      txAuthSigner as unknown as Wallet,
-      txAuthInput
-    );
-
-    // Encoding the blockExpiration (uint256) and signature (bytes)
-    const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
-      32
-    );
-
-    const unsignedTx =
-      await exampleMultipleInputs.populateTransaction.updateVariables(
-        testNumber,
-        testAddress,
-        testByteString,
-        testByteString2
-      );
-
-    // Complete data
-    const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signatureResponse.signature.slice(2);
-
-    // Send tx
-    const tx = await testerSigner.sendTransaction({
-      to: exampleMultipleInputs.address,
-      data: txData,
-    });
-
-    await tx.wait();
-
-    const bytesVariable = await exampleMultipleInputs.getBytesVariable();
-    expect(testByteString === bytesVariable).to.be.true;
-  });
-  it(`Should check that user can call the ExampleMultipleInputs - no input - with a signature from the signer - with lib function`, async () => {
-    const { tester, txAuthSignerAddress } = await getNamedAccounts();
-    const testerSigner = await ethers.getSigner(tester);
-    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
-    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
-
-    // Build Signature
-
-    const txAuthInput = {
-      contractAbi: Array.from(ExampleMultipleInputsABI),
-      contractAddress: exampleMultipleInputs.address as Address,
-      functionName: "updateVariablesNoInput",
-      args: [],
-      userAddress: tester as Address,
-    };
-
-    const signatureResponse = await signTxAuthDataLibEthers(
-      txAuthSigner as unknown as Wallet,
-      txAuthInput
-    );
-
-    // Encoding the blockExpiration (uint256) and signature (bytes)
-    const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-      ethers.BigNumber.from(signatureResponse.blockExpiration).toHexString(),
-      32
-    );
-
-    const unsignedTx =
-      await exampleMultipleInputs.populateTransaction.updateVariablesNoInput();
-
-    // Complete data
-    const txData =
-      unsignedTx.data +
-      abiEncodedBlockExpiration.slice(2) +
-      signatureResponse.signature.slice(2);
-
-    // Send tx
-    const tx = await testerSigner.sendTransaction({
-      to: exampleMultipleInputs.address,
-      data: txData,
-    });
-
-    const transactionReceipt = await tx.wait();
-
-    const intVar = await exampleMultipleInputs.getIntVariable();
-    expect(1 == Number(intVar)).to.be.true;
-  });
   it(`Should check that user can NOT call the ExampleGatedNFTDiamond with a wrong signature from the signer`, async () => {
     const { tester, txAuthSignerAddress } = await getNamedAccounts();
     const testerSigner = await ethers.getSigner(tester);
@@ -678,87 +572,6 @@ describe.only(`ExampleGatedNFTFacet`, function () {
       await expect(
         testerSigner.sendTransaction({
           to: exampleGatedNFTDiamond.address,
-          data: txData,
-        })
-      ).to.be.revertedWith("InvalidSignature");
-    }
-  });
-  it(`Should check that user can NOT call the ExampleMultipleInputs with a wrong signature from the signer`, async () => {
-    const { tester, txAuthSignerAddress } = await getNamedAccounts();
-    const testerSigner = await ethers.getSigner(tester);
-    const txAuthSigner = await ethers.getSigner(txAuthSignerAddress);
-    const { exampleMultipleInputs } = await fixtureExampleMultipleInputs();
-
-    // Build Signature
-    const testNumber = 2;
-    const testAddress = tester;
-    const testByteString = "0x224455";
-    const testByteString2 = "0x22445566";
-    const block = await ethers.provider.getBlock("latest");
-    const blockExpiration = block.number + 50;
-    if (!txAuthSigner.provider) {
-      throw new Error("missing provider on signer");
-    }
-    const { chainId: chainID } = await txAuthSigner.provider.getNetwork();
-    // encode function data with a fake value for the signature
-    const functionCallData = await generateFunctionCallData(
-      ExampleMultipleInputsABI,
-      "updateVariables",
-      [testNumber, testAddress, testByteString, testByteString2]
-    );
-
-    const txAuthData = {
-      functionCallData: functionCallData as `0x${string}`,
-      contractAddress: exampleGatedNFTDiamond.address as Address,
-      userAddress: tester as Address,
-      chainID,
-      nonce: Number(await exampleGatedNFTDiamond.txAuthDataUserNonce(tester)),
-      blockExpiration,
-    };
-
-    // Build Wrong Values
-    const wrongValues = {
-      functionCallData: await generateFunctionCallData(
-        ExampleMultipleInputsABI,
-        "updateVariables",
-        [testNumber, testAddress, testByteString, testByteString2]
-      ), // wrong recipient value
-      contractAddress: tester as Address,
-      userAddress: txAuthSigner.address as Address,
-      chainID: 666,
-      nonce: 666,
-    };
-
-    for (const wrongValueKey of Object.keys(wrongValues)) {
-      const signature = await signTxAuthData(
-        //@ts-ignore
-        { ...txAuthData, [wrongValueKey]: wrongValues[wrongValueKey] },
-        txAuthSigner
-      );
-
-      // Encoding the blockExpiration (uint256) and signature (bytes)
-      const abiEncodedBlockExpiration = ethers.utils.hexZeroPad(
-        ethers.BigNumber.from(blockExpiration).toHexString(),
-        32
-      );
-
-      const unsignedTx =
-        await exampleMultipleInputs.populateTransaction.updateVariables(
-          testNumber,
-          testAddress,
-          testByteString,
-          testByteString2
-        );
-
-      // Complete data
-      const txData =
-        unsignedTx.data +
-        abiEncodedBlockExpiration.slice(2) +
-        signature.slice(2);
-
-      await expect(
-        testerSigner.sendTransaction({
-          to: exampleMultipleInputs.address,
           data: txData,
         })
       ).to.be.revertedWith("InvalidSignature");
