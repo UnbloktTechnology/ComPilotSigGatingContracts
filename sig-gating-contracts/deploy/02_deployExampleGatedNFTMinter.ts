@@ -27,9 +27,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     args: [signerManagerAddress],
     log: true,
     nonce: "pending",
-    waitConfirmations: 1,
+    waitConfirmations: 6,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
+  console.log("deployResult", JSON.stringify(deployResult, null, 2));
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
