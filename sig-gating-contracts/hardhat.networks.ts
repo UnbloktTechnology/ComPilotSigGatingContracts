@@ -1,4 +1,3 @@
-import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 import dotenv from "dotenv";
 import { NetworksUserConfig } from "hardhat/types";
 
@@ -31,7 +30,7 @@ export const networks: NetworksUserConfig = {
   },
   base: {
     live: true,
-    chainId: Number(NEXERA_CHAINS.BASE),
+    chainId: 8453,
     url: `${BASE_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
