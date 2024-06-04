@@ -10,7 +10,7 @@ const testEnv = "testnet";
 const mainEnv = "mainnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments, getChainId } = hre;
+  const { deployments, getChainId, network } = hre;
   const { deploy } = deployments;
   const { deployer, txAuthSignerAddress, signerManagerController } =
     await getNamedAccounts();
@@ -30,6 +30,9 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   // Get TX_SIGNER_ADDRESS depending on network
   const TX_SIGNER_ADDRESS = getTxSignerAddress(chainId) || txAuthSignerAddress;
+
+  console.log("Network name:", network.name);
+  console.log("Network chain ID:", network.config.chainId);
 
   console.log("deployer", deployer);
   console.log("TX_SIGNER_ADDRESS", TX_SIGNER_ADDRESS);
