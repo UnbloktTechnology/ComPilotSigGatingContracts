@@ -12,6 +12,8 @@ export const getTxSignerAddress = (chainId: string) => {
       return TX_SIGNER_ADDRESS;
     case NEXERA_CHAINS.POLYGON:
       return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.BASE:
+      return TX_SIGNER_ADDRESS;
     default:
       return undefined;
   }
