@@ -20,6 +20,7 @@
     "deploy-amoy": "hardhat deploy --tags testnet --network amoy",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia",
     "deploy-polygon": "hardhat deploy --tags mainnet --network polygon_main",
+    "deploy-base": "hardhat deploy --tags mainnet --network base",
     "deploy-sepolia-local": "hardhat deploy --tags testnet --network sepolia_local",
     "deploy-amoy-local": "hardhat deploy --tags testnet --network amoy_local",
     "run-node": "hardhat node",

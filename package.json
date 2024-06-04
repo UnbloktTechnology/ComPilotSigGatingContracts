@@ -54,6 +54,7 @@
     "deploy-sepolia": "pnpm -r deploy-sepolia",
     "deploy-amoy-local": "pnpm -r deploy-amoy-local",
     "deploy-sepolia-local": "pnpm -r deploy-sepolia-local",
-    "deploy-polygon": "pnpm -r deploy-polygon"
+    "deploy-polygon": "pnpm -r deploy-polygon",
+    "deploy-base": "pnpm -r deploy-base"
   }
 }
