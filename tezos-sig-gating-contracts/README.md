@@ -75,6 +75,19 @@ The *nft minter* contract has been deployed
 
 Inside the `tezos-sig-gating-contracts` folder
 
+```
+make install
+make scripts_install
+make compile
+make test
+make sandbox-start
+make integration-test
+make sandbox-stop
+```
+
+The following sections describes in detail the command lines to launch tests and deploy and interact with the contract.
+
+
 ### Setup
 
 Install the LIGO libraries `make install`. In our case we may use FA2 library to use NFT's in our test scenarios
@@ -95,8 +108,14 @@ Launch LIGO tests
 
 ### Integration testing LOCALHOST
 
+A local network (called *sandbox*) can be used for testing before deployment on Testnet.
 - Run the sandbox `make sandbox-start`
-- Check default available users `docker exec tezos-sig-gating-contracts-sandbox oxfordbox info`
+- Launch a single test script with `make integration-test` that deploys a contract and executes a "mint off chain" (and test failure cases).
+- Stop the sandbox `make sandbox-stop`
+
+#### The sandbox
+Launching the sandbox will create a running docker container. The `docker ps` command will show you the running container.
+Default available users can be shown with `docker exec tezos-sig-gating-contracts-sandbox oxfordbox info`
 
 Two extra users have been added (in script `run-sandbox`). We can check existing addresses
 ```
@@ -110,16 +129,10 @@ docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for fran
 docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for user
 ```
 
-### Scenario
 
-Launch a single test script that deploys a contract and executes a "mint off chain".
-```
-make integration-test
-```
+### Manual interaction (separate scripts)
 
-### Manual (separate scripts)
-
-#### deploy a NftMinter
+#### Deploy a NftMinter
 
 Once the sandbox is running we can deploy a contract. The script `local_deploy_nftminter.ts` deploys a contract (NftMinter) on behalf of alice (considered as admin). This script can be launch with `make localdeploy`.
 
@@ -127,7 +140,7 @@ Once the sandbox is running we can deploy a contract. The script `local_deploy_n
 docker exec tezos-sig-gating-contracts-sandbox octez-client list known contracts
 ```
 
-#### off-chain signing
+#### Off-chain signing
 
 The script `local_sign.ts` is a tool to sign a payload on behalf of bob. (For the moment the inputs must be specified inside the file. Need improvment !).
 ```
@@ -145,7 +158,7 @@ sig= {
 ```
 The `prefixSig` field is the signature that must be used when invoking the contract.
 
-#### mint local
+#### Mint local
 
 `make localmint`:    Alice sends a message (signed offchain by bob) to the  NftMinter contract. (the message is a call data asking user to mint asset 1).
 
@@ -155,7 +168,7 @@ Waiting for Exec_offchain on KT1UgwgtRhh2FYwoc38sPKDsqPkjDRpEoFio to be confirme
 tx confirmed:  ooTY3qhAMvhNwpnxA2roTaMiuxuVKy8RwueB9sfYJmUPCC2bhW4
 ```
 
-#### display contract storage !
+#### Display contract storage !
 TODO need improvment
 Verify that the asset 1 is owned by "user". The following command display the owners for 3 first assets.
 ```
@@ -164,7 +177,7 @@ make localdisplay
 
 ### Integration testing TESTNET
 
-#### off-chain signing
+#### Off-chain signing
 The script `signAuthData.ts` is a tool to sign a payload. (For the moment the inputs must be specified inside the file. Need improvment !).
 Fill
 ```
@@ -182,13 +195,13 @@ sig= {
 ```
 The `prefixSig` field is the signature that must be used when invoking the contract.
 
-#### deploy contract on ghostnet
+#### Deploy contract on ghostnet
 This command deploys the `NftMinter` contract on Ghostnet. It uses the `deploy_nftminter.ts` script. (For the moment the initial storage of the contract must be specified in the file. Need improvment).
 ```
 make deploy
 ```
 
-#### interact
+#### Interact (call entrypoint)
 
 Once the contract is deployed , we can interact with it. 
 The following command invoke the `Exec_offchain` entrypoint of the `NftMinter` contract. 
