@@ -1,4 +1,4 @@
-import { getNamedAccounts, network } from "hardhat";
+import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
@@ -22,6 +22,9 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log(`\n--------------------------------------------------------`);
 
   const deployResult = await deploy(contractName, {
+    deterministicDeployment: ethers.utils.formatBytes32String(
+      (process.env.SALT || "SALT") + contractName + version
+    ),
     contract: contractName,
     from: deployer,
     args: [signerManagerAddress],
