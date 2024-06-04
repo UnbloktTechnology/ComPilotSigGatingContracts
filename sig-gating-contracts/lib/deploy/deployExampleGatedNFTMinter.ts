@@ -14,7 +14,8 @@ export const deployExampleGatedNFTMinterWithEOA = async () => {
 
   // Deploy the contract
   const exampleGatedNFTMinter = await ExampleGatedNFTMinter.deploy(
-    txAuthSignerAddress
+    txAuthSignerAddress,
+    deployer
   );
 
   await exampleGatedNFTMinter.deployed();
