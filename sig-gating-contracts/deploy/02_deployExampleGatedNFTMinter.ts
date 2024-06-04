@@ -1,13 +1,13 @@
-import { getNamedAccounts } from "hardhat";
+import { getNamedAccounts, network } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.2.9";
+const version = "0.2.10";
 const contractName = "ExampleGatedNFTMinter";
 const testEnv = "testnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments } = hre;
+  const { deployments, network } = hre;
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   console.log("deployer", deployer);
@@ -27,7 +27,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     args: [signerManagerAddress],
     log: true,
     nonce: "pending",
-    waitConfirmations: 6,
+    waitConfirmations: network.name == "hardhat" ? 1 : 6,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
   console.log("deployResult", JSON.stringify(deployResult, null, 2));
