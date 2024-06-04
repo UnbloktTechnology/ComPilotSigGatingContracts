@@ -3,6 +3,7 @@
 
 // ExampleGatedNFTMinter
 export * from "./ExampleGatedNFTMinterAddress_amoy";
+export * from "./ExampleGatedNFTMinterAddress_amoy_local";
 
 // ExampleNFTMinter
 export * from "./ExampleNFTMinterAddress_amoy";
@@ -14,6 +15,7 @@ export * from "./NexeraIDSignerManagerAddress_amoy";
 
 // ExampleGatedNFTMinter
 export * from "./ExampleGatedNFTMinterAddress_sepolia";
+export * from "./ExampleGatedNFTMinterAddress_sepolia_local";
 
 // ExampleNFTMinter
 export * from "./ExampleNFTMinterAddress_sepolia";
