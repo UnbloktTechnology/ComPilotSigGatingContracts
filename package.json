@@ -49,8 +49,9 @@
     "test:unit": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts test:seq",
     "version:patch": "node tooling/version.js",
     "copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
-    "deploy-contracts": "pnpm -r deploy-contracts",
+    "deploy-testnet-contracts": "pnpm -r deploy-testnet-contracts",
     "deploy-amoy": "pnpm -r deploy-amoy",
-    "deploy-sepolia": "pnpm -r deploy-sepolia"
+    "deploy-sepolia": "pnpm -r deploy-sepolia",
+    "deploy-polygon": "pnpm -r deploy-sepolia"
   }
 }

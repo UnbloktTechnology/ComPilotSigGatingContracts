@@ -1,0 +1,16 @@
+name: Deploy contracts
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    strategy:
+      #      max-parallel: 1 # Avoid weird issues with git when some run pushes in the meantime the other is running.
+      matrix:
+        network:
+          - polygon
+    uses: ./.github/workflows/deploy-template.yml
+    with:
+      NETWORK: ${{ matrix.network }}
+    secrets: inherit

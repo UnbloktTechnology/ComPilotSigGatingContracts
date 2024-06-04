@@ -1,4 +1,4 @@
-name: Deploy contracts
+name: Deploy testnet contracts
 
 on:
   workflow_dispatch:
@@ -11,10 +11,6 @@ jobs:
         network:
           - sepolia
           - amoy
-        # - fuji
-        #  - avalanche
-        #  - polygon
-        #  - ethereum
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
