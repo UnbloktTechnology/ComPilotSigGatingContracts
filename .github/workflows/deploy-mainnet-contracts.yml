@@ -10,6 +10,7 @@ jobs:
       matrix:
         network:
           - polygon
+          - base
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
