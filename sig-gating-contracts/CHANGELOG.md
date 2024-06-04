@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.1.7...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.0) (2024-06-04)
+
+
+### Features
+
+* Feature/web3 210 deploy contracts on polygon mainnet ([#101](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues/101)) ([5507d09](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/commit/5507d092a11eefdfca9e4b186d5e22b205c4cedc))
+
+
+
+
+
 ## [2.1.7](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.1.6...@nexeraprotocol/nexera-id-sig-gating-contracts@2.1.7) (2024-06-03)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
