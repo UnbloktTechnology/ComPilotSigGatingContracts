@@ -4,7 +4,6 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const version = "0.1.0";
 const contractName = "ExampleGatedNFTFacet";
-const testEnv = "testnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;

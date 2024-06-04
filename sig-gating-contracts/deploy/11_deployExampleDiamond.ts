@@ -5,7 +5,6 @@ import { filterAndCut } from "../lib/deploy/diamond/diamond_utils";
 
 const version = "0.1.0";
 const contractName = "ExampleDiamond";
-const testEnv = "testnet";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments } = hre;
