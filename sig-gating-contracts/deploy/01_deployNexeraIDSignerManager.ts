@@ -29,7 +29,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     getMultiSigAddress(chainId) || signerManagerController;
 
   // Get TX_SIGNER_ADDRESS depending on network
-  const TX_SIGNER_ADDRESS = getTxSignerAddress(chainId) || txAuthSignerAddress;
+  // for _local networks, use txAuthSignerAddress
+  const TX_SIGNER_ADDRESS =
+    network.name == "amoy_local" || network.name == "sepolia_local"
+      ? txAuthSignerAddress
+      : getTxSignerAddress(chainId) || txAuthSignerAddress;
 
   console.log("Network name:", network.name);
   console.log("Network chain ID:", network.config.chainId);
