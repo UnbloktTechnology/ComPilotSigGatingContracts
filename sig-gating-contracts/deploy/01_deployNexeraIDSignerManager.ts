@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { getMultiSigAddress } from "../lib/addresses/getMultiSigAddress";
 import { getTxSignerAddress } from "../lib/addresses/getTxSignerAddress";
 
-const version = "0.1.11";
+const version = "0.1.12";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
