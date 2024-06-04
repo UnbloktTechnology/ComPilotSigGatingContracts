@@ -13,6 +13,7 @@
 
 type 'a raw_payload = {
   public_key: key;
+  chain_id: chain_id;
   user: address;
   nonce: nat;
   expiration: timestamp;
@@ -22,13 +23,14 @@ type 'a raw_payload = {
 }
 let compute_hash (type a) (data : a raw_payload) : bytes * bytes = 
     let key_bytes : bytes = Bytes.pack data.public_key in
+    let chain_id_bytes : bytes = Bytes.pack data.chain_id in
     let user_bytes : bytes = Bytes.pack data.user in
     let nonce_bytes : bytes = Bytes.pack data.nonce in 
     let exp_date_bytes : bytes = Bytes.pack data.expiration in 
     let functioncall_contract_bytes : bytes = Bytes.pack data.functioncall_contract in
     let functioncall_name_bytes : bytes = Bytes.pack data.functioncall_name in
     let functioncall_params_bytes : bytes = Bytes.pack data.functioncall_params in
-    let data : bytes = Bytes.concat key_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat exp_date_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes))))) in
+    let data : bytes = Bytes.concat key_bytes (Bytes.concat chain_id_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat exp_date_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)))))) in
     let data_hash = Crypto.keccak data in    
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("functioncall_contract_bytes=", functioncall_contract_bytes) in
@@ -38,6 +40,10 @@ let compute_hash (type a) (data : a raw_payload) : bytes * bytes =
     // let () = Test.Next.IO.log("data=", data) in
     // let () = Test.Next.IO.log("data_hash=", data_hash) in
     data_hash, functioncall_params_bytes
+
+let sign_hash (data_hash : bytes) : signature = 
+  Test.Next.Crypto.sign "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU" data_hash
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,11 +87,10 @@ let test_proxy =
     let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
 
-
     // PREPARE parameter for EXEC_OFFCHAIN call 
-    let my_sig : signature = ("edsigtdkwMWWDMXGPWMm8S78PDjZwCXKZSsj81itgWfnNLB6fdkdqQW6VNiS8bGmdtgGuT2ksST1QBXFqBDqMJ7n3xzcA4AeJoV" : signature) in
     let inputs: NFTMINTER.NftMinterForProxy.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
       expiration = ("2025-01-01T00:00:00.00Z" : timestamp);
@@ -97,6 +102,8 @@ let test_proxy =
       }: NFTMINTER.NftMinterForProxy.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    let my_sig : signature = sign_hash data_hash in
+    // let my_sig : signature = ("edsigtdkwMWWDMXGPWMm8S78PDjZwCXKZSsj81itgWfnNLB6fdkdqQW6VNiS8bGmdtgGuT2ksST1QBXFqBDqMJ7n3xzcA4AeJoV" : signature) in
 
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("fa2_address=", fa2_address) in
@@ -104,6 +111,7 @@ let test_proxy =
 
     let p: PROXY.ProxyVerifier.txAuthData = {
       payload = data_hash;   // hash of the following fields (except signature)
+      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
       nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date

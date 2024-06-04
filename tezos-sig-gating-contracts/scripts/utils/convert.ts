@@ -55,6 +55,18 @@ export function convert_address(addr_str : string) {
     return packed.bytes;
 }
 
+export function convert_chain_id(addr_str : string) {
+    const data: MichelsonData = {
+        string: addr_str
+    };
+    const typ: MichelsonType = {
+        prim: "chain_id"
+    };
+    const packed = packDataBytes(data, typ);
+    return packed.bytes;
+}
+
+
 export function convert_mint(owner_str : string, token_id : string ) {
     const data = `(Pair "${owner_str}" ${token_id})`
     const type = `(pair address nat)`;

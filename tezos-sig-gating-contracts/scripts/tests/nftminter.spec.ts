@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { deployNFTMinter } from "../fixtures/fixtureExampleNFTMinter";
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit, TezosOperationError } from "@taquito/taquito";
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from '../utils/convert';
+import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_chain_id, convert_mint } from '../utils/convert';
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -13,7 +13,8 @@ function keccak256(data : string) {
     return createKeccakHash('keccak256').update(data, 'hex').digest('hex')
   }
 
-function compute_payload_hash_for_mint  (userAddress: string, 
+function compute_payload_hash_for_mint  (chain_id: string, 
+                                userAddress: string, 
                                 functioncall_contract: string,          
                                 functioncall_name: string,              // "%mint-offchain"
                                 functioncall_params_owner: string,      // mint arg 1
@@ -22,6 +23,7 @@ function compute_payload_hash_for_mint  (userAddress: string,
                                 exp_date: string,
                                 dataKey: string
                             ) {
+    const chain_id_bytes = convert_chain_id(chain_id);
     const user_bytes = convert_address(userAddress);
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
@@ -29,7 +31,7 @@ function compute_payload_hash_for_mint  (userAddress: string,
     const nonce_bytes = convert_nat(nonce);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
     // console.log("user_bytes=", user_bytes);
     // console.log("functioncall_name_bytes=", functioncall_name_bytes);
@@ -90,10 +92,12 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Prepare Hash of payload
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -108,6 +112,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Execute mint-offchain entrypoint
         const args = {
         payload: payload_hash, 
+        chain_id: chain_id, 
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -155,10 +160,12 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Prepare Hash of payload
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -172,7 +179,8 @@ describe(`ExampleGatedNFTMinter`, function () {
         // console.log("sig=", signature);
         // Execute mint-offchain entrypoint
         const args = {
-        payload: payload_hash, 
+        payload: payload_hash,
+        chain_id: chain_id,
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -214,11 +222,13 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, "2");
         // Prepare Hash of payload
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -232,7 +242,8 @@ describe(`ExampleGatedNFTMinter`, function () {
 
         // Execute mint-offchain entrypoint
         const args = {
-        payload: payload_hash, 
+        payload: payload_hash,
+        chain_id: chain_id, 
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -250,7 +261,7 @@ describe(`ExampleGatedNFTMinter`, function () {
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
-                expect(err.message).to.be.equal("hash of given parameters (nonce, expiration, key, functioncall) does not match the payload hash")
+                expect(err.message).to.be.equal("HashMissmatchParameters")
             } else {
                 expect(false).to.be.true
             }
@@ -274,11 +285,13 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2024-01-01T00:00:00.00Z";
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         // Prepare Hash of payload
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -293,6 +306,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Execute mint-offchain entrypoint
         const args = {
         payload: payload_hash, 
+        chain_id: chain_id,
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -334,11 +348,13 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         // Prepare Hash of payload
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -355,6 +371,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Execute mint-offchain entrypoint
         const args = {
         payload: payload_hash, 
+        chain_id: chain_id,
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -396,11 +413,13 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         // Prepare Hash of payload
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -415,6 +434,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Execute mint-offchain entrypoint
         const args = {
         payload: payload_hash, 
+        chain_id: chain_id,
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -434,7 +454,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         } catch (err) {
             if (err instanceof TezosOperationError) {
                 if (err instanceof TezosOperationError) {
-                    expect(err.message).to.be.equal("[dispatch] entrypoint not found")
+                    expect(err.message).to.be.equal("UnknownEntrypoint")
                 } else {
                     expect(false).to.be.true
                 }
@@ -459,11 +479,13 @@ describe(`ExampleGatedNFTMinter`, function () {
         const exp_date = "2025-01-01T00:00:00.00Z";
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+        const chain_id = "NetXnofnLBXBoxo";
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
         // Prepare Hash of payload
         const payload_hash = compute_payload_hash_for_mint(
+            chain_id,
             userAddress,
             functioncall_contract,
             functioncall_name,
@@ -478,6 +500,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Execute mint-offchain entrypoint
         const args = {
         payload: payload_hash, 
+        chain_id: chain_id,
         userAddress: userAddress, 
         nonce: nonce, 
         expiration: exp_date, 
@@ -497,7 +520,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         } catch (err) {
             if (err instanceof TezosOperationError) {
                 if (err instanceof TezosOperationError) {
-                    expect(err.message).to.be.equal("[dispatch] calldata should point to a contract with a dispatch entrypoint")
+                    expect(err.message).to.be.equal("MissingDispatchEntrypoint")
                 } else {
                     expect(false).to.be.true
                 }
