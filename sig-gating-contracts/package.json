@@ -26,7 +26,7 @@
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
-    "copy-factory-address": "hardhat run scripts/moveFactoryAddressesToSdk.ts",
+    "copy-factory-address": "hardhat run scripts/moveContractAddressesToSdk.ts",
     "copy-typechain-types": "./scripts/copy-typechain-types.sh",
     "copy-info-to-sdk": "pnpm copy-abi-bytecode && pnpm copy-factory-address && pnpm copy-typechain-types",
     "lint": "prettier --write **/**.ts",
