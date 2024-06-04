@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 
+## [2.2.11](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.10...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.11) (2024-06-04)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
+
+
+
+
+
+## [2.2.10](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.9...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.10) (2024-06-04)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
+
+
+
+
+
+## [2.2.9](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.8...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.9) (2024-06-04)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
+
+
+
+
+
+## [2.2.8](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.7...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.8) (2024-06-04)
+
+**Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
+
+
+
+
 ## [2.2.7](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.6...@nexeraprotocol/nexera-id-sig-gating-contracts@2.2.7) (2024-06-04)
 
 **Note:** Version bump only for package @nexeraprotocol/nexera-id-sig-gating-contracts
