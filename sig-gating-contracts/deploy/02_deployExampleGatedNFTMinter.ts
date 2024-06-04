@@ -1,4 +1,4 @@
-import { getNamedAccounts, network } from "hardhat";
+import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
@@ -22,16 +22,19 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log(`\n--------------------------------------------------------`);
 
   const deployResult = await deploy(contractName, {
+    deterministicDeployment: ethers.utils.keccak256(
+      ethers.utils.toUtf8Bytes(
+        (process.env.SALT || "SALT") + contractName + version
+      )
+    ),
     contract: contractName,
     from: deployer,
-    args: [signerManagerAddress],
+    args: [signerManagerAddress, deployer],
     log: true,
     waitConfirmations: network.name == "hardhat" ? 1 : 10,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
   console.log("deployed");
-
-  console.log("deployResult", JSON.stringify(deployResult, null, 2));
 
   console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
