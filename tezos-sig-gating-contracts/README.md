@@ -26,7 +26,7 @@ For a given calldata, the user receives from Nexera
 ![](./pictures/nexera%20forge%20sig%20workflow.png)
 
 
-Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects the following parameter
+Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects a `txAuthData` parameter which contains the following fields
   - payload hash
   - chain ID
   - user address
@@ -58,7 +58,7 @@ The chain ID in Tezos varies depending on the network (see [rpc nodes](https://t
 | setSigner        | address    | NFTMINTER  |
 | mint             | mint       | NFTMINTER  |
 | dispatch         | calldata   | NFTMINTER  |
-| exec_offchain    | { msgData: bytes * nat * timestamp * address * string * bytes * key * signature; userAddress: address; } |  NFTMINTER  |
+| exec_offchain    | txAuthData | NFTMINTER  |
 | transfer         | FA2.NFTExtendable.TZIP12.transfer |	FA2.NFTExtendable |
 | balance_of       | FA2.NFTExtendable.TZIP12.balance_of |	FA2.NFTExtendable |
 | update_operators | FA2.NFTExtendable.TZIP12.update_operators | FA2.NFTExtendable |
@@ -67,7 +67,7 @@ The chain ID in Tezos varies depending on the network (see [rpc nodes](https://t
 
 The verification of the signature and the controls (expiration) can be splitted into 2 contracts
 - a proxy that verifies the signature and dispatch the `calldata`
-- a fa2 contract that accept a `calldata` (only from the proxy) and process it
+- a fa2 contract that accepts a `calldata` (only from the proxy) and process it
   
 ![](./pictures/nexera%20proxynftminter.png)
 
@@ -77,7 +77,7 @@ The *nft minter* contract has been deployed
 
 | network  | address                                 |
 |----------|-----------------------------------------|
-| Ghostnet | KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk    | 
+| Ghostnet | KT1Ko4fwVmzNfZe3pSYFjhPYQj6GUTU3dAPa    | 
 | Mainnet  | N/A                                     |
 
 
