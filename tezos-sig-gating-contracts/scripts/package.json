@@ -1,16 +1,16 @@
 {
-    "name": "tooling",
+    "name": "tezos-sig-gating",
     "version": "1.0.0",
     "description": "",
     "scripts": {
       "test": "tsc && mocha tests --timeout 10000",
-      "sign": "tsc && node signAuthData.js",
-      "deploy": "tsc && node deploy_nftminter.js",
-      "mint": "tsc && node mint_offchain.js",
-      "localsign": "tsc && node local_sign.js",
-      "localdeploy": "tsc && node local_deploy_nftminter.js",
-      "localmint": "tsc && node local_mint_offchain.js",
-      "localdisplay": "tsc && node local_display_storage.js"
+      "sign": "ts-node signAuthData.ts",
+      "deploy": "ts-node manual/deploy_nftminter.ts",
+      "mint": "ts-node manual/mint_offchain.ts",
+      "localsign": "ts-node manual/local_sign.ts",
+      "localdeploy": "ts-node manual/local_deploy_nftminter.ts",
+      "localmint": "ts-node manual/local_mint_offchain.ts",
+      "localdisplay": "ts-node manual/local_display_storage.ts"
     },
     "dependencies": {
       "@taquito/signer": "^19.2.0",

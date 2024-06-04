@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { verifySignature, stringToBytes } from "@taquito/utils";
 import { Parser, packDataBytes, MichelsonData, MichelsonType } from '@taquito/michel-codec';
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from './convert';
+import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from './utils/convert';
 
 const createKeccakHash = require('keccak')
 // import verifierContract from "../compiled/TxAuthDataVerifier.json";
@@ -19,12 +19,12 @@ async function main() {
     const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
     // INPUTS
-    const userAddress = "tz1SccDTZWrqoqQscvjeMTBvf6zSK4snmrup"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const functioncall_contract = "KT1JEcJLsmE75vGFSUzG3ne9W3k97GpEUsRU"; //"KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
-    const functioncall_name = "%mint"; //"%mint"; // "%mint_offchain";
+    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+    const functioncall_contract = "KT1TRPRBqSR6GsCKc9ozxF7uJuX4gtPFwHxe"; //"KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_name = "%mint_offchain"; //"%mint"; // "%mint_offchain";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-      token_id: "6"
+      token_id: "1"
     };
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
     const exp_date = "2025-01-01T00:00:00.00Z";

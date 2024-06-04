@@ -1,10 +1,10 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress } from "./helper";
-import nftMinterContract from "../compiled/nftminter.json";
+import { saveContractAddress } from "../utils/helper";
+import nftMinterContract from "../../compiled/nftminter.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/"; // "https://oxfordnet.ecadinfra.com"; "
+const RPC_ENDPOINT = "http://localhost:20000/"; 
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
