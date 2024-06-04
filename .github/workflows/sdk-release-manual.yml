@@ -98,7 +98,7 @@ jobs:
           AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
           TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
           POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
-          TESTNET_SIG_DEPLOYMENT_MNEMONIC: ${{ secrets.TESTNET_SIG_DEPLOYMENT_MNEMONIC }}
+          MAINNET_SIG_DEPLOYMENT_MNEMONIC: ${{ secrets.MAINNET_SIG_DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALT: ${{ secrets.SALT }}
         run: |

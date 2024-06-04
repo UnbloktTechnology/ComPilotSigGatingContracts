@@ -1,4 +1,4 @@
-name: Deploy contracts
+name: Deploy mainnet contracts
 
 on:
   workflow_dispatch:
@@ -9,12 +9,7 @@ jobs:
       #      max-parallel: 1 # Avoid weird issues with git when some run pushes in the meantime the other is running.
       matrix:
         network:
-          - sepolia
-          - amoy
-        # - fuji
-        #  - avalanche
-        #  - polygon
-        #  - ethereum
+          - polygon
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}

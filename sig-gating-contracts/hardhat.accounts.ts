@@ -14,7 +14,7 @@ const namedAccounts: {
     default: 2,
   },
   txAuthSignerAddress: {
-    default: 0, // for testnets, txAuthSignerAddress will be the same as deployer
+    default: 3,
   },
   tester: {
     default: 4,

@@ -63,9 +63,22 @@ This smart contract will be deployed by us and will eventually be controlled by 
 
 DEPLOYER_ADDRESS: deploys example contracts and signerManager, setup in git secrets
 
+We will use 0x8b6c7Df09b65B1f81d9b3Bda73F5f22c50460c35 on all networks.
+
 TX_SIGNER_ADDRESS: signs txAuthData in our api back end, setup and secured by Amazon Secrets Manager
 
+We will use 0x03DF23c4dEA7B52Daf9B7920Ec6CFeDFFA691689 on all networks.
+
 SIGNER_MANAGER_CONTROLLER_ADDRESS: can change the TX_SIGNER_ADDRESS on the SignerManager contract, is a MultiSig gnosis address => SIGNER_MANAGER_CONTROLLER_ROLE
+
+This is a different address on each network:
+
+- Sepolia: 0x745B6d5f858047Daf7516aa4Fc34878f4BD3b73D
+- Polygon Mainnet: 0x191A193F5D5A88D7Ac52565c5ad3992da6D11183
+
+## Deployments
+
+TODO: add new signerManager addy
 
 ## Sig Gating Tests
 

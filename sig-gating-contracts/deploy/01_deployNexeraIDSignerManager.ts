@@ -1,9 +1,10 @@
 import { getNamedAccounts, ethers } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getMultiSigAddress } from "../lib/getMultiSigAddress";
+import { getMultiSigAddress } from "../lib/addresses/getMultiSigAddress";
+import { getTxSignerAddress } from "../lib/addresses/getTxSignerAddress";
 
-const version = "0.1.7";
+const version = "0.1.8";
 const contractName = "NexeraIDSignerManager";
 const testEnv = "testnet";
 const mainEnv = "mainnet";
@@ -27,8 +28,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const SIGNER_MANAGER_CONTROLLER =
     getMultiSigAddress(chainId) || signerManagerController;
 
+  // Get TX_SIGNER_ADDRESS depending on network
+  const TX_SIGNER_ADDRESS = getTxSignerAddress(chainId) || txAuthSignerAddress;
+
   console.log("deployer", deployer);
-  console.log("txAuthSignerAddress", txAuthSignerAddress);
+  console.log("TX_SIGNER_ADDRESS", TX_SIGNER_ADDRESS);
   console.log("SIGNER_MANAGER_CONTROLLER", SIGNER_MANAGER_CONTROLLER);
 
   // Note: because of deterministic deployments, we first use the deployer in the constructor
@@ -40,7 +44,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       (process.env.SALT || "SALT") + version
     ),
     from: deployer,
-    args: [txAuthSignerAddress, deployer],
+    args: [TX_SIGNER_ADDRESS, deployer],
     log: true,
     nonce: "pending",
     waitConfirmations: 1,

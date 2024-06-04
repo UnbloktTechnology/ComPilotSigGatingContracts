@@ -16,4 +16,5 @@ export const getMultiSigAddress = (chainId: string) => {
 // List of deployed Multisigs
 export const SAFE_ADDRESS = {
   [NEXERA_CHAINS.SEPOLIA]: "0x745B6d5f858047Daf7516aa4Fc34878f4BD3b73D",
+  [NEXERA_CHAINS.POLYGON]: "0x191A193F5D5A88D7Ac52565c5ad3992da6D11183",
 } as { [key: string]: Address };
