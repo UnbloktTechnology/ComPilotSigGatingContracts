@@ -51,6 +51,9 @@ let compute_hash (type a) (data : a raw_payload) : bytes * bytes =
     // let () = Test.Next.IO.log("data_hash=", data_hash) in
     data_hash, functioncall_params_bytes
 
+let sign_hash (data_hash : bytes) : signature = 
+  Test.Next.Crypto.sign "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU" data_hash
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TESTS
@@ -132,7 +135,7 @@ let test_nftminter_mint_offchain =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_OFFCHAIN call 
-    let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
+    
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       user = owner3;
@@ -146,6 +149,8 @@ let test_nftminter_mint_offchain =
       }: NFTMINTER.NftMinter.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
+    let my_sig : signature = sign_hash data_hash in
 
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
@@ -191,7 +196,6 @@ let test_nftminter_mint_offchain =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_OFFCHAIN call 
-    let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       user = owner3;
@@ -205,6 +209,9 @@ let test_nftminter_mint_offchain =
       }: NFTMINTER.NftMinter.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
+    // let my_sig : signature = sign_hash data_hash in
+
 
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
@@ -251,7 +258,6 @@ let test_nftminter_mint_offchain =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_OFFCHAIN call 
-    let my_sig : signature = ("edsigttGP3HkT983SuVgv6GqdYSpuWtkmdhxYazshPfkweXtfXfnzJT2Ku3QGgHQ32iG6UcuRzwAAKXt6w3Exm16WyXvj9EzdrD" : signature) in
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       user = owner3;
@@ -264,7 +270,11 @@ let test_nftminter_mint_offchain =
         token_id=6n
       }: NFTMINTER.NftMinter.mint)
     } in
-    let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    let data_hash, functioncall_params_bytes = compute_hash inputs in
+    // let my_sig : signature = ("edsigttGP3HkT983SuVgv6GqdYSpuWtkmdhxYazshPfkweXtfXfnzJT2Ku3QGgHQ32iG6UcuRzwAAKXt6w3Exm16WyXvj9EzdrD" : signature) in
+    let my_sig : signature = sign_hash data_hash in
+
+
 
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
@@ -311,7 +321,6 @@ let test_nftminter_mint_offchain =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_OFFCHAIN call 
-    let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       user = owner3;
@@ -324,7 +333,9 @@ let test_nftminter_mint_offchain =
         token_id=6n
       }: NFTMINTER.NftMinter.mint)
     } in
-    let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    let data_hash, functioncall_params_bytes = compute_hash inputs in
+    let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
+    // let my_sig : signature = sign_hash data_hash in
 
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
