@@ -52,6 +52,6 @@
     "deploy-testnet-contracts": "pnpm -r deploy-testnet-contracts",
     "deploy-amoy": "pnpm -r deploy-amoy",
     "deploy-sepolia": "pnpm -r deploy-sepolia",
-    "deploy-polygon": "pnpm -r deploy-sepolia"
+    "deploy-polygon": "pnpm -r deploy-polygon"
   }
 }
