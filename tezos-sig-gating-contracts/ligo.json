@@ -1,6 +1,5 @@
 {
     "dependencies": {
-        "@ligo/fa": "^1.4.2",
-        "@ligo/math-lib": "^1.1.1"
+        "@ligo/fa": "^1.4.2"
     }
 }

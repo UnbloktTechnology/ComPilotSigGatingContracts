@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { verifySignature, stringToBytes } from "@taquito/utils";
 import { Parser, packDataBytes, MichelsonData, MichelsonType } from '@taquito/michel-codec';
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from '../utils/convert';
+import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_chain_id, convert_mint } from '../utils/convert';
 
 const createKeccakHash = require('keccak')
 // import verifierContract from "../compiled/TxAuthDataVerifier.json";
@@ -29,12 +29,14 @@ async function main() {
     const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
     const exp_date = "2025-01-01T00:00:00.00Z";
     const nonce = "0";
+    const chain_id = "NetXnofnLBXBoxo";
     
     // display public key
     const signerPublicKey = await signer.publicKey();
     console.log("signerPublicKey=", signerPublicKey);
 
     // display payload
+    const chain_id_bytes = convert_chain_id(chain_id);
     const user_bytes = convert_address(userAddress);
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
@@ -42,7 +44,7 @@ async function main() {
     const nonce_bytes = convert_nat(nonce);
     const exp_date_bytes = convert_timestamp(exp_date);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
     console.log("user_bytes=", user_bytes);
     console.log("functioncall_name_bytes=", functioncall_name_bytes);

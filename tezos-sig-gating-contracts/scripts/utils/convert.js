@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convert_mint = exports.convert_address = exports.convert_string = exports.convert_nat = exports.convert_key = exports.convert_timestamp = void 0;
+exports.convert_mint = exports.convert_chain_id = exports.convert_address = exports.convert_string = exports.convert_nat = exports.convert_key = exports.convert_timestamp = void 0;
 const michel_codec_1 = require("@taquito/michel-codec");
 function convert_timestamp(tt) {
     const data = {
@@ -57,6 +57,17 @@ function convert_address(addr_str) {
     return packed.bytes;
 }
 exports.convert_address = convert_address;
+function convert_chain_id(addr_str) {
+    const data = {
+        string: addr_str
+    };
+    const typ = {
+        prim: "chain_id"
+    };
+    const packed = (0, michel_codec_1.packDataBytes)(data, typ);
+    return packed.bytes;
+}
+exports.convert_chain_id = convert_chain_id;
 function convert_mint(owner_str, token_id) {
     const data = `(Pair "${owner_str}" ${token_id})`;
     const type = `(pair address nat)`;

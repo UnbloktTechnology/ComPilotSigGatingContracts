@@ -15,8 +15,8 @@ module NftMinterForProxy = struct
   module Errors = struct
       let only_from_proxy = "Accept calldata only from proxy"
       let only_owner = "OnlyOwner"
-      let invalid_calldata_wrong_name = "[dispatch] entrypoint not found"
-      let invalid_calldata_wrong_arguments = "[dispatch] Cannot unpack calldata arguments into the expected type"
+      let invalid_calldata_wrong_name = "UnknownEntrypoint"
+      let invalid_calldata_wrong_arguments = "InvalidEntrypointArguments"
       let this_contract_does_not_dispatch = "[dispatch] this contract does not dispatch calldata"
   end
 

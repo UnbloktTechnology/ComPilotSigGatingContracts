@@ -28,6 +28,7 @@ For a given calldata, the user receives from Nexera
 
 Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects the following parameter
   - payload hash
+  - chain ID
   - user address
   - nonce
   - expiration date
@@ -36,6 +37,15 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
   - signature
 
 ![](./pictures/nexera%20exec_offchain%20format.png)
+
+The chain ID in Tezos varies depending on the network (see [rpc nodes](https://taquito.io/docs/rpc_nodes)).
+
+| Network   | chain ID |
+|-----------|-----------|
+| ghostnet  | NetXnHfVqm9iesp |
+| oxfordnet | NetXxWsskGahzQB |
+| mainnet   | NetXdQprcVkpaWU |
+| sandbox   | `docker exec <docker-container-name> octez-client rpc get /chains/main/chain_id` |
 
 ## Smart contract architecture
 
@@ -127,6 +137,11 @@ docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for alic
 docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for bob
 docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for frank
 docker exec tezos-sig-gating-contracts-sandbox octez-client get balance for user
+```
+
+Get the chain_id
+```
+docker exec tezos-sig-gating-contracts-sandbox octez-client rpc get /chains/main/chain_id
 ```
 
 

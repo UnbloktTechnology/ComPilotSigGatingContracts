@@ -15,12 +15,13 @@ module ProxyVerifier = struct
       let block_expired = "BlockExpired"
       let invalid_signature = "InvalidSignature"
       let invalid_nonce = "InvalidNonce"
-      let parameter_missmatch = "hash of given parameters (nonce, expiration, key, functioncall) does not match the payload hash"
-      let invalid_calldata_wrong_name = "[dispatch] entrypoint not found"
-      let invalid_calldata_wrong_arguments = "[dispatch] Cannot unpack calldata arguments into the expected type"
-      let invalid_calldata_contract_not_dispatcher = "[dispatch] calldata should point to a contract with a dispatch entrypoint"
-      let not_expected_signer = "missmatch between key and signerAddress"
-      let missing_isvalidsignature_view = "The signerAddress contract should have a isValidSignature view"
+      let parameter_missmatch = "HashMissmatchParameters"
+      let invalid_calldata_wrong_name = "UnknownEntrypoint"
+      let invalid_calldata_wrong_arguments = "InvalidEntrypointArguments"
+      let invalid_calldata_contract_not_dispatcher = "MissingDispatchEntrypoint"
+      let not_expected_signer = "KeyMissmatchSignerAddress"
+      let missing_isvalidsignature_view = "MissingIsValidSignatureView"
+      let invalid_chain = "InvalidChainId"
   end
 
   let is_implicit (elt : address) : bool =
@@ -54,6 +55,7 @@ module ProxyVerifier = struct
   type txAuthData = {
       // msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
       payload: bytes;   // hash of the following fields (except signature)
+      chain_id: chain_id;   // chain_id
       userAddress: address;   // user address (used to check nonce)
       nonce: nat;   // nonce of the userAddress when forging the signature
       expiration: timestamp;  // expiration date
@@ -64,16 +66,16 @@ module ProxyVerifier = struct
       signature: signature;   // signature of the payload signed by the given public key
   }
   let verifyTxAuthData (p: txAuthData)(s: storage) : ret = 
-      // let (payload, nonce, expiration, contractAddress, name, args, k, signature) : bytes * nat * timestamp * address * string * bytes * key * signature = p.msgData in
-      let { payload; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+      let { payload; chain_id; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
       // VERIFY parameters correspond to payload hash
+      let chainid_b = Bytes.pack chain_id in
       let user_b = Bytes.pack userAddress in
       let nonce_b = Bytes.pack nonce in
       let expiration_b = Bytes.pack expiration in
       let key_b = Bytes.pack k in
       let contract_b = Bytes.pack contractAddress in
       let name_b = Bytes.pack name in
-      let expected_bytes = Bytes.concat key_b (Bytes.concat user_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args))))) in
+      let expected_bytes = Bytes.concat key_b (Bytes.concat chainid_b (Bytes.concat user_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args)))))) in
       let expected_payload = Crypto.keccak(expected_bytes) in
       let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
       // VERIFY signer: Retrieve signer address from public key
@@ -87,6 +89,8 @@ module ProxyVerifier = struct
       let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
       // EXPIRATION
       let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
+      // CHAIN ID
+      let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
       // VERIFY signer key corresponds to signerAddress 
       let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
           //calls isValidSignature of the smart contract             
