@@ -1,8 +1,8 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress } from "./helper";
-import nftMinterContract from "../compiled/nftminter.json";
+import { saveContractAddress } from "../utils/helper";
+import nftMinterContract from "../../compiled/nftminter.json";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
 

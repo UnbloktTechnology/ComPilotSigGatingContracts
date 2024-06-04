@@ -1,10 +1,10 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress } from "./helper";
-import nftMinterContract from "../compiled/nftminter.json";
-import nftMinterAddress from "../deployments/nftminter";
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from './convert';
+import { saveContractAddress } from "../utils/helper";
+import nftMinterContract from "../../compiled/nftminter.json";
+import nftMinterAddress from "../../deployments/nftminter";
+import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from '../utils/convert';
 
 const createKeccakHash = require('keccak')
 const RPC_ENDPOINT = "http://localhost:20000/";// "https://oxfordnet.ecadinfra.com"; //

@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { deployNFTMinter } from "../fixtures/fixtureExampleNFTMinter";
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit, TezosOperationError } from "@taquito/taquito";
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from '../convert';
+import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from '../utils/convert';
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
