@@ -7,6 +7,7 @@ dotenv.config();
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
+const DEFAULT_BASE = "https://base.llamarpc.com	";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
@@ -16,6 +17,7 @@ const MAINNET_SIG_DEPLOYMENT_MNEMONIC =
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
+const BASE_PROVIDER_URL = process.env.BASE_PROVIDER_URL || DEFAULT_BASE;
 const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
 
 export const networks: NetworksUserConfig = {
@@ -24,6 +26,12 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  base: {
+    live: true,
+    chainId: 8453,
+    url: `${BASE_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets
