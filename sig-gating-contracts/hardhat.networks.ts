@@ -39,6 +39,20 @@ export const networks: NetworksUserConfig = {
     url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
+  // testnets for local testing
+  // because the api tx signer is different when we test locally
+  amoy_local: {
+    live: true,
+    chainId: 80002,
+    url: `${AMOY_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  sepolia_local: {
+    live: true,
+    chainId: 11155111,
+    url: SEPOLIA_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
   // local
   hardhat: {
     live: false,
