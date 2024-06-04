@@ -8,6 +8,8 @@ export const getMultiSigAddress = (chainId: string) => {
   switch (chainId) {
     case NEXERA_CHAINS.SEPOLIA:
       return SAFE_ADDRESS[NEXERA_CHAINS.SEPOLIA];
+    case NEXERA_CHAINS.POLYGON:
+      return SAFE_ADDRESS[NEXERA_CHAINS.POLYGON];
     default:
       return undefined;
   }
