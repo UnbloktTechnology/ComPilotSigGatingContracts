@@ -1,4 +1,4 @@
-name: Deploy contracts
+name: Deploy mainnet contracts
 
 on:
   workflow_dispatch:
