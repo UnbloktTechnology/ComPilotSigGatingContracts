@@ -54,7 +54,6 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     args: [TX_SIGNER_ADDRESS, deployer],
     log: true,
     nonce: "pending",
-    waitConfirmations: network.name == "hardhat" ? 1 : 6,
     autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
   });
 
