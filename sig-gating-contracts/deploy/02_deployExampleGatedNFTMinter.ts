@@ -2,7 +2,7 @@ import { getNamedAccounts, network } from "hardhat";
 import { DeployFunction } from "hardhat-deploy/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const version = "0.2.9";
+const version = "0.2.10";
 const contractName = "ExampleGatedNFTMinter";
 const testEnv = "testnet";
 
