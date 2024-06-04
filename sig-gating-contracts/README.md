@@ -74,6 +74,7 @@ SIGNER_MANAGER_CONTROLLER_ADDRESS: can change the TX_SIGNER_ADDRESS on the Signe
 This is a different address on each network:
 
 - Sepolia: 0x745B6d5f858047Daf7516aa4Fc34878f4BD3b73D
+- Polygon Mainnet: 0x191A193F5D5A88D7Ac52565c5ad3992da6D11183
 
 ## Deployments
 
