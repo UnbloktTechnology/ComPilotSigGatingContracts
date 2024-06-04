@@ -14,12 +14,13 @@ env:
   MAINNET_SIG_DEPLOYMENT_MNEMONIC: ${{ secrets.MAINNET_SIG_DEPLOYMENT_MNEMONIC }}
   SALT: ${{ secrets.SALT }}
   PNPM_VERSION: 9.1.4
-  NODE_VERSION: 20.11.0
+  NODE_VERSION: 20.14
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Generate token
         id: generate_token

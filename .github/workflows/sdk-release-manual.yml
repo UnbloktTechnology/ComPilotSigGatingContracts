@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        node-version: [20.11.0]
+        node-version: [20.14]
         pnpm-version: [9.1.4]
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
