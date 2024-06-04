@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
-  "version": "2.2.2",
+  "version": "2.2.5",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [
@@ -15,10 +15,13 @@
     "test:unit": "hardhat test --parallel",
     "test:seq": "hardhat test",
     "coverage": "hardhat coverage",
+    "deploy-local-testing-contracts": "pnpm deploy-amoy-local && pnpm deploy-sepolia-local",
     "deploy-testnet-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia",
     "deploy-amoy": "hardhat deploy --tags testnet --network amoy",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia",
     "deploy-polygon": "hardhat deploy --tags mainnet --network polygon_main",
+    "deploy-sepolia-local": "hardhat deploy --tags testnet --network sepolia_local",
+    "deploy-amoy-local": "hardhat deploy --tags testnet --network amoy_local",
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",
