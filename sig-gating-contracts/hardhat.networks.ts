@@ -11,8 +11,8 @@ const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
 // env variables
-const TESTNET_SIG_DEPLOYMENT_MNEMONIC =
-  process.env.TESTNET_SIG_DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
+const MAINNET_SIG_DEPLOYMENT_MNEMONIC =
+  process.env.MAINNET_SIG_DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
@@ -24,20 +24,20 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: 137,
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets
   amoy: {
     live: true,
     chainId: 80002,
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia: {
     live: true,
     chainId: 11155111,
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: TESTNET_SIG_DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   // local
   hardhat: {
