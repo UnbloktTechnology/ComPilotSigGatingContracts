@@ -11,6 +11,11 @@ jobs:
         network:
           - polygon
           - base
+          - ethereum
+          - arbitrum
+          - bnb
+          - optimism
+          - avalanche
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
