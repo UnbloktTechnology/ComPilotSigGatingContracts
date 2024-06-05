@@ -85,13 +85,13 @@ export const networks: NetworksUserConfig = {
   //testnets
   amoy: {
     live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
@@ -99,13 +99,13 @@ export const networks: NetworksUserConfig = {
   // because the api tx signer is different when we test locally
   amoy_local: {
     live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia_local: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
