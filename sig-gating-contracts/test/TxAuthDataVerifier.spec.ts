@@ -894,6 +894,7 @@ describe(`ExampleGatedNFTMinter`, function () {
   it(`Should check that admin can change the signer`, async () => {
     const { tester2, deployer } = await getNamedAccounts();
     const deployerSigner = await ethers.getSigner(deployer);
+
     // set signer
     await exampleGatedNFTMinter.connect(deployerSigner).setSigner(tester2);
 
