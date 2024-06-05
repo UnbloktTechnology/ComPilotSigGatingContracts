@@ -76,6 +76,11 @@ This is a different address on each network:
 - Sepolia: 0x745B6d5f858047Daf7516aa4Fc34878f4BD3b73D
 - Polygon Mainnet: 0x191A193F5D5A88D7Ac52565c5ad3992da6D11183
 - Base: 0xb748Cf0409bDc6f8039090EF6b09ba9722886d18
+- Ethereum: 0x5818DD2D71c33e6078A9dEFD78829290FD25Dab2
+- Arbitrum: 0xB071EC779D41D6aa43261A9BB275269f53A4a67c
+- Optimism: 0xD5FE72cb8195518E9E5D6cB3E5Ab5A352670f5fB
+- BSC/BNB: 0xB071EC779D41D6aa43261A9BB275269f53A4a67c
+- Avalanche: 0xD5FE72cb8195518E9E5D6cB3E5Ab5A352670f5fB
 
 ## Deployments
 
@@ -85,6 +90,11 @@ SignerManager is deployed on 0x29A75f22AC9A7303Abb86ce521Bb44C4C69028A0 on
 - Polygon Amoy
 - Polygon Mainnet
 - Base
+- Ethereum
+- Arbitrum
+- Optimism
+- BSC/BNB
+- Avalanche
 
 ## Sig Gating Tests
 
