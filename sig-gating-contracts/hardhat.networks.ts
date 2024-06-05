@@ -15,8 +15,8 @@ const DEFAULT_BASE = "https://base.llamarpc.com";
 const DEFAULT_ETHEREUM = "https://eth.llamarpc.com";
 const DEFAULT_ARBITRUM = "https://arbitrum.llamarpc.com";
 const DEFAULT_BNB = "https://binance.llamarpc.com";
-const DEFAULT_OPTIMISM = "https://optimism.llamarpc.com	";
-const DEFAULT_AVALANCHE = "https://avalanche-c-chain-rpc.publicnode.com	";
+const DEFAULT_OPTIMISM = "https://optimism.llamarpc.com";
+const DEFAULT_AVALANCHE = "https://avalanche-c-chain-rpc.publicnode.com";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
