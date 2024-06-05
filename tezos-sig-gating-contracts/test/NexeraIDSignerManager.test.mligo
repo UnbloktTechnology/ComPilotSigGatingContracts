@@ -206,8 +206,8 @@ let test_signermanager_failure_unpause_already_unpaused =
 //         msgData = (data_hash, nonce, exp_date, functioncall_contract, functioncall_name, functioncall_params_bytes, my_key, my_sig);
 //         userAddress = owner3;
 //     } in
-//     // EXEC_OFFCHAIN entrypoint call 
-//     let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+//     // EXEC_OFFCHAIN_CALLDATA entrypoint call 
+//     let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
 //     let () = Test.Next.IO.log(r) in
 //     let () = AssertHelper.tx_success r in
 //     // VERIFY modified storage

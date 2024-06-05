@@ -105,9 +105,9 @@ async function main() {
       signature: signature
     };
     const cntr = await Tezos.contract.at(nftMinterAddress);
-    const op = await cntr.methodsObject.exec_offchain(args).send();
+    const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
     console.log(
-      `Waiting for Exec_offchain on ${nftMinterAddress} to be confirmed...`
+      `Waiting for Exec_offchain_calldata on ${nftMinterAddress} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);

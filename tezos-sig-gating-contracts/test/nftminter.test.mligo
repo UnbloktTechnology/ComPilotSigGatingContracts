@@ -136,7 +136,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN call 
+    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
     
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
@@ -172,9 +172,9 @@ let test_nftminter_mint_offchain =
       publicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
-    // EXEC_OFFCHAIN entrypoint call 
+    // EXEC_OFFCHAIN_CALLDATA entrypoint call 
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
     // let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
     // VERIFY modified storage
@@ -200,7 +200,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN call 
+    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -236,9 +236,9 @@ let test_nftminter_mint_offchain =
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
-    // EXEC_OFFCHAIN entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_signature in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
@@ -264,7 +264,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN call 
+    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -301,9 +301,9 @@ let test_nftminter_mint_offchain =
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
-    // EXEC_OFFCHAIN entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_calldata_wrong_name in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
@@ -329,7 +329,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN call 
+    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -363,12 +363,12 @@ let test_nftminter_mint_offchain =
       publicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
-    // EXEC_OFFCHAIN entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
     let () = AssertHelper.tx_success r in
     // call VERIFY entrypoint again ... should fail
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_nonce in
 
     // VERIFY modified storage

@@ -7,6 +7,9 @@ import { convert_timestamp, convert_key, convert_nat, convert_string, convert_ad
 const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
+import { RpcClient } from '@taquito/rpc';
+const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
+
 const createKeccakHash = require('keccak')
 
 function keccak256(data : string) {
@@ -46,6 +49,8 @@ function compute_payload_hash_for_mint  (chain_id: string,
 describe(`ExampleGatedNFTMinter`, function () {
     let exampleGatedNFTMinter: string | undefined;
     let deployerAddress: string;
+    let currentBlock: number;
+    let currentChainId: string;
   
     before(async () => {
     // beforeEach(async () => {
@@ -56,10 +61,18 @@ describe(`ExampleGatedNFTMinter`, function () {
             "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
             ),
         });
-        
+        // Retrieve the chain_id 
+        currentChainId = await client.getChainId();
+
         // DEPLOY NFTMINTER
         exampleGatedNFTMinter = await deployNFTMinter();
     });
+
+    beforeEach(async () => {
+        const block = await client.getBlockHeader();
+        currentBlock = block.level;
+    });
+
     it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
         const cntr = await Tezos.contract.at(exampleGatedNFTMinter?exampleGatedNFTMinter:"");
         const storage : any = await cntr.storage();
@@ -89,10 +102,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "1"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Prepare Hash of payload
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -123,8 +136,8 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         // CALL contract
-        const op = await cntr.methodsObject.exec_offchain(args).send();
-        console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+        const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+        console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
         await op.confirmation(2);
         console.log("tx confirmed: ", op.hash);
 
@@ -157,10 +170,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "1"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Prepare Hash of payload
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -191,9 +204,9 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -219,10 +232,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "1"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "0";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, "2");
@@ -254,9 +267,9 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -285,7 +298,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         const expiration = "1";
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -317,10 +330,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -345,10 +358,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "2"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -382,10 +395,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature_raw
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -410,10 +423,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "2"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -445,10 +458,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -476,10 +489,10 @@ describe(`ExampleGatedNFTMinter`, function () {
             token_id: "2"
         };
         const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-        const expiration = "12345";
+        const expiration = (currentBlock + 10).toString();
         const nonce = "1";
         const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-        const chain_id = "NetXnofnLBXBoxo";
+        const chain_id = currentChainId;
 
         // Provide a different calldata arguments
         const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
@@ -511,10 +524,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain(args).send();
+            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
