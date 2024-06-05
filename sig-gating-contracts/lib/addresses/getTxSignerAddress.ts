@@ -14,7 +14,20 @@ export const getTxSignerAddress = (chainId: string) => {
       return TX_SIGNER_ADDRESS;
     case NEXERA_CHAINS.BASE:
       return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.ETHEREUM:
+      return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.ARBITRUM:
+      return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.BNB:
+      return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.OPTIMISM:
+      return TX_SIGNER_ADDRESS;
+    case NEXERA_CHAINS.AVALANCHE:
+      return TX_SIGNER_ADDRESS;
     default:
+      console.log(
+        "--- WARNING --- No TX_SIGNER_ADDRESS specified for this Chain, using default one"
+      );
       return undefined;
   }
 };
