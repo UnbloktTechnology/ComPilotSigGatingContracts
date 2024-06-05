@@ -123,7 +123,7 @@ let test_nftminter_failure_set_signer_not_admin =
     ()
 
 
-let test_nftminter_mint_offchain =
+let test_nftminter_mint_gated =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
@@ -136,8 +136,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
-    
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -145,7 +144,7 @@ let test_nftminter_mint_offchain =
       nonce = 0n;
       expiration = 100n;
       functioncall_contract = nftminter_address;
-      functioncall_name = "%mint_offchain";
+      functioncall_name = "%mint_gated";
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
@@ -172,9 +171,9 @@ let test_nftminter_mint_offchain =
       publicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
-    // EXEC_OFFCHAIN_CALLDATA entrypoint call 
+    // EXEC_GATED_CALLDATA entrypoint call 
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
     // let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
     // VERIFY modified storage
@@ -187,7 +186,8 @@ let test_nftminter_mint_offchain =
     in
     ()
 
-  let test_nftminter_mint_offchain_failure_wrong_calldata_param =
+
+  let test_nftminter_mint_gated_failure_wrong_contract =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
@@ -200,7 +200,71 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
+    let inputs: NFTMINTER.NftMinter.mint raw_payload = {
+      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      chain_id = (Tezos.get_chain_id());
+      user = owner3;
+      nonce = 0n;
+      expiration = 100n;
+      functioncall_contract = ("KT1TRPRBqSR6GsCKc9ozxF7uJuX4gtPFwHxe": address); // wrong address (not nftminter) 
+      functioncall_name = "%mint_gated";
+      functioncall_params = ({
+        owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
+        token_id=6n
+      }: NFTMINTER.NftMinter.mint)
+    } in
+    let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
+    let my_sig : signature = sign_hash data_hash in
+
+
+    // DEBUG - uncomment to retrieve the payload that need to be signed
+    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
+    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
+
+    let p: NFTMINTER.NftMinter.txAuthData = {
+      payload = data_hash;   // hash of the following fields (except signature)
+      chain_id = inputs.chain_id;  // chain_id
+      userAddress = inputs.user;   // user address (used to check nonce)
+      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      expiration = inputs.expiration;  // expiration date
+      contractAddress = inputs.functioncall_contract;  // calldata contract address
+      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      publicKey = inputs.public_key;     // public key that signed the payload 
+      signature = my_sig;   // signature of the payload signed by the given public key
+    } in
+
+    // EXEC_GATED_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
+    let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_calldata_wrong_contract in
+    // VERIFY modified storage
+    let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
+    let () = Assert.assert (current_storage.extension.admin = owner3) in
+    let () = 
+        match Big_map.find_opt 6n current_storage.ledger with
+        | None -> () 
+        | Some ownr6 -> Test.Next.Assert.failwith "Token 6 should not be owned"
+    in
+    ()
+
+
+  let test_nftminter_mint_gated_failure_wrong_calldata_param =
+    let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
+    // DEPLOY NFTMINTER
+    let nft_extension_initial = { 
+        admin = owner3;
+        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        nonces = (Big_map.empty: (address, nat) big_map)
+    } in
+    let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
+    let {taddr = nftminter_taddr; code = _ ; size = _} = orig_nftminter in 
+    let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
+    let nftminter_address : address = Tezos.address nftminter_contract in
+
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -208,7 +272,7 @@ let test_nftminter_mint_offchain =
       nonce = 0n;
       expiration = 100n;
       functioncall_contract = nftminter_address;
-      functioncall_name = "%mint_offchain";
+      functioncall_name = "%mint_gated";
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=7n
@@ -236,9 +300,9 @@ let test_nftminter_mint_offchain =
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
-    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_GATED_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_signature in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
@@ -251,7 +315,7 @@ let test_nftminter_mint_offchain =
     ()
 
   
-  let test_nftminter_mint_offchain_failure_unknown_calldata_name =
+  let test_nftminter_mint_gated_failure_unknown_calldata_name =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
@@ -264,7 +328,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -301,9 +365,9 @@ let test_nftminter_mint_offchain =
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
-    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_GATED_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_calldata_wrong_name in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in
@@ -316,7 +380,7 @@ let test_nftminter_mint_offchain =
     ()
 
 
-  let test_nftminter_mint_offchain_failure_replay_attack =
+  let test_nftminter_mint_gated_failure_replay_attack =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
@@ -329,7 +393,7 @@ let test_nftminter_mint_offchain =
     let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
     let nftminter_address : address = Tezos.address nftminter_contract in
 
-    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -337,7 +401,7 @@ let test_nftminter_mint_offchain =
       nonce = 0n;
       expiration = 100n;
       functioncall_contract = nftminter_address;
-      functioncall_name = "%mint_offchain";
+      functioncall_name = "%mint_gated";
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
@@ -363,12 +427,12 @@ let test_nftminter_mint_offchain =
       publicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
-    // EXEC_OFFCHAIN_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
+    // EXEC_GATED_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
     let () = AssertHelper.tx_success r in
     // call VERIFY entrypoint again ... should fail
-    let r = Test.transfer_to_contract nftminter_contract (Exec_offchain_calldata p) 0tez in
+    let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
     let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_nonce in
 
     // VERIFY modified storage

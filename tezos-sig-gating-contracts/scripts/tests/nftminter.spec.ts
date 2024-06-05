@@ -53,7 +53,6 @@ describe(`ExampleGatedNFTMinter`, function () {
     let currentChainId: string;
   
     before(async () => {
-    // beforeEach(async () => {
         // SET SIGNER
         deployerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
         Tezos.setProvider({
@@ -63,7 +62,6 @@ describe(`ExampleGatedNFTMinter`, function () {
         });
         // Retrieve the chain_id 
         currentChainId = await client.getChainId();
-
         // DEPLOY NFTMINTER
         exampleGatedNFTMinter = await deployNFTMinter();
     });
@@ -96,7 +94,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = exampleGatedNFTMinter?exampleGatedNFTMinter:""; 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "1"
@@ -136,8 +134,8 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         // CALL contract
-        const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
-        console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+        const op = await cntr.methodsObject.exec_gated_calldata(args).send();
+        console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
         await op.confirmation(2);
         console.log("tx confirmed: ", op.hash);
 
@@ -164,7 +162,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = exampleGatedNFTMinter?exampleGatedNFTMinter:""; 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "1"
@@ -204,9 +202,9 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -226,7 +224,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = exampleGatedNFTMinter?exampleGatedNFTMinter:""; 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "1"
@@ -267,9 +265,9 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -282,14 +280,14 @@ describe(`ExampleGatedNFTMinter`, function () {
 
     });
 
-    it(`Should fail when providing an incorrect expiration date`, async () => {
+    it(`Should fail when providing an incorrect expiration`, async () => {
         // Get contract storage
         const cntr = await Tezos.contract.at(exampleGatedNFTMinter?exampleGatedNFTMinter:"");
 
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = exampleGatedNFTMinter?exampleGatedNFTMinter:""; 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "2"
@@ -330,10 +328,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -352,7 +350,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = exampleGatedNFTMinter?exampleGatedNFTMinter:""; 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "2"
@@ -395,10 +393,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature_raw
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -458,10 +456,10 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
@@ -483,7 +481,7 @@ describe(`ExampleGatedNFTMinter`, function () {
         // MINT OFFCHAIN
         const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob private key
         const functioncall_contract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address 
-        const functioncall_name = "%mint_offchain";
+        const functioncall_name = "%mint_gated";
         const functioncall_params = {
             owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
             token_id: "2"
@@ -524,16 +522,16 @@ describe(`ExampleGatedNFTMinter`, function () {
         signature: signature.prefixSig
         };
         try {
-            const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+            const op = await cntr.methodsObject.exec_gated_calldata(args).send();
             expect(false).to.be.true;
             console.log("op: ", op);
-            console.log(`Waiting for Exec_offchain_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
+            console.log(`Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`);
             await op.confirmation(2);
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
                 if (err instanceof TezosOperationError) {
-                    expect(err.message).to.be.equal("MissingDispatchEntrypoint")
+                    expect(err.message).to.be.equal("InvalidContract")
                 } else {
                     expect(false).to.be.true
                 }
