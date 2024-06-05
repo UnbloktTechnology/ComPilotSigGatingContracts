@@ -41,7 +41,7 @@
   "scripts": {
     "lint": "pnpm -r lint",
     "lint:check": "pnpm -r lint:check",
-    "postinstall": "pnpm run build:contracts-sdk && pnpm run build:contracts",
+    "postinstall": "pnpm run build:contracts && pnpm run build:contracts-sdk",
     "build:contracts": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts build",
     "build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build",
     "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
