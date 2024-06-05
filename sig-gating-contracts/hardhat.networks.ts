@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 import { NetworksUserConfig } from "hardhat/types";
-import {
-  Address,
-  NEXERA_CHAINS,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
 dotenv.config();
 
