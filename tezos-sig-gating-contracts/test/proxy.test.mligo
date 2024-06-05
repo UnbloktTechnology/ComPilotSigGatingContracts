@@ -87,7 +87,7 @@ let test_proxy =
     let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
 
-    // PREPARE parameter for EXEC_OFFCHAIN call 
+    // PREPARE parameter for EXEC_OFFCHAIN_CALLDATA call 
     let inputs: NFTMINTER.NftMinterForProxy.mint raw_payload = {
       public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
       chain_id = (Tezos.get_chain_id());
@@ -121,9 +121,9 @@ let test_proxy =
       publicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
-    // EXEC_OFFCHAIN entrypoint call 
+    // EXEC_OFFCHAIN_CALLDATA entrypoint call 
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract proxy_contract (Exec_offchain p) 0tez in
+    let r = Test.transfer_to_contract proxy_contract (Exec_offchain_calldata p) 0tez in
     let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
     // VERIFY modified storage

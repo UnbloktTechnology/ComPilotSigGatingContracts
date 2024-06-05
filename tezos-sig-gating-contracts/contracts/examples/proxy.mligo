@@ -53,7 +53,6 @@ module ProxyVerifier = struct
       [op], s
 
   type txAuthData = {
-      // msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
       payload: bytes;   // hash of the following fields (except signature)
       chain_id: chain_id;   // chain_id
       userAddress: address;   // user address (used to check nonce)
@@ -113,7 +112,7 @@ module ProxyVerifier = struct
       [op], { s with nonces=new_nonces }
 
   [@entry]
-  let exec_offchain (p : txAuthData) (s : storage): ret =
+  let exec_offchain_calldata (p : txAuthData) (s : storage): ret =
       verifyTxAuthData p s 
 
 

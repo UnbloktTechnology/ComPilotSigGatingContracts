@@ -79,11 +79,11 @@ async function main() {
     };
     // CALL contract
     const cntr = await Tezos.contract.at(nftMinterAddress);
-    const op = await cntr.methodsObject.exec_offchain(args).send();
-    // const tx = await cntr.methodsObject.exec_offchain(args).toTransferParams(); //({gasLimit:5000});
+    const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
+    // const tx = await cntr.methodsObject.exec_offchain_calldata(args).toTransferParams(); //({gasLimit:5000});
     // const est = await Tezos.estimate.transfer(tx);
     console.log(
-      `Waiting for Exec_offchain on ${nftMinterAddress} to be confirmed...`
+      `Waiting for Exec_offchain_calldata on ${nftMinterAddress} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);

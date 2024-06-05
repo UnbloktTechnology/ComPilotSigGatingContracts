@@ -26,7 +26,7 @@ For a given calldata, the user receives from Nexera
 ![](./pictures/nexera%20forge%20sig%20workflow.png)
 
 
-Then the user build the transaction and invoke the exec_offchain entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain entrypoint expects a `txAuthData` parameter which contains the following fields
+Then the user build the transaction and invoke the exec_offchain_calldata entrypoint. In order to be able to verify an off-chain signed message, the exec_offchain_calldata entrypoint expects a `txAuthData` parameter which contains the following fields
   - payload hash
   - chain ID
   - user address
@@ -36,7 +36,7 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
   - public key
   - signature
 
-![](./pictures/nexera%20exec_offchain%20format.png)
+![](./pictures/nexera%20exec_offchain_calldata%20format.png)
 
 The chain ID in Tezos varies depending on the network (see [rpc nodes](https://taquito.io/docs/rpc_nodes)).
 
@@ -58,7 +58,7 @@ The chain ID in Tezos varies depending on the network (see [rpc nodes](https://t
 | setSigner        | address    | NFTMINTER  |
 | mint             | mint       | NFTMINTER  |
 | dispatch         | calldata   | NFTMINTER  |
-| exec_offchain    | txAuthData | NFTMINTER  |
+| exec_offchain_calldata    | txAuthData | NFTMINTER  |
 | transfer         | FA2.NFTExtendable.TZIP12.transfer |	FA2.NFTExtendable |
 | balance_of       | FA2.NFTExtendable.TZIP12.balance_of |	FA2.NFTExtendable |
 | update_operators | FA2.NFTExtendable.TZIP12.update_operators | FA2.NFTExtendable |
@@ -179,7 +179,7 @@ The `prefixSig` field is the signature that must be used when invoking the contr
 
 Expected output:
 ```
-Waiting for Exec_offchain on KT1UgwgtRhh2FYwoc38sPKDsqPkjDRpEoFio to be confirmed...
+Waiting for Exec_offchain_calldata on KT1UgwgtRhh2FYwoc38sPKDsqPkjDRpEoFio to be confirmed...
 tx confirmed:  ooTY3qhAMvhNwpnxA2roTaMiuxuVKy8RwueB9sfYJmUPCC2bhW4
 ```
 
@@ -219,7 +219,7 @@ make deploy
 #### Interact (call entrypoint)
 
 Once the contract is deployed , we can interact with it. 
-The following command invoke the `Exec_offchain` entrypoint of the `NftMinter` contract. 
+The following command invoke the `Exec_offchain_calldata` entrypoint of the `NftMinter` contract. 
 (For the moment the parameters (nonce, expiration, calldata, public key, signature, useraddress) must be specified in the file. The signature parameter can be forged with the `make sign` command. Need improvment).
 ```
 make mint

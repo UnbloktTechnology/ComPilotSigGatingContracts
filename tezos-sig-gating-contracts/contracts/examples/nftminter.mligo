@@ -130,7 +130,7 @@ module NftMinter = struct
       [op], { s with extension = { s.extension with nonces=new_nonces } }
 
   [@entry]
-  let exec_offchain (data : txAuthData) (s : storage): ret =
+  let exec_offchain_calldata (data : txAuthData) (s : storage): ret =
       verifyTxAuthData data s 
 
   [@entry]
