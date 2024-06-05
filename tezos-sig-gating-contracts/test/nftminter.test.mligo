@@ -28,7 +28,7 @@ type 'a raw_payload = {
   chain_id: chain_id;
   user: address;
   nonce: nat;
-  expiration: timestamp;
+  expiration: nat;
   functioncall_contract: address;
   functioncall_name: string;
   functioncall_params: 'a;
@@ -38,11 +38,11 @@ let compute_hash (type a) (data : a raw_payload) : bytes * bytes =
     let chain_id_bytes : bytes = Bytes.pack data.chain_id in
     let user_bytes : bytes = Bytes.pack data.user in
     let nonce_bytes : bytes = Bytes.pack data.nonce in 
-    let exp_date_bytes : bytes = Bytes.pack data.expiration in 
+    let expiration_bytes : bytes = Bytes.pack data.expiration in 
     let functioncall_contract_bytes : bytes = Bytes.pack data.functioncall_contract in
     let functioncall_name_bytes : bytes = Bytes.pack data.functioncall_name in
     let functioncall_params_bytes : bytes = Bytes.pack data.functioncall_params in
-    let data : bytes = Bytes.concat key_bytes (Bytes.concat chain_id_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat exp_date_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)))))) in
+    let data : bytes = Bytes.concat key_bytes (Bytes.concat chain_id_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat expiration_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)))))) in
     let data_hash = Crypto.keccak data in    
     // DEBUG - uncomment to retrieve the payload that need to be signed
     // let () = Test.Next.IO.log("functioncall_contract_bytes=", functioncall_contract_bytes) in
@@ -143,7 +143,7 @@ let test_nftminter_mint_offchain =
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
-      expiration = ("2025-01-01T00:00:00.00Z" : timestamp);
+      expiration = 100n;
       functioncall_contract = nftminter_address;
       functioncall_name = "%mint_offchain";
       functioncall_params = ({
@@ -206,7 +206,7 @@ let test_nftminter_mint_offchain =
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
-      expiration = ("2025-01-01T00:00:00.00Z" : timestamp);
+      expiration = 100n;
       functioncall_contract = nftminter_address;
       functioncall_name = "%mint_offchain";
       functioncall_params = ({
@@ -270,7 +270,7 @@ let test_nftminter_mint_offchain =
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
-      expiration = ("2025-01-01T00:00:00.00Z" : timestamp);
+      expiration = 100n;
       functioncall_contract = nftminter_address;
       functioncall_name = "%foobar";
       functioncall_params = ({
@@ -335,7 +335,7 @@ let test_nftminter_mint_offchain =
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
-      expiration = ("2025-01-01T00:00:00.00Z" : timestamp);
+      expiration = 100n;
       functioncall_contract = nftminter_address;
       functioncall_name = "%mint_offchain";
       functioncall_params = ({

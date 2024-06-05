@@ -58,7 +58,7 @@ module ProxyVerifier = struct
       chain_id: chain_id;   // chain_id
       userAddress: address;   // user address (used to check nonce)
       nonce: nat;   // nonce of the userAddress when forging the signature
-      expiration: timestamp;  // expiration date
+      expiration: nat;  // expiration date
       contractAddress: address;  // calldata contract address
       name: string;   // name of the entrypoint of the calldata (for example "%mint")
       args: bytes;   // arguments for the entrypoint of the calldata 
@@ -88,7 +88,7 @@ module ProxyVerifier = struct
       in
       let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
       // EXPIRATION
-      let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
+      let _ = Assert.Error.assert (Tezos.get_level() < expiration) Errors.block_expired in
       // CHAIN ID
       let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
       // VERIFY signer key corresponds to signerAddress 

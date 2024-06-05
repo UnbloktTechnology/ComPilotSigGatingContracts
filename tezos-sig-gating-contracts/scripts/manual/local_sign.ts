@@ -27,7 +27,7 @@ async function main() {
       token_id: "1"
     };
     const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
-    const exp_date = "2025-01-01T00:00:00.00Z";
+    const expiration = "12345";
     const nonce = "0";
     const chain_id = "NetXnofnLBXBoxo";
     
@@ -42,15 +42,15 @@ async function main() {
     const functioncall_name_bytes = convert_string(functioncall_name);
     const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
     const nonce_bytes = convert_nat(nonce);
-    const exp_date_bytes = convert_timestamp(exp_date);
+    const expiration_bytes = convert_nat(expiration);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + expiration_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
     const payload_hash = keccak256(payload);
     console.log("user_bytes=", user_bytes);
     console.log("functioncall_name_bytes=", functioncall_name_bytes);
     console.log("functioncall_params_bytes=", functioncall_params_bytes);
     console.log("nonce_bytes=", nonce_bytes);
-    console.log("exp_date_bytes=", exp_date_bytes);
+    console.log("expiration_bytes=", expiration_bytes);
     console.log("payload=", payload);
     console.log("payload_hash=", payload_hash);
     
