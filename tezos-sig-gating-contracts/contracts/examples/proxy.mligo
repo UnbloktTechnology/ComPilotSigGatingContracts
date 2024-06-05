@@ -112,7 +112,7 @@ module ProxyVerifier = struct
       [op], { s with nonces=new_nonces }
 
   [@entry]
-  let exec_offchain_calldata (p : txAuthData) (s : storage): ret =
+  let exec_gated_calldata (p : txAuthData) (s : storage): ret =
       verifyTxAuthData p s 
 
 

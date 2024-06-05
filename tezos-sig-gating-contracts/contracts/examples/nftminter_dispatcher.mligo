@@ -24,7 +24,6 @@ module NftMinter = struct
       let invalid_calldata_wrong_name = "UnknownEntrypoint"
       let invalid_calldata_wrong_arguments = "InvalidEntrypointArguments"
       let invalid_calldata_contract_not_dispatcher = "MissingDispatchEntrypoint"
-      let invalid_calldata_wrong_contract = "InvalidContract"
       let not_expected_signer = "KeyMissmatchSignerAddress"
       let missing_isvalidsignature_view = "MissingIsValidSignatureView"
       let invalid_chain = "InvalidChainId"
@@ -64,7 +63,12 @@ module NftMinter = struct
       else
         failwith Errors.invalid_calldata_wrong_name
     else
-      failwith Errors.invalid_calldata_wrong_contract
+      let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" address in
+      let op : operation  = match external_dispatch_opt with
+      | Some ep -> Tezos.Next.Operation.transaction (address, name, args) 0mutez ep
+      | None -> failwith Errors.invalid_calldata_contract_not_dispatcher
+      in
+      [op], s
 
   type txAuthData = {
       payload: bytes;   // hash of the following fields (except signature)

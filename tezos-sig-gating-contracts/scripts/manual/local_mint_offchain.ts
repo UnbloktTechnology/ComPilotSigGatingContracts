@@ -30,7 +30,7 @@ async function main() {
   try {
     // INPUTS
     const functioncall_contract = "KT1DYtRp4Q2zfVtXLiVp6WJsnsd3oRTMvqKW"; 
-    const functioncall_name = "%mint_offchain";
+    const functioncall_name = "%mint_gated";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2"
@@ -79,11 +79,11 @@ async function main() {
     };
     // CALL contract
     const cntr = await Tezos.contract.at(nftMinterAddress);
-    const op = await cntr.methodsObject.exec_offchain_calldata(args).send();
-    // const tx = await cntr.methodsObject.exec_offchain_calldata(args).toTransferParams(); //({gasLimit:5000});
+    const op = await cntr.methodsObject.exec_gated_calldata(args).send();
+    // const tx = await cntr.methodsObject.exec_gated_calldata(args).toTransferParams(); //({gasLimit:5000});
     // const est = await Tezos.estimate.transfer(tx);
     console.log(
-      `Waiting for Exec_offchain_calldata on ${nftMinterAddress} to be confirmed...`
+      `Waiting for Exec_gated_calldata on ${nftMinterAddress} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);

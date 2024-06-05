@@ -31,6 +31,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
 	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
 	@$(call compile,examples/fa2_for_proxy.mligo,fa2_for_proxy.tz, -m NftMinterForProxy)
+# @$(call compile,examples/calldata_extendable.mligo,calldata_extendable.tz, -m NftMinterExt)
+
 
 test: ## run tests (SUITE=asset_approve make test)
 ifndef SUITE
