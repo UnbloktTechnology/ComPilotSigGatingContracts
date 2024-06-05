@@ -21,7 +21,7 @@ function compute_payload_hash_for_mint  (
   functioncall_params_owner: string,      // mint arg 1
   functioncall_params_token_id: string,   // mint arg 2
   nonce: string,
-  exp_date: string,
+  expiration: string,
   dataKey: string
 ) {
   const chain_id_bytes = convert_chain_id(chain_id);
@@ -30,9 +30,9 @@ function compute_payload_hash_for_mint  (
   const functioncall_name_bytes = convert_string(functioncall_name);
   const functioncall_params_bytes = convert_mint(functioncall_params_owner, functioncall_params_token_id);
   const nonce_bytes = convert_nat(nonce);
-  const exp_date_bytes = convert_timestamp(exp_date);
+  const expiration_bytes = convert_nat(expiration);
   const key_bytes = convert_key(dataKey);
-  const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + exp_date_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+  const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + expiration_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
   const payload_hash = keccak256(payload);
   // console.log("user_bytes=", user_bytes);
   // console.log("functioncall_name_bytes=", functioncall_name_bytes);
@@ -68,7 +68,7 @@ async function main() {
       token_id: "1"
     };
     const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
-    const exp_date = "2025-01-01T00:00:00.00Z";
+    const expiration = "12345";
     const nonce = "0";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
     const chain_id = "NetXnHfVqm9iesp";
@@ -84,7 +84,7 @@ async function main() {
         functioncall_params.owner,
         functioncall_params.token_id,
         nonce,
-        exp_date,
+        expiration,
         dataKey);
     // Bob signs Hash of payload
     let signature_full = await signerBob.sign(payload_hash);
@@ -97,7 +97,7 @@ async function main() {
       chain_id: chain_id,
       userAddress: userAddress, 
       nonce: nonce, 
-      expiration: exp_date, 
+      expiration: expiration, 
       contractAddress: functioncall_contract, 
       name: functioncall_name, 
       args: functioncall_params_bytes, 

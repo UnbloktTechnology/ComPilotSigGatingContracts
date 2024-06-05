@@ -3,8 +3,8 @@
 
 ## General idea
 
-The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to NexeraSigner. The NexeraSigner retrieves the nonce for the user (from contract storage), specifies the expiration date  and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by Nexera signer.
-Then the produced signature (and expiration date, nonce, public key) are sent back to the user. The user can now send his transaction (which contains payload + signature + public key + nonce + expiration) to the smart contract that implements the signature verifiacition mecanism. 
+The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to NexeraSigner. The NexeraSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by Nexera signer.
+Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains payload + signature + public key + nonce + expiration) to the smart contract that implements the signature verifiacition mecanism. 
 
 
 ![](./pictures/nexera%20global%20workflow.png)
@@ -18,10 +18,10 @@ The transaction could also be executed by an operator on behalf of the user. In 
 
 For a given calldata, the user receives from Nexera 
 - payload hash (keccak(key, nonce, expiration, calldata))
-- nonce
-- expiration date
-- public key
-- signature
+- nonce (custom nonce of the contract)
+- expiration (block level)
+- public key of Nexera signer role
+- signature of the payload hash
 
 ![](./pictures/nexera%20forge%20sig%20workflow.png)
 
@@ -31,7 +31,7 @@ Then the user build the transaction and invoke the exec_offchain entrypoint. In 
   - chain ID
   - user address
   - nonce
-  - expiration date
+  - expiration (block level)
   - calldata (contract, entrypoint name, arguments)
   - public key
   - signature

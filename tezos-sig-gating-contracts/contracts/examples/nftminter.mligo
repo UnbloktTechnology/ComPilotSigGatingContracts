@@ -71,12 +71,11 @@ module NftMinter = struct
       [op], s
 
   type txAuthData = {
-      // msgData: bytes * nat * timestamp * address * string * bytes * key * signature;
       payload: bytes;   // hash of the following fields (except signature)
       chain_id: chain_id;   // chain_id
       userAddress: address;   // user address (used to check nonce)
       nonce: nat;   // nonce of the userAddress when forging the signature
-      expiration: timestamp;  // expiration date
+      expiration: nat;  // expiration date
       contractAddress: address;  // calldata contract address
       name: string;   // name of the entrypoint of the calldata (for example "%mint")
       args: bytes;   // arguments for the entrypoint of the calldata 
@@ -84,7 +83,6 @@ module NftMinter = struct
       signature: signature;   // signature of the payload signed by the given public key
   }
   let verifyTxAuthData (p: txAuthData)(s: storage) : ret = 
-      // let (payload, nonce, expiration, contractAddress, name, args, k, signature) : bytes * nat * timestamp * address * string * bytes * key * signature = p.msgData in
       let { payload; chain_id; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
       // VERIFY parameters correspond to payload hash
       let chainid_b = Bytes.pack chain_id in
@@ -107,7 +105,7 @@ module NftMinter = struct
       in
       let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
       // EXPIRATION
-      let _ = Assert.Error.assert (Tezos.get_now() < expiration) Errors.block_expired in
+      let _ = Assert.Error.assert (Tezos.get_level() < expiration) Errors.block_expired in
       // CHAIN ID
       let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
       // VERIFY signer key corresponds to signerAddress 
