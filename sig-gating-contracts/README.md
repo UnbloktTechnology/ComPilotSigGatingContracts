@@ -75,10 +75,16 @@ This is a different address on each network:
 
 - Sepolia: 0x745B6d5f858047Daf7516aa4Fc34878f4BD3b73D
 - Polygon Mainnet: 0x191A193F5D5A88D7Ac52565c5ad3992da6D11183
+- Base: 0xb748Cf0409bDc6f8039090EF6b09ba9722886d18
 
 ## Deployments
 
-TODO: add new signerManager addy
+SignerManager is deployed on 0x29A75f22AC9A7303Abb86ce521Bb44C4C69028A0 on
+
+- Sepolia
+- Polygon Amoy
+- Polygon Mainnet
+- Base
 
 ## Sig Gating Tests
 
