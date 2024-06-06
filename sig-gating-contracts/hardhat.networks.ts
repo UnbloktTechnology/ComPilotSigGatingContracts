@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { NetworksUserConfig } from "hardhat/types";
+import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
 dotenv.config();
 
@@ -7,7 +8,12 @@ dotenv.config();
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
 const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
-const DEFAULT_BASE = "https://base.llamarpc.com	";
+const DEFAULT_BASE = "https://base.llamarpc.com";
+const DEFAULT_ETHEREUM = "https://eth.llamarpc.com";
+const DEFAULT_ARBITRUM = "https://arbitrum.llamarpc.com";
+const DEFAULT_BNB = "https://binance.llamarpc.com";
+const DEFAULT_OPTIMISM = "https://optimism.llamarpc.com";
+const DEFAULT_AVALANCHE = "https://avalanche-c-chain-rpc.publicnode.com";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
@@ -19,31 +25,70 @@ const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
 const BASE_PROVIDER_URL = process.env.BASE_PROVIDER_URL || DEFAULT_BASE;
 const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
+const ETHEREUM_PROVIDER_URL =
+  process.env.ETHEREUM_PROVIDER_URL || DEFAULT_ETHEREUM;
+const ARBITRUM_PROVIDER_URL =
+  process.env.ARBITRUM_PROVIDER_URL || DEFAULT_ARBITRUM;
+const BNB_PROVIDER_URL = process.env.BNB_PROVIDER_URL || DEFAULT_BNB;
+const OPTIMISM_PROVIDER_URL =
+  process.env.OPTIMISM_PROVIDER_URL || DEFAULT_OPTIMISM;
+const AVALANCHE_PROVIDER_URL =
+  process.env.AVALANCHE_PROVIDER_URL || DEFAULT_AVALANCHE;
 
 export const networks: NetworksUserConfig = {
   //mainnets
   polygon_main: {
     live: true,
-    chainId: 137,
+    chainId: Number(NEXERA_CHAINS.POLYGON),
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   base: {
     live: true,
-    chainId: 8453,
+    chainId: Number(NEXERA_CHAINS.BASE),
     url: `${BASE_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  ethereum: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.ETHEREUM),
+    url: `${ETHEREUM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  arbitrum: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.ARBITRUM),
+    url: `${ARBITRUM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  bnb: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.BNB),
+    url: `${BNB_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  optimism: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.OPTIMISM),
+    url: `${OPTIMISM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  avalanche: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.AVALANCHE),
+    url: `${AVALANCHE_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets
   amoy: {
     live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
@@ -51,13 +96,13 @@ export const networks: NetworksUserConfig = {
   // because the api tx signer is different when we test locally
   amoy_local: {
     live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   sepolia_local: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },

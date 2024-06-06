@@ -6,6 +6,7 @@
   "scripts": {
     "get-types-abis-addresses": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts build && pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts copy-info-to-sdk && pnpm lint",
     "build": "pnpm run get-types-abis-addresses && preconstruct build",
+    "pre-build": "preconstruct build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
     "lint": "prettier --write src/**/**.ts",
