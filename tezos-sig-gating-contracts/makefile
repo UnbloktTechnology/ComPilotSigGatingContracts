@@ -32,6 +32,7 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
 	@$(call compile,examples/fa2_for_proxy.mligo,fa2_for_proxy.tz, -m NftMinterForProxy)
 	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.tz, -m NftMinterExt)
+	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.json, -m NftMinterExt --michelson-format json)
 
 
 
