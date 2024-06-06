@@ -84,7 +84,7 @@ let test_proxy =
 
     // SET PROXY entrypoint call on FA2 contract
     let r = Test.transfer_to_contract fa2_contract (SetProxy proxy_address) 0tez in
-    let () = Test.Next.IO.log(r) in
+    // let () = Test.Next.IO.log(r) in
     let () = AssertHelper.tx_success r in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
@@ -124,7 +124,7 @@ let test_proxy =
     // EXEC_GATED_CALLDATA entrypoint call 
     let () = Test.set_source owner1 in
     let r = Test.transfer_to_contract proxy_contract (Exec_gated_calldata p) 0tez in
-    let () = Test.Next.IO.log(r) in
+    let () = Test.Next.IO.log("Proxy.Exec_gated_calldata", r) in
     let () = AssertHelper.tx_success r in
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage fa2_taddr in
