@@ -31,7 +31,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
 	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
 	@$(call compile,examples/fa2_for_proxy.mligo,fa2_for_proxy.tz, -m NftMinterForProxy)
-# @$(call compile,examples/calldata_extendable.mligo,calldata_extendable.tz, -m NftMinterExt)
+	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.tz, -m NftMinterExt)
+
 
 
 test: ## run tests (SUITE=asset_approve make test)
@@ -39,35 +40,32 @@ ifndef SUITE
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,nftminter.test.mligo)
 	@$(call test,proxy.test.mligo)
+	@$(call test,extended_gated_nftminter.test.mligo)
 
 else
 	@$(call test,$(SUITE).test.mligo)
 endif
 
-signdata:
-	@echo "Running sign script\n"
-	@cd scripts && npm run signdata
+#######################################
+#            for TESTNET              #
+#######################################
 
 sign:
 	@echo "Running sign script\n"
-	@cd scripts && npm run sign
-
-repro:
-	@echo "Running sign script\n"
-	@cd scripts && npm run repro
+	@npm run sign
 
 scripts_install:
 	@echo "Installing deploy script dependencies"
-	@cd scripts && npm install
+	@npm install
 	@echo ""
 
 deploy:
 	@echo "Running deploy script\n"
-	@cd scripts && npm run deploy
+	@npm run deploy
 
 mint:
 	@echo "Running mint script\n"
-	@cd scripts && npm run mint
+	@npm run mint
 
 #######################################
 #            SANDBOX                  #
@@ -80,20 +78,20 @@ sandbox-stop: ##@Sandbox - Stop Flextesa sandbox
 
 integration-test:
 	@echo "Running integration test script\n"
-	@cd scripts && npm run test
+	@npm run test
 
 localsign:  ##@Sandbox - User Bob signs data
 	@echo "Running sign script (local)\n"
-	@cd scripts && npm run localsign
+	@npm run localsign
 
 localdeploy:   ##@Sandbox - Alice deploys a NftMinter
 	@echo "Running deploy script (local)\n"
-	@cd scripts && npm run localdeploy
+	@npm run localdeploy
 
 localmint:   ##@Sandbox - Alice sends a message (signed offchain by bob) to the  NftMinter contract.
 	@echo "Running mint script (local)\n"
-	@cd scripts && npm run localmint
+	@npm run localmint
 
 localdisplay:   ##@Sandbox - Alice storage of the  NftMinter contract.
 	@echo "Running display script (local)\n"
-	@cd scripts && npm run localdisplay
+	@npm run localdisplay
