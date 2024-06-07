@@ -9,6 +9,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
+import "@nomicfoundation/hardhat-verify";
 
 import dotenv from "dotenv";
 
