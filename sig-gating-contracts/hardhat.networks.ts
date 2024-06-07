@@ -61,7 +61,7 @@ export const networks: NetworksUserConfig = {
     url: `${ARBITRUM_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  bnb: {
+  bsc: {
     live: true,
     chainId: Number(NEXERA_CHAINS.BNB),
     url: `${BNB_PROVIDER_URL}`,

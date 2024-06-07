@@ -58,7 +58,7 @@
     "deploy-polygon": "pnpm -r deploy-polygon",
     "deploy-ethereum": "pnpm -r deploy-ethereum",
     "deploy-arbitrum": "pnpm -r deploy-arbitrum",
-    "deploy-bnb": "pnpm -r deploy-bnb",
+    "deploy-bsc": "pnpm -r deploy-bsc",
     "deploy-optimism": "pnpm -r deploy-optimism",
     "deploy-avalanche": "pnpm -r deploy-avalanche",
     "deploy-base": "pnpm -r deploy-base"

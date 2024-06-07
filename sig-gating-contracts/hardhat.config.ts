@@ -36,6 +36,7 @@ const config: HardhatUserConfig = {
     apiKey: {
       polygon: `${process.env.ETHERSCAN_POLYGON_MAINNET_API_KEY}`,
       base: `${process.env.ETHERSCAN_BASE_API_KEY}`,
+      bsc: `${process.env.ETHERSCAN_BSC_API_KEY}`,
     },
   },
   sourcify: {

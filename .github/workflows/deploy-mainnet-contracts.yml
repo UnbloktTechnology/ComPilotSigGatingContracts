@@ -13,7 +13,7 @@ jobs:
           - base
           - ethereum
           - arbitrum
-          - bnb
+          - bsc
           - optimism
           - avalanche
     uses: ./.github/workflows/deploy-template.yml
