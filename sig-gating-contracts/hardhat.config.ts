@@ -2,7 +2,6 @@ import { HardhatUserConfig } from "hardhat/config";
 
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
@@ -34,8 +33,15 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      polygonAmoy: `${process.env.ETHERSCAN_AMOY_API_KEY}`,
+      // amoy: `${process.env.ETHERSCAN_AMOY_API_KEY}`,
+      // amoy_local: `${process.env.ETHERSCAN_AMOY_API_KEY}`,
+      polygon: `${process.env.ETHERSCAN_POLYGON_MAINNET_API_KEY}`,
     },
+  },
+  sourcify: {
+    // Disabled by default
+    // Doesn't need an API key
+    enabled: true,
   },
   networks,
   namedAccounts,

@@ -31,9 +31,9 @@ export const moveAllContractAddressesToSdk = () => {
   moveContractAddressToSdk("ExampleNFTMinter", "sepolia");
   moveContractAddressToSdk("NexeraIDSignerManager", "sepolia");
   // Polygon Mainnet
-  moveContractAddressToSdk("ExampleGatedNFTMinter", "polygon_main");
-  moveContractAddressToSdk("ExampleNFTMinter", "polygon_main");
-  moveContractAddressToSdk("NexeraIDSignerManager", "polygon_main");
+  moveContractAddressToSdk("ExampleGatedNFTMinter", "polygon");
+  moveContractAddressToSdk("ExampleNFTMinter", "polygon");
+  moveContractAddressToSdk("NexeraIDSignerManager", "polygon");
   // Base
   moveContractAddressToSdk("NexeraIDSignerManager", "base");
 };

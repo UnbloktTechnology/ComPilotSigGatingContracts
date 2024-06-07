@@ -26,13 +26,13 @@ export * from "./NexeraIDSignerManagerAddress_sepolia";
 // Polygon Mainnet
 
 // ExampleGatedNFTMinter
-export * from "./ExampleGatedNFTMinterAddress_polygon_main";
+export * from "./ExampleGatedNFTMinterAddress_polygon";
 
 // ExampleNFTMinter
-export * from "./ExampleNFTMinterAddress_polygon_main";
+export * from "./ExampleNFTMinterAddress_polygon";
 
 // NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_polygon_main";
+export * from "./NexeraIDSignerManagerAddress_polygon";
 
 // Base
 
