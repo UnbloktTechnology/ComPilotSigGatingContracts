@@ -31,7 +31,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   // Get TX_SIGNER_ADDRESS depending on network
   // for _local networks, use txAuthSignerAddress
   const TX_SIGNER_ADDRESS =
-    network.name == "amoy_local" || network.name == "sepolia_local"
+    network.name == "polygonAmoy_local" || network.name == "sepolia_local"
       ? txAuthSignerAddress
       : getTxSignerAddress(chainId) || txAuthSignerAddress;
 
