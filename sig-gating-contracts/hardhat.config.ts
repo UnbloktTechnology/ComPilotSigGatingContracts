@@ -2,8 +2,8 @@ import { HardhatUserConfig } from "hardhat/config";
 
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
@@ -34,7 +34,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      polygonAmoy: `${process.env.ETHERSCAN_AMOY_API_KEY}`,
+      polygon: `${process.env.ETHERSCAN_POLYGON_MAINNET_API_KEY}`,
     },
   },
   networks,

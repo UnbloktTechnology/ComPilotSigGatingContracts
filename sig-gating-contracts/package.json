@@ -19,7 +19,7 @@
     "deploy-testnet-contracts": "pnpm deploy-amoy && pnpm deploy-sepolia",
     "deploy-amoy": "hardhat deploy --tags testnet --network amoy",
     "deploy-sepolia": "hardhat deploy --tags testnet --network sepolia",
-    "deploy-polygon": "hardhat deploy --tags testnet --network polygon_main",
+    "deploy-polygon": "hardhat deploy --tags testnet --network polygon",
     "deploy-base": "hardhat deploy --tags mainnet --network base",
     "deploy-ethereum": "hardhat deploy --tags mainnet --network ethereum",
     "deploy-arbitrum": "hardhat deploy --tags mainnet --network arbitrum",

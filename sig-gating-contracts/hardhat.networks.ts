@@ -37,7 +37,7 @@ const AVALANCHE_PROVIDER_URL =
 
 export const networks: NetworksUserConfig = {
   //mainnets
-  polygon_main: {
+  polygon: {
     live: true,
     chainId: Number(NEXERA_CHAINS.POLYGON),
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
