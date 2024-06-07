@@ -11,10 +11,10 @@ jobs:
         network:
           - polygon
           - base
-          - ethereum
+          - ethereum-mainnet
           - arbitrum
           - bsc
-          - optimism
+          - optimisticEthereum
           - avalanche
     uses: ./.github/workflows/deploy-template.yml
     with:

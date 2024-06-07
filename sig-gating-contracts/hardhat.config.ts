@@ -38,6 +38,9 @@ const config: HardhatUserConfig = {
       polygonAmoy: `${process.env.ETHERSCAN_POLYGON_MAINNET_API_KEY}`,
       base: `${process.env.ETHERSCAN_BASE_API_KEY}`,
       bsc: `${process.env.ETHERSCAN_BSC_API_KEY}`,
+      mainnet: `${process.env.ETHERSCAN_ETHEREUM_API_KEY}`,
+      sepolia: `${process.env.ETHERSCAN_ETHEREUM_API_KEY}`,
+      optimisticEthereum: `${process.env.ETHERSCAN_OPTIMISM_API_KEY}`,
     },
   },
   sourcify: {

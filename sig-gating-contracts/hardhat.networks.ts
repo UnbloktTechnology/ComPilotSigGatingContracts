@@ -49,7 +49,7 @@ export const networks: NetworksUserConfig = {
     url: `${BASE_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  ethereum: {
+  mainnet: {
     live: true,
     chainId: Number(NEXERA_CHAINS.ETHEREUM),
     url: `${ETHEREUM_PROVIDER_URL}`,
@@ -67,7 +67,7 @@ export const networks: NetworksUserConfig = {
     url: `${BNB_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  optimism: {
+  optimisticEthereum: {
     live: true,
     chainId: Number(NEXERA_CHAINS.OPTIMISM),
     url: `${OPTIMISM_PROVIDER_URL}`,

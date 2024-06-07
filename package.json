@@ -56,10 +56,10 @@
     "deploy-polygonAmoy-local": "pnpm -r deploy-polygonAmoy-local",
     "deploy-sepolia-local": "pnpm -r deploy-sepolia-local",
     "deploy-polygon": "pnpm -r deploy-polygon",
-    "deploy-ethereum": "pnpm -r deploy-ethereum",
+    "deploy-ethereum-mainnet": "pnpm -r deploy-ethereum-mainnet",
     "deploy-arbitrum": "pnpm -r deploy-arbitrum",
     "deploy-bsc": "pnpm -r deploy-bsc",
-    "deploy-optimism": "pnpm -r deploy-optimism",
+    "deploy-optimisticEthereum": "pnpm -r deploy-optimisticEthereum",
     "deploy-avalanche": "pnpm -r deploy-avalanche",
     "deploy-base": "pnpm -r deploy-base"
   }
