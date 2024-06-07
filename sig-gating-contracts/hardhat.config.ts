@@ -3,6 +3,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
@@ -35,11 +36,6 @@ const config: HardhatUserConfig = {
     apiKey: {
       polygon: `${process.env.ETHERSCAN_POLYGON_MAINNET_API_KEY}`,
     },
-  },
-  sourcify: {
-    // Disabled by default
-    // Doesn't need an API key
-    enabled: true,
   },
   networks,
   namedAccounts,
