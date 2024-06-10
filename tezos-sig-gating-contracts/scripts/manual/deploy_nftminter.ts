@@ -1,7 +1,7 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress } from "../utils/helper";
+import { saveContractAddress, saveContractAddressGhostnet } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
@@ -80,7 +80,7 @@ async function main() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
+    await saveContractAddressGhostnet("nftminter", originated?.contractAddress ?? "error");
   } catch (error: any) {
     console.log(error);
   }
