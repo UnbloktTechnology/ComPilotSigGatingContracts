@@ -3,6 +3,7 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 import "@nomicfoundation/hardhat-viem";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
