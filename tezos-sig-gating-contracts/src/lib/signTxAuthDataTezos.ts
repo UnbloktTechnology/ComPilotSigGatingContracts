@@ -5,17 +5,7 @@ import { convert_timestamp, convert_key, convert_nat, convert_string, convert_ad
 import { TezosAddress, TezosContractAddress, TezosTxAuthData, TezosTxAuthInput } from "./schemas";
 import createKeccakHash from 'keccak';
 
-// FOR TESTING GHOSNET 
-// const RPC_ENDPOINT = "https://ghostnet.tezos.marigold.dev";
-// const client = new RpcClient(RPC_ENDPOINT);
-// const Tezos = new TezosToolkit(RPC_ENDPOINT);
-// // Set CALLER
-// // const senderAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
-// Tezos.setProvider({
-//   signer: await InMemorySigner.fromSecretKey(
-//   "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-//   ),
-// });
+
 
 function keccak256(data : string) {
   return createKeccakHash('keccak256').update(data, 'hex').digest('hex')
@@ -75,7 +65,16 @@ export const signTxAuthDataTezos = async (
 // The TxAuthData is hashed and then signed by the given signer
 // The signTxAuthDataLibTezos function return the signature and the expiration
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// USAGE
+// USAGE (FOR TESTING GHOSNET) 
+// const RPC_ENDPOINT = "https://ghostnet.tezos.marigold.dev";
+// const client = new RpcClient(RPC_ENDPOINT);
+// const Tezos = new TezosToolkit(RPC_ENDPOINT);
+// // const senderAddress = "tz1...";
+// Tezos.setProvider({
+//   signer: await InMemorySigner.fromSecretKey(
+//   "edsk...."
+//   ),
+// });
 // const signer =  await InMemorySigner.fromSecretKey("edsk....");
 // const tezosTxAuthInput = {
 //   contractAddress: "KT1...", //ExtendedGatedNFTMinterAddress_tezos_ghostnet_dev,
