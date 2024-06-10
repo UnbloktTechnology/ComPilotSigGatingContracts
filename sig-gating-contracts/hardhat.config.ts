@@ -52,6 +52,7 @@ const config: HardhatUserConfig = {
   namedAccounts,
   typechain: {
     outDir: "typechain",
+    target: "ethers-v5",
   },
   mocha: {
     timeout: 3000000,
