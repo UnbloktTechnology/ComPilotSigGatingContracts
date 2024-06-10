@@ -53,7 +53,10 @@ export const TezosContractAddress = z
   .describe("Tezos address");
 export type TezosContractAddress = z.infer<typeof TezosContractAddress>;
 
-export const TezosAddress = z.union([TezosImplicitAddress, TezosContractAddress]);
+export const TezosAddress = z.union([
+  TezosImplicitAddress,
+  TezosContractAddress,
+]);
 export type TezosAddress = z.infer<typeof TezosAddress>;
 
 export const TezosEntrypointName = z

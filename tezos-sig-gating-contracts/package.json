@@ -14,6 +14,7 @@
     "localdeploy": "ts-node scripts/manual/local_deploy_nftminter.ts",
     "localmint": "ts-node scripts/manual/local_mint_offchain.ts",
     "localdisplay": "ts-node scripts/manual/local_display_storage.ts",
+    "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
 
     "build": "preconstruct build",
     "pre-build": "preconstruct build",
@@ -40,11 +41,11 @@
     ]
   },
   "dependencies": {
-    "@taquito/signer": "^19.2.0",
-    "@taquito/taquito": "^19.2.0",
-    "@taquito/utils": "^19.2.0",
-    "@taquito/rpc": "^19.2.0",
-    "@taquito/michel-codec": "^19.2.0",
+    "@taquito/signer": "^20.0.0",
+    "@taquito/taquito": "^20.0.0",
+    "@taquito/utils": "^20.0.0",
+    "@taquito/rpc": "^20.0.0",
+    "@taquito/michel-codec": "^20.0.0",
     "keccak": "3.0.4",
     "zod": "^3.22.4"
   },
