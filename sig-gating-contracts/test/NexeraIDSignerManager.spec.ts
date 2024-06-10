@@ -3,12 +3,12 @@ import hre, { getNamedAccounts, ethers } from "hardhat";
 
 import { ExampleGatedNFTMinter, NexeraIDSignerManager } from "../typechain";
 import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
-import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
 import { ExampleGatedNFTMinterABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
 import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
-import { publicActions } from "viem";
+import { publicActions, pad } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
+import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
 describe(`NexeraIDSignerManager`, function () {
   let nexeraIDSignerManager: NexeraIDSignerManager;
@@ -16,42 +16,55 @@ describe(`NexeraIDSignerManager`, function () {
 
   beforeEach(async () => {
     await setupThreeAccounts();
-    ({ nexeraIDSignerManager, exampleGatedNFTMinter } =
+    ({ exampleGatedNFTMinter, nexeraIDSignerManager } =
       await fixtureExampleGatedNFTMinter());
   });
-  it(`Should check that admin can change the signer`, async () => {
-    const [deployer, _testerSigner, address3] = await ethers.getSigners();
+  it(`Should check that signerManagerControllerSigner can change the signer`, async () => {
+    const { tester2, signerManagerController } = await getNamedAccounts();
+    const signerManagerControllerSigner = await ethers.getSigner(
+      signerManagerController
+    );
     // set signer
-    await nexeraIDSignerManager.connect(deployer).setSigner(address3.address);
+    await nexeraIDSignerManager
+      .connect(signerManagerControllerSigner)
+      .setSigner(tester2);
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner === address3.address).to.be.true;
+    expect(newSigner === tester2).to.be.true;
   });
-  it(`Should check that non-admin can NOT change the signer`, async () => {
-    const [_deployer, _testerSigner, address3] = await ethers.getSigners();
+  it(`Should check that non-signerManagerControllerSigner can NOT change the signer`, async () => {
+    const { tester2 } = await getNamedAccounts();
+    const tester2Signer = await ethers.getSigner(tester2);
     // try to set signer
     await expect(
-      nexeraIDSignerManager.connect(address3).setSigner(address3.address)
-    ).to.be.revertedWith("Ownable: caller is not the owner");
+      nexeraIDSignerManager.connect(tester2Signer).setSigner(tester2)
+    ).to.be.revertedWith(`Ownable: caller is not the owner`);
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner !== address3.address).to.be.true;
+    expect(newSigner !== tester2).to.be.true;
   });
-  it(`Should check that signerManager admin can change the signer and sig auth behavior changes accordingly`, async () => {
-    const { tester } = await getNamedAccounts();
-    const [deployer, testerSigner] = await ethers.getSigners();
-    const [txAuthWalletClient, _, secondSignerWalletClient] =
-      await hre.viem.getWalletClients();
+  it(`Should check that signerManagerControllerSigner can change the signer and sig auth behavior changes accordingly`, async () => {
+    const { tester, signerManagerController, txAuthSignerAddress, tester2 } =
+      await getNamedAccounts();
+    const signerManagerControllerSigner = await ethers.getSigner(
+      signerManagerController
+    );
+    const testerSigner = await ethers.getSigner(tester);
 
-    const secondSignerAddress = secondSignerWalletClient.account.address;
+    const txAuthWalletClient = await hre.viem.getWalletClient(
+      txAuthSignerAddress as Address
+    );
+    const secondSignerWalletClient = await hre.viem.getWalletClient(
+      tester2 as Address
+    );
 
     // Change signer
     await nexeraIDSignerManager
-      .connect(deployer)
-      .setSigner(secondSignerAddress);
+      .connect(signerManagerControllerSigner)
+      .setSigner(tester2);
 
     const newSigner = await nexeraIDSignerManager.signerAddress();
-    expect(newSigner.toLocaleLowerCase() === secondSignerAddress).to.be.true;
+    expect(newSigner === tester2).to.be.true;
 
     // Build Signature
     const recipient = tester;
@@ -141,5 +154,10 @@ describe(`NexeraIDSignerManager`, function () {
     // Check no new minted token id
     const tokenId2 = Number(await exampleGatedNFTMinter.lastTokenId());
     expect(tokenId2 === 1).to.be.true;
+
+    // Change back signer
+    await nexeraIDSignerManager
+      .connect(signerManagerControllerSigner)
+      .setSigner(txAuthSignerAddress);
   });
 });

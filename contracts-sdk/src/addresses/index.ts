@@ -2,33 +2,39 @@
 // Amoy
 
 // ExampleGatedNFTMinter
-export * from "./ExampleGatedNFTMinterAddress_amoy_dev";
-export * from "./ExampleGatedNFTMinterAddress_amoy_staging";
-export * from "./ExampleGatedNFTMinterAddress_amoy_prod";
+export * from "./ExampleGatedNFTMinterAddress_amoy";
+export * from "./ExampleGatedNFTMinterAddress_amoy_local";
 
 // ExampleNFTMinter
-export * from "./ExampleNFTMinterAddress_amoy_dev";
-export * from "./ExampleNFTMinterAddress_amoy_staging";
-export * from "./ExampleNFTMinterAddress_amoy_prod";
+export * from "./ExampleNFTMinterAddress_amoy";
 
 // NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_amoy_dev";
-export * from "./NexeraIDSignerManagerAddress_amoy_staging";
-export * from "./NexeraIDSignerManagerAddress_amoy_prod";
+export * from "./NexeraIDSignerManagerAddress_amoy";
 
 // Sepolia
 
 // ExampleGatedNFTMinter
-export * from "./ExampleGatedNFTMinterAddress_sepolia_dev";
-export * from "./ExampleGatedNFTMinterAddress_sepolia_staging";
-export * from "./ExampleGatedNFTMinterAddress_sepolia_prod";
+export * from "./ExampleGatedNFTMinterAddress_sepolia";
+export * from "./ExampleGatedNFTMinterAddress_sepolia_local";
 
 // ExampleNFTMinter
-export * from "./ExampleNFTMinterAddress_sepolia_dev";
-export * from "./ExampleNFTMinterAddress_sepolia_staging";
-export * from "./ExampleNFTMinterAddress_sepolia_prod";
+export * from "./ExampleNFTMinterAddress_sepolia";
 
 // NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_sepolia_dev";
-export * from "./NexeraIDSignerManagerAddress_sepolia_staging";
-export * from "./NexeraIDSignerManagerAddress_sepolia_prod";
+export * from "./NexeraIDSignerManagerAddress_sepolia";
+
+// Polygon Mainnet
+
+// ExampleGatedNFTMinter
+export * from "./ExampleGatedNFTMinterAddress_polygon";
+
+// ExampleNFTMinter
+export * from "./ExampleNFTMinterAddress_polygon";
+
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_polygon";
+
+// Base
+
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_base";

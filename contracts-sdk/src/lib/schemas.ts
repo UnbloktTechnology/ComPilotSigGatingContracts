@@ -12,13 +12,26 @@ import type {
 export enum NEXERA_CHAINS {
   ETHEREUM = "1",
   GOERLI = "5",
-  POLYGON = "137",
-  AMOY = "80002",
-  AVALANCHE = "43114",
-  FUJI = "43113",
   ARBITRUM = "42161",
   ARBITRUM_GOERLI = "421613",
+  ARBITRUM_SEPOLIA = "421614",
+  BNB = "56",
+  BNB_TESTNET = "97",
+  OPTIMISM = "10",
+  OPTIMISM_GOERLI = "420",
+  OPTIMISM_SEPOLIA = "11155420",
+  AVALANCHE = "43114",
+  AVALANCHE_FUJI = "43113",
+  POLYGON = "137",
+  POLYGON_AMOY = "80002",
+  SEPOLIA = "11155111",
+  BASE = "8453",
+  BASE_GOERLI = "84531",
+  BASE_SEPOLIA = "84532",
+  MOONBEAM = "1284",
+  MOONRIVER = "1285",
 }
+
 export const isValidAddress = (address: string) => {
   const regex = /^0x[a-fA-F0-9]{40}$/;
   return regex.test(address);

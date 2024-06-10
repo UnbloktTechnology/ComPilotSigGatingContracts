@@ -19,11 +19,14 @@ contract ExampleGatedNFTMinter is ERC721, TxAuthDataVerifier, Ownable {
     /// @notice Initializes the contract by setting a name, symbol, and signer for TxAuthDataVerifier.
     /// @param signerAddress The address allowed to sign transaction data for minting authorization.
     constructor(
-        address signerAddress
+        address signerAddress,
+        address initialOwner
     )
         ERC721("MyExampleGatedNFTMinter", "GNFT")
         TxAuthDataVerifier(signerAddress)
-    {}
+    {
+        _transferOwnership(initialOwner);
+    }
 
     /// @notice Sets a new signer address
     /// @dev Can only be called by the current owner
