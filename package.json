@@ -11,11 +11,13 @@
   "author": "",
   "workspaces": [
     "sig-gating-contracts",
+    "tezos-sig-gating-contracts",
     "contracts-sdk"
   ],
   "preconstruct": {
     "packages": [
       "sig-gating-contracts",
+      "tezos-sig-gating-contracts",
       "contracts-sdk"
     ]
   },
