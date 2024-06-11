@@ -60,7 +60,19 @@ jobs:
           cd tezos-sig-gating-contracts
           make test
 
+      - name: Start a sandbox for Tezos (on local network)
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make sandbox-start
+
       - name: 🖥️🧪 Run integration test for Tezos (on local network)
         continue-on-error: false
         run: |
           pnpm run test:tezos-contracts-sdk
+
+      - name: 🖥️🧪 Stop the sandbox for Tezos (on local network)
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make sandbox-stop
