@@ -47,6 +47,7 @@
     "build:contracts": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts build",
     "build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build",
     "build:tezos-contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build",
+    "test:tezos-contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk test",
     "pre-build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk pre-build",
     "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
     "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish-sdk-pkg",
