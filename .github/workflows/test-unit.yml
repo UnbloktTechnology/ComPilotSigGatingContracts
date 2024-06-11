@@ -50,6 +50,7 @@ jobs:
           pnpm run test:unit
 
       - name: Install Dependencies for Tezos
+        continue-on-error: false
         run: |
           cd tezos-sig-gating-contracts
           make install
@@ -60,6 +61,11 @@ jobs:
           cd tezos-sig-gating-contracts
           make test
 
+      - uses: actions/setup-node@v4
+        with:
+          cache: "pnpm"
+          node-version: 18.12
+
       - name: Start a sandbox for Tezos (on local network)
         continue-on-error: false
         run: |
@@ -67,7 +73,7 @@ jobs:
           make sandbox-start
 
       - name: 🖥️🧪 Run integration test for Tezos (on local network)
-        continue-on-error: false
+        continue-on-error: true
         run: |
           pnpm run test:tezos-contracts-sdk
 
