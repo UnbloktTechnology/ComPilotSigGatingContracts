@@ -48,3 +48,19 @@ jobs:
         continue-on-error: false
         run: |
           pnpm run test:unit
+
+      - name: Install Dependencies for Tezos
+        run: |
+          cd tezos-sig-gating-contracts
+          make install
+
+      - name: 🖥️🧪 Run unit test for Tezos
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make test
+
+      - name: 🖥️🧪 Run integration test for Tezos (on local network)
+        continue-on-error: false
+        run: |
+          pnpm run test:tezos-contracts-sdk

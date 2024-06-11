@@ -8,7 +8,7 @@ const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import { RpcClient } from '@taquito/rpc';
-const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
+const client = Tezos.rpc; //new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
 const createKeccakHash = require('keccak')
 
@@ -63,7 +63,7 @@ describe(`ExtendedGatedNftMinter`, function () {
         // Retrieve the chain_id 
         currentChainId = await client.getChainId();
         // DEPLOY NFTMINTER
-        exampleGatedNFTMinter = await deployNFTMinterExt();
+        exampleGatedNFTMinter = await deployNFTMinterExt(Tezos);
     });
 
     beforeEach(async () => {

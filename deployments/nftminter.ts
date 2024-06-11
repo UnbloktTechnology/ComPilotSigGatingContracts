@@ -1,1 +1,0 @@
-export default "KT1BqqtnT69PfMw5qTKACZf73QBMSGzUrmzt";

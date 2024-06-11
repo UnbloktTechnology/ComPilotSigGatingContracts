@@ -6,15 +6,14 @@ import nftMinterContract from "../../compiled/extended_gated_nftminter.json";
 
 const RPC_ENDPOINT = "http://localhost:20000/"; 
 
-export async function deployNFTMinterExt() {
-  const Tezos = new TezosToolkit(RPC_ENDPOINT);
-
-  //set alice key
-  Tezos.setProvider({
-    signer: await InMemorySigner.fromSecretKey(
-      "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
-    ),
-  });
+export async function deployNFTMinterExt(provider: TezosToolkit) {
+  // const Tezos = new TezosToolkit(RPC_ENDPOINT);
+  // //set alice key
+  // Tezos.setProvider({
+  //   signer: await InMemorySigner.fromSecretKey(
+  //     "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
+  //   ),
+  // });
   // related address
   // const signerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
   const ledger = new MichelsonMap();
@@ -80,7 +79,7 @@ export async function deployNFTMinterExt() {
   };
 
   try {
-    const originated = await Tezos.contract.originate({
+    const originated = await provider.contract.originate({
       code: nftMinterContract,
       storage: initialStorage,
     });
