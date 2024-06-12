@@ -1,79 +1,110 @@
 import dotenv from "dotenv";
 import { NetworksUserConfig } from "hardhat/types";
+import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
 dotenv.config();
 
 // Default values
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
-const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
+const DEFAULT_AMOY_URL = "https://rpc-polygonAmoy.polygon.technology";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
+const DEFAULT_BASE = "https://base.llamarpc.com";
+const DEFAULT_ETHEREUM = "https://eth.llamarpc.com";
+const DEFAULT_ARBITRUM = "https://arbitrum.llamarpc.com";
+const DEFAULT_BNB = "https://binance.llamarpc.com";
+const DEFAULT_OPTIMISM = "https://optimism.llamarpc.com";
+const DEFAULT_AVALANCHE = "https://avalanche-c-chain-rpc.publicnode.com";
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
 // env variables
-const DEPLOYMENT_MNEMONIC = process.env.DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
+const MAINNET_SIG_DEPLOYMENT_MNEMONIC =
+  process.env.MAINNET_SIG_DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
 const POLYGON_MAINNET_PROVIDER_URL =
   process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
+const BASE_PROVIDER_URL = process.env.BASE_PROVIDER_URL || DEFAULT_BASE;
 const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
+const ETHEREUM_PROVIDER_URL =
+  process.env.ETHEREUM_PROVIDER_URL || DEFAULT_ETHEREUM;
+const ARBITRUM_PROVIDER_URL =
+  process.env.ARBITRUM_PROVIDER_URL || DEFAULT_ARBITRUM;
+const BNB_PROVIDER_URL = process.env.BNB_PROVIDER_URL || DEFAULT_BNB;
+const OPTIMISM_PROVIDER_URL =
+  process.env.OPTIMISM_PROVIDER_URL || DEFAULT_OPTIMISM;
+const AVALANCHE_PROVIDER_URL =
+  process.env.AVALANCHE_PROVIDER_URL || DEFAULT_AVALANCHE;
 
 export const networks: NetworksUserConfig = {
-  //prod
-  polygon_main_prod: {
+  //mainnets
+  polygon: {
     live: true,
-    chainId: 137,
+    chainId: Number(NEXERA_CHAINS.POLYGON),
     url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  amoy_prod: {
+  base: {
     live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.BASE),
+    url: `${BASE_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  mainnet: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.ETHEREUM),
+    url: `${ETHEREUM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  arbitrum: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.ARBITRUM),
+    url: `${ARBITRUM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  bsc: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.BNB),
+    url: `${BNB_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  optimisticEthereum: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.OPTIMISM),
+    url: `${OPTIMISM_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  avalanche: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.AVALANCHE),
+    url: `${AVALANCHE_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  //testnets
+  polygonAmoy: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  sepolia_prod: {
+  sepolia: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  // staging
-  polygon_main_staging: {
+  // testnets for local testing
+  // because the api tx signer is different when we test locally
+  polygonAmoy_local: {
     live: true,
-    chainId: 137,
-    url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  amoy_staging: {
-    live: true,
-    chainId: 80002,
+    chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  sepolia_staging: {
+  sepolia_local: {
     live: true,
-    chainId: 11155111,
+    chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  //dev
-  polygon_main_dev: {
-    live: true,
-    chainId: 137,
-    url: `${POLYGON_MAINNET_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  amoy_dev: {
-    live: true,
-    chainId: 80002,
-    url: `${AMOY_PROVIDER_URL}`,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
-  },
-  sepolia_dev: {
-    live: true,
-    chainId: 11155111,
-    url: SEPOLIA_PROVIDER_URL,
-    accounts: { mnemonic: DEPLOYMENT_MNEMONIC },
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   // local
   hardhat: {

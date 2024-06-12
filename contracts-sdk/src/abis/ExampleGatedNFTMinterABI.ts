@@ -6,6 +6,11 @@ export const ExampleGatedNFTMinterABI = [
         name: "signerAddress",
         type: "address",
       },
+      {
+        internalType: "address",
+        name: "initialOwner",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",

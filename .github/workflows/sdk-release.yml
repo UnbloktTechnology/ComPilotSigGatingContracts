@@ -14,10 +14,10 @@ env:
   AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
   TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
   POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
-  DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+  MAINNET_SIG_DEPLOYMENT_MNEMONIC: ${{ secrets.MAINNET_SIG_DEPLOYMENT_MNEMONIC }}
   SALT: ${{ secrets.SALT }}
-  PNPM_VERSION: 8.15.2
-  NODE_VERSION: 20.11.0
+  PNPM_VERSION: 9.1.4
+  NODE_VERSION: 20.14
 
 jobs:
   release:
@@ -52,7 +52,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Config github actions user
         run: |
@@ -70,7 +70,7 @@ jobs:
           AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
           TEST_MNEMONIC: ${{ secrets.TEST_MNEMONIC }}
           POLYGON_MAINNET_PROVIDER_URL: ${{ secrets.POLYGON_MAINNET_PROVIDER_URL }}
-          DEPLOYMENT_MNEMONIC: ${{ secrets.DEPLOYMENT_MNEMONIC }}
+          MAINNET_SIG_DEPLOYMENT_MNEMONIC: ${{ secrets.MAINNET_SIG_DEPLOYMENT_MNEMONIC }}
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALT: ${{ secrets.SALT }}
         run: |
