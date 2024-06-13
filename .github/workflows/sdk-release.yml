@@ -96,11 +96,7 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd tezos-sig-gating-contracts
-          make install
-          make compile
-          cp compiled/extended_gated_nftminter.json src/compiledcontracts/
-          cd ..
+          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk inject_compiled_contracts
           pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build
 
       - name: Publish to private NPM (Tezos)

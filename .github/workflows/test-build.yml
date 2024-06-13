@@ -65,5 +65,6 @@ jobs:
         run: |
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts build
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
+          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk inject_compiled_contracts
           pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build
-          
+
