@@ -6,7 +6,7 @@ dotenv.config();
 
 // Default values
 const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
-const DEFAULT_AMOY_URL = "https://rpc-amoy.polygon.technology";
+const DEFAULT_AMOY_URL = "https://rpc-polygonAmoy.polygon.technology";
 const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
 const DEFAULT_BASE = "https://base.llamarpc.com";
 const DEFAULT_ETHEREUM = "https://eth.llamarpc.com";
@@ -49,7 +49,7 @@ export const networks: NetworksUserConfig = {
     url: `${BASE_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  ethereum: {
+  mainnet: {
     live: true,
     chainId: Number(NEXERA_CHAINS.ETHEREUM),
     url: `${ETHEREUM_PROVIDER_URL}`,
@@ -61,13 +61,13 @@ export const networks: NetworksUserConfig = {
     url: `${ARBITRUM_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  bnb: {
+  bsc: {
     live: true,
     chainId: Number(NEXERA_CHAINS.BNB),
     url: `${BNB_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
-  optimism: {
+  optimisticEthereum: {
     live: true,
     chainId: Number(NEXERA_CHAINS.OPTIMISM),
     url: `${OPTIMISM_PROVIDER_URL}`,
@@ -80,7 +80,7 @@ export const networks: NetworksUserConfig = {
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets
-  amoy: {
+  polygonAmoy: {
     live: true,
     chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,
@@ -94,7 +94,7 @@ export const networks: NetworksUserConfig = {
   },
   // testnets for local testing
   // because the api tx signer is different when we test locally
-  amoy_local: {
+  polygonAmoy_local: {
     live: true,
     chainId: Number(NEXERA_CHAINS.POLYGON_AMOY),
     url: `${AMOY_PROVIDER_URL}`,

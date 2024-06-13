@@ -21,10 +21,10 @@ export const moveContractAddressToSdk = (
 
 export const moveAllContractAddressesToSdk = () => {
   // Amoy
-  moveContractAddressToSdk("ExampleGatedNFTMinter", "amoy");
-  moveContractAddressToSdk("ExampleGatedNFTMinter", "amoy_local");
-  moveContractAddressToSdk("ExampleNFTMinter", "amoy");
-  moveContractAddressToSdk("NexeraIDSignerManager", "amoy");
+  moveContractAddressToSdk("ExampleGatedNFTMinter", "polygonAmoy");
+  moveContractAddressToSdk("ExampleGatedNFTMinter", "polygonAmoy_local");
+  moveContractAddressToSdk("ExampleNFTMinter", "polygonAmoy");
+  moveContractAddressToSdk("NexeraIDSignerManager", "polygonAmoy");
   // Sepolia
   moveContractAddressToSdk("ExampleGatedNFTMinter", "sepolia");
   moveContractAddressToSdk("ExampleGatedNFTMinter", "sepolia_local");

@@ -2,14 +2,14 @@
 // Amoy
 
 // ExampleGatedNFTMinter
-export * from "./ExampleGatedNFTMinterAddress_amoy";
-export * from "./ExampleGatedNFTMinterAddress_amoy_local";
+export * from "./ExampleGatedNFTMinterAddress_polygonAmoy";
+export * from "./ExampleGatedNFTMinterAddress_polygonAmoy_local";
 
 // ExampleNFTMinter
-export * from "./ExampleNFTMinterAddress_amoy";
+export * from "./ExampleNFTMinterAddress_polygonAmoy";
 
 // NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_amoy";
+export * from "./NexeraIDSignerManagerAddress_polygonAmoy";
 
 // Sepolia
 

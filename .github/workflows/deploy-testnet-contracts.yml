@@ -10,7 +10,7 @@ jobs:
       matrix:
         network:
           - sepolia
-          - amoy
+          - polygonAmoy
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}
