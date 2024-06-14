@@ -57,6 +57,7 @@ export const TezosAddress = z.union([
   TezosImplicitAddress,
   TezosContractAddress,
 ]);
+
 export type TezosAddress = z.infer<typeof TezosAddress>;
 
 export const TezosEntrypointName = z
@@ -128,3 +129,4 @@ export const TezosTxAuthInput = z.object({
   nonce: z.number().optional(),
 });
 export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
+

@@ -15,6 +15,7 @@ export const saveContractAddress = (name: string, address: string) =>
 export const saveContractAddressGhostnet = (name: string, address: string) =>
     outputFile(
         `${process.cwd()}/deployments/${name}_ghostnet.ts`,
+
         `export default "${address}";`
     );
 

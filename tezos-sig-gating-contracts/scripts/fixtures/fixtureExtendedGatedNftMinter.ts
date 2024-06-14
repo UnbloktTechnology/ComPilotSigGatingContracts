@@ -14,6 +14,7 @@ export async function deployNFTMinterExt(provider: TezosToolkit) {
   //     "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
   //   ),
   // });
+
   // related address
   // const signerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
   const ledger = new MichelsonMap();

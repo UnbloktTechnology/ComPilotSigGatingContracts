@@ -81,6 +81,7 @@ async function main() {
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
     await saveContractAddressGhostnet("nftminter", originated?.contractAddress ?? "error");
+
   } catch (error: any) {
     console.log(error);
   }

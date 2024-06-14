@@ -2,6 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
+
 // import nftMinterContract from "../../compiled/nftminter.json";
 
 import nftMinterContract from "../../compiled/extended_gated_nftminter.json";
@@ -72,8 +73,6 @@ async function main() {
   //   operators,
   // };
 
-
-
   const fa2Extension = {
     minter : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
   }
@@ -102,6 +101,7 @@ async function main() {
     
     const constants = await Tezos.rpc.getConstants();
     console.log("constants=", constants);
+
 
     const originated = await Tezos.contract.originate({
       code: nftMinterContract,
