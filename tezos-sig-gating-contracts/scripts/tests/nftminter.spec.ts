@@ -63,7 +63,8 @@ describe(`ExampleGatedNFTMinter`, function () {
         // Retrieve the chain_id 
         currentChainId = await client.getChainId();
         // DEPLOY NFTMINTER
-        exampleGatedNFTMinter = await deployNFTMinter();
+        console.log("AAAAAAAAAZEAZEAZEAZEZAEZAEZAEAZEAZEAZEAEAEAE");
+        exampleGatedNFTMinter = await deployNFTMinter(Tezos);
     });
 
     beforeEach(async () => {

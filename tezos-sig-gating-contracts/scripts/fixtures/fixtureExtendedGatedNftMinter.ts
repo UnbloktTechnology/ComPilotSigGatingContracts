@@ -89,7 +89,7 @@ export async function deployNFTMinterExt() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
+    // await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);
