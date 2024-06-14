@@ -209,7 +209,7 @@ describe(`ExampleGatedNFTMinter`, function () {
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
-                expect(err.message).to.be.equal("InvalidNonce")
+                expect(err.message).to.be.equal("InvalidSignature")
             } else {
                 expect(false).to.be.true
             }
@@ -272,7 +272,7 @@ describe(`ExampleGatedNFTMinter`, function () {
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
-                expect(err.message).to.be.equal("HashMissmatchParameters")
+                expect(err.message).to.be.equal("InvalidSignature")
             } else {
                 expect(false).to.be.true
             }

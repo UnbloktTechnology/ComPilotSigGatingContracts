@@ -391,18 +391,10 @@ let test_nftminter_mint_gated_no_dispatch =
     } in
     let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
-    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let my_sig : signature = sign_hash data_hash in
 
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: SigGatedExtendable.txAuthData = {
-      // payload = data_hash;   // hash of the following fields (except signature)
-      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -450,18 +442,10 @@ let test_nftminter_mint_gated_no_dispatch2 =
     } in
     let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
-    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let my_sig : signature = sign_hash data_hash in
 
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: SigGatedExtendable.txAuthData = {
-      // payload = data_hash;   // hash of the following fields (except signature)
-      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
