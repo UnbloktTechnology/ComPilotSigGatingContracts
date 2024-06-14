@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signTxAuthDataLibTezos = exports.signTxAuthDataTezos = exports.getBlockLevel = exports.getNonceFromContract = exports.getChainID = void 0;
 const convert_1 = require("./convert");
-// import createKeccakHash from "keccak";
 const createKeccakHash = require("keccak");
 function keccak256(data) {
     return createKeccakHash("keccak256").update(data, "hex").digest("hex");
@@ -75,7 +74,7 @@ exports.signTxAuthDataTezos = signTxAuthDataTezos;
 //   args: convert_mint("tz1...", "1"),
 //   userAddress: "tz1...",
 // }:
-// const {signature, blockExpiration} = await signTxAuthDataLibTezos(signer, tezosTxAuthInput);
+// const {signature, blockExpiration} = await signTxAuthDataLibTezos(signer, tezosTxAuthInput, Tezos);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const signTxAuthDataLibTezos = async (signer, tezosTxAuthInput, provider, client) => {
     // const signer = new InMemorySigner("edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU");

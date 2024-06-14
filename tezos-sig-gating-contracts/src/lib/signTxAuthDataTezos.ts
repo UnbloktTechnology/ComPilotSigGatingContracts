@@ -16,7 +16,6 @@ import {
   TezosTxAuthData,
   TezosTxAuthInput,
 } from "./schemas";
-// import createKeccakHash from "keccak";
 const createKeccakHash = require("keccak");
 
 function keccak256(data: string) {
@@ -103,7 +102,7 @@ export const signTxAuthDataTezos = async (
 //   args: convert_mint("tz1...", "1"),
 //   userAddress: "tz1...",
 // }:
-// const {signature, blockExpiration} = await signTxAuthDataLibTezos(signer, tezosTxAuthInput);
+// const {signature, blockExpiration} = await signTxAuthDataLibTezos(signer, tezosTxAuthInput, Tezos);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const signTxAuthDataLibTezos = async (
   signer: InMemorySigner,

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-
 exports.between = exports.saveContractAddressGhostnet = exports.saveContractAddress = exports.saveJson = void 0;
 const fs_extra_1 = require("fs-extra");
 const saveJson = (path, data) => (0, fs_extra_1.outputFile)(`${process.cwd()}/${path}.json`, data);
@@ -9,7 +8,6 @@ const saveContractAddress = (name, address) => (0, fs_extra_1.outputFile)(`${pro
 exports.saveContractAddress = saveContractAddress;
 const saveContractAddressGhostnet = (name, address) => (0, fs_extra_1.outputFile)(`${process.cwd()}/deployments/${name}_ghostnet.ts`, `export default "${address}";`);
 exports.saveContractAddressGhostnet = saveContractAddressGhostnet;
-
 const between = (min, max) => Math.floor(Math.random() * (max - min) + min);
 exports.between = between;
 // export const getSigner = async (adminSk?: string) => {
