@@ -209,7 +209,7 @@ describe(`ExtendedGatedNftMinter`, function () {
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
-                expect(err.message).to.be.equal("InvalidNonce")
+                expect(err.message).to.be.equal("InvalidSignature")
             } else {
                 expect(false).to.be.true
             }
@@ -253,10 +253,10 @@ describe(`ExtendedGatedNftMinter`, function () {
 
         // Execute mint-offchain entrypoint
         const args = {
-        payload: payload_hash,
-        chain_id: chain_id, 
+        // payload: payload_hash,
+        // chain_id: chain_id, 
         userAddress: userAddress, 
-        nonce: nonce, 
+        // nonce: nonce, 
         expiration: expiration, 
         contractAddress: functioncall_contract, 
         name: functioncall_name, 
@@ -272,7 +272,7 @@ describe(`ExtendedGatedNftMinter`, function () {
             console.log("tx confirmed: ", op.hash);
         } catch (err) {
             if (err instanceof TezosOperationError) {
-                expect(err.message).to.be.equal("HashMissmatchParameters")
+                expect(err.message).to.be.equal("InvalidSignature")
             } else {
                 expect(false).to.be.true
             }

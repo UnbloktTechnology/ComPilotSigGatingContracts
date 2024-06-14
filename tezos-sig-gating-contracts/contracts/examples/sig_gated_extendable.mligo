@@ -39,10 +39,10 @@
     s.signerAddress
 
   type txAuthData = {
-    payload: bytes;   // hash of the following fields (except signature)
-    chain_id: chain_id;   // chain_id
+    // payload: bytes;   // hash of the following fields (except signature)
+    // chain_id: chain_id;   // chain_id
     userAddress: address;   // user address (used to check nonce)
-    nonce: nat;   // nonce of the userAddress when forging the signature
+    // nonce: nat;   // nonce of the userAddress when forging the signature
     expiration: nat;  // expiration date
     contractAddress: address;  // calldata contract address
     name: string;   // name of the entrypoint of the calldata (for example "%mint")
@@ -52,7 +52,12 @@
   }
 
   let verifyTxAuthData (type a) (p: txAuthData)(s: a siggated_storage) : a siggated_storage = 
-    let { payload; chain_id; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+    let { userAddress; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+    let chain_id = Tezos.get_chain_id() in
+    let nonce, new_nonces = match Big_map.find_opt userAddress s.nonces with
+    | None -> (0n, Big_map.update userAddress (Some(1n)) s.nonces)
+    | Some nse -> (nse, Big_map.update userAddress (Some(nse + 1n)) s.nonces)
+    in
     // VERIFY parameters correspond to payload hash
     let chainid_b = Bytes.pack chain_id in
     let user_b = Bytes.pack userAddress in
@@ -62,21 +67,17 @@
     let contract_b = Bytes.pack contractAddress in
     let name_b = Bytes.pack name in
     let expected_bytes = Bytes.concat key_b (Bytes.concat chainid_b (Bytes.concat user_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args)))))) in
-    let expected_payload = Crypto.keccak(expected_bytes) in
-    let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
+    let payload = Crypto.keccak(expected_bytes) in
+    // let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
     // Retrieve signer address from public key
     let kh : key_hash = Crypto.hash_key k in
     let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
     // NONCE
-    let current_nonce, new_nonces = match Big_map.find_opt userAddress s.nonces with
-    | None -> (0n, Big_map.update userAddress (Some(1n)) s.nonces)
-    | Some nse -> (nse, Big_map.update userAddress (Some(nse + 1n)) s.nonces)
-    in
-    let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
+    // let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
     // EXPIRATION
     let _ = Assert.Error.assert (Tezos.get_level() < expiration) Errors.block_expired in
     // CHAIN ID
-    let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
+    // let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
     // VERIFY signer key corresponds to signerAddress 
     let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
         //calls isValidSignature of the smart contract             
@@ -93,7 +94,12 @@
     { s with nonces=new_nonces }
 
   let verifyAndDispatchTxAuthData (type a) (p: txAuthData)(s: a siggated_storage) : a ret = 
-    let { payload; chain_id; userAddress; nonce; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+    let { userAddress; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+    let chain_id = Tezos.get_chain_id() in
+    let nonce, new_nonces = match Big_map.find_opt userAddress s.nonces with
+    | None -> (0n, Big_map.update userAddress (Some(1n)) s.nonces)
+    | Some nse -> (nse, Big_map.update userAddress (Some(nse + 1n)) s.nonces)
+    in
     // VERIFY parameters correspond to payload hash
     let chainid_b = Bytes.pack chain_id in
     let user_b = Bytes.pack userAddress in
@@ -103,21 +109,17 @@
     let contract_b = Bytes.pack contractAddress in
     let name_b = Bytes.pack name in
     let expected_bytes = Bytes.concat key_b (Bytes.concat chainid_b (Bytes.concat user_b (Bytes.concat nonce_b (Bytes.concat expiration_b (Bytes.concat contract_b (Bytes.concat name_b args)))))) in
-    let expected_payload = Crypto.keccak(expected_bytes) in
-    let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
+    let payload = Crypto.keccak(expected_bytes) in
+    // let () = Assert.Error.assert (expected_payload = payload) Errors.parameter_missmatch in
     // Retrieve signer address from public key
     let kh : key_hash = Crypto.hash_key k in
     let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
     // NONCE
-    let current_nonce, new_nonces = match Big_map.find_opt userAddress s.nonces with
-    | None -> (0n, Big_map.update userAddress (Some(1n)) s.nonces)
-    | Some nse -> (nse, Big_map.update userAddress (Some(nse + 1n)) s.nonces)
-    in
-    let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
+    // let () = Assert.Error.assert (nonce = current_nonce) Errors.invalid_nonce in
     // EXPIRATION
     let _ = Assert.Error.assert (Tezos.get_level() < expiration) Errors.block_expired in
     // CHAIN ID
-    let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
+    // let _ = Assert.Error.assert (Tezos.get_chain_id() = chain_id) Errors.invalid_chain in
     // VERIFY signer key corresponds to signerAddress 
     let () = if (not is_implicit(s.signerAddress)) then // case signerAddress is a smart contract
         //calls isValidSignature of the smart contract             
@@ -158,14 +160,14 @@
     else
       failwith Errors.invalid_calldata_contract_not_dispatcher
 
-  let dispatch_calldata (type a) (cd, name, ep: calldata * string * a contract) : operation =
-    let (calldata_address, calldata_name, calldata_args) = cd in
+  let dispatch_calldata (type a) (cd, _name, _ep: calldata * string * a contract) : operation =
+    let (calldata_address, _calldata_name, _calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
         failwith Errors.do_not_process_calldata
     else
       let external_dispatch_opt : calldata contract option = Tezos.get_entrypoint_opt "%dispatch" calldata_address in
       let op : operation  = match external_dispatch_opt with
-      | Some ep -> Tezos.Next.Operation.transaction cd 0mutez ep
+      | Some ep_dispatch -> Tezos.Next.Operation.transaction cd 0mutez ep_dispatch
       | None -> failwith Errors.invalid_calldata_contract_not_dispatcher
       in
       op

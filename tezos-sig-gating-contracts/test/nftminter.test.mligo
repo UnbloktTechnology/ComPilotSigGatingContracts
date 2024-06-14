@@ -160,10 +160,10 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -224,10 +224,10 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -288,10 +288,10 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -353,10 +353,10 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -416,10 +416,10 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -433,7 +433,7 @@ let test_nftminter_mint_gated =
     let () = AssertHelper.tx_success r in
     // call VERIFY entrypoint again ... should fail
     let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
-    let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_nonce in
+    let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_signature in
 
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in

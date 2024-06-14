@@ -41,10 +41,16 @@ module NftMinterExt = struct
     let op = SigGatedExtendable.single_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
     [op], s
 
+  // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses 
+  // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
+  // - calls Distpatch entrypoint for processing the calldata
   [@entry]
   let exec_gated_calldata (data : SigGatedExtendable.txAuthData) (s : storage): ret =
       SigGatedExtendable.verifyAndDispatchTxAuthData data s 
 
+  // Example of entrypoint which uses 
+  // - verifyTxAuthData function for signature verification (nonce, expiration) 
+  // - single_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
   let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
       let s = SigGatedExtendable.verifyTxAuthData data s in
@@ -52,6 +58,9 @@ module NftMinterExt = struct
       let op = SigGatedExtendable.single_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
       [op], s
 
+  // Example of entrypoint which uses 
+  // - verifyTxAuthData function for signature verification (nonce, expiration) 
+  // - process the calldata itself
   [@entry]
   let exec_gated_calldata_no_dispatch2 (data : SigGatedExtendable.txAuthData) (s : storage): ret =
     let s = SigGatedExtendable.verifyTxAuthData data s in
@@ -76,8 +85,7 @@ module NftMinterExt = struct
     // Apply MINT
     let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
     let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
-    let extended_fa2_storage: fa2_extension NFT.storage = s.siggated_extension in 
-    let new_fa2_s = NFT.set_balance extended_fa2_storage mint.owner mint.token_id in
+    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
     [], { s with siggated_extension=new_fa2_s }
 
   (* FA2 extension *)
@@ -85,9 +93,9 @@ module NftMinterExt = struct
   [@entry]
   let mint (mint : mint) (s : storage): ret =
     let sender = Tezos.get_sender () in
+    // Apply MINT
     let () = Assert.assert (sender = s.siggated_extension.extension.minter) in
     let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    (* Check that nobody owns the token already *)
     let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
     let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
     [], { s with siggated_extension=new_fa2_s }

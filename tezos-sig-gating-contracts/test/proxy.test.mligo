@@ -110,10 +110,10 @@ let test_proxy =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: PROXY.ProxyVerifier.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
+      // payload = data_hash;   // hash of the following fields (except signature)
+      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
+      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")

@@ -57,7 +57,7 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
     ] 
     in
     let fa2_extension_initial = { 
-        minter = owner3;
+        minter = minter;
     } in
 
     let fa2_storage : NFTMINTER.NftMinterExt.extended_fa2_storage = {
