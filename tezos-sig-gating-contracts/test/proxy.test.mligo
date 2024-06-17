@@ -32,18 +32,16 @@ let compute_hash (type a) (data : a raw_payload) : bytes * bytes =
     let functioncall_params_bytes : bytes = Bytes.pack data.functioncall_params in
     let data : bytes = Bytes.concat key_bytes (Bytes.concat chain_id_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat expiration_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)))))) in
     let data_hash = Crypto.keccak data in    
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("functioncall_contract_bytes=", functioncall_contract_bytes) in
-    // let () = Test.Next.IO.log("functioncall_name_bytes=", functioncall_name_bytes) in
-    // let () = Test.Next.IO.log("functioncall_params_bytes=", functioncall_params_bytes) in
-    // let () = Test.Next.IO.log("nonce_bytes=", nonce_bytes) in
-    // let () = Test.Next.IO.log("data=", data) in
-    // let () = Test.Next.IO.log("data_hash=", data_hash) in
     data_hash, functioncall_params_bytes
 
-let sign_hash (data_hash : bytes) : signature = 
-  Test.Next.Crypto.sign "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU" data_hash
+let localsigner = {
+  address=("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+  publicKey=("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+  privateKey="edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
+}
 
+let sign_hash (data_hash : bytes) : signature = 
+  Test.Next.Crypto.sign localsigner.privateKey data_hash
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +63,7 @@ let test_proxy =
     // DEPLOY FA2_FOR_PROXY
     let nft_extension_initial = { 
         admin = owner1;
-        proxyAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); // unused will be overritten
+        proxyAddress = localsigner.address; // unused will be overritten
     } in
     let orig_fa2 = FA2Helper.boot_fa2_for_proxy(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
     let {taddr = fa2_taddr; code = _ ; size = _} = orig_fa2 in 
@@ -75,7 +73,7 @@ let test_proxy =
    // DEPLOY proxy
     let initial_storage = {
         admin = owner1;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let {taddr = proxy_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of PROXY.ProxyVerifier) initial_storage 0tez in
@@ -89,7 +87,7 @@ let test_proxy =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinterForProxy.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -105,15 +103,8 @@ let test_proxy =
     let my_sig : signature = sign_hash data_hash in
     // let my_sig : signature = ("edsigtdkwMWWDMXGPWMm8S78PDjZwCXKZSsj81itgWfnNLB6fdkdqQW6VNiS8bGmdtgGuT2ksST1QBXFqBDqMJ7n3xzcA4AeJoV" : signature) in
 
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("fa2_address=", fa2_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: PROXY.ProxyVerifier.txAuthData = {
-      // payload = data_hash;   // hash of the following fields (except signature)
-      // chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      // nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")

@@ -67,10 +67,7 @@ module NftMinter = struct
       failwith Errors.invalid_calldata_wrong_contract
 
   type txAuthData = {
-      // payload: bytes;   // hash of the following fields (except signature)
-      // chain_id: chain_id;   // chain_id
       userAddress: address;   // user address (used to check nonce)
-      // nonce: nat;   // nonce of the userAddress when forging the signature
       expiration: nat;  // expiration date
       contractAddress: address;  // calldata contract address
       name: string;   // name of the entrypoint of the calldata (for example "%mint")
