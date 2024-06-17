@@ -4,7 +4,7 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/"; 
+const RPC_ENDPOINT = "http://localhost:20000/";
 
 export async function deployNFTMinter() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
@@ -38,7 +38,7 @@ export async function deployNFTMinter() {
   token_metadata.set(1, { token_id: 1, token_info: token_info_1 });
   token_metadata.set(2, { token_id: 2, token_info: token_info_2 });
   token_metadata.set(3, { token_id: 3, token_info: token_info_3 });
-  
+
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
   metadata.set(
@@ -61,10 +61,10 @@ export async function deployNFTMinter() {
   const operators = new MichelsonMap();
 
   const extension = {
-    admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-    nonces : new MichelsonMap(),
-  }
+    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    nonces: new MichelsonMap(),
+  };
 
   const initialStorage = {
     extension,
@@ -84,7 +84,10 @@ export async function deployNFTMinter() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
+    await saveContractAddress(
+      "nftminter",
+      originated?.contractAddress ?? "error"
+    );
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);
