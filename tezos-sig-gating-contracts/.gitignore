@@ -8,5 +8,6 @@ scripts/node_modules
 scripts/*.js
 scripts/tests/*.js
 scripts/fixtures/*.js
+scripts/utils/*.js
 scripts/package-lock.json
 deployments/*.js

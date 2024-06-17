@@ -8,7 +8,7 @@ export async function deployNFTMinter(provider: TezosToolkit) {
   const senderAddress = await provider.signer.publicKeyHash();
 
   const ledger = new MichelsonMap();
-  ledger.set(0, senderAddress);  // the deployer of the contract get the token 0 ! 
+  ledger.set(0, senderAddress); // the deployer of the contract get the token 0 !
 
   const token_metadata = new MichelsonMap();
   const token_info_0 = new MichelsonMap();

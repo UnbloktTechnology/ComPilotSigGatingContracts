@@ -153,6 +153,12 @@ importers:
 
   tezos-sig-gating-contracts:
     dependencies:
+      '@taquito/michel-codec':
+        specifier: ^19.2.0
+        version: 19.2.1
+      '@taquito/rpc':
+        specifier: ^19.2.0
+        version: 19.2.1(encoding@0.1.13)
       '@taquito/signer':
         specifier: ^19.2.0
         version: 19.2.1(encoding@0.1.13)

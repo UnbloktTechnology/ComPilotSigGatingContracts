@@ -21,6 +21,8 @@
     "@taquito/signer": "^19.2.0",
     "@taquito/taquito": "^19.2.0",
     "@taquito/utils": "^19.2.0",
+    "@taquito/rpc": "^19.2.0",
+    "@taquito/michel-codec": "^19.2.0",
     "keccak": "3.0.4",
     "zod": "^3.22.4"
   },
