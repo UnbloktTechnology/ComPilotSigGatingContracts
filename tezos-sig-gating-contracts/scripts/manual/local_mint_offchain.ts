@@ -4,15 +4,22 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
 import nftMinterAddress from "../../deployments/nftminter";
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_chain_id, convert_mint } from '../utils/convert';
+import {
+  convert_timestamp,
+  convert_key,
+  convert_nat,
+  convert_string,
+  convert_address,
+  convert_chain_id,
+  convert_mint,
+} from "../utils/convert";
 
-const createKeccakHash = require('keccak')
-const RPC_ENDPOINT = "http://localhost:20000/";// "https://oxfordnet.ecadinfra.com"; //
+const createKeccakHash = require("keccak");
+const RPC_ENDPOINT = "http://localhost:20000/"; // "https://oxfordnet.ecadinfra.com"; //
 
-function keccak256(data : string) {
-  return createKeccakHash('keccak256').update(data, 'hex').digest('hex')
+function keccak256(data: string) {
+  return createKeccakHash("keccak256").update(data, "hex").digest("hex");
 }
-
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
@@ -24,16 +31,18 @@ async function main() {
     ),
   });
   // const signerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
-  const signerBob = new InMemorySigner("edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"); // bob
+  const signerBob = new InMemorySigner(
+    "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
+  ); // bob
   const signerBobAddress = "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6";
 
   try {
     // INPUTS
-    const functioncall_contract = "KT1DYtRp4Q2zfVtXLiVp6WJsnsd3oRTMvqKW"; 
+    const functioncall_contract = "KT1DYtRp4Q2zfVtXLiVp6WJsnsd3oRTMvqKW";
     const functioncall_name = "%mint_gated";
     const functioncall_params = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-      token_id: "2"
+      token_id: "2",
     };
     const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob
     const expiration = "12345";
@@ -47,13 +56,24 @@ async function main() {
     const user_bytes = convert_address(userAddress);
     const functioncall_contract_bytes = convert_address(functioncall_contract);
     const functioncall_name_bytes = convert_string(functioncall_name);
-    const functioncall_params_bytes = convert_mint(functioncall_params.owner, functioncall_params.token_id);
+    const functioncall_params_bytes = convert_mint(
+      functioncall_params.owner,
+      functioncall_params.token_id
+    );
     const nonce_bytes = convert_nat(nonce);
     const expiration_bytes = convert_nat(expiration);
     const key_bytes = convert_key(dataKey);
-    const payload = key_bytes + chain_id_bytes + user_bytes + nonce_bytes + expiration_bytes + functioncall_contract_bytes + functioncall_name_bytes + functioncall_params_bytes;
+    const payload =
+      key_bytes +
+      chain_id_bytes +
+      user_bytes +
+      nonce_bytes +
+      expiration_bytes +
+      functioncall_contract_bytes +
+      functioncall_name_bytes +
+      functioncall_params_bytes;
     const payload_hash = keccak256(payload);
-    
+
     let signature_full = await signerBob.sign(payload_hash);
     console.log("sig=", signature_full);
     const signature = signature_full.prefixSig;
@@ -66,16 +86,16 @@ async function main() {
     console.log("payload=", payload);
     console.log("payload_hash=", payload_hash);
     const args = {
-      payload: payload_hash, 
+      payload: payload_hash,
       chain_id: chain_id,
-      userAddress: userAddress, 
-      nonce: nonce, 
-      expiration: expiration, 
-      contractAddress: functioncall_contract, 
-      name: functioncall_name, 
-      args: functioncall_params_bytes, 
-      publicKey: dataKey, 
-      signature: signature
+      userAddress: userAddress,
+      nonce: nonce,
+      expiration: expiration,
+      contractAddress: functioncall_contract,
+      name: functioncall_name,
+      args: functioncall_params_bytes,
+      publicKey: dataKey,
+      signature: signature,
     };
     // CALL contract
     const cntr = await Tezos.contract.at(nftMinterAddress);

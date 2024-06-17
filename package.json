@@ -10,6 +10,7 @@
   "packageManager": "pnpm@9.1.4",
   "author": "",
   "workspaces": [
+    "tezos-sig-gating-contracts",
     "sig-gating-contracts",
     "contracts-sdk"
   ],

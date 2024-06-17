@@ -6,6 +6,7 @@ import nftMinterContract from "../../compiled/nftminter.json";
 
 export async function deployNFTMinter(provider: TezosToolkit) {
   const senderAddress = await provider.signer.publicKeyHash();
+
   const ledger = new MichelsonMap();
   ledger.set(0, senderAddress);  // the deployer of the contract get the token 0 ! 
 
@@ -43,7 +44,7 @@ export async function deployNFTMinter(provider: TezosToolkit) {
   token_metadata.set(5, { token_id: 5, token_info: token_info_5 });
   token_metadata.set(6, { token_id: 6, token_info: token_info_6 });
   token_metadata.set(7, { token_id: 7, token_info: token_info_7 });
-  
+
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
   metadata.set(
@@ -66,10 +67,10 @@ export async function deployNFTMinter(provider: TezosToolkit) {
   const operators = new MichelsonMap();
 
   const extension = {
-    admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-    nonces : new MichelsonMap(),
-  }
+    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    nonces: new MichelsonMap(),
+  };
 
   const initialStorage = {
     extension,
