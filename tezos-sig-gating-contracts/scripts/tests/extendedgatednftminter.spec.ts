@@ -87,7 +87,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterExt();
+    exampleGatedNFTMinter = await deployNFTMinterExt(Tezos);
   });
 
   beforeEach(async () => {
