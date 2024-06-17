@@ -53,7 +53,10 @@ export const TezosContractAddress = z
   .describe("Tezos address");
 export type TezosContractAddress = z.infer<typeof TezosContractAddress>;
 
-export const TezosAddress = z.union([TezosImplicitAddress, TezosContractAddress]);
+export const TezosAddress = z.union([
+  TezosImplicitAddress,
+  TezosContractAddress,
+]);
 export type TezosAddress = z.infer<typeof TezosAddress>;
 
 export const TezosEntrypointName = z
@@ -101,27 +104,38 @@ type String0x = z.infer<typeof String0x>;
 // >;
 
 // Tx Auth Data SIgnature
+// This is the info that is signed by Nexera ID's Back end
 export const TezosTxAuthData = z.object({
   chainID: z.string(),
-  userAddress: TezosAddress,
-  nonce: z.number(),
-  blockExpiration: z.number(),
+  //userAddress: TezosAddress,
+  userPublicKey: z.string(), //TODO add Tezos Public key schema
+  nonce: z.string(),
+  blockExpiration: z.string(),
   contractAddress: TezosContractAddress,
   functionCallName: TezosEntrypointName,
-  functionCallArgs: String0x,
+  functionCallArgs: z.unknown(),
   publicKey: z.string(),
 });
 export type TezosTxAuthData = z.infer<typeof TezosTxAuthData>;
 
-// export const TxAuthInput = z.object({
-//   contractAbi: z.array(z.record(z.unknown())),
-//   contractAddress: AddressSchema,
-//   functionName: z.string(),
-//   args: z.array(z.unknown()),
-//   userAddress: AddressSchema,
-//   // these optional inputs can be useful for local dev for example
-//   blockExpiration: z.number().int().optional(),
-//   chainID: z.number().optional(),
-//   nonce: z.number().optional(),
-// });
-// export type TxAuthInput = z.infer<typeof TxAuthInput>;
+// this is what is used in the contract call
+export const TezosTxCalldata = z.object({
+  signature: z.string(), //TODO: type this better
+  functionCallArgsBytes: String0x,
+  functionCallName: z.string(),
+  blockExpiration: z.number(),
+});
+export type TezosTxCalldata = z.infer<typeof TezosTxCalldata>;
+
+export const TezosTxAuthInput = z.object({
+  contractAbi: z.array(z.record(z.unknown())),
+  contractAddress: TezosAddress,
+  functionName: z.string(),
+  args: z.array(z.unknown()),
+  userAddress: TezosAddress,
+  chainID: z.number().optional(),
+  // these optional inputs can be useful for local dev for example
+  blockExpiration: z.number().int().optional(),
+  nonce: z.number().optional(),
+});
+export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;

@@ -11,12 +11,14 @@
   "author": "",
   "workspaces": [
     "sig-gating-contracts",
-    "contracts-sdk"
+    "contracts-sdk",
+    "tezos-sig-gating-contracts"
   ],
   "preconstruct": {
     "packages": [
       "sig-gating-contracts",
-      "contracts-sdk"
+      "contracts-sdk",
+      "tezos-sig-gating-contracts"
     ]
   },
   "pnpm": {

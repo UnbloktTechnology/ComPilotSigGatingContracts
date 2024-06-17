@@ -79,7 +79,8 @@ export type WalletClientExtended = Client<
   PublicActions & WalletActions<Chain, Account>
 >;
 
-// Tx Auth Data SIgnature
+// Tx Auth Data
+// This is the info that is signed by Nexera ID's Back end
 export const TxAuthData = z.object({
   chainID: z.number(),
   nonce: z.number(),
@@ -90,15 +91,16 @@ export const TxAuthData = z.object({
 });
 export type TxAuthData = z.infer<typeof TxAuthData>;
 
+// This is the info the user needs to send to the api to get a signature
 export const TxAuthInput = z.object({
   contractAbi: z.array(z.record(z.unknown())),
   contractAddress: AddressSchema,
   functionName: z.string(),
   args: z.array(z.unknown()),
   userAddress: AddressSchema,
+  chainID: z.number(),
   // these optional inputs can be useful for local dev for example
   blockExpiration: z.number().int().optional(),
-  chainID: z.number().optional(),
   nonce: z.number().optional(),
 });
 export type TxAuthInput = z.infer<typeof TxAuthInput>;

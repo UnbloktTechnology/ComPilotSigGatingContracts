@@ -1,3 +1,4 @@
 packages:
   - "sig-gating-contracts"
   - "contracts-sdk"
+  - "tezos-sig-gating-contracts"
