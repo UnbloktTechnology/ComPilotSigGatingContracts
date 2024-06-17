@@ -19,7 +19,7 @@
       "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues"
     },
     "homepage": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/tree/main/tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable/readme",
-    "dev_dependencies": {
+    "dependencies": {
       "@ligo/fa": "^1.4.2"
     }
   }
