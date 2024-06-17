@@ -68,6 +68,20 @@ export const TezosEntrypointName = z
   .describe("Tezos entrypoint name");
 export type TezosEntrypointName = z.infer<typeof TezosEntrypointName>;
 
+export const EdSignature = z
+  .string()
+  .refine((value) => value.startsWith("edsig"), {
+    message: "EdSignature must start with 'edsig'",
+  });
+export type EdSignature = z.infer<typeof EdSignature>;
+
+export const TezosPublicKey = z
+  .string()
+  .refine((value) => value.startsWith("edpk"), {
+    message: "TezosPublicKey must start with 'edpk'",
+  });
+export type TezosPublicKey = z.infer<typeof TezosPublicKey>;
+
 // arbitrary length 0xstring
 const String0x = z.custom<`0x${string}`>((val) => {
   return typeof val === "string" ? val.startsWith("0x") : false;
@@ -104,6 +118,7 @@ type String0x = z.infer<typeof String0x>;
 // >;
 
 // Tx Auth Data SIgnature
+// This is the info that is signed by Nexera ID's Back end
 export const TezosTxAuthData = z.object({
   chainID: z.string(),
   userAddress: TezosAddress,
@@ -111,10 +126,33 @@ export const TezosTxAuthData = z.object({
   blockExpiration: z.number(),
   contractAddress: TezosContractAddress,
   functionCallName: TezosEntrypointName,
-  functionCallArgs: String0x,
-  publicKey: z.string(),
+  functionCallArgs: z.array(z.unknown()),
+  signerPublicKey: TezosPublicKey,
 });
 export type TezosTxAuthData = z.infer<typeof TezosTxAuthData>;
+
+export const TezosTxAuthInput = z.object({
+  chainID: z.string(),
+  contractAddress: TezosContractAddress,
+  functionName: TezosEntrypointName,
+  args: z.array(z.unknown()),
+  userAddress: TezosAddress,
+  blockExpiration: z.number().int().optional(),
+  nonce: z.number().int().optional(),
+});
+export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
+
+// this is what is used in the contract call
+export const TezosTxCalldata = z.object({
+  userAddress: TezosAddress,
+  blockExpiration: z.number(),
+  contractAddress: TezosContractAddress,
+  functionCallArgsBytes: z.array(z.unknown()),
+  functionCallName: TezosEntrypointName,
+  signerPublicKey: TezosPublicKey,
+  signature: EdSignature,
+});
+export type TezosTxCalldata = z.infer<typeof TezosTxCalldata>;
 
 // export const TxAuthInput = z.object({
 //   contractAbi: z.array(z.record(z.unknown())),

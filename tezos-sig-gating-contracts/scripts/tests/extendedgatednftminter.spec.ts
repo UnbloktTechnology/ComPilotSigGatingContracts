@@ -22,6 +22,10 @@ const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import { RpcClient } from "@taquito/rpc";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
+const nexeraSigner = new InMemorySigner(
+  "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
+); // signer private key
+
 const createKeccakHash = require("keccak");
 
 function keccak256(data: string) {
@@ -29,27 +33,27 @@ function keccak256(data: string) {
 }
 
 function compute_payload_hash_for_mint(
-  chain_id: string,
+  chainID: string,
   userAddress: string,
-  functioncall_contract: string,
-  functioncall_name: string, // "%mint-offchain"
+  functionCallContract: string,
+  functionCallName: string, // "%mint-offchain"
   functioncall_params_owner: string, // mint arg 1
   functioncall_params_token_id: string, // mint arg 2
   nonce: string,
   expiration: string,
-  dataKey: string
+  signerPublicKey: string
 ) {
-  const chain_id_bytes = convert_chain_id(chain_id);
+  const chain_id_bytes = convert_chain_id(chainID);
   const user_bytes = convert_address(userAddress);
-  const functioncall_contract_bytes = convert_address(functioncall_contract);
-  const functioncall_name_bytes = convert_string(functioncall_name);
-  const functioncall_params_bytes = convert_mint(
+  const functioncall_contract_bytes = convert_address(functionCallContract);
+  const functionCallName_bytes = convert_string(functionCallName);
+  const functionCallArgsBytes = convert_mint(
     functioncall_params_owner,
     functioncall_params_token_id
   );
   const nonce_bytes = convert_nat(nonce);
   const expiration_bytes = convert_nat(expiration);
-  const key_bytes = convert_key(dataKey);
+  const key_bytes = convert_key(signerPublicKey);
   const payload =
     key_bytes +
     chain_id_bytes +
@@ -57,10 +61,10 @@ function compute_payload_hash_for_mint(
     nonce_bytes +
     expiration_bytes +
     functioncall_contract_bytes +
-    functioncall_name_bytes +
-    functioncall_params_bytes;
-  const payload_hash = keccak256(payload);
-  return payload_hash;
+    functionCallName_bytes +
+    functionCallArgsBytes;
+  const payloadHash = keccak256(payload);
+  return payloadHash;
 }
 
 describe(`ExtendedGatedNftMinter`, function () {
@@ -68,6 +72,7 @@ describe(`ExtendedGatedNftMinter`, function () {
   let deployerAddress: string;
   let currentBlock: number;
   let currentChainId: string;
+  let nexeraSignerPublicKey: string;
 
   before(async () => {
     // SET SIGNER
@@ -77,7 +82,9 @@ describe(`ExtendedGatedNftMinter`, function () {
         "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
       ),
     });
-    // Retrieve the chain_id
+    // Retrieve Signer public key
+    nexeraSignerPublicKey = await nexeraSigner.publicKey();
+    // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
     exampleGatedNFTMinter = await deployNFTMinterExt();
@@ -113,53 +120,47 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "0";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Prepare Hash of payload
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
     // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     // CALL contract
@@ -179,9 +180,9 @@ describe(`ExtendedGatedNftMinter`, function () {
     // const asset3_owner = await storage.ledger.get(3);
     expect(deployerAddress === admin).to.be.true;
     expect(asset0_owner === deployerAddress).to.be.true;
-    expect(asset1_owner === functioncall_params.owner).to.be.true;
+    expect(asset1_owner === functionCallArgs.owner).to.be.true;
 
-    const user_nonce = await storage.nonces.get(functioncall_params.owner);
+    const user_nonce = await storage.nonces.get(functionCallArgs.owner);
     // console.log("user_nonce=", user_nonce);
     expect(user_nonce.toNumber() === 1).to.be.true;
   });
@@ -193,53 +194,47 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "0";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Prepare Hash of payload
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
     // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     try {
@@ -266,54 +261,45 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "0";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Provide a different calldata arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      "2"
-    );
+    const functionCallArgsBytes = convert_mint(functionCallArgs.owner, "2");
     // Prepare Hash of payload
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     try {
@@ -340,54 +326,48 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = "1";
     const nonce = "1";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Provide a different calldata arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     try {
@@ -415,56 +395,50 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "1";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Provide a different calldata arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    // let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    // let signature = await nexeraSigner.sign(payloadHash);
     let signature_raw =
       "edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5";
 
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature_raw,
     };
     try {
@@ -492,54 +466,48 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%foobar";
-    const functioncall_params = {
+    const functionCallName = "%foobar";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "1";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Provide a different calldata arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     try {
@@ -569,52 +537,46 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallContract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "1";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Provide a different calldata arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     try {
@@ -644,53 +606,47 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "1";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Prepare Hash of payload
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
     // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
     // CALL contract
@@ -712,10 +668,10 @@ describe(`ExtendedGatedNftMinter`, function () {
     // const asset3_owner = await storage.ledger.get(3);
     expect(deployerAddress === admin).to.be.true;
     expect(asset0_owner === deployerAddress).to.be.true;
-    expect(asset1_owner === functioncall_params.owner).to.be.true;
-    expect(asset2_owner === functioncall_params.owner).to.be.true;
+    expect(asset1_owner === functionCallArgs.owner).to.be.true;
+    expect(asset2_owner === functionCallArgs.owner).to.be.true;
 
-    const user_nonce = await storage.nonces.get(functioncall_params.owner);
+    const user_nonce = await storage.nonces.get(functionCallArgs.owner);
     // console.log("user_nonce=", user_nonce);
     expect(user_nonce.toNumber() === 2).to.be.true;
   });
@@ -727,53 +683,47 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "3",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "2";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Prepare Hash of payload
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
     // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
 
@@ -804,53 +754,47 @@ describe(`ExtendedGatedNftMinter`, function () {
     );
 
     // MINT OFFCHAIN
-    const signerBob = new InMemorySigner(
-      "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-    ); // bob private key
-    const functioncall_contract = exampleGatedNFTMinter
+    const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functionCallName = "%mint_gated";
+    const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "3",
     };
-    const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
+    const signerPublicKey = nexeraSignerPublicKey;
     const expiration = (currentBlock + 10).toString();
     const nonce = "2";
     const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chain_id = currentChainId;
+    const chainID = currentChainId;
 
     // Prepare Hash of payload
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
-      chain_id,
+    const payloadHash = compute_payload_hash_for_mint(
+      chainID,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functionCallContract,
+      functionCallName,
+      functionCallArgs.owner,
+      functionCallArgs.token_id,
       nonce,
       expiration,
-      dataKey
+      signerPublicKey
     );
-    // Bob signs Hash of payload
-    let signature = await signerBob.sign(payload_hash);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
     // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
       expiration: expiration,
-      contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      contractAddress: functionCallContract,
+      name: functionCallName,
+      args: functionCallArgsBytes,
+      publicKey: signerPublicKey,
       signature: signature.prefixSig,
     };
 
@@ -873,11 +817,11 @@ describe(`ExtendedGatedNftMinter`, function () {
     const asset3_owner = await storage.siggated_extension.ledger.get(3);
     expect(deployerAddress === admin).to.be.true;
     expect(asset0_owner === deployerAddress).to.be.true;
-    expect(asset1_owner === functioncall_params.owner).to.be.true;
-    expect(asset2_owner === functioncall_params.owner).to.be.true;
-    expect(asset3_owner === functioncall_params.owner).to.be.true;
+    expect(asset1_owner === functionCallArgs.owner).to.be.true;
+    expect(asset2_owner === functionCallArgs.owner).to.be.true;
+    expect(asset3_owner === functionCallArgs.owner).to.be.true;
 
-    const user_nonce = await storage.nonces.get(functioncall_params.owner);
+    const user_nonce = await storage.nonces.get(functionCallArgs.owner);
     // console.log("user_nonce=", user_nonce);
     expect(user_nonce.toNumber() === 3).to.be.true;
   });
