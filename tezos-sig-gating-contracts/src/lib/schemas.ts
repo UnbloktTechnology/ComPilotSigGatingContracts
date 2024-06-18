@@ -131,16 +131,16 @@ export const TezosTxAuthData = z.object({
 });
 export type TezosTxAuthData = z.infer<typeof TezosTxAuthData>;
 
-// export const TezosTxAuthInput = z.object({
-//   chainID: z.string(),
-//   contractAddress: TezosContractAddress,
-//   functionName: TezosEntrypointName,
-//   args: z.array(z.unknown()),
-//   userAddress: TezosAddress,
-//   blockExpiration: z.number().int().optional(),
-//   nonce: z.number().int().optional(),
-// });
-// export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
+export const TezosTxAuthInput = z.object({
+  chainID: z.string(),
+  contractAddress: TezosContractAddress,
+  functionName: TezosEntrypointName,
+  args: z.string(), //z.array(z.unknown()),
+  userAddress: TezosAddress,
+  blockExpiration: z.number().int().optional(),
+  nonce: z.number().int().optional(),
+});
+export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
 
 // this is what is used in the contract call
 export const TezosTxCalldata = z.object({
