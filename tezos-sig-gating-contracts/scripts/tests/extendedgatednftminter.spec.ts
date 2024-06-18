@@ -104,6 +104,7 @@ describe(`ExtendedGatedNftMinter`, function () {
   beforeEach(async () => {
     const block = await client.getBlockHeader();
     currentBlock = block.level;
+    console.log("currentBlock", currentBlock);
   });
 
   it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
