@@ -145,11 +145,11 @@ export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
 // this is what is used in the contract call
 export const TezosTxCalldata = z.object({
   userAddress: TezosAddress,
-  expiration: z.number(),
+  expirationBlock: z.number(),
   contractAddress: TezosContractAddress.optional(),
-  name: TezosEntrypointName,
-  args: z.string(), //z.array(z.unknown()),
-  publicKey: TezosPublicKey,
+  functionName: TezosEntrypointName,
+  functionArgs: z.string(), //z.array(z.unknown()),
+  signerPublicKey: TezosPublicKey,
   signature: EdSignature,
 });
 export type TezosTxCalldata = z.infer<typeof TezosTxCalldata>;

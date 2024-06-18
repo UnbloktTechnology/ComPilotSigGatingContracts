@@ -138,11 +138,11 @@ let test_nftminter_mint_gated =
 
     let p: NFTMINTER.NftMinter.txAuthData = {
       userAddress = inputs.user;   // user address (used to check nonce)
-      expiration = inputs.expiration;  // expiration date
+      expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
-      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
-      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
-      publicKey = inputs.public_key;     // public key that signed the payload 
+      functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
     // EXEC_GATED_CALLDATA entrypoint call 
@@ -193,11 +193,11 @@ let test_nftminter_mint_gated =
 
     let p: NFTMINTER.NftMinter.txAuthData = {
       userAddress = inputs.user;   // user address (used to check nonce)
-      expiration = inputs.expiration;  // expiration date
+      expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
-      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
-      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
-      publicKey = inputs.public_key;     // public key that signed the payload 
+      functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
@@ -249,11 +249,11 @@ let test_nftminter_mint_gated =
 
     let p: NFTMINTER.NftMinter.txAuthData = {
       userAddress = inputs.user;   // user address (used to check nonce)
-      expiration = inputs.expiration;  // expiration date
+      expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
-      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
-      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
-      publicKey = inputs.public_key;     // public key that signed the payload 
+      functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
@@ -304,11 +304,11 @@ let test_nftminter_mint_gated =
 
     let p: NFTMINTER.NftMinter.txAuthData = {
       userAddress = inputs.user;   // user address (used to check nonce)
-      expiration = inputs.expiration;  // expiration date
+      expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
-      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
-      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
-      publicKey = inputs.public_key;     // public key that signed the payload 
+      functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
 
@@ -364,11 +364,11 @@ let test_nftminter_mint_gated =
 
     let p: NFTMINTER.NftMinter.txAuthData = {
       userAddress = inputs.user;   // user address (used to check nonce)
-      expiration = inputs.expiration;  // expiration date
+      expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
-      name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
-      args = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
-      publicKey = inputs.public_key;     // public key that signed the payload 
+      functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
       signature = my_sig;   // signature of the payload signed by the given public key
     } in
     // EXEC_GATED_CALLDATA entrypoint call should fail (in calldata token_id=7n but signature expects token_id=6n)

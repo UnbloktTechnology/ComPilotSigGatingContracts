@@ -68,11 +68,11 @@ function buildTxInputFromTxAuthData(
 ) {
   const ttai: TezosTxCalldata = {
     userAddress: payload.userAddress,
-    expiration: payload.blockExpiration,
-    contractAddress: payload.contractAddress,
-    name: payload.functionCallName,
-    args: payload.functionCallArgs,
-    publicKey: payload.signerPublicKey,
+    expirationBlock: payload.blockExpiration,
+    // contractAddress: payload.contractAddress,
+    functionName: payload.functionCallName,
+    functionArgs: payload.functionCallArgs,
+    signerPublicKey: payload.signerPublicKey,
     signature: signature,
   };
   return ttai;
@@ -281,7 +281,7 @@ describe(`GatedNftMinter_nodispatch`, function () {
       payloadToSign,
       signature.prefixSig
     );
-    args.args = functionCallArgsBytesInvalid;
+    args.functionArgs = functionCallArgsBytesInvalid;
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -524,7 +524,7 @@ describe(`GatedNftMinter_nodispatch`, function () {
     } catch (err) {
       if (err instanceof TezosOperationError) {
         if (err instanceof TezosOperationError) {
-          expect(err.message).to.be.equal("MissingDispatchEntrypoint");
+          expect(err.message).to.be.equal("InvalidSignature");
         } else {
           expect(false).to.be.true;
         }

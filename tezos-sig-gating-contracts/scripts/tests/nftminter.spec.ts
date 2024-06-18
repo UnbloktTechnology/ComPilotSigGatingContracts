@@ -68,11 +68,11 @@ function buildTxInputFromTxAuthData(
 ) {
   const ttai: TezosTxCalldata = {
     userAddress: payload.userAddress,
-    expiration: payload.blockExpiration,
+    expirationBlock: payload.blockExpiration,
     contractAddress: payload.contractAddress,
-    name: payload.functionCallName,
-    args: payload.functionCallArgs,
-    publicKey: payload.signerPublicKey,
+    functionName: payload.functionCallName,
+    functionArgs: payload.functionCallArgs,
+    signerPublicKey: payload.signerPublicKey,
     signature: signature,
   };
   return ttai;
@@ -282,7 +282,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       payloadToSign,
       signature.prefixSig
     );
-    args.args = functionCallArgsBytesInvalid;
+    args.functionArgs = functionCallArgsBytesInvalid;
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;

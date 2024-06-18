@@ -68,11 +68,11 @@ function buildTxInputFromTxAuthData(
 ) {
   const ttai: TezosTxCalldata = {
     userAddress: payload.userAddress,
-    expiration: payload.blockExpiration,
+    expirationBlock: payload.blockExpiration,
     contractAddress: payload.contractAddress,
-    name: payload.functionCallName,
-    args: payload.functionCallArgs,
-    publicKey: payload.signerPublicKey,
+    functionName: payload.functionCallName,
+    functionArgs: payload.functionCallArgs,
+    signerPublicKey: payload.signerPublicKey,
     signature: signature,
   };
   return ttai;
@@ -104,7 +104,6 @@ describe(`ExtendedGatedNftMinter`, function () {
   beforeEach(async () => {
     const block = await client.getBlockHeader();
     currentBlock = block.level;
-    console.log("currentBlock", currentBlock);
   });
 
   it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
@@ -282,7 +281,7 @@ describe(`ExtendedGatedNftMinter`, function () {
       payloadToSign,
       signature.prefixSig
     );
-    args.args = functionCallArgsBytesInvalid;
+    args.functionArgs = functionCallArgsBytesInvalid;
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
