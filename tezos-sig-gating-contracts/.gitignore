@@ -11,3 +11,4 @@ scripts/fixtures/*.js
 scripts/utils/*.js
 scripts/package-lock.json
 deployments/*.js
+src/lib/*.js

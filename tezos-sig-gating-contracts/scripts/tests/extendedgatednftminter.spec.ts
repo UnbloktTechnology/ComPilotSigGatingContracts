@@ -15,6 +15,11 @@ import {
   convert_chain_id,
   convert_mint,
 } from "../utils/convert";
+import {
+  EdSignature,
+  TezosTxAuthData,
+  TezosTxCalldata,
+} from "../utils/schemas";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -32,39 +37,45 @@ function keccak256(data: string) {
   return createKeccakHash("keccak256").update(data, "hex").digest("hex");
 }
 
-function compute_payload_hash_for_mint(
-  chainID: string,
-  userAddress: string,
-  functionCallContract: string,
-  functionCallName: string, // "%mint-offchain"
-  functioncall_params_owner: string, // mint arg 1
-  functioncall_params_token_id: string, // mint arg 2
-  nonce: string,
-  expiration: string,
-  signerPublicKey: string
-) {
-  const chain_id_bytes = convert_chain_id(chainID);
-  const user_bytes = convert_address(userAddress);
-  const functioncall_contract_bytes = convert_address(functionCallContract);
-  const functionCallName_bytes = convert_string(functionCallName);
-  const functionCallArgsBytes = convert_mint(
-    functioncall_params_owner,
-    functioncall_params_token_id
-  );
-  const nonce_bytes = convert_nat(nonce);
-  const expiration_bytes = convert_nat(expiration);
-  const key_bytes = convert_key(signerPublicKey);
-  const payload =
+function computePayloadHash(payload: TezosTxAuthData) {
+  const nonce_string = payload.nonce.toString();
+  const expiration_string = payload.blockExpiration.toString();
+
+  const chain_id_bytes = convert_chain_id(payload.chainID);
+  const user_bytes = convert_address(payload.userAddress);
+  const functioncall_contract_bytes = convert_address(payload.contractAddress);
+  const functioncall_name_bytes = convert_string(payload.functionCallName);
+  const functionCallArgsBytes = payload.functionCallArgs;
+  const nonce_bytes = convert_nat(nonce_string);
+  const expiration_bytes = convert_nat(expiration_string);
+  const key_bytes = convert_key(payload.signerPublicKey);
+  const payload_bytes =
     key_bytes +
     chain_id_bytes +
     user_bytes +
     nonce_bytes +
     expiration_bytes +
     functioncall_contract_bytes +
-    functionCallName_bytes +
+    functioncall_name_bytes +
     functionCallArgsBytes;
-  const payloadHash = keccak256(payload);
-  return payloadHash;
+  const payload_hash = keccak256(payload_bytes);
+  return payload_hash;
+}
+
+function buildTxInputFromTxAuthData(
+  payload: TezosTxAuthData,
+  signature: EdSignature
+) {
+  const ttai: TezosTxCalldata = {
+    userAddress: payload.userAddress,
+    expiration: payload.blockExpiration,
+    contractAddress: payload.contractAddress,
+    name: payload.functionCallName,
+    args: payload.functionCallArgs,
+    publicKey: payload.signerPublicKey,
+    signature: signature,
+  };
+  return ttai;
 }
 
 describe(`ExtendedGatedNftMinter`, function () {
@@ -123,46 +134,33 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "0";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 0,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-    // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     // CALL contract
     const op = await cntr.methodsObject.exec_gated_calldata(args).send();
     console.log(
@@ -181,9 +179,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     expect(deployerAddress === admin).to.be.true;
     expect(asset0_owner === deployerAddress).to.be.true;
     expect(asset1_owner === functionCallArgs.owner).to.be.true;
-
     const user_nonce = await storage.nonces.get(functionCallArgs.owner);
-    // console.log("user_nonce=", user_nonce);
     expect(user_nonce.toNumber() === 1).to.be.true;
   });
 
@@ -197,46 +193,34 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "0";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
 
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 0,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-    // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -264,44 +248,40 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "0";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Provide a different calldata arguments
-    const functionCallArgsBytes = convert_mint(functionCallArgs.owner, "2");
-    // Prepare Hash of payload
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
+    const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
+      functionCallArgs.token_id
     );
+    const functionCallArgsBytesInvalid = convert_mint(
+      functionCallArgs.owner,
+      "2"
+    );
+    // Prepare Hash of payload
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 0,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
+    args.args = functionCallArgsBytesInvalid;
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -329,47 +309,35 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = "1";
-    const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Provide a different calldata arguments
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 1,
+      blockExpiration: 1,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
+
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -398,49 +366,37 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Provide a different calldata arguments
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 1,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     // let signature = await nexeraSigner.sign(payloadHash);
     let signature_raw =
       "edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5";
 
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature_raw,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature_raw
+    );
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -469,16 +425,11 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%foobar";
+
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
 
     // Provide a different calldata arguments
     const functionCallArgsBytes = convert_mint(
@@ -486,30 +437,24 @@ describe(`ExtendedGatedNftMinter`, function () {
       functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 1,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%foobar",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -538,16 +483,10 @@ describe(`ExtendedGatedNftMinter`, function () {
 
     // MINT OFFCHAIN
     const functionCallContract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
 
     // Provide a different calldata arguments
     const functionCallArgsBytes = convert_mint(
@@ -555,30 +494,24 @@ describe(`ExtendedGatedNftMinter`, function () {
       functionCallArgs.token_id
     );
     // Prepare Hash of payload
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 1,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -609,46 +542,33 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "2",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 1,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-    // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     // CALL contract
     const op = await cntr.methodsObject
       .exec_gated_calldata_no_dispatch2(args)
@@ -686,47 +606,33 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "3",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "2";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 2,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-    // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
-
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     let pre_op_1 = await cntr.methodsObject.exec_gated_calldata(args);
     let est_1 = await Tezos.estimate.contractCall(pre_op_1);
     console.log("extimation exec_gated_calldata=", est_1.totalCost);
@@ -757,47 +663,33 @@ describe(`ExtendedGatedNftMinter`, function () {
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter
       : "";
-    const functionCallName = "%mint_gated";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "3",
     };
-    const signerPublicKey = nexeraSignerPublicKey;
-    const expiration = (currentBlock + 10).toString();
-    const nonce = "2";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    const chainID = currentChainId;
-
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
       functionCallArgs.owner,
       functionCallArgs.token_id
     );
-    const payloadHash = compute_payload_hash_for_mint(
-      chainID,
-      userAddress,
-      functionCallContract,
-      functionCallName,
-      functionCallArgs.owner,
-      functionCallArgs.token_id,
-      nonce,
-      expiration,
-      signerPublicKey
-    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 2,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
-    // console.log("sig=", signature);
     // Execute mint-offchain entrypoint
-    const args = {
-      userAddress: userAddress,
-      expiration: expiration,
-      contractAddress: functionCallContract,
-      name: functionCallName,
-      args: functionCallArgsBytes,
-      publicKey: signerPublicKey,
-      signature: signature.prefixSig,
-    };
-
+    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+      payloadToSign,
+      signature.prefixSig
+    );
     // CALL contract
     const op = await cntr.methodsObject
       .exec_gated_calldata_no_dispatch2(args)
@@ -822,7 +714,6 @@ describe(`ExtendedGatedNftMinter`, function () {
     expect(asset3_owner === functionCallArgs.owner).to.be.true;
 
     const user_nonce = await storage.nonces.get(functionCallArgs.owner);
-    // console.log("user_nonce=", user_nonce);
     expect(user_nonce.toNumber() === 3).to.be.true;
   });
 });
