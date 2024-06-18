@@ -6,23 +6,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-module Utils = struct
-    let rec zipWith (type a b c) (lst_a : a list) (lst_b : b list) (f: (a * b) -> c) : c list =
-      match lst_a, lst_b with
-      | [], _ -> []
-      | _, [] -> []
-      | x::xs, y::ys -> (f (x, y)) :: zipWith xs ys f
-
-    [@inline]
-    let reverse (type a) (lst : a list) : a list =
-      let rec rev (type b) ((lst1, res) : b list * b list) : b list =
-        match lst1 with
-        | [] -> res
-        | hd :: tl -> rev (tl, (hd :: res))
-      in
-      rev (lst, ([] : a list))
-end
-
 type 'a raw_payload = {
   public_key: key;
   chain_id: chain_id;
@@ -44,17 +27,16 @@ let compute_hash (type a) (data : a raw_payload) : bytes * bytes =
     let functioncall_params_bytes : bytes = Bytes.pack data.functioncall_params in
     let data : bytes = Bytes.concat key_bytes (Bytes.concat chain_id_bytes (Bytes.concat user_bytes (Bytes.concat nonce_bytes (Bytes.concat expiration_bytes (Bytes.concat functioncall_contract_bytes (Bytes.concat functioncall_name_bytes functioncall_params_bytes)))))) in
     let data_hash = Crypto.keccak data in    
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("functioncall_contract_bytes=", functioncall_contract_bytes) in
-    // let () = Test.Next.IO.log("functioncall_name_bytes=", functioncall_name_bytes) in
-    // let () = Test.Next.IO.log("functioncall_params_bytes=", functioncall_params_bytes) in
-    // let () = Test.Next.IO.log("nonce_bytes=", nonce_bytes) in
-    // let () = Test.Next.IO.log("data=", data) in
-    // let () = Test.Next.IO.log("data_hash=", data_hash) in
     data_hash, functioncall_params_bytes
 
+let localsigner = {
+  address=("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+  publicKey=("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+  privateKey="edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
+}
+
 let sign_hash (data_hash : bytes) : signature = 
-  Test.Next.Crypto.sign "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU" data_hash
+  Test.Next.Crypto.sign localsigner.privateKey data_hash
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +47,7 @@ let test_nftminter_initial_storage =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     // DEPLOY NFTMINTER
@@ -82,7 +64,7 @@ let test_nftminter_set_signer =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     // DEPLOY NFTMINTER
@@ -104,7 +86,7 @@ let test_nftminter_failure_set_signer_not_admin =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     // DEPLOY NFTMINTER
@@ -128,7 +110,7 @@ let test_nftminter_mint_gated =
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -138,7 +120,7 @@ let test_nftminter_mint_gated =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -152,18 +134,10 @@ let test_nftminter_mint_gated =
     } in
     let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
-    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let my_sig : signature = sign_hash data_hash in
 
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -192,7 +166,7 @@ let test_nftminter_mint_gated =
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -202,7 +176,7 @@ let test_nftminter_mint_gated =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -215,19 +189,10 @@ let test_nftminter_mint_gated =
       }: NFTMINTER.NftMinter.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
-    // let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     let my_sig : signature = sign_hash data_hash in
 
-
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -256,7 +221,7 @@ let test_nftminter_mint_gated =
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -266,7 +231,7 @@ let test_nftminter_mint_gated =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -282,16 +247,8 @@ let test_nftminter_mint_gated =
     let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     // let my_sig : signature = sign_hash data_hash in
 
-
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -320,7 +277,7 @@ let test_nftminter_mint_gated =
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -330,7 +287,7 @@ let test_nftminter_mint_gated =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -343,20 +300,10 @@ let test_nftminter_mint_gated =
       }: NFTMINTER.NftMinter.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in
-    // let my_sig : signature = ("edsigttGP3HkT983SuVgv6GqdYSpuWtkmdhxYazshPfkweXtfXfnzJT2Ku3QGgHQ32iG6UcuRzwAAKXt6w3Exm16WyXvj9EzdrD" : signature) in
     let my_sig : signature = sign_hash data_hash in
 
-
-
-    // DEBUG - uncomment to retrieve the payload that need to be signed
-    // let () = Test.Next.IO.log("nftminter_address=", nftminter_address) in
-    // let () = Test.Next.IO.log("nftminter_address=", owner3) in
-
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -385,7 +332,7 @@ let test_nftminter_mint_gated =
     // DEPLOY NFTMINTER
     let nft_extension_initial = { 
         admin = owner3;
-        signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address);
+        signerAddress = localsigner.address;
         nonces = (Big_map.empty: (address, nat) big_map)
     } in
     let orig_nftminter = NftMinterHelper.boot_nftminter(nft_extension_initial, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -395,7 +342,7 @@ let test_nftminter_mint_gated =
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
     let inputs: NFTMINTER.NftMinter.mint raw_payload = {
-      public_key = ("edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat" : key);
+      public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
       nonce = 0n;
@@ -416,10 +363,7 @@ let test_nftminter_mint_gated =
     // let () = Test.Next.IO.log("nftminter_address=", owner3) in
 
     let p: NFTMINTER.NftMinter.txAuthData = {
-      payload = data_hash;   // hash of the following fields (except signature)
-      chain_id = inputs.chain_id;  // chain_id
       userAddress = inputs.user;   // user address (used to check nonce)
-      nonce = inputs.nonce;   // nonce of the userAddress when forging the signature
       expiration = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
       name = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
@@ -433,7 +377,7 @@ let test_nftminter_mint_gated =
     let () = AssertHelper.tx_success r in
     // call VERIFY entrypoint again ... should fail
     let r = Test.transfer_to_contract nftminter_contract (Exec_gated_calldata p) 0tez in
-    let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_nonce in
+    let () = AssertHelper.string_failure r NFTMINTER.NftMinter.Errors.invalid_signature in
 
     // VERIFY modified storage
     let current_storage = Test.Next.Typed_address.get_storage nftminter_taddr in

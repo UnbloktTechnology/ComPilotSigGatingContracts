@@ -8,7 +8,7 @@ export const saveJson = (path: string, data: string) =>
 
 export const saveContractAddress = (name: string, address: string) =>
   outputFile(
-    `${process.cwd()}/../deployments/${name}.ts`,
+    `${process.cwd()}/deployments/${name}.ts`,
     `export default "${address}";`
   );
 

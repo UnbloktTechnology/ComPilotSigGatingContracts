@@ -56,11 +56,6 @@ let get_fa2_for_proxy_initial_storage (nft_extension_initial, owner1, owner2, ow
     }|}]);
     ] 
     in
-    // let nft_extension_initial = { 
-    //     admin = owner3;
-    //     signerAddress = ("tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2": address); // /TODO replace hard coded as a parameter
-    //     nonces = (Big_map.empty: (address, nat) big_map)
-    // } in
     let initial_storage : NFTMINTER.NftMinterForProxy.storage = {
         extension      = nft_extension_initial;
         ledger         = ledger;

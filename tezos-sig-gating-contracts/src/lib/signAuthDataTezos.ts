@@ -14,7 +14,7 @@ import {
   convert_string,
   convert_address,
   convert_mint,
-} from "./utils/convert";
+} from "./convert";
 
 const createKeccakHash = require("keccak");
 // import verifierContract from "../compiled/TxAuthDataVerifier.json";
