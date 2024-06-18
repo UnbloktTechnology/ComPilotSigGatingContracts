@@ -33,7 +33,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/fa2_for_proxy.mligo,fa2_for_proxy.tz, -m NftMinterForProxy)
 	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.tz, -m NftMinterExt)
 	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.json, -m NftMinterExt --michelson-format json)
-
+	@$(call compile,examples/gatednftminter_nodispatch.mligo,gatednftminter_nodispatch.tz, -m NftMinterExtNoDispatch)
+	@$(call compile,examples/gatednftminter_nodispatch.mligo,gatednftminter_nodispatch.json, -m NftMinterExtNoDispatch --michelson-format json)
 
 
 test: ## run tests (SUITE=asset_approve make test)
@@ -42,6 +43,7 @@ ifndef SUITE
 	@$(call test,nftminter.test.mligo)
 	@$(call test,proxy.test.mligo)
 	@$(call test,extended_gated_nftminter.test.mligo)
+	@$(call test,gatednftminter_nodispatch.test.mligo)
 
 else
 	@$(call test,$(SUITE).test.mligo)
