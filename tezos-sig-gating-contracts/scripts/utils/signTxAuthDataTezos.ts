@@ -16,11 +16,7 @@ import {
   TezosTxAuthData,
   TezosTxAuthInput,
 } from "./schemas";
-const createKeccakHash = require("keccak");
-
-function keccak256(data: string) {
-  return createKeccakHash("keccak256").update(data, "hex").digest("hex");
-}
+import { computePayloadHash } from "../utils/computePayloadHash";
 
 export const getChainID = async (provider: TezosToolkit) => {
   const currentChainId = await provider.rpc.getChainId();
@@ -34,8 +30,8 @@ export const getNonceFromContract = async (
 ) => {
   const cntr = await provider.contract.at(contractAddress);
   const storage: any = await cntr.storage();
-  const user_nonce = await storage.nonces.get(userAddress);
-  return user_nonce ? Number(user_nonce) : Number(0);
+  const userNonce = await storage.nonces.get(userAddress);
+  return userNonce ? Number(userNonce) : Number(0);
 };
 
 export const getBlockLevel = async (provider: TezosToolkit) => {
@@ -43,46 +39,11 @@ export const getBlockLevel = async (provider: TezosToolkit) => {
   return Number(block.level);
 };
 
-export const computePayloadHashFromTezosTxAuthData = async (
-  tezosTxAuthData: TezosTxAuthData
-) => {
-  const nonce_str = tezosTxAuthData.nonce.toString();
-  const expiration_str = tezosTxAuthData.blockExpiration.toString();
-
-  const chain_id_bytes = convert_chain_id(tezosTxAuthData.chainID);
-  const user_bytes = convert_address(tezosTxAuthData.userAddress);
-  const nonce_bytes = convert_nat(nonce_str);
-  const expiration_bytes = convert_nat(expiration_str);
-  const functioncall_contract_bytes = convert_address(
-    tezosTxAuthData.contractAddress
-  );
-  const functioncall_name_bytes = convert_string(
-    tezosTxAuthData.functionCallName
-  );
-  const functioncall_params_bytes = tezosTxAuthData.functionCallArgs; //convert_mint(functioncall_params.owner, functioncall_params.token_id);
-  const key_bytes = convert_key(tezosTxAuthData.signerPublicKey);
-  const payload =
-    key_bytes +
-    chain_id_bytes +
-    user_bytes +
-    nonce_bytes +
-    expiration_bytes +
-    functioncall_contract_bytes +
-    functioncall_name_bytes +
-    functioncall_params_bytes;
-  const payload_hash = keccak256(payload);
-  return payload_hash;
-};
-
 export const signTezosTxAuthData = async (
   signer: InMemorySigner,
   tezosTxAuthData: TezosTxAuthData
 ) => {
-  // Compute payload hash
-  const payload_hash = await computePayloadHashFromTezosTxAuthData(
-    tezosTxAuthData
-  );
-  // SIGN
+  const payload_hash = await computePayloadHash(tezosTxAuthData);
   let signature = await signer.sign(payload_hash);
   return signature;
 };
@@ -121,7 +82,6 @@ export const signTxAuthDataLibTezos = async (
 ) => {
   // Retrieve signer public key
   const signerPublicKey = await signer.publicKey();
-  // console.log("signerPublicKey=", signerPublicKey);
 
   // Retrieve Nonce from contract storage
   const nonce = await getNonceFromContract(

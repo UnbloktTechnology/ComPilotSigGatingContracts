@@ -2,13 +2,13 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/nftminter.json";
+import nftMinterContract from "../../compiled/gatednftminter_nodispatch.json";
 
-export async function deployNFTMinter(provider: TezosToolkit) {
-  const senderAddress = await provider.signer.publicKeyHash();
+const RPC_ENDPOINT = "http://localhost:20000/";
 
+export async function deployNFTMinterExtNoDispatch(provider: TezosToolkit) {
   const ledger = new MichelsonMap();
-  ledger.set(0, senderAddress); // the deployer of the contract get the token 0 !
+  ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
 
   const tokenMetadata = new MichelsonMap();
   for (let i = 0; i < 10; i++) {
@@ -39,18 +39,23 @@ export async function deployNFTMinter(provider: TezosToolkit) {
 
   const operators = new MichelsonMap();
 
-  const extension = {
-    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-    nonces: new MichelsonMap(),
+  const fa2Extension = {
+    minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
   };
 
-  const initialStorage = {
-    extension,
+  const initialFA2Storage = {
+    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
     ledger,
     metadata,
     token_metadata: tokenMetadata,
     operators,
+  };
+
+  const initialStorage = {
+    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    nonces: new MichelsonMap(),
+    siggated_extension: initialFA2Storage,
   };
 
   try {

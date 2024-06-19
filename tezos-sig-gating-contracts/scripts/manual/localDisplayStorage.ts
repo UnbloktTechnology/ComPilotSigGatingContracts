@@ -37,19 +37,19 @@ async function main() {
     const storage: any = await cntr.storage();
     // console.log("storage=", storage);
 
-    // const asset1_owner = await storage["ledger"].get(1);
-    const asset0_owner = await storage.ledger.get(0);
-    const asset1_owner = await storage.ledger.get(1);
-    const asset2_owner = await storage.ledger.get(2);
-    const asset3_owner = await storage.ledger.get(3);
-    console.log("asset0_owner=", asset0_owner);
-    console.log("asset1_owner=", asset1_owner);
-    console.log("asset2_owner=", asset2_owner);
+    // const ownerAsset1 = await storage["ledger"].get(1);
+    const ownerAsset0 = await storage.ledger.get(0);
+    const ownerAsset1 = await storage.ledger.get(1);
+    const ownerAsset2 = await storage.ledger.get(2);
+    const ownerAsset3 = await storage.ledger.get(3);
+    console.log("ownerAsset0=", ownerAsset0);
+    console.log("ownerAsset1=", ownerAsset1);
+    console.log("ownerAsset2=", ownerAsset2);
 
     // const expected = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    // if (asset1_owner != expected) {
-    //   throw `Unexpected owner1 in storage, expected ${expected}, got ${asset1_owner.toString()}`;
-    //   // throw `Unexpected owner1 in storage, expected ${storage.simple.toNumber()}, got ${asset1_owner.toNumber()}`;
+    // if (ownerAsset1 != expected) {
+    //   throw `Unexpected owner1 in storage, expected ${expected}, got ${ownerAsset1.toString()}`;
+    //   // throw `Unexpected owner1 in storage, expected ${storage.simple.toNumber()}, got ${ownerAsset1.toNumber()}`;
     // }
   } catch (error: any) {
     console.log(error);

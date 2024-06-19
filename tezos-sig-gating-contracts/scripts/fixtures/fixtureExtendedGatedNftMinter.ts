@@ -10,12 +10,12 @@ export async function deployNFTMinterExt(provider: TezosToolkit) {
   const ledger = new MichelsonMap();
   ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
 
-  const token_metadata = new MichelsonMap();
+  const tokenMetadata = new MichelsonMap();
   for (let i = 0; i < 10; i++) {
-    const token_info_i = new MichelsonMap();
-    token_info_i.set("name", char2Bytes("Token " + i.toString()));
-    token_info_i.set("description", char2Bytes("asset #" + i.toString()));
-    token_metadata.set(i, { token_id: i, token_info: token_info_i });
+    const tokenInfo = new MichelsonMap();
+    tokenInfo.set("name", char2Bytes("Token " + i.toString()));
+    tokenInfo.set("description", char2Bytes("asset #" + i.toString()));
+    tokenMetadata.set(i, { token_id: i, token_info: tokenInfo });
   }
 
   const metadata = new MichelsonMap();
@@ -47,7 +47,7 @@ export async function deployNFTMinterExt(provider: TezosToolkit) {
     extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
     ledger,
     metadata,
-    token_metadata,
+    token_metadata: tokenMetadata,
     operators,
   };
 
@@ -68,7 +68,6 @@ export async function deployNFTMinterExt(provider: TezosToolkit) {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    // await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);
