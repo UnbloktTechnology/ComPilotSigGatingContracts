@@ -20,6 +20,8 @@ import {
   TezosTxAuthData,
   TezosTxCalldata,
 } from "../utils/schemas";
+import { buildTxCallData } from "../utils/buildTxCallData";
+import { computePayloadHash } from "../utils/computePayloadHash";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -27,56 +29,9 @@ const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import { RpcClient } from "@taquito/rpc";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
-const createKeccakHash = require("keccak");
-
-function keccak256(data: string) {
-  return createKeccakHash("keccak256").update(data, "hex").digest("hex");
-}
-
 const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
 ); // signer private key
-
-function computePayloadHash(payload: TezosTxAuthData) {
-  const nonce_string = payload.nonce.toString();
-  const expiration_string = payload.blockExpiration.toString();
-
-  const chain_id_bytes = convert_chain_id(payload.chainID);
-  const user_bytes = convert_address(payload.userAddress);
-  const functioncall_contract_bytes = convert_address(payload.contractAddress);
-  const functioncall_name_bytes = convert_string(payload.functionCallName);
-  const functionCallArgsBytes = payload.functionCallArgs;
-  const nonce_bytes = convert_nat(nonce_string);
-  const expiration_bytes = convert_nat(expiration_string);
-  const key_bytes = convert_key(payload.signerPublicKey);
-  const payload_bytes =
-    key_bytes +
-    chain_id_bytes +
-    user_bytes +
-    nonce_bytes +
-    expiration_bytes +
-    functioncall_contract_bytes +
-    functioncall_name_bytes +
-    functionCallArgsBytes;
-  const payloadHash = keccak256(payload_bytes);
-  return payloadHash;
-}
-
-function buildTxInputFromTxAuthData(
-  payload: TezosTxAuthData,
-  signature: EdSignature
-) {
-  const ttai: TezosTxCalldata = {
-    userAddress: payload.userAddress,
-    expirationBlock: payload.blockExpiration,
-    contractAddress: payload.contractAddress,
-    functionName: payload.functionCallName,
-    functionArgs: payload.functionCallArgs,
-    signerPublicKey: payload.signerPublicKey,
-    signature: signature,
-  };
-  return ttai;
-}
 
 describe(`ExampleGatedNFTMinter`, function () {
   let exampleGatedNFTMinter: string | undefined;
@@ -113,15 +68,15 @@ describe(`ExampleGatedNFTMinter`, function () {
     const storage: any = await cntr.storage();
     // Verify
     const admin = await storage.extension.admin;
-    const asset0_owner = await storage.ledger.get(0);
-    const asset1_owner = await storage.ledger.get(1);
-    const asset2_owner = await storage.ledger.get(2);
-    const asset3_owner = await storage.ledger.get(3);
+    const ownerAsset0 = await storage.ledger.get(0);
+    const ownerAsset1 = await storage.ledger.get(1);
+    const ownerAsset2 = await storage.ledger.get(2);
+    const ownerAsset3 = await storage.ledger.get(3);
     expect(deployerAddress === admin).to.be.true;
-    expect(asset0_owner === deployerAddress).to.be.true;
-    expect(asset1_owner).to.be.undefined;
-    expect(asset2_owner).to.be.undefined;
-    expect(asset3_owner).to.be.undefined;
+    expect(ownerAsset0 === deployerAddress).to.be.true;
+    expect(ownerAsset1).to.be.undefined;
+    expect(ownerAsset2).to.be.undefined;
+    expect(ownerAsset3).to.be.undefined;
   });
 
   it(`Should mint the asset #1`, async () => {
@@ -157,7 +112,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
@@ -172,17 +127,15 @@ describe(`ExampleGatedNFTMinter`, function () {
     // VERIFY
     const storage: any = await cntr.storage();
     const admin = await storage.extension.admin;
-    const asset0_owner = await storage.ledger.get(0);
-    const asset1_owner = await storage.ledger.get(1);
-    // const asset2_owner = await storage.ledger.get(2);
-    // const asset3_owner = await storage.ledger.get(3);
+    const ownerAsset0 = await storage.ledger.get(0);
+    const ownerAsset1 = await storage.ledger.get(1);
     expect(deployerAddress === admin).to.be.true;
-    expect(asset0_owner === deployerAddress).to.be.true;
-    expect(asset1_owner === functionCallArgs.owner).to.be.true;
-    const user_nonce = await storage.extension.nonces.get(
+    expect(ownerAsset0 === deployerAddress).to.be.true;
+    expect(ownerAsset1 === functionCallArgs.owner).to.be.true;
+    const userNonce = await storage.extension.nonces.get(
       functionCallArgs.owner
     );
-    expect(user_nonce.toNumber() === 1).to.be.true;
+    expect(userNonce.toNumber() === 1).to.be.true;
   });
 
   it(`Attempt to replay mint #1 should fail`, async () => {
@@ -218,7 +171,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute exec_gated_calldata entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
@@ -278,7 +231,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
@@ -335,7 +288,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
@@ -393,10 +346,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       "edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5";
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
-      payloadToSign,
-      signature_raw
-    );
+    const args: TezosTxCalldata = buildTxCallData(payloadToSign, signature_raw);
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -450,7 +400,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
@@ -508,7 +458,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxInputFromTxAuthData(
+    const args: TezosTxCalldata = buildTxCallData(
       payloadToSign,
       signature.prefixSig
     );
