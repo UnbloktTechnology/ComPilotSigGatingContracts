@@ -13,8 +13,9 @@ import {
   convert_nat,
   convert_string,
   convert_address,
+  convert_chain_id,
   convert_mint,
-} from "./utils/convert";
+} from "../utils/convert";
 
 const createKeccakHash = require("keccak");
 // import verifierContract from "../compiled/TxAuthDataVerifier.json";
@@ -28,27 +29,29 @@ function keccak256(data: string) {
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
   const signer = new InMemorySigner(
-    "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-  );
-  const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
+    "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
+  ); // bob
+  const signerAddress = "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6";
 
   // INPUTS
   const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-  const functioncall_contract = "KT1TRPRBqSR6GsCKc9ozxF7uJuX4gtPFwHxe"; //"KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+  const functioncall_contract = "KT1UgwgtRhh2FYwoc38sPKDsqPkjDRpEoFio";
   const functioncall_name = "%mint_gated"; //"%mint"; // "%mint_gated";
   const functioncall_params = {
     owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
     token_id: "1",
   };
-  const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
+  const dataKey = "edpkurPsQ8eUApnLUJ9ZPDvu98E8VNj4KtJa1aZr16Cr5ow5VHKnz4"; // bob public key
   const expiration = "12345";
   const nonce = "0";
+  const chain_id = "NetXnofnLBXBoxo";
 
   // display public key
   const signerPublicKey = await signer.publicKey();
   console.log("signerPublicKey=", signerPublicKey);
 
   // display payload
+  const chain_id_bytes = convert_chain_id(chain_id);
   const user_bytes = convert_address(userAddress);
   const functioncall_contract_bytes = convert_address(functioncall_contract);
   const functioncall_name_bytes = convert_string(functioncall_name);
@@ -61,6 +64,7 @@ async function main() {
   const key_bytes = convert_key(dataKey);
   const payload =
     key_bytes +
+    chain_id_bytes +
     user_bytes +
     nonce_bytes +
     expiration_bytes +

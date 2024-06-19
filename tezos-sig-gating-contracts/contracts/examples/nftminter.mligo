@@ -1,3 +1,5 @@
+// This is a monolithic implementation of a signature verification
+// In this example it is applied to minting assets on a Token FA2 contract
 // #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
 
@@ -68,15 +70,15 @@ module NftMinter = struct
 
   type txAuthData = {
       userAddress: address;   // user address (used to check nonce)
-      expiration: nat;  // expiration date
+      expirationBlock: nat;  // expiration date
       contractAddress: address;  // calldata contract address
-      name: string;   // name of the entrypoint of the calldata (for example "%mint")
-      args: bytes;   // arguments for the entrypoint of the calldata 
-      publicKey: key;     // public key that signed the payload 
+      functionName: string;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs: bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey: key;     // public key that signed the payload 
       signature: signature;   // signature of the payload signed by the given public key
   }
   let verifyTxAuthData (p: txAuthData)(s: storage) : ret = 
-    let { userAddress; expiration; contractAddress; name; args; publicKey=k; signature } = p in
+    let { userAddress; expirationBlock=expiration; contractAddress; functionName=name; functionArgs=args; signerPublicKey=k; signature } = p in
     let chain_id = Tezos.get_chain_id() in
     let nonce, new_nonces = match Big_map.find_opt userAddress s.extension.nonces with
     | None -> (0n, Big_map.update userAddress (Some(1n)) s.extension.nonces)

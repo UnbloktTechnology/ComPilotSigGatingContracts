@@ -2,7 +2,7 @@
 #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
 #import "./sig_gated_extendable.mligo" "SigGatedExtendable"
 
-module NftMinterExt = struct
+module NftMinterExtNoDispatch = struct
 
   module NFT = FA2.NFTExtendable
 
@@ -36,6 +36,15 @@ module NftMinterExt = struct
   let txAuthDataSignerAddress(p: unit)(s: storage) : address = 
       SigGatedExtendable.getSigner p s 
 
+  type txAuthInput = {
+    userAddress: address;   // user address (used to check nonce)
+    expirationBlock: nat;  // expiration date
+    functionName: string;   // name of the entrypoint of the calldata (for example "%mint")
+    functionArgs: bytes;   // arguments for the entrypoint of the calldata 
+    signerPublicKey: key;     // public key that signed the payload 
+    signature: signature;   // signature of the payload signed by the given public key
+  }
+
   [@entry]
   let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
     let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
@@ -45,14 +54,33 @@ module NftMinterExt = struct
   // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
   // - calls Distpatch entrypoint for processing the calldata
   [@entry]
-  let exec_gated_calldata (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+  let exec_gated_calldata (datainput : txAuthInput) (s : storage): ret =
+      // let {userAddress; expiration; functionName; functionArgs; signerPublicKey; signature } = datainput in
+      let data : SigGatedExtendable.txAuthData = { 
+        userAddress = datainput.userAddress;
+        expirationBlock = datainput.expirationBlock;
+        functionName = datainput.functionName;
+        functionArgs = datainput.functionArgs;
+        signerPublicKey = datainput.signerPublicKey;
+        signature = datainput.signature;
+        contractAddress=Tezos.get_self_address(); 
+      } in
       SigGatedExtendable.verifyAndDispatchTxAuthData data s 
 
   // Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
-  let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+  let exec_gated_calldata_no_dispatch (datainput : txAuthInput) (s : storage): ret =
+      let data : SigGatedExtendable.txAuthData = { 
+        userAddress = datainput.userAddress;
+        expirationBlock = datainput.expirationBlock;
+        functionName = datainput.functionName;
+        functionArgs = datainput.functionArgs;
+        signerPublicKey = datainput.signerPublicKey;
+        signature = datainput.signature;
+        contractAddress=Tezos.get_self_address(); 
+      } in
       let s = SigGatedExtendable.verifyTxAuthData data s in
       let cd : SigGatedExtendable.calldata = (data.contractAddress, data.functionName, data.functionArgs) in
       let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
@@ -62,7 +90,16 @@ module NftMinterExt = struct
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process the calldata itself
   [@entry]
-  let exec_gated_calldata_no_dispatch2 (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+  let exec_gated_calldata_no_dispatch2 (datainput : txAuthInput) (s : storage): ret =
+    let data : SigGatedExtendable.txAuthData = { 
+      userAddress = datainput.userAddress;
+      expirationBlock = datainput.expirationBlock;
+      functionName = datainput.functionName;
+      functionArgs = datainput.functionArgs;
+      signerPublicKey = datainput.signerPublicKey;
+      signature = datainput.signature;
+      contractAddress=Tezos.get_self_address(); 
+    } in
     let s = SigGatedExtendable.verifyTxAuthData data s in
     if (Tezos.get_self_address() = data.contractAddress) then
       if data.functionName = "%mint_gated" then

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterExt } from "../fixtures/fixtureExtendedGatedNftMinter";
+import { deployNFTMinterExtNoDispatch } from "../fixtures/fixtureGatedNftMinterNodispatch";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
@@ -20,7 +20,7 @@ import {
   TezosTxAuthData,
   TezosTxCalldata,
 } from "../utils/schemas";
-import { buildTxCallData } from "../utils/buildTxCallData";
+import { buildTxCallDataNoContractAddress } from "../utils/buildTxCallData";
 import { computePayloadHash } from "../utils/computePayloadHash";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
@@ -33,7 +33,7 @@ const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
 ); // signer private key
 
-describe(`ExtendedGatedNftMinter`, function () {
+describe(`GatedNftMinterNodispatch`, function () {
   let exampleGatedNFTMinter: string | undefined;
   let deployerAddress: string;
   let currentBlock: number;
@@ -53,7 +53,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterExt(Tezos);
+    exampleGatedNFTMinter = await deployNFTMinterExtNoDispatch(Tezos);
   });
 
   beforeEach(async () => {
@@ -112,7 +112,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -170,7 +170,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -230,7 +230,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     let signature = await nexeraSigner.sign(payloadHash);
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -286,7 +286,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -346,7 +346,10 @@ describe(`ExtendedGatedNftMinter`, function () {
       "edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5";
 
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(payloadToSign, signature_raw);
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
+      payloadToSign,
+      signature_raw
+    );
     try {
       const op = await cntr.methodsObject.exec_gated_calldata(args).send();
       expect(false).to.be.true;
@@ -401,7 +404,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -458,7 +461,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -474,7 +477,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     } catch (err) {
       if (err instanceof TezosOperationError) {
         if (err instanceof TezosOperationError) {
-          expect(err.message).to.be.equal("MissingDispatchEntrypoint");
+          expect(err.message).to.be.equal("InvalidSignature");
         } else {
           expect(false).to.be.true;
         }
@@ -515,7 +518,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -579,7 +582,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );
@@ -637,7 +640,7 @@ describe(`ExtendedGatedNftMinter`, function () {
     // Nexera signs Hash of payload
     let signature = await nexeraSigner.sign(payloadHash);
     // Execute mint-offchain entrypoint
-    const args: TezosTxCalldata = buildTxCallData(
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
       payloadToSign,
       signature.prefixSig
     );

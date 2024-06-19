@@ -4,7 +4,7 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/"; 
+const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
@@ -12,13 +12,13 @@ async function main() {
   //set alice key
   Tezos.setProvider({
     signer: await InMemorySigner.fromSecretKey(
-      "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
+      "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
     ),
   });
   // related address
-  // const signerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
+  // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
   const ledger = new MichelsonMap();
-  ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
+  ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
 
   const token_metadata = new MichelsonMap();
   const token_info_0 = new MichelsonMap();
@@ -34,7 +34,7 @@ async function main() {
   token_metadata.set(0, { token_id: 0, token_info: token_info_0 });
   token_metadata.set(1, { token_id: 1, token_info: token_info_1 });
   token_metadata.set(2, { token_id: 2, token_info: token_info_2 });
-  
+
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
   metadata.set(
@@ -57,10 +57,10 @@ async function main() {
   const operators = new MichelsonMap();
 
   const extension = {
-    admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-    nonces : new MichelsonMap(),
-  }
+    admin: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
+    signerAddress: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
+    nonces: new MichelsonMap(),
+  };
 
   const initialStorage = {
     extension,
@@ -80,7 +80,10 @@ async function main() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
+    await saveContractAddress(
+      "nftminter",
+      originated?.contractAddress ?? "error"
+    );
   } catch (error: any) {
     console.log(error);
   }
