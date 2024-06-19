@@ -7,7 +7,7 @@ let string_failure (res : test_exec_result) (expected : string) : unit =
         | Fail (Other s) -> Test.Next.Assert.failwith s
         | Success _ -> Test.Next.Assert.failwith "Transaction should fail"
 
-(* Assert contract result is successful *)
+        (* Assert contract result is successful *)
 let tx_success (res: test_exec_result) : unit =
     match res with
         | Success(_) -> ()

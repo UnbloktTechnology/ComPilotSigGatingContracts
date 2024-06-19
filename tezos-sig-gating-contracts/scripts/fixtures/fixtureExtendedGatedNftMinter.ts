@@ -68,10 +68,6 @@ export async function deployNFTMinterExt(provider: TezosToolkit) {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-<<<<<<< HEAD
-    // await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
-=======
->>>>>>> main
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);
