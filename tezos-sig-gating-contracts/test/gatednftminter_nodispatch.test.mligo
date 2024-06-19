@@ -2,7 +2,8 @@
 #import "./helper/assert.mligo" "AssertHelper"
 #import "./helper/bootstrap.mligo" "Bootstrap"
 #import "../contracts/examples/gatednftminter_nodispatch.mligo" "NFTMINTER"
-#import "../contracts/examples/sig_gated_extendable.mligo" "SigGatedExtendable"
+// #import "../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS

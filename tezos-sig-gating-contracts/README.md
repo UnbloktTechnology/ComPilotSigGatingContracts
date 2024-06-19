@@ -80,6 +80,32 @@ The _nft minter_ contract has been deployed
 | Ghostnet | KT1Ko4fwVmzNfZe3pSYFjhPYQj6GUTU3dAPa |
 | Mainnet  | N/A                                  |
 
+## Publish LIGO library
+
+If the Ligo library (`SigGating`) is modified it has to been re-published in the LIGOlang registry.
+
+- Install ligo executable locally [install instrauctions](https://ligolang.org/docs/intro/installation?lang=cameligo)
+- Log in: `ligo registry login`
+
+```
+FrankNexera
+*******
+```
+
+- Simulate publish: `ligo registry publish --dry-run`
+- Publish: `ligo registry publish`
+
+Then smart contracts can use this library by specifying the version in a `ligo.json` file.
+
+```
+{
+  "dependencies": {
+    "@ligo/fa": "^1.4.2",
+    "@nexeraid/sig-gating": "^1.0.0"
+  }
+}
+```
+
 ## Contracts code
 
 Inside the `tezos-sig-gating-contracts` folder

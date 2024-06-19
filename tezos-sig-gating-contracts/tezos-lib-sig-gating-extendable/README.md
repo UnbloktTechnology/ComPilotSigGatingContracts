@@ -32,7 +32,7 @@ For a given calldata, the user receives from Nexera
 - public key of Nexera signer role
 - signature of the payload hash
 
-![](./pictures/nexera%20forge%20sig%20workflow.png)
+<!-- ![](./pictures/nexera%20forge%20sig%20workflow.png) -->
 
 Then the user build the transaction and invoke the exec_gated_calldata entrypoint. In order to be able to verify an off-chain signed message, the exec_gated_calldata entrypoint expects a `txAuthData` parameter which contains the following fields
 
@@ -45,7 +45,7 @@ Then the user build the transaction and invoke the exec_gated_calldata entrypoin
 - public key
 - signature
 
-![](./pictures/nexera%20exec_offchain%20format.png)
+<!-- ![](./pictures/nexera%20exec_offchain%20format.png) -->
 
 The chain ID in Tezos varies depending on the network (see [rpc nodes](https://taquito.io/docs/rpc_nodes)).
 
@@ -146,7 +146,7 @@ Notice that we ensure that this entrypoint is callable only by re-entrance with
 
 ### Example of a standard TZIP-12 NFT token (using FA2 lib)
 
-![](./pictures/nexera%20nftminter%20entrypoints.png)
+<!-- ![](./pictures/nexera%20nftminter%20entrypoints.png) -->
 
 | function name       | parameters                                | module            |
 | ------------------- | ----------------------------------------- | ----------------- |
@@ -166,7 +166,7 @@ The verification of the signature and the controls (expiration) can be splitted 
 - a proxy that verifies the signature and dispatch the `calldata`
 - a fa2 contract that accepts a `calldata` (only from the proxy) and process it
 
-![](./pictures/nexera%20proxynftminter.png)
+<!-- ![](./pictures/nexera%20proxynftminter.png) -->
 
 ## Example code and tests
 
@@ -206,4 +206,4 @@ Launch LIGO tests
 
 When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
 
-![](./pictures/nexera%20transaction%20ordering.png)
+<!-- ![](./pictures/nexera%20transaction%20ordering.png) -->

@@ -1,6 +1,7 @@
-// #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-#import "./sig_gated_extendable.mligo" "SigGatedExtendable"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "./sig_gated_extendable.mligo" "SigGatedExtendable"
+#import "@ligo/fa/lib/main.mligo" "FA2"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterExt = struct
 
