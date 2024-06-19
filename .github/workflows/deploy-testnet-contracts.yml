@@ -11,6 +11,11 @@ jobs:
         network:
           - sepolia
           - polygonAmoy
+          - baseSepolia
+          - optimisticSepolia
+          - avalancheFujiTestnet
+          - bscTestnet
+          - arbitrumSepolia
     uses: ./.github/workflows/deploy-template.yml
     with:
       NETWORK: ${{ matrix.network }}

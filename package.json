@@ -62,6 +62,11 @@
     "deploy-bsc": "pnpm -r deploy-bsc",
     "deploy-optimisticEthereum": "pnpm -r deploy-optimisticEthereum",
     "deploy-avalanche": "pnpm -r deploy-avalanche",
-    "deploy-base": "pnpm -r deploy-base"
+    "deploy-base": "pnpm -r deploy-base",
+    "deploy-baseSepolia": "pnpm -r deploy-baseSepolia",
+    "deploy-optimisticSepolia": "pnpm -r deploy-optimisticSepolia",
+    "deploy-avalancheFujiTestnet": "pnpm -r deploy-avalancheFujiTestnet",
+    "deploy-bscTestnet": "pnpm -r deploy-bscTestnet",
+    "deploy-arbitrumSepolia": "pnpm -r deploy-arbitrumSepolia"
   }
 }
