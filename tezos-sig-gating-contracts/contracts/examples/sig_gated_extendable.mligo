@@ -144,7 +144,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DISPATCH strategies
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  let single_internal_calldata (type a) (cd, name, ep: calldata * string * a contract) : operation =
+  let process_internal_calldata (type a) (cd, name, ep: calldata * string * a contract) : operation =
     let (calldata_address, calldata_name, calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
       if name = calldata_name then  
@@ -172,7 +172,7 @@
       in
       op
 
-  let multiple_2_internal_calldata (type a b) 
+  let process_internal_calldata_2 (type a b) 
         (cd: calldata)
         (name_1, ep_1: string * a contract) 
         (name_2, ep_2: string * b contract) : operation =
@@ -189,6 +189,32 @@
           | None -> failwith Errors.invalid_calldata_wrong_arguments            
         else
           failwith Errors.invalid_calldata_wrong_name
+    else
+      failwith Errors.invalid_calldata_contract_not_dispatcher
+
+  let process_internal_calldata_3 (type a b c) 
+        (cd: calldata)
+        (name_1, ep_1: string * a contract)
+        (name_2, ep_2: string * b contract) 
+        (name_3, ep_3: string * c contract) : operation =
+    let (calldata_address, calldata_name, calldata_args) = cd in
+    if (Tezos.get_self_address() = calldata_address) then
+      if calldata_name = name_1 then  
+        match (Bytes.unpack calldata_args: a option) with
+        | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_1
+        | None -> failwith Errors.invalid_calldata_wrong_arguments
+      else
+        if calldata_name = name_2 then  
+          match (Bytes.unpack calldata_args: b option) with
+          | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_2
+          | None -> failwith Errors.invalid_calldata_wrong_arguments            
+        else
+          if calldata_name = name_3 then  
+            match (Bytes.unpack calldata_args: c option) with
+            | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_3
+            | None -> failwith Errors.invalid_calldata_wrong_arguments            
+          else
+            failwith Errors.invalid_calldata_wrong_name
     else
       failwith Errors.invalid_calldata_contract_not_dispatcher
 
