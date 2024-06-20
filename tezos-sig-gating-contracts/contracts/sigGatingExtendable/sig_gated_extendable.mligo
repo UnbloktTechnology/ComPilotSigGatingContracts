@@ -25,10 +25,41 @@
       let do_not_process_calldata = "DoNotProcessCalldata"
   end
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////////////////////////////////////
+  let rec padding (bts: bytes) (current_size: nat) (expected_size: nat) : bytes = 
+    if current_size = expected_size then
+      bts
+    else
+      padding (Bytes.concat 0x00 bts) (current_size + 1n) expected_size
+
+  let pad4 (seq: bytes) : bytes =
+    let current_size = Bytes.length seq in
+    let () = assert(current_size <= 4n) in
+    padding seq current_size 4n
+  
+  let get_entrypoint_name (type a) (ep : a contract) : string =
+    let pack_ep : bytes = Bytes.pack ep in
+    let size = Bytes.length pack_ep in
+    let () = assert(size > 27n) in
+    let nb_to_read = abs(size - 27n - 1n) in 
+    let name_bytes : bytes = Bytes.sub (27n+1n) nb_to_read pack_ep in      
+    let nb_to_read_bytes = bytes nb_to_read in
+    let nb_to_read_4bytes = pad4 nb_to_read_bytes in
+    // Add prefix for string 
+    let full_name_bytes = Bytes.concat 0x0501 (Bytes.concat nb_to_read_4bytes name_bytes) in      
+    let name : string = match Bytes.unpack full_name_bytes with
+    | None -> failwith "Error in get_entrypoint_name"
+    | Some n -> n
+    in 
+    String.concat "%"  name
+
   let is_implicit (elt : address) : bool =
     let pack_elt : bytes = Bytes.pack elt in
     let is_imp : bytes = Bytes.sub 6n 1n pack_elt in
     (is_imp = 0x00)
+////////////////////////////////////////////////////////////////////////////////////////////
 
   let setSigner (type a) (newSigner: address) (s : a siggated_storage) : a ret =
     let _ = Assert.Error.assert (Tezos.get_sender() = s.admin) Errors.only_admin in
@@ -144,9 +175,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DISPATCH strategies
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  let process_internal_calldata (type a) (cd, name, ep: calldata * string * a contract) : operation =
+  let process_internal_calldata (type a) (cd, ep: calldata * a contract) : operation =
     let (calldata_address, calldata_name, calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
+      let name = get_entrypoint_name ep in
       if name = calldata_name then  
         let args_decoded: a = match (Bytes.unpack calldata_args: a option) with
         | Some data -> data
@@ -160,7 +192,7 @@
     else
       failwith Errors.invalid_calldata_contract_not_dispatcher
 
-  let dispatch_calldata (type a) (cd, _name, _ep: calldata * string * a contract) : operation =
+  let dispatch_calldata (type a) (cd, _ep: calldata * a contract) : operation =
     let (calldata_address, _calldata_name, _calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
         failwith Errors.do_not_process_calldata
@@ -174,15 +206,17 @@
 
   let process_internal_calldata_2 (type a b) 
         (cd: calldata)
-        (name_1, ep_1: string * a contract) 
-        (name_2, ep_2: string * b contract) : operation =
+        (ep_1: a contract) 
+        (ep_2: b contract) : operation =
     let (calldata_address, calldata_name, calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
+      let name_1 = get_entrypoint_name ep_1 in
       if calldata_name = name_1 then  
         match (Bytes.unpack calldata_args: a option) with
         | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_1
         | None -> failwith Errors.invalid_calldata_wrong_arguments
       else
+        let name_2 = get_entrypoint_name ep_2 in
         if calldata_name = name_2 then  
           match (Bytes.unpack calldata_args: b option) with
           | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_2
@@ -194,21 +228,24 @@
 
   let process_internal_calldata_3 (type a b c) 
         (cd: calldata)
-        (name_1, ep_1: string * a contract)
-        (name_2, ep_2: string * b contract) 
-        (name_3, ep_3: string * c contract) : operation =
+        (ep_1: a contract)
+        (ep_2: b contract) 
+        (ep_3: c contract) : operation =
     let (calldata_address, calldata_name, calldata_args) = cd in
     if (Tezos.get_self_address() = calldata_address) then
+      let name_1 = get_entrypoint_name ep_1 in
       if calldata_name = name_1 then  
         match (Bytes.unpack calldata_args: a option) with
         | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_1
         | None -> failwith Errors.invalid_calldata_wrong_arguments
       else
+        let name_2 = get_entrypoint_name ep_2 in
         if calldata_name = name_2 then  
           match (Bytes.unpack calldata_args: b option) with
           | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_2
           | None -> failwith Errors.invalid_calldata_wrong_arguments            
         else
+          let name_3 = get_entrypoint_name ep_3 in
           if calldata_name = name_3 then  
             match (Bytes.unpack calldata_args: c option) with
             | Some args_decoded -> Tezos.Next.Operation.transaction args_decoded 0mutez ep_3

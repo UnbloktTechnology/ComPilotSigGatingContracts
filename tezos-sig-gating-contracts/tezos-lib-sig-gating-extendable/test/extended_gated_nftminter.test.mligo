@@ -142,7 +142,7 @@ let test_nftminterext_mint_gated =
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -192,7 +192,7 @@ let test_nftminterext_mint_gated =
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -242,7 +242,7 @@ let test_nftminterext_mint_gated =
     let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     // let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -291,7 +291,7 @@ let test_nftminterext_mint_gated =
     let data_hash, functioncall_params_bytes = compute_hash inputs in
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -340,7 +340,7 @@ let test_nftminterext_mint_gated =
     let data_hash, functioncall_params_bytes = compute_hash inputs in
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -393,7 +393,7 @@ let test_nftminterext_mint_gated_no_dispatch =
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -444,7 +444,7 @@ let test_nftminterext_mint_gated_no_dispatch2 =
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: SigGatedExtendable.txAuthData = {
+    let p: SigGatedExtendable.txAuthDataWithContractAddress = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       contractAddress = inputs.functioncall_contract;  // calldata contract address

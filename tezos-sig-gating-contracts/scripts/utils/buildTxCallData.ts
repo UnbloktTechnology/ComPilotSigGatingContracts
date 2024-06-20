@@ -30,3 +30,17 @@ export function buildTxCallDataNoContractAddress(
   };
   return txCallData;
 }
+
+export function buildTxCallDataNoFunctionName(
+  payload: TezosTxAuthData,
+  signature: EdSignature
+) {
+  const txCallData: TezosTxCalldata = {
+    userAddress: payload.userAddress,
+    expirationBlock: payload.blockExpiration,
+    functionArgs: payload.functionCallArgs,
+    signerPublicKey: payload.signerPublicKey,
+    signature: signature,
+  };
+  return txCallData;
+}

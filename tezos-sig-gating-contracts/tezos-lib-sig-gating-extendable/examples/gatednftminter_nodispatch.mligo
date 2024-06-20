@@ -24,6 +24,20 @@ module NftMinterExtNoDispatch = struct
     token_id : nat;
   }
 
+  (* FA2 extension *)
+
+  let apply_mint (mint : mint) (s : storage): ret = 
+    let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
+    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
+    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
+    [], { s with siggated_extension=new_fa2_s }
+
+
+  [@entry]
+  let mint (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
+    apply_mint mint s
+
   (* Calldata extension *)
 
   [@entry]
@@ -45,53 +59,12 @@ module NftMinterExtNoDispatch = struct
     signature: signature;   // signature of the payload signed by the given public key
   }
 
-  [@entry]
-  let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
-    let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
-    [op], s
-
-  // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses 
-  // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
-  // - calls Distpatch entrypoint for processing the calldata
-  [@entry]
-  let exec_gated_calldata (datainput : txAuthInput) (s : storage): ret =
-      // let {userAddress; expiration; functionName; functionArgs; signerPublicKey; signature } = datainput in
-      let data : SigGatedExtendable.txAuthData = { 
-        userAddress = datainput.userAddress;
-        expirationBlock = datainput.expirationBlock;
-        functionName = datainput.functionName;
-        functionArgs = datainput.functionArgs;
-        signerPublicKey = datainput.signerPublicKey;
-        signature = datainput.signature;
-        contractAddress=Tezos.get_self_address(); 
-      } in
-      SigGatedExtendable.verifyAndDispatchTxAuthData data s 
-
-  // Example of entrypoint which uses 
-  // - verifyTxAuthData function for signature verification (nonce, expiration) 
-  // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
-  [@entry]
-  let exec_gated_calldata_no_dispatch (datainput : txAuthInput) (s : storage): ret =
-      let data : SigGatedExtendable.txAuthData = { 
-        userAddress = datainput.userAddress;
-        expirationBlock = datainput.expirationBlock;
-        functionName = datainput.functionName;
-        functionArgs = datainput.functionArgs;
-        signerPublicKey = datainput.signerPublicKey;
-        signature = datainput.signature;
-        contractAddress=Tezos.get_self_address(); 
-      } in
-      let s = SigGatedExtendable.verifyTxAuthData data s in
-      let cd : SigGatedExtendable.calldata = (data.contractAddress, data.functionName, data.functionArgs) in
-      let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
-      [op], s
-
   // Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process the calldata itself
   [@entry]
-  let exec_gated_calldata_no_dispatch2 (datainput : txAuthInput) (s : storage): ret =
-    let data : SigGatedExtendable.txAuthData = { 
+  let mint_gated (datainput : txAuthInput) (s : storage): ret =
+    let data : SigGatedExtendable.txAuthDataWithContractAddress = { 
       userAddress = datainput.userAddress;
       expirationBlock = datainput.expirationBlock;
       functionName = datainput.functionName;
@@ -100,42 +73,15 @@ module NftMinterExtNoDispatch = struct
       signature = datainput.signature;
       contractAddress=Tezos.get_self_address(); 
     } in
-    let s = SigGatedExtendable.verifyTxAuthData data s in
-    if (Tezos.get_self_address() = data.contractAddress) then
-      if data.functionName = "%mint_gated" then
-        let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
-        | Some data -> data
-        | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
-        in 
-        let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint_decoded.token_id in
-        let () = Assert.assert (Option.is_none (Big_map.find_opt mint_decoded.token_id s.siggated_extension.ledger)) in
-        let new_fa2_s = NFT.set_balance s.siggated_extension mint_decoded.owner mint_decoded.token_id in
-        [], { s with siggated_extension=new_fa2_s }
-      else
-        failwith SigGatedExtendable.Errors.invalid_calldata_wrong_name
+    let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
+    if data.functionName = "%mint_gated" then
+      let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
+      | Some data -> data
+      | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
+      in 
+      apply_mint mint_decoded s
     else
-      failwith SigGatedExtendable.Errors.invalid_calldata_contract_not_dispatcher
-
-  [@entry]
-  let mint_gated (mint : mint) (s : storage): ret =
-    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
-    // Apply MINT
-    let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
-    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
-    [], { s with siggated_extension=new_fa2_s }
-
-  (* FA2 extension *)
-
-  [@entry]
-  let mint (mint : mint) (s : storage): ret =
-    let sender = Tezos.get_sender () in
-    // Apply MINT
-    let () = Assert.assert (sender = s.siggated_extension.extension.minter) in
-    let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
-    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
-    [], { s with siggated_extension=new_fa2_s }
+      failwith SigGatedExtendable.Errors.invalid_calldata_wrong_name
 
   (* Standard FA2 interface, copied from the source *)
 

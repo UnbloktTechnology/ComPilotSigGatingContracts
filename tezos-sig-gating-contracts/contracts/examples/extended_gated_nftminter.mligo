@@ -1,5 +1,5 @@
 // #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-// #import "./sig_gated_extendable.mligo" "SigGatedExtendable"
+// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
@@ -46,15 +46,15 @@ module NftMinterExt = struct
   // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
   // - calls Distpatch entrypoint for processing the calldata
   [@entry]
-  let exec_gated_calldata (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+  let exec_gated_calldata (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
       SigGatedExtendable.verifyAndDispatchTxAuthData data s 
 
   // Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
-  let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
-      let s = SigGatedExtendable.verifyTxAuthData data s in
+  let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
+      let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
       let cd : SigGatedExtendable.calldata = (data.contractAddress, data.functionName, data.functionArgs) in
       let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
       [op], s
@@ -63,8 +63,8 @@ module NftMinterExt = struct
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process the calldata itself
   [@entry]
-  let exec_gated_calldata_no_dispatch2 (data : SigGatedExtendable.txAuthData) (s : storage): ret =
-    let s = SigGatedExtendable.verifyTxAuthData data s in
+  let exec_gated_calldata_no_dispatch2 (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
+    let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
     if (Tezos.get_self_address() = data.contractAddress) then
       if data.functionName = "%mint_gated" then
         let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with

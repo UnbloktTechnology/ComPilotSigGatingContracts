@@ -14,7 +14,7 @@ Once a user has received a signed message, he must consume the offchain signed m
 ### Forging a signature
 
 The request of a user (i.e. a contract invocation) is declared as a payload sent to a ReferenceSigner. The ReferenceSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by the ReferenceSigner.
-Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains a `txAuthData` (payload + signature + public key + nonce + expiration)) to the smart contract that implements the signature verification mechanism.
+Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains a `txAuthData` (payload + signature + public key + nonce + expiration)) to the smart contract that implements the signer public key verification mechanism.
 
 ![](./pictures/nexera%20global%20workflow.png)
 
@@ -22,27 +22,25 @@ In this case the transaction fee is paid by the user.
 
 The transaction could also be executed by an operator on behalf of the user. In this case the transaction fee is paid by the operator.
 
-### off-chain signture workflow
+### Off-chain signature workflow
 
-For a given calldata, the user receives from Nexera
+The Auth provider has the responsibility to sign user's calldata. This Auth provider runs a KYC service to ensure on his side the validity of the user.
+For a given calldata, the user receives from the Auth provider:
 
 - payload hash (keccak(key, nonce, expiration, calldata))
 - nonce (custom nonce of the contract)
 - expiration (block level)
-- public key of Nexera signer role
+- public key of the signer role (Auth provider)
 - signature of the payload hash
 
 <!-- ![](./pictures/nexera%20forge%20sig%20workflow.png) -->
 
-Then the user build the transaction and invoke the exec_gated_calldata entrypoint. In order to be able to verify an off-chain signed message, the exec_gated_calldata entrypoint expects a `txAuthData` parameter which contains the following fields
+Then the user build the transaction and invoke the "exec_gated_calldata" entrypoint. In order to be able to verify an off-chain signed message, the "exec_gated_calldata" entrypoint expects a `txAuthData` parameter which contains the following fields
 
-- payload hash
-- chain ID
 - user address
-- nonce
 - expiration (block level)
 - calldata (contract, entrypoint name, arguments)
-- public key
+- signer public key
 - signature
 
 <!-- ![](./pictures/nexera%20exec_offchain%20format.png) -->
@@ -75,26 +73,30 @@ For example , a nft minter using `@ligo/fa` library
 
 - Add entrypoints
 
-  - declare an entrypoint "DoSomethingFromSignedMessage" that takes a `txAuthData` as parameter
+Option 1 (dispatch not needed):
 
-    - use `SigGatingExtendable.verifyTxAuthData` function to verify the txauthdata and extract the user requested invocation (`calldata`)
-    - or use `SigGatingExtendable.verifyAndDispatchTxAuthData` function to verify the txauthdata and extract the user requested invocation (`calldata`) and dispatch it to a local `Dispatch` entrypoint.
+- declare an entrypoint "DoSomethingFromSignedMessage" that takes a `txAuthData` as parameter
+  - use `SigGatingExtendable.verifyTxAuthData` function to verify the txauthdata and extract the user requested invocation (`calldata`)
+  - use a strategy built-in function (i.e. `SigGatingExtendable.process_internal_calldata`) to invoke the entrypoint corresponding to the given `calldata`.
 
-  - declare an entrypoint `Dispatch` that processes a `calldata`
+Option 2 (with Dispatch):
 
-  - use a strategy built-in function (i.e. `SigGatingExtendable.single_internal_calldata`) to invoke the entrypoint corresponding to the given `calldata`.
+- declare an entrypoint "DoSomethingFromSignedMessage" that takes a `txAuthData` as parameter
+  - use `SigGatingExtendable.verifyAndDispatchTxAuthData` function to verify the txauthdata and extract the user requested invocation (`calldata`) and dispatch it to a local `Dispatch` entrypoint.
+- declare an entrypoint `Dispatch` that processes a `calldata`
+  - use a strategy built-in function (i.e. `SigGatingExtendable.process_internal_calldata`) to invoke the entrypoint corresponding to the given `calldata`.
 
 for example ,
 
 ```ocaml
   // Example of entrypoint which uses
   // - verifyTxAuthData function for signature verification (nonce, expiration)
-  // - single_internal_calldata for processing the calldata (by calling the targeted entrypoint)
+  // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
   let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
       let s = SigGatedExtendable.verifyTxAuthData data s in
       let cd : SigGatedExtendable.calldata = (data.contractAddress, data.name, data.args) in
-      let op = SigGatedExtendable.single_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+      let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
       [op], s
 ```
 
@@ -103,7 +105,7 @@ for example with Dispatch (usefull in case of proxy too),
 ```ocaml
   [@entry]
   let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
-    let op = SigGatedExtendable.single_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+    let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
     [op], s
 
   // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses
