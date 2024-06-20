@@ -1,6 +1,7 @@
-#import "@ligo/fa/lib/main.mligo" "FA2"
-// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
 #import "../lib/main.mligo" "SigGatedExtendable"
+#import "@ligo/fa/lib/main.mligo" "FA2"
+// #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterExt = struct
 
@@ -38,7 +39,7 @@ module NftMinterExt = struct
 
   [@entry]
   let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
-    let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+    let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
     [op], s
 
   // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses 
@@ -55,7 +56,7 @@ module NftMinterExt = struct
   let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
       let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
       let cd : SigGatedExtendable.calldata = (data.contractAddress, data.functionName, data.functionArgs) in
-      let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+      let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
       [op], s
 
   // Example of entrypoint which uses 

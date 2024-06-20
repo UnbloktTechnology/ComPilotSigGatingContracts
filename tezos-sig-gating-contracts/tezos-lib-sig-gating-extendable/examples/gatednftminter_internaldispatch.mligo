@@ -3,21 +3,15 @@
 #import "@ligo/fa/lib/main.mligo" "FA2"
 // #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
-module NftMinterSimple = struct
+module NftMinterInternalDispatch = struct
 
-  (* FA2 extension - storage *)
   module NFT = FA2.NFTExtendable
+
   type fa2_extension = {
       minter: address;   // MINTER ROLE 
   }
   type extended_fa2_storage = fa2_extension NFT.storage
 
-  type mint = {
-    owner    : address;
-    token_id : nat;
-  }
-
-  (* SigGating extension - storage *)
   type storage = extended_fa2_storage SigGatedExtendable.siggated_storage
 
   type ret = operation list * storage
@@ -26,7 +20,10 @@ module NftMinterSimple = struct
       let custom_error_mesage = "CustomError"
   end
 
-  (* FA2 extension - entrypoints *)
+  type mint = {
+    owner    : address;
+    token_id : nat;
+  }
 
   let apply_mint (mint : mint) (s : storage): ret =
     // Apply MINT
@@ -35,51 +32,46 @@ module NftMinterSimple = struct
     let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
     [], { s with siggated_extension=new_fa2_s }
 
-  [@entry]
-  let mint (mint : mint) (s : storage): ret =
-    let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
-    apply_mint mint s
-
-  (* SigGating extension - entrypoints *)
+  (* Calldata extension *)
 
   [@entry]
   let setSigner(newSigner: address) (s: storage) : ret =
     let ops, s = SigGatedExtendable.setSigner newSigner s in
     (ops, s)
+    // ops, { s with siggated_extension = { s.siggated_extension with extension = { s.siggated_extension.extension with minter=newSigner } } }
 
   [@view]
   let txAuthDataSignerAddress(p: unit)(s: storage) : address = 
       SigGatedExtendable.getSigner p s 
 
-  type txAuthInput = {
-    userAddress: address;   // user address (used to check nonce)
-    expirationBlock: nat;  // expiration date
-    // functionName: string;   // name of the entrypoint of the calldata (for example "%mint")
-    functionArgs: bytes;   // arguments for the entrypoint of the calldata 
-    signerPublicKey: key;     // public key that signed the payload 
-    signature: signature;   // signature of the payload signed by the given public key
-  }
-  
   // Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
-  // - process the calldata itself
+  // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
-  let mint_gated (datainput : txAuthInput) (s : storage): ret =
-    let data : SigGatedExtendable.txAuthData = { 
-      userAddress = datainput.userAddress;
-      expirationBlock = datainput.expirationBlock;
-      functionName = "%mint_gated";
-      functionArgs = datainput.functionArgs;
-      signerPublicKey = datainput.signerPublicKey;
-      signature = datainput.signature;
-    } in
-    let s = SigGatedExtendable.verifyTxAuthData data s in
-    let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
-    | Some data -> data
-    | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
-    in 
-    apply_mint mint_decoded s
+  let mint_or_burn_gated (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+      let s = SigGatedExtendable.verifyTxAuthData data s in
+      let cd : SigGatedExtendable.calldata = ((Tezos.get_self_address ()), data.functionName, data.functionArgs) in
+      let op = SigGatedExtendable.process_internal_calldata_2 (cd, 
+        (Tezos.self "%mint_gated": mint contract), 
+        (Tezos.self "%burn_gated": mint contract)) in
+      [op], s
 
+  [@entry]
+  let burn_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
+
+  [@entry]
+  let mint_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
+
+  (* FA2 extension *)
+
+  [@entry]
+  let mint (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
+    apply_mint mint s
 
   (* Standard FA2 interface, copied from the source *)
 
