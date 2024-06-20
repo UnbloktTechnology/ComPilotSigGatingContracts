@@ -6,8 +6,8 @@ import { getTxSignerAddress } from "../lib/addresses/getTxSignerAddress";
 
 const version = "0.1.13";
 const contractName = "NexeraIDSignerManager";
-const testEnv = "testnet";
-const mainEnv = "mainnet";
+const withExample = "withExample";
+const onlySignerManager = "onlySignerManager";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, getChainId, network } = hre;
@@ -91,4 +91,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version, testEnv, mainEnv];
+func.tags = [contractName, version, withExample, onlySignerManager];

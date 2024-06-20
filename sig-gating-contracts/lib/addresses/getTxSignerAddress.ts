@@ -1,34 +1,23 @@
 import {
   Address,
-  NEXERA_CHAINS,
+  ChainId,
 } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
-// This function returns an address for a MultiSig if has been deployed on the input network
+// This function returns the txSignerAddress
 export const getTxSignerAddress = (chainId: string) => {
-  switch (chainId) {
-    case NEXERA_CHAINS.SEPOLIA:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.POLYGON_AMOY:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.POLYGON:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.BASE:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.ETHEREUM:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.ARBITRUM:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.BNB:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.OPTIMISM:
-      return TX_SIGNER_ADDRESS;
-    case NEXERA_CHAINS.AVALANCHE:
-      return TX_SIGNER_ADDRESS;
-    default:
-      console.log(
-        "--- WARNING --- No TX_SIGNER_ADDRESS specified for this Chain, using default one"
-      );
-      return undefined;
+  // if chainId is parsed successfully return TX_SIGNER_ADDRESS,
+  // the signing address we use on all evm chains
+  // otherwise, it means the chainId is likely a local testnet
+  // and undefined should be returned, so that the deployment script
+  // understands to use local tx signer address
+  const parsedChainId = ChainId.safeParse(chainId);
+  if (parsedChainId.success) {
+    return TX_SIGNER_ADDRESS;
+  } else {
+    console.log(
+      "--- WARNING --- No TX_SIGNER_ADDRESS specified for this Chain, using default one"
+    );
+    return undefined;
   }
 };
 
