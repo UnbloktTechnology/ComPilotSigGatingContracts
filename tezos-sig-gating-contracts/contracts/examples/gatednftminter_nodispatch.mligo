@@ -1,8 +1,7 @@
-// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
-#import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-#import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
-// #import "@ligo/fa/lib/main.mligo" "FA2"
-// #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
+#import "@ligo/fa/lib/main.mligo" "FA2"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterExtNoDispatch = struct
 
