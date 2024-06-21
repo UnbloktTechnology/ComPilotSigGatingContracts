@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TezosTxAuthInput = exports.TezosTxAuthData = exports.TezosEntrypointName = exports.TezosAddress = exports.TezosContractAddress = exports.TezosImplicitAddress = void 0;
+exports.TezosTxCalldata = exports.TezosTxAuthInput = exports.TezosTxAuthData = exports.TezosPublicKey = exports.EdSignature = exports.TezosEntrypointName = exports.TezosAddress = exports.TezosContractAddress = exports.TezosImplicitAddress = void 0;
 const zod_1 = require("zod");
 // import type {
 //   Account,
@@ -60,6 +60,16 @@ exports.TezosEntrypointName = zod_1.z
 })
     // .transform((value) => value.toLowerCase() as `tz${string}`)
     .describe("Tezos entrypoint name");
+exports.EdSignature = zod_1.z
+    .string()
+    .refine((value) => value.startsWith("edsig"), {
+    message: "EdSignature must start with 'edsig'",
+});
+exports.TezosPublicKey = zod_1.z
+    .string()
+    .refine((value) => value.startsWith("edpk"), {
+    message: "TezosPublicKey must start with 'edpk'",
+});
 // arbitrary length 0xstring
 const String0x = zod_1.z.custom((val) => {
     return typeof val === "string" ? val.startsWith("0x") : false;
@@ -88,24 +98,45 @@ const String0x = zod_1.z.custom((val) => {
 //   PublicActions & WalletActions<Chain, Account>
 // >;
 // Tx Auth Data SIgnature
+// This is the info that is signed by Nexera ID's Back end
 exports.TezosTxAuthData = zod_1.z.object({
     chainID: zod_1.z.string(),
     userAddress: exports.TezosAddress,
-    nonce: zod_1.z.string(),
-    blockExpiration: zod_1.z.string(),
+    nonce: zod_1.z.number(),
+    blockExpiration: zod_1.z.number(),
     contractAddress: exports.TezosContractAddress,
     functionCallName: exports.TezosEntrypointName,
-    functionCallArgs: zod_1.z.array(zod_1.z.unknown()),
-    publicKey: zod_1.z.string(),
+    functionCallArgs: zod_1.z.string(), //z.array(z.unknown()),
+    signerPublicKey: exports.TezosPublicKey,
 });
 exports.TezosTxAuthInput = zod_1.z.object({
-    // contractAbi: z.array(z.record(z.unknown())),
+    chainID: zod_1.z.string(),
     contractAddress: exports.TezosContractAddress,
-    functionName: zod_1.z.string(),
-    args: zod_1.z.array(zod_1.z.unknown()),
+    functionName: exports.TezosEntrypointName,
+    args: zod_1.z.string(), //z.array(z.unknown()),
     userAddress: exports.TezosAddress,
-    // these optional inputs can be useful for local dev for example
     blockExpiration: zod_1.z.number().int().optional(),
-    chainID: zod_1.z.number().optional(),
-    nonce: zod_1.z.number().optional(),
+    nonce: zod_1.z.number().int().optional(),
 });
+// this is what is used in the contract call
+exports.TezosTxCalldata = zod_1.z.object({
+    userAddress: exports.TezosAddress,
+    expirationBlock: zod_1.z.number(),
+    contractAddress: exports.TezosContractAddress.optional(),
+    functionName: exports.TezosEntrypointName.optional(),
+    functionArgs: zod_1.z.string(), //z.array(z.unknown()),
+    signerPublicKey: exports.TezosPublicKey,
+    signature: exports.EdSignature,
+});
+// export const TxAuthInput = z.object({
+//   contractAbi: z.array(z.record(z.unknown())),
+//   contractAddress: AddressSchema,
+//   functionName: z.string(),
+//   args: z.array(z.unknown()),
+//   userAddress: AddressSchema,
+//   // these optional inputs can be useful for local dev for example
+//   blockExpiration: z.number().int().optional(),
+//   chainID: z.number().optional(),
+//   nonce: z.number().optional(),
+// });
+// export type TxAuthInput = z.infer<typeof TxAuthInput>;

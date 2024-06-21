@@ -1,10 +1,6 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { verifySignature, stringToBytes } from "@taquito/utils";
-<<<<<<< HEAD
-import { Parser, packDataBytes, MichelsonData, MichelsonType } from '@taquito/michel-codec';
-import { convert_timestamp, convert_key, convert_nat, convert_string, convert_address, convert_mint } from './convert';
-=======
 import {
   Parser,
   packDataBytes,
@@ -19,7 +15,6 @@ import {
   convert_address,
   convert_mint,
 } from "./convert";
->>>>>>> main
 
 const createKeccakHash = require("keccak");
 // import verifierContract from "../compiled/TxAuthDataVerifier.json";

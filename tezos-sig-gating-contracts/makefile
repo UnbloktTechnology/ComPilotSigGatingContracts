@@ -37,8 +37,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/gatednftminter_nodispatch.mligo,gatednftminter_nodispatch.json, -m NftMinterExtNoDispatch --michelson-format json)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.tz, -m NftMinterSimple)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.json, -m NftMinterSimple --michelson-format json)
-	@$(call compile,sigGatingExtendable/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
-	@$(call compile,sigGatingExtendable/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
 
 
 test: ## run tests (SUITE=extended_gated_nftminter make test)

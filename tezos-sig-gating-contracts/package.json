@@ -14,13 +14,12 @@
     "localmint": "ts-node scripts/manual/localMintOffchain.ts",
     "localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
     "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
-
     "build": "preconstruct build",
     "pre-build": "preconstruct build",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
     "lint": "prettier --write src/**/**.ts",
     "lint:check": "prettier --check src/**/**.ts",
-    "inject_compiled_contracts": "make install && make compile && cp compiled/extended_gated_nftminter.json src/compiledcontracts/"
+    "inject_compiled_contracts": "make install && make compile && cp compiled/gatednftminter_simple.json src/compiledcontracts/"
   },
   "repository": {
     "type": "git",

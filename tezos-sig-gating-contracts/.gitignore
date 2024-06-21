@@ -12,4 +12,6 @@ scripts/utils/*.js
 scripts/package-lock.json
 deployments/*.js
 src/lib/*.js
+src/addresses/*.js
+src/compiledContracts/*.js
 tezos-lib-sig-gating-extendable/compiled

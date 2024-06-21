@@ -1,52 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signTxAuthDataLibTezos = exports.signTxAuthDataTezos = exports.getBlockLevel = exports.getNonceFromContract = exports.getChainID = void 0;
-const convert_1 = require("./convert");
-const createKeccakHash = require("keccak");
-function keccak256(data) {
-    return createKeccakHash("keccak256").update(data, "hex").digest("hex");
-}
-const getChainID = async (client) => {
-    const currentChainId = await client.getChainId();
+exports.signTxAuthDataLibTezos = exports.signTezosTxAuthData = exports.getBlockLevel = exports.getNonceFromContract = exports.getChainID = void 0;
+const computePayloadHash_1 = require("./computePayloadHash");
+const getChainID = async (provider) => {
+    const currentChainId = await provider.rpc.getChainId();
     return String(currentChainId);
 };
 exports.getChainID = getChainID;
 const getNonceFromContract = async (contractAddress, userAddress, provider) => {
     const cntr = await provider.contract.at(contractAddress);
     const storage = await cntr.storage();
-    const user_nonce = await storage.nonces.get(userAddress);
-    return String(user_nonce);
+    const userNonce = await storage.nonces.get(userAddress);
+    return userNonce ? Number(userNonce) : Number(0);
 };
 exports.getNonceFromContract = getNonceFromContract;
-const getBlockLevel = async (client) => {
-    const block = await client.getBlockHeader();
+const getBlockLevel = async (provider) => {
+    const block = await provider.rpc.getBlockHeader();
     return Number(block.level);
 };
 exports.getBlockLevel = getBlockLevel;
-const signTxAuthDataTezos = async (signer, tezosTxAuthData) => {
-    // Build a TezosTxAuthData from TezosTxAuthInput and retrieved contextual param (nonce, expiration, chainID, public key of the signer)
-    const chain_id_bytes = (0, convert_1.convert_chain_id)(tezosTxAuthData.chainID);
-    const user_bytes = (0, convert_1.convert_address)(tezosTxAuthData.userAddress);
-    const nonce_bytes = (0, convert_1.convert_nat)(tezosTxAuthData.nonce);
-    const expiration_bytes = (0, convert_1.convert_nat)(tezosTxAuthData.blockExpiration);
-    const functioncall_contract_bytes = (0, convert_1.convert_address)(tezosTxAuthData.contractAddress);
-    const functioncall_name_bytes = (0, convert_1.convert_string)(tezosTxAuthData.functionCallName);
-    const functioncall_params_bytes = tezosTxAuthData.functionCallArgs; //convert_mint(functioncall_params.owner, functioncall_params.token_id);
-    const key_bytes = (0, convert_1.convert_key)(tezosTxAuthData.publicKey);
-    const payload = key_bytes +
-        chain_id_bytes +
-        user_bytes +
-        nonce_bytes +
-        expiration_bytes +
-        functioncall_contract_bytes +
-        functioncall_name_bytes +
-        functioncall_params_bytes;
-    const payload_hash = keccak256(payload);
-    // SIGN
+const signTezosTxAuthData = async (signer, tezosTxAuthData) => {
+    const payload_hash = await (0, computePayloadHash_1.computePayloadHash)(tezosTxAuthData);
     let signature = await signer.sign(payload_hash);
     return signature;
 };
-exports.signTxAuthDataTezos = signTxAuthDataTezos;
+exports.signTezosTxAuthData = signTezosTxAuthData;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                  signTxAuthDataLibTezos                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,9 +37,7 @@ exports.signTxAuthDataTezos = signTxAuthDataTezos;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // USAGE (FOR TESTING GHOSNET)
 // const RPC_ENDPOINT = "https://ghostnet.tezos.marigold.dev";
-// const client = new RpcClient(RPC_ENDPOINT);
 // const Tezos = new TezosToolkit(RPC_ENDPOINT);
-// // const senderAddress = "tz1...";
 // Tezos.setProvider({
 //   signer: await InMemorySigner.fromSecretKey(
 //   "edsk...."
@@ -76,32 +52,17 @@ exports.signTxAuthDataTezos = signTxAuthDataTezos;
 // }:
 // const {signature, blockExpiration} = await signTxAuthDataLibTezos(signer, tezosTxAuthInput, Tezos);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const signTxAuthDataLibTezos = async (signer, tezosTxAuthInput, provider, client) => {
-    // const signer = new InMemorySigner("edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU");
-    // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
-    // INPUTS
-    // const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
-    // const functioncall_contract = "KT1TRPRBqSR6GsCKc9ozxF7uJuX4gtPFwHxe";
-    // const functioncall_name = "%mint_gated";
-    // const functioncall_params = {
-    //   owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-    //   token_id: "1"
-    // };
-    // const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
-    // const expiration = "12345";
-    // const nonce = "0";
-    // const chain_id = "NetXnHfVqm9iesp";
-    // display public key
+const signTxAuthDataLibTezos = async (signer, tezosTxAuthInput, provider) => {
+    // Retrieve signer public key
     const signerPublicKey = await signer.publicKey();
-    console.log("signerPublicKey=", signerPublicKey);
     // Retrieve Nonce from contract storage
     const nonce = await (0, exports.getNonceFromContract)(tezosTxAuthInput.contractAddress, tezosTxAuthInput.userAddress, provider);
     // Retrieve CHAIN_ID from Rpc client
-    const chain_id = await (0, exports.getChainID)(client);
-    // Retrieve from Rpc client
-    const block_level = await (0, exports.getBlockLevel)(client);
-    const expiration_num = block_level + 50;
-    const expiration = expiration_num.toString();
+    const chain_id = await (0, exports.getChainID)(provider);
+    // Retrieve BLOCK LEVEL from Rpc client
+    const block_level = await (0, exports.getBlockLevel)(provider);
+    const expiration_num = block_level + 50; //TODO: replace hardcoded value
+    const expiration = expiration_num;
     const txAuthData = {
         chainID: chain_id,
         userAddress: tezosTxAuthInput.userAddress,
@@ -110,9 +71,9 @@ const signTxAuthDataLibTezos = async (signer, tezosTxAuthInput, provider, client
         contractAddress: tezosTxAuthInput.contractAddress,
         functionCallName: tezosTxAuthInput.functionName,
         functionCallArgs: tezosTxAuthInput.args,
-        publicKey: signerPublicKey,
+        signerPublicKey: signerPublicKey,
     };
-    const signature = await (0, exports.signTxAuthDataTezos)(signer, txAuthData);
+    const signature = await (0, exports.signTezosTxAuthData)(signer, txAuthData);
     return {
         signature: signature.prefixSig,
         blockExpiration: expiration_num,

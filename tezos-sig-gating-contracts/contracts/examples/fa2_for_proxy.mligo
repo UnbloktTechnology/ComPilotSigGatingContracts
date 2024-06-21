@@ -1,5 +1,5 @@
-#import "@ligo/fa/lib/main.mligo" "FA2"
-// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "@ligo/fa/lib/main.mligo" "FA2"
+#import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
 
 module NftMinterForProxy = struct
   module NFT = FA2.NFTExtendable

@@ -1,8 +1,11 @@
 import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress, saveContractAddressGhostnet } from "../utils/helper";
-import nftMinterContract from "../../compiled/nftminter.json";
+import {
+  saveContractAddress,
+  saveContractAddressGhostnet,
+} from "../utils/helper";
+import nftMinterContract from "../../compiled/gatednftminter_simple.json";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
 
@@ -20,20 +23,13 @@ async function main() {
   const ledger = new MichelsonMap();
   ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
 
-  const token_metadata = new MichelsonMap();
-  const token_info_0 = new MichelsonMap();
-  token_info_0.set("name", char2Bytes("Token 0"));
-  token_info_0.set("description", char2Bytes("asset #0"));
-  const token_info_1 = new MichelsonMap();
-  token_info_1.set("name", char2Bytes("Token 1"));
-  token_info_1.set("description", char2Bytes("asset #1"));
-  const token_info_2 = new MichelsonMap();
-  token_info_2.set("name", char2Bytes("Token 2"));
-  token_info_2.set("description", char2Bytes("asset #2"));
-
-  token_metadata.set(0, { token_id: 0, token_info: token_info_0 });
-  token_metadata.set(1, { token_id: 1, token_info: token_info_1 });
-  token_metadata.set(2, { token_id: 2, token_info: token_info_2 });
+  const tokenMetadata = new MichelsonMap();
+  for (let i = 0; i < 10; i++) {
+    const tokenInfo = new MichelsonMap();
+    tokenInfo.set("name", char2Bytes("Token " + i.toString()));
+    tokenInfo.set("description", char2Bytes("asset #" + i.toString()));
+    tokenMetadata.set(i, { token_id: i, token_info: tokenInfo });
+  }
 
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
@@ -56,18 +52,23 @@ async function main() {
 
   const operators = new MichelsonMap();
 
-  const extension = {
-    admin: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
-    signerAddress: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
-    nonces: new MichelsonMap(),
+  const fa2Extension = {
+    minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+  };
+
+  const initialFA2Storage = {
+    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
+    ledger,
+    metadata,
+    token_metadata: tokenMetadata,
+    operators,
   };
 
   const initialStorage = {
-    extension,
-    ledger,
-    metadata,
-    token_metadata,
-    operators,
+    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    nonces: new MichelsonMap(),
+    siggated_extension: initialFA2Storage,
   };
 
   try {
@@ -80,7 +81,10 @@ async function main() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddressGhostnet("nftminter", originated?.contractAddress ?? "error");
+    await saveContractAddressGhostnet(
+      "nftminter",
+      originated?.contractAddress ?? "error"
+    );
   } catch (error: any) {
     console.log(error);
   }

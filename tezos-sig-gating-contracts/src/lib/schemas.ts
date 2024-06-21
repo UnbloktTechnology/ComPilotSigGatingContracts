@@ -57,10 +57,6 @@ export const TezosAddress = z.union([
   TezosImplicitAddress,
   TezosContractAddress,
 ]);
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 export type TezosAddress = z.infer<typeof TezosAddress>;
 
 export const TezosEntrypointName = z
@@ -126,35 +122,16 @@ type String0x = z.infer<typeof String0x>;
 export const TezosTxAuthData = z.object({
   chainID: z.string(),
   userAddress: TezosAddress,
-  nonce: z.string(),
-  blockExpiration: z.string(),
+  nonce: z.number(),
+  blockExpiration: z.number(),
   contractAddress: TezosContractAddress,
   functionCallName: TezosEntrypointName,
-<<<<<<< HEAD
-  functionCallArgs: z.array(z.unknown()),
-  publicKey: z.string(),
-=======
   functionCallArgs: z.string(), //z.array(z.unknown()),
   signerPublicKey: TezosPublicKey,
->>>>>>> main
 });
 export type TezosTxAuthData = z.infer<typeof TezosTxAuthData>;
 
 export const TezosTxAuthInput = z.object({
-<<<<<<< HEAD
-  // contractAbi: z.array(z.record(z.unknown())),
-  contractAddress: TezosContractAddress,
-  functionName: z.string(),
-  args: z.array(z.unknown()),
-  userAddress: TezosAddress,
-  // these optional inputs can be useful for local dev for example
-  blockExpiration: z.number().int().optional(),
-  chainID: z.number().optional(),
-  nonce: z.number().optional(),
-});
-export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
-
-=======
   chainID: z.string(),
   contractAddress: TezosContractAddress,
   functionName: TezosEntrypointName,
@@ -168,11 +145,11 @@ export type TezosTxAuthInput = z.infer<typeof TezosTxAuthInput>;
 // this is what is used in the contract call
 export const TezosTxCalldata = z.object({
   userAddress: TezosAddress,
-  expiration: z.number(),
-  contractAddress: TezosContractAddress,
-  name: TezosEntrypointName,
-  args: z.string(), //z.array(z.unknown()),
-  publicKey: TezosPublicKey,
+  expirationBlock: z.number(),
+  contractAddress: TezosContractAddress.optional(),
+  functionName: TezosEntrypointName.optional(),
+  functionArgs: z.string(), //z.array(z.unknown()),
+  signerPublicKey: TezosPublicKey,
   signature: EdSignature,
 });
 export type TezosTxCalldata = z.infer<typeof TezosTxCalldata>;
@@ -189,4 +166,3 @@ export type TezosTxCalldata = z.infer<typeof TezosTxCalldata>;
 //   nonce: z.number().optional(),
 // });
 // export type TxAuthInput = z.infer<typeof TxAuthInput>;
->>>>>>> main
