@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterExtNoDispatch } from "../fixtures/fixtureGatedNftMinterNodispatch";
+import { deployNFTMinterInternalDispatch } from "../fixtures/fixtureGatedNftMinterInternalDispatch";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
@@ -33,7 +33,7 @@ const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
 ); // signer private key
 
-describe(`GatedNftMinterNodispatch`, function () {
+describe(`GatedNftMinterInternalDispatch`, function () {
   let exampleGatedNFTMinter: string | undefined;
   let deployerAddress: string;
   let currentBlock: number;
@@ -53,7 +53,7 @@ describe(`GatedNftMinterNodispatch`, function () {
     // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterExtNoDispatch(Tezos);
+    exampleGatedNFTMinter = await deployNFTMinterInternalDispatch(Tezos);
   });
 
   beforeEach(async () => {
@@ -117,7 +117,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature.prefixSig
     );
     // CALL contract
-    const op = await cntr.methodsObject.mint_gated(args).send();
+    const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
     console.log(
       `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
     );
@@ -175,7 +175,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature.prefixSig
     );
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log(
         `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
@@ -236,7 +236,7 @@ describe(`GatedNftMinterNodispatch`, function () {
     );
     args.functionArgs = functionCallArgsBytesInvalid;
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log(
         `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
@@ -292,7 +292,7 @@ describe(`GatedNftMinterNodispatch`, function () {
     );
 
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log("op: ", op);
       console.log(
@@ -351,7 +351,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature_raw
     );
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log("op: ", op);
       console.log(
@@ -409,7 +409,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature.prefixSig
     );
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log("op: ", op);
       console.log(
@@ -466,7 +466,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature.prefixSig
     );
     try {
-      const op = await cntr.methodsObject.mint_gated(args).send();
+      const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
       expect(false).to.be.true;
       console.log("op: ", op);
       console.log(
@@ -523,7 +523,7 @@ describe(`GatedNftMinterNodispatch`, function () {
       signature.prefixSig
     );
     // CALL contract
-    const op = await cntr.methodsObject.mint_gated(args).send();
+    const op = await cntr.methodsObject.mint_or_burn_gated(args).send();
     console.log(
       `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
     );
@@ -545,5 +545,47 @@ describe(`GatedNftMinterNodispatch`, function () {
     const userNonce = await storage.nonces.get(functionCallArgs.owner);
     // console.log("userNonce=", userNonce);
     expect(userNonce.toNumber() === 2).to.be.true;
+  });
+
+  it(`Estimate mint the asset #3`, async () => {
+    // Get contract storage
+    const cntr = await Tezos.contract.at(
+      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
+    );
+
+    // MINT OFFCHAIN
+    const functionCallContract = exampleGatedNFTMinter
+      ? exampleGatedNFTMinter
+      : "";
+    const functionCallArgs = {
+      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      token_id: "3",
+    };
+    // Prepare Hash of payload
+    const functionCallArgsBytes = convert_mint(
+      functionCallArgs.owner,
+      functionCallArgs.token_id
+    );
+    const payloadToSign: TezosTxAuthData = {
+      chainID: currentChainId,
+      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      nonce: 2,
+      blockExpiration: currentBlock + 10,
+      contractAddress: functionCallContract,
+      functionCallName: "%mint_gated",
+      functionCallArgs: functionCallArgsBytes,
+      signerPublicKey: nexeraSignerPublicKey,
+    };
+    const payloadHash = computePayloadHash(payloadToSign);
+    // Nexera signs Hash of payload
+    let signature = await nexeraSigner.sign(payloadHash);
+    // Execute mint-offchain entrypoint
+    const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
+      payloadToSign,
+      signature.prefixSig
+    );
+    let preOp1 = await cntr.methodsObject.mint_or_burn_gated(args);
+    let estOp1 = await Tezos.estimate.contractCall(preOp1);
+    console.log("extimation exec_gated_calldata=", estOp1.totalCost);
   });
 });

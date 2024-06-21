@@ -1,7 +1,7 @@
 // This is a monolithic implementation of a signature verification
 // In this example it is applied to minting assets on a Token FA2 contract
-// #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+#import "@ligo/fa/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
 
 module NftMinter = struct
   module NFT = FA2.NFTExtendable

@@ -147,7 +147,7 @@ export const TezosTxCalldata = z.object({
   userAddress: TezosAddress,
   expirationBlock: z.number(),
   contractAddress: TezosContractAddress.optional(),
-  functionName: TezosEntrypointName,
+  functionName: TezosEntrypointName.optional(),
   functionArgs: z.string(), //z.array(z.unknown()),
   signerPublicKey: TezosPublicKey,
   signature: EdSignature,
