@@ -34,7 +34,7 @@ async function main() {
   token_metadata.set(0, { token_id: 0, token_info: token_info_0 });
   token_metadata.set(1, { token_id: 1, token_info: token_info_1 });
   token_metadata.set(2, { token_id: 2, token_info: token_info_2 });
-  
+
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
   metadata.set(
@@ -57,10 +57,10 @@ async function main() {
   const operators = new MichelsonMap();
 
   const extension = {
-    admin : "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
-    signerAddress : "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
-    nonces : new MichelsonMap(),
-  }
+    admin: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
+    signerAddress: "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2",
+    nonces: new MichelsonMap(),
+  };
 
   const initialStorage = {
     extension,
@@ -81,7 +81,6 @@ async function main() {
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
     await saveContractAddressGhostnet("nftminter", originated?.contractAddress ?? "error");
-
   } catch (error: any) {
     console.log(error);
   }

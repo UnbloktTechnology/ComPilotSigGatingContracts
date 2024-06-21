@@ -8,6 +8,27 @@ import type {
   Transport,
   WalletActions,
 } from "viem";
+import {
+  arbitrum,
+  arbitrumGoerli,
+  arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
+  base,
+  baseGoerli,
+  baseSepolia,
+  bsc,
+  bscTestnet,
+  mainnet,
+  moonbeam,
+  moonriver,
+  optimism,
+  optimismGoerli,
+  optimismSepolia,
+  polygon,
+  polygonAmoy,
+  sepolia,
+} from "viem/chains";
 
 export enum NEXERA_CHAINS {
   ETHEREUM = "1",
@@ -31,6 +52,57 @@ export enum NEXERA_CHAINS {
   MOONBEAM = "1284",
   MOONRIVER = "1285",
 }
+export const ACTIVE_CHAIN_VALUES = [
+  NEXERA_CHAINS.ETHEREUM,
+  NEXERA_CHAINS.SEPOLIA,
+  NEXERA_CHAINS.POLYGON,
+  NEXERA_CHAINS.POLYGON_AMOY,
+  NEXERA_CHAINS.AVALANCHE,
+  NEXERA_CHAINS.AVALANCHE_FUJI,
+  NEXERA_CHAINS.ARBITRUM,
+  NEXERA_CHAINS.ARBITRUM_SEPOLIA,
+  NEXERA_CHAINS.BASE,
+  NEXERA_CHAINS.BASE_SEPOLIA,
+  NEXERA_CHAINS.MOONBEAM,
+  NEXERA_CHAINS.MOONRIVER,
+  NEXERA_CHAINS.OPTIMISM,
+  NEXERA_CHAINS.OPTIMISM_SEPOLIA,
+  NEXERA_CHAINS.BNB,
+  NEXERA_CHAINS.BNB_TESTNET,
+] as const;
+
+export const ChainId = z.preprocess(
+  (val) => String(val),
+  z
+    .enum(ACTIVE_CHAIN_VALUES)
+    .describe(
+      "a numeric value that identifies the chain of the address. There are many sites that retrieve information on chainIDs such as <a href='https://chainlist.org/'>https://chainlist.org</a>."
+    )
+);
+
+export type ChainId = z.infer<typeof ChainId>;
+
+export const IdToChains = {
+  [NEXERA_CHAINS.ETHEREUM]: mainnet,
+  [NEXERA_CHAINS.SEPOLIA]: sepolia,
+  [NEXERA_CHAINS.ARBITRUM]: arbitrum,
+  [NEXERA_CHAINS.ARBITRUM_GOERLI]: arbitrumGoerli,
+  [NEXERA_CHAINS.ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [NEXERA_CHAINS.OPTIMISM]: optimism,
+  [NEXERA_CHAINS.OPTIMISM_GOERLI]: optimismGoerli,
+  [NEXERA_CHAINS.OPTIMISM_SEPOLIA]: optimismSepolia,
+  [NEXERA_CHAINS.AVALANCHE]: avalanche,
+  [NEXERA_CHAINS.AVALANCHE_FUJI]: avalancheFuji,
+  [NEXERA_CHAINS.POLYGON]: polygon,
+  [NEXERA_CHAINS.POLYGON_AMOY]: polygonAmoy,
+  [NEXERA_CHAINS.BASE]: base,
+  [NEXERA_CHAINS.BASE_GOERLI]: baseGoerli,
+  [NEXERA_CHAINS.BASE_SEPOLIA]: baseSepolia,
+  [NEXERA_CHAINS.BNB]: bsc,
+  [NEXERA_CHAINS.BNB_TESTNET]: bscTestnet,
+  [NEXERA_CHAINS.MOONBEAM]: moonbeam,
+  [NEXERA_CHAINS.MOONRIVER]: moonriver,
+} as Record<ChainId, Chain>;
 
 export const isValidAddress = (address: string) => {
   const regex = /^0x[a-fA-F0-9]{40}$/;

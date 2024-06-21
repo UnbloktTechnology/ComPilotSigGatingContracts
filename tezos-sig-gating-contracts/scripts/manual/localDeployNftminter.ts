@@ -7,7 +7,7 @@ import { saveContractAddress } from "../utils/helper";
 
 import nftMinterContract from "../../compiled/extended_gated_nftminter.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/"; 
+const RPC_ENDPOINT = "http://localhost:20000/";
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
@@ -37,7 +37,7 @@ async function main() {
   token_metadata.set(0, { token_id: 0, token_info: token_info_0 });
   token_metadata.set(1, { token_id: 1, token_info: token_info_1 });
   token_metadata.set(2, { token_id: 2, token_info: token_info_2 });
-  
+
   const metadata = new MichelsonMap();
   metadata.set("", char2Bytes("tezos-storage:data"));
   metadata.set(
@@ -58,20 +58,6 @@ async function main() {
   );
 
   const operators = new MichelsonMap();
-
-  // const extension = {
-  //   admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-  //   signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-  //   nonces : new MichelsonMap(),
-  // }
-
-  // const initialStorage = {
-  //   extension,
-  //   ledger,
-  //   metadata,
-  //   token_metadata,
-  //   operators,
-  // };
 
   const fa2Extension = {
     minter : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
@@ -112,7 +98,10 @@ async function main() {
     );
     await originated.confirmation(2);
     console.log("confirmed contract: ", originated.contractAddress);
-    await saveContractAddress("nftminter", originated?.contractAddress ?? "error");
+    await saveContractAddress(
+      "nftminter",
+      originated?.contractAddress ?? "error"
+    );
   } catch (error: any) {
     console.log(error);
   }

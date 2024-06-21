@@ -16,11 +16,15 @@ import {
   TezosTxAuthData,
   TezosTxAuthInput,
 } from "./schemas";
+<<<<<<< HEAD
 const createKeccakHash = require("keccak");
 
 function keccak256(data: string) {
   return createKeccakHash("keccak256").update(data, "hex").digest("hex");
 }
+=======
+import { computePayloadHash } from "./computePayloadHash";
+>>>>>>> main
 
 export const getChainID = async (provider: TezosToolkit) => {
   const currentChainId = await provider.rpc.getChainId();
@@ -34,8 +38,13 @@ export const getNonceFromContract = async (
 ) => {
   const cntr = await provider.contract.at(contractAddress);
   const storage: any = await cntr.storage();
+<<<<<<< HEAD
   const user_nonce = await storage.nonces.get(userAddress);
   return String(user_nonce);
+=======
+  const userNonce = await storage.nonces.get(userAddress);
+  return userNonce ? Number(userNonce) : Number(0);
+>>>>>>> main
 };
 
 export const getBlockLevel = async (provider: TezosToolkit) => {
@@ -43,6 +52,7 @@ export const getBlockLevel = async (provider: TezosToolkit) => {
   return Number(block.level);
 };
 
+<<<<<<< HEAD
 export const computePayloadHashFromTezosTxAuthData = async (
   tezosTxAuthData: TezosTxAuthData
 ) => {
@@ -71,13 +81,19 @@ export const computePayloadHashFromTezosTxAuthData = async (
   return payload_hash;
 };
 
+=======
+>>>>>>> main
 export const signTezosTxAuthData = async (
   signer: InMemorySigner,
   tezosTxAuthData: TezosTxAuthData
 ) => {
+<<<<<<< HEAD
   // Compute payload hash
   const payload_hash = await computePayloadHashFromTezosTxAuthData(tezosTxAuthData);
   // SIGN
+=======
+  const payload_hash = await computePayloadHash(tezosTxAuthData);
+>>>>>>> main
   let signature = await signer.sign(payload_hash);
   return signature;
 };
@@ -116,7 +132,10 @@ export const signTxAuthDataLibTezos = async (
 ) => {
   // Retrieve signer public key
   const signerPublicKey = await signer.publicKey();
+<<<<<<< HEAD
   // console.log("signerPublicKey=", signerPublicKey);
+=======
+>>>>>>> main
 
   // Retrieve Nonce from contract storage
   const nonce = await getNonceFromContract(
@@ -128,10 +147,17 @@ export const signTxAuthDataLibTezos = async (
   const chain_id = await getChainID(provider);
   // Retrieve BLOCK LEVEL from Rpc client
   const block_level = await getBlockLevel(provider);
+<<<<<<< HEAD
   const expiration_num = block_level + 50;  //TODO: replace hardcoded value
   const expiration = expiration_num.toString();
 
   const txAuthData = {
+=======
+  const expiration_num = block_level + 50; //TODO: replace hardcoded value
+  const expiration = expiration_num;
+
+  const txAuthData: TezosTxAuthData = {
+>>>>>>> main
     chainID: chain_id,
     userAddress: tezosTxAuthInput.userAddress,
     nonce: nonce,
@@ -139,7 +165,11 @@ export const signTxAuthDataLibTezos = async (
     contractAddress: tezosTxAuthInput.contractAddress,
     functionCallName: tezosTxAuthInput.functionName,
     functionCallArgs: tezosTxAuthInput.args,
+<<<<<<< HEAD
     publicKey: signerPublicKey,
+=======
+    signerPublicKey: signerPublicKey,
+>>>>>>> main
   };
   const signature = await signTezosTxAuthData(signer, txAuthData);
 

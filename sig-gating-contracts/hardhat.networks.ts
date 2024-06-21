@@ -1,39 +1,65 @@
 import dotenv from "dotenv";
 import { NetworksUserConfig } from "hardhat/types";
-import { NEXERA_CHAINS } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+import {
+  ChainId,
+  IdToChains,
+  NEXERA_CHAINS,
+} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
 
 dotenv.config();
 
 // Default values
-const SEPOLIA_PROVIDER_URL = "https://ethereum-sepolia-rpc.publicnode.com";
-const DEFAULT_AMOY_URL = "https://rpc-polygonAmoy.polygon.technology";
-const DEFAULT_POLYGON_MAINNET = "https://polygon-rpc.com";
-const DEFAULT_BASE = "https://base.llamarpc.com";
-const DEFAULT_ETHEREUM = "https://eth.llamarpc.com";
-const DEFAULT_ARBITRUM = "https://arbitrum.llamarpc.com";
-const DEFAULT_BNB = "https://binance.llamarpc.com";
-const DEFAULT_OPTIMISM = "https://optimism.llamarpc.com";
-const DEFAULT_AVALANCHE = "https://avalanche-c-chain-rpc.publicnode.com";
+
+const getRpcUrl = (chainId: ChainId) => {
+  return IdToChains[chainId]?.rpcUrls.default.http[0];
+};
 const DEFAULT_MNEMONIC =
   "witch collapse practice feed shame open despair creek road again ice least"; // never use that one in prod
 
 // env variables
+
+// mnemonics
 const MAINNET_SIG_DEPLOYMENT_MNEMONIC =
   process.env.MAINNET_SIG_DEPLOYMENT_MNEMONIC || DEFAULT_MNEMONIC;
 const TEST_MNEMONIC = process.env.TEST_MNEMONIC || DEFAULT_MNEMONIC;
+
+// providers
+
+// mainnets
 const POLYGON_MAINNET_PROVIDER_URL =
-  process.env.POLYGON_MAINNET_PROVIDER_URL || DEFAULT_POLYGON_MAINNET;
-const BASE_PROVIDER_URL = process.env.BASE_PROVIDER_URL || DEFAULT_BASE;
-const AMOY_PROVIDER_URL = process.env.AMOY_PROVIDER_URL || DEFAULT_AMOY_URL;
+  process.env.POLYGON_MAINNET_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.POLYGON);
+const BASE_PROVIDER_URL =
+  process.env.BASE_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.BASE);
 const ETHEREUM_PROVIDER_URL =
-  process.env.ETHEREUM_PROVIDER_URL || DEFAULT_ETHEREUM;
+  process.env.ETHEREUM_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.ETHEREUM);
 const ARBITRUM_PROVIDER_URL =
-  process.env.ARBITRUM_PROVIDER_URL || DEFAULT_ARBITRUM;
-const BNB_PROVIDER_URL = process.env.BNB_PROVIDER_URL || DEFAULT_BNB;
+  process.env.ARBITRUM_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.ARBITRUM);
+const BNB_PROVIDER_URL =
+  process.env.BNB_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.BNB);
 const OPTIMISM_PROVIDER_URL =
-  process.env.OPTIMISM_PROVIDER_URL || DEFAULT_OPTIMISM;
+  process.env.OPTIMISM_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.OPTIMISM);
 const AVALANCHE_PROVIDER_URL =
-  process.env.AVALANCHE_PROVIDER_URL || DEFAULT_AVALANCHE;
+  process.env.AVALANCHE_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.AVALANCHE);
+
+// testnets
+const AMOY_PROVIDER_URL =
+  process.env.AMOY_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.POLYGON_AMOY);
+const SEPOLIA_PROVIDER_URL =
+  process.env.SEPOLIA_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.SEPOLIA);
+const BNB_TESTNET_PROVIDER_URL =
+  process.env.BNB_TESTNET_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.BNB_TESTNET);
+const OPTIMISM_SEPOLIA_PROVIDER_URL =
+  process.env.OPTIMISM_SEPOLIA_PROVIDER_URL ||
+  getRpcUrl(NEXERA_CHAINS.OPTIMISM_SEPOLIA);
+const BASE_SEPOLIA_PROVIDER_URL =
+  process.env.BASE_SEPOLIA_PROVIDER_URL ||
+  getRpcUrl(NEXERA_CHAINS.BASE_SEPOLIA);
+const AVALANCHE_FUJI_PROVIDER_URL =
+  process.env.AVALANCHE_FUJI_PROVIDER_URL ||
+  getRpcUrl(NEXERA_CHAINS.AVALANCHE_FUJI);
+const ARBITRUM_SEPOLIA_PROVIDER_URL =
+  process.env.ARBITRUM_SEPOLIA_PROVIDER_URL ||
+  getRpcUrl(NEXERA_CHAINS.ARBITRUM_SEPOLIA);
 
 export const networks: NetworksUserConfig = {
   //mainnets
@@ -90,6 +116,36 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: Number(NEXERA_CHAINS.SEPOLIA),
     url: SEPOLIA_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  baseSepolia: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.BASE_SEPOLIA),
+    url: BASE_SEPOLIA_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  optimisticSepolia: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.OPTIMISM_SEPOLIA),
+    url: OPTIMISM_SEPOLIA_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  avalancheFujiTestnet: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.AVALANCHE_FUJI),
+    url: AVALANCHE_FUJI_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  bscTestnet: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.BNB_TESTNET),
+    url: BNB_TESTNET_PROVIDER_URL,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  arbitrumSepolia: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.ARBITRUM_SEPOLIA),
+    url: ARBITRUM_SEPOLIA_PROVIDER_URL,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   // testnets for local testing

@@ -7,13 +7,12 @@
   "scripts": {
     "test": "tsc && mocha scripts/tests --timeout 10000",
     "sign": "ts-node scripts/signAuthData.ts",
-    "deploy_poc": "ts-node scripts/manual/deploy_nftminter.ts",
-    "deploy": "ts-node scripts/manual/deploy_nftminterext.ts",
-    "mint_poc": "ts-node scripts/manual/mint_offchain.ts",
-    "localsign": "ts-node scripts/manual/local_sign.ts",
-    "localdeploy": "ts-node scripts/manual/local_deploy_nftminter.ts",
-    "localmint": "ts-node scripts/manual/local_mint_offchain.ts",
-    "localdisplay": "ts-node scripts/manual/local_display_storage.ts",
+    "deploy": "ts-node scripts/manual/deployNftminter.ts",
+    "mint": "ts-node scripts/manual/mintOffchain.ts",
+    "localsign": "ts-node scripts/manual/localSign.ts",
+    "localdeploy": "ts-node scripts/manual/localDeployNftminter.ts",
+    "localmint": "ts-node scripts/manual/localMintOffchain.ts",
+    "localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
     "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
 
     "build": "preconstruct build",
@@ -63,4 +62,3 @@
     "mocha": "^10.4.0"
   }
 }
-  

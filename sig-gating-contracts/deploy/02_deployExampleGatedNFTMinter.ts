@@ -4,7 +4,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 const version = "0.2.10";
 const contractName = "ExampleGatedNFTMinter";
-const testEnv = "testnet";
+const withExample = "withExample";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployments, network } = hre;
@@ -42,5 +42,5 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 export default func;
 func.id = contractName + version;
-func.tags = [contractName, version, testEnv];
+func.tags = [contractName, version, withExample];
 func.dependencies = ["NexeraIDSignerManager"];
