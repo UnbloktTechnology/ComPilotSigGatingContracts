@@ -124,7 +124,6 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk inject_compiled_contracts
           pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build
 
       - name: Publish to private NPM (Tezos)

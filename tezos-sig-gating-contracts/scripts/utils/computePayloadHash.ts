@@ -16,26 +16,26 @@ function keccak256(data: string) {
 }
 
 export function computePayloadHash(payload: TezosTxAuthData) {
-  const nonce_string = payload.nonce.toString();
-  const expiration_string = payload.blockExpiration.toString();
+  const nonceString = payload.nonce.toString();
+  const expirationString = payload.blockExpiration.toString();
 
-  const chain_id_bytes = convert_chain_id(payload.chainID);
-  const user_bytes = convert_address(payload.userAddress);
-  const functioncall_contract_bytes = convert_address(payload.contractAddress);
-  const functioncall_name_bytes = convert_string(payload.functionCallName);
+  const chainIdBytes = convert_chain_id(payload.chainID);
+  const userBytes = convert_address(payload.userAddress);
+  const functioncallContractBytes = convert_address(payload.contractAddress);
+  const functioncallNameBytes = convert_string(payload.functionCallName);
   const functionCallArgsBytes = payload.functionCallArgs;
-  const nonce_bytes = convert_nat(nonce_string);
-  const expiration_bytes = convert_nat(expiration_string);
+  const nonceBytes = convert_nat(nonceString);
+  const expirationBytes = convert_nat(expirationString);
   const key_bytes = convert_key(payload.signerPublicKey);
   const payload_bytes =
     key_bytes +
-    chain_id_bytes +
-    user_bytes +
-    nonce_bytes +
-    expiration_bytes +
-    functioncall_contract_bytes +
-    functioncall_name_bytes +
+    chainIdBytes +
+    userBytes +
+    nonceBytes +
+    expirationBytes +
+    functioncallContractBytes +
+    functioncallNameBytes +
     functionCallArgsBytes;
-  const payload_hash = keccak256(payload_bytes);
-  return payload_hash;
+  const payloadHash = keccak256(payload_bytes);
+  return payloadHash;
 }
