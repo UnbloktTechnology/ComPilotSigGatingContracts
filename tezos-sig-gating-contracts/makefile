@@ -27,6 +27,8 @@ compile: ## compile contracts to Michelson
 	@mkdir -p compiled
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.tz, -m SignerManager)
 	@$(call compile,signerManager/NexeraIDSignerManager.mligo,NexeraIDSignerManager.json, -m SignerManager --michelson-format json)
+	@$(call compile,signerManager/NexeraIDSignerManagerMultisig.mligo,NexeraIDSignerManagerMultisig.tz, -m SignerManagerMultisig)
+	@$(call compile,signerManager/NexeraIDSignerManagerMultisig.mligo,NexeraIDSignerManagerMultisig.json, -m SignerManagerMultisig --michelson-format json)
 	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
 	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
@@ -44,6 +46,7 @@ compile: ## compile contracts to Michelson
 test: ## run tests (SUITE=extended_gated_nftminter make test)
 ifndef SUITE
 	@$(call test,NexeraIDSignerManager.test.mligo)
+	@$(call test,NexeraIDSignerManagerMultisig.test.mligo)
 	@$(call test,nftminter.test.mligo)
 	@$(call test,proxy.test.mligo)
 	@$(call test,extended_gated_nftminter.test.mligo)
