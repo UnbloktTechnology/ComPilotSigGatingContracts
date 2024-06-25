@@ -93,6 +93,14 @@ jobs:
           pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk"
           echo $version
 
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts" | jq -r '.["@nexeraprotocol/nexera-id-tezos-sig-gating-contracts"]')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts"
+          echo $version
+
+          version=$(pnpm pkg get version -w "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk" | jq -r '.["@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk"]')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk"
+          echo $version
+
       - name: Build Evm
         env:
           AMOY_PROVIDER_URL: ${{ secrets.AMOY_PROVIDER_URL }}
