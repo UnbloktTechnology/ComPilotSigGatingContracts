@@ -3,7 +3,6 @@
 .ligo/term_acceptance
 _ligo
 ligo.esy.lock
-compiled
 scripts/node_modules
 scripts/*.js
 scripts/tests/*.js

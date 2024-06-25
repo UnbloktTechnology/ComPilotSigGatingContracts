@@ -1,0 +1,159 @@
+{ parameter
+    (or (pair %exec_gated_calldata
+           (address %userAddress)
+           (nat %expiration)
+           (address %contractAddress)
+           (string %name)
+           (bytes %args)
+           (key %publicKey)
+           (signature %signature))
+        (or (pair %dispatch address string bytes) (address %setSigner))) ;
+  storage
+    (pair (address %admin) (address %signerAddress) (big_map %nonces address nat)) ;
+  code { PUSH string "MissingDispatchEntrypoint" ;
+         SWAP ;
+         UNPAIR ;
+         IF_LEFT
+           { UNPAIR 7 ;
+             CHAIN_ID ;
+             DUP 9 ;
+             GET 4 ;
+             DUP 3 ;
+             GET ;
+             IF_NONE
+               { DUP 9 ; GET 4 ; PUSH nat 1 ; SOME ; DUP 4 ; UPDATE ; PUSH nat 0 }
+               { DUP 10 ; GET 4 ; PUSH nat 1 ; DUP 3 ; ADD ; SOME ; DUP 5 ; UPDATE ; SWAP } ;
+             DIG 2 ;
+             PACK ;
+             DIG 3 ;
+             PACK ;
+             DIG 2 ;
+             PACK ;
+             DUP 5 ;
+             PACK ;
+             DUP 10 ;
+             PACK ;
+             DUP 8 ;
+             PACK ;
+             DUP 10 ;
+             PACK ;
+             DUP 12 ;
+             SWAP ;
+             CONCAT ;
+             SWAP ;
+             CONCAT ;
+             DIG 2 ;
+             CONCAT ;
+             DIG 2 ;
+             CONCAT ;
+             DIG 2 ;
+             CONCAT ;
+             DIG 2 ;
+             CONCAT ;
+             SWAP ;
+             CONCAT ;
+             KECCAK ;
+             DUP 7 ;
+             HASH_KEY ;
+             IMPLICIT_ACCOUNT ;
+             ADDRESS ;
+             PUSH string "BlockExpired" ;
+             DIG 4 ;
+             LEVEL ;
+             COMPARE ;
+             LT ;
+             IF { DROP } { FAILWITH } ;
+             DUP 9 ;
+             GET 3 ;
+             PACK ;
+             PUSH bytes 0x00 ;
+             SWAP ;
+             PUSH nat 1 ;
+             PUSH nat 6 ;
+             SLICE ;
+             IF_NONE { PUSH string "SLICE" ; FAILWITH } {} ;
+             COMPARE ;
+             EQ ;
+             NOT ;
+             IF { DROP ;
+                  DUP 8 ;
+                  GET 3 ;
+                  DUP 8 ;
+                  DUP 3 ;
+                  DUP 9 ;
+                  PAIR 3 ;
+                  VIEW "isValidSignature" bool ;
+                  IF_NONE
+                    { PUSH string "MissingIsValidSignatureView" ; FAILWITH }
+                    { IF {} { PUSH string "failed assertion" ; FAILWITH } } }
+                { DUP 9 ;
+                  GET 3 ;
+                  SWAP ;
+                  COMPARE ;
+                  EQ ;
+                  IF {} { PUSH string "KeyMissmatchSignerAddress" ; FAILWITH } } ;
+             DIG 6 ;
+             DIG 6 ;
+             CHECK_SIGNATURE ;
+             IF {} { PUSH string "InvalidSignature" ; FAILWITH } ;
+             SELF_ADDRESS ;
+             CONTRACT %dispatch (pair address string bytes) ;
+             IF_NONE
+               { SWAP ; DIG 2 ; DIG 3 ; DROP 3 ; DIG 2 ; FAILWITH }
+               { DIG 6 ;
+                 DROP ;
+                 PUSH mutez 0 ;
+                 DIG 5 ;
+                 DIG 5 ;
+                 DIG 5 ;
+                 PAIR 3 ;
+                 TRANSFER_TOKENS } ;
+             DUG 2 ;
+             UPDATE 4 ;
+             NIL operation ;
+             DIG 2 ;
+             CONS ;
+             PAIR }
+           { IF_LEFT
+               { UNPAIR 3 ;
+                 DUP ;
+                 SELF_ADDRESS ;
+                 COMPARE ;
+                 EQ ;
+                 IF { DROP 5 ; PUSH string "UnknownEntrypoint" ; FAILWITH }
+                    { DUP ;
+                      CONTRACT %dispatch (pair address string bytes) ;
+                      IF_NONE
+                        { DROP 3 ; SWAP ; FAILWITH }
+                        { DIG 5 ;
+                          DROP ;
+                          PUSH mutez 0 ;
+                          DIG 4 ;
+                          DIG 4 ;
+                          DIG 4 ;
+                          PAIR 3 ;
+                          TRANSFER_TOKENS } ;
+                      SWAP ;
+                      NIL operation ;
+                      DIG 2 ;
+                      CONS ;
+                      PAIR } }
+               { DIG 2 ;
+                 DROP ;
+                 PUSH string "OnlyOwner" ;
+                 DUP 3 ;
+                 CAR ;
+                 SENDER ;
+                 COMPARE ;
+                 EQ ;
+                 IF { DROP } { FAILWITH } ;
+                 DUP ;
+                 EMIT %setSigner address ;
+                 DUG 2 ;
+                 UPDATE 3 ;
+                 NIL operation ;
+                 DIG 2 ;
+                 CONS ;
+                 PAIR } } } ;
+  view "getSigner" unit address { CDR ; GET 3 } }
+
