@@ -1,0 +1,78 @@
+{ parameter (or (address %setSigner) (or (unit %unpause) (unit %pause))) ;
+  storage
+    (pair (address %owner) (address %pauser) (address %signerAddress) (bool %pause)) ;
+  code { PUSH string "OnlyPauser" ;
+         SWAP ;
+         UNPAIR ;
+         IF_LEFT
+           { DIG 2 ;
+             DROP ;
+             PUSH string "OnlyOwner" ;
+             DUP 3 ;
+             CAR ;
+             SENDER ;
+             COMPARE ;
+             EQ ;
+             IF { DROP } { FAILWITH } ;
+             DUP ;
+             EMIT %setSigner address ;
+             DUG 2 ;
+             UPDATE 5 }
+           { IF_LEFT
+               { DROP ;
+                 SWAP ;
+                 DUP 2 ;
+                 GET 3 ;
+                 SENDER ;
+                 COMPARE ;
+                 EQ ;
+                 IF { DROP } { FAILWITH } ;
+                 PUSH bool True ;
+                 DUP 2 ;
+                 GET 6 ;
+                 COMPARE ;
+                 EQ ;
+                 IF {} { PUSH string "AlreadyUnpaused" ; FAILWITH } ;
+                 PUSH bool False ;
+                 EMIT %pause bool ;
+                 SWAP ;
+                 PUSH bool False ;
+                 UPDATE 6 }
+               { DROP ;
+                 SWAP ;
+                 DUP 2 ;
+                 GET 3 ;
+                 SENDER ;
+                 COMPARE ;
+                 EQ ;
+                 IF { DROP } { FAILWITH } ;
+                 PUSH bool False ;
+                 DUP 2 ;
+                 GET 6 ;
+                 COMPARE ;
+                 EQ ;
+                 IF {} { PUSH string "AlreadyPaused" ; FAILWITH } ;
+                 PUSH bool True ;
+                 EMIT %pause bool ;
+                 SWAP ;
+                 PUSH bool True ;
+                 UPDATE 6 } } ;
+         NIL operation ;
+         DIG 2 ;
+         CONS ;
+         PAIR } ;
+  view "isValidSignature"
+       (pair key bytes signature)
+       bool
+       { UNPAIR ;
+         CAR ;
+         HASH_KEY ;
+         IMPLICIT_ACCOUNT ;
+         ADDRESS ;
+         SWAP ;
+         GET 5 ;
+         COMPARE ;
+         EQ ;
+         IF {} { PUSH string "InvalidSigner" ; FAILWITH } ;
+         PUSH bool True } }
+

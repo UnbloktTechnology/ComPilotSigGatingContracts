@@ -1,0 +1,273 @@
+{ parameter
+    (or (pair %validateProposal nat bool)
+        (or (address %createProposal)
+            (or (address %removeOwner)
+                (or (address %addOwner) (or (unit %unpause) (or (unit %pause) (nat %setThreshold))))))) ;
+  storage
+    (pair (big_map %owners address bool)
+          (big_map %proposals
+             nat
+             (pair (nat %proposal_id)
+                   (address %signer)
+                   (timestamp %expiration)
+                   (map %agreements address bool)
+                   (or %status (unit %pending) (unit %executed))))
+          (nat %next_proposal_id)
+          (nat %threshold)
+          (address %signerAddress)
+          (bool %pause)) ;
+  code { PUSH string "OnlyOwner" ;
+         LAMBDA
+           (pair string
+                 (pair address
+                       (big_map address bool)
+                       (big_map nat (pair nat address timestamp (map address bool) (or unit unit)))
+                       nat
+                       nat
+                       address
+                       bool))
+           unit
+           { UNPAIR ;
+             SWAP ;
+             UNPAIR ;
+             SWAP ;
+             CAR ;
+             SWAP ;
+             GET ;
+             IF_NONE { FAILWITH } { IF { DROP ; UNIT } { FAILWITH } } } ;
+         DUP 2 ;
+         APPLY ;
+         SWAP ;
+         DROP ;
+         SWAP ;
+         UNPAIR ;
+         IF_LEFT
+           { UNPAIR ;
+             DUP 3 ;
+             SENDER ;
+             PAIR ;
+             DIG 4 ;
+             SWAP ;
+             EXEC ;
+             DROP ;
+             DUP 3 ;
+             GET 3 ;
+             DUP 2 ;
+             GET ;
+             IF_NONE { PUSH string "UnknownProposal" ; FAILWITH } {} ;
+             PUSH string "AlreadyExecuted" ;
+             UNIT ;
+             LEFT unit ;
+             DUP 3 ;
+             GET 8 ;
+             COMPARE ;
+             EQ ;
+             IF { DROP } { FAILWITH } ;
+             PUSH string "Expired" ;
+             DUP 2 ;
+             GET 5 ;
+             NOW ;
+             COMPARE ;
+             LT ;
+             IF { DROP } { FAILWITH } ;
+             DUP ;
+             GET 7 ;
+             SENDER ;
+             GET ;
+             IF_NONE
+               { DUP ; GET 7 ; DUP 4 ; SOME ; SENDER ; UPDATE }
+               { DROP ; PUSH string "AlreadyAnswered" ; FAILWITH } ;
+             DUP 2 ;
+             DUP 2 ;
+             UPDATE 7 ;
+             PUSH nat 0 ;
+             DIG 2 ;
+             ITER { CDR ; IF { PUSH nat 1 ; ADD } {} } ;
+             DUP 6 ;
+             GET 7 ;
+             SWAP ;
+             COMPARE ;
+             LT ;
+             IF { SWAP ;
+                  DROP ;
+                  DIG 2 ;
+                  SENDER ;
+                  DUP 4 ;
+                  PAIR 3 ;
+                  EMIT %signProposal (pair nat address bool) ;
+                  DUP 4 ;
+                  DIG 4 ;
+                  GET 3 ;
+                  DIG 3 ;
+                  SOME ;
+                  DIG 4 ;
+                  UPDATE ;
+                  UPDATE 3 }
+                { DIG 3 ;
+                  DROP ;
+                  UNIT ;
+                  RIGHT unit ;
+                  UPDATE 8 ;
+                  DUP 2 ;
+                  GET 3 ;
+                  SENDER ;
+                  DUP 5 ;
+                  PAIR 3 ;
+                  EMIT %executeProposal (pair nat address address) ;
+                  DUP 5 ;
+                  DIG 5 ;
+                  GET 3 ;
+                  DIG 3 ;
+                  SOME ;
+                  DIG 5 ;
+                  UPDATE ;
+                  UPDATE 3 ;
+                  DIG 2 ;
+                  GET 3 ;
+                  UPDATE 9 } }
+           { IF_LEFT
+               { DUP 2 ;
+                 SENDER ;
+                 PAIR ;
+                 DIG 3 ;
+                 SWAP ;
+                 EXEC ;
+                 DROP ;
+                 UNIT ;
+                 LEFT unit ;
+                 EMPTY_MAP address bool ;
+                 PUSH int 86400 ;
+                 NOW ;
+                 ADD ;
+                 DIG 3 ;
+                 DUP 5 ;
+                 GET 5 ;
+                 PAIR 5 ;
+                 DUP 2 ;
+                 GET 5 ;
+                 EMIT %proposalCreated nat ;
+                 DUP 3 ;
+                 PUSH nat 1 ;
+                 DUP 5 ;
+                 GET 5 ;
+                 ADD ;
+                 UPDATE 5 ;
+                 DUP 4 ;
+                 GET 3 ;
+                 DIG 3 ;
+                 SOME ;
+                 DIG 4 ;
+                 GET 5 ;
+                 UPDATE ;
+                 UPDATE 3 }
+               { IF_LEFT
+                   { DUP 2 ;
+                     SENDER ;
+                     PAIR ;
+                     DIG 3 ;
+                     SWAP ;
+                     EXEC ;
+                     DROP ;
+                     DUP ;
+                     EMIT %removeOwner address ;
+                     DUP 3 ;
+                     DIG 3 ;
+                     CAR ;
+                     NONE bool ;
+                     DIG 4 ;
+                     UPDATE ;
+                     UPDATE 1 }
+                   { IF_LEFT
+                       { DUP 2 ;
+                         SENDER ;
+                         PAIR ;
+                         DIG 3 ;
+                         SWAP ;
+                         EXEC ;
+                         DROP ;
+                         DUP ;
+                         EMIT %addOwner address ;
+                         DUP 3 ;
+                         DIG 3 ;
+                         CAR ;
+                         PUSH bool True ;
+                         SOME ;
+                         DIG 4 ;
+                         UPDATE ;
+                         UPDATE 1 }
+                       { IF_LEFT
+                           { DROP ;
+                             DUP ;
+                             SENDER ;
+                             PAIR ;
+                             DIG 2 ;
+                             SWAP ;
+                             EXEC ;
+                             DROP ;
+                             PUSH bool True ;
+                             DUP 2 ;
+                             GET 10 ;
+                             COMPARE ;
+                             EQ ;
+                             IF {} { PUSH string "AlreadyUnpaused" ; FAILWITH } ;
+                             PUSH bool False ;
+                             EMIT %pause bool ;
+                             SWAP ;
+                             PUSH bool False ;
+                             UPDATE 10 }
+                           { IF_LEFT
+                               { DROP ;
+                                 DUP ;
+                                 SENDER ;
+                                 PAIR ;
+                                 DIG 2 ;
+                                 SWAP ;
+                                 EXEC ;
+                                 DROP ;
+                                 PUSH bool False ;
+                                 DUP 2 ;
+                                 GET 10 ;
+                                 COMPARE ;
+                                 EQ ;
+                                 IF {} { PUSH string "AlreadyPaused" ; FAILWITH } ;
+                                 PUSH bool True ;
+                                 EMIT %pause bool ;
+                                 SWAP ;
+                                 PUSH bool True ;
+                                 UPDATE 10 }
+                               { DUP 2 ;
+                                 SENDER ;
+                                 PAIR ;
+                                 DIG 3 ;
+                                 SWAP ;
+                                 EXEC ;
+                                 DROP ;
+                                 DUP ;
+                                 EMIT %setThreshold nat ;
+                                 DUG 2 ;
+                                 UPDATE 7 } } } } } } ;
+         NIL operation ;
+         DIG 2 ;
+         CONS ;
+         PAIR } ;
+  view "isValidSignature"
+       (pair key bytes signature)
+       bool
+       { UNPAIR ;
+         PUSH bool False ;
+         DUP 3 ;
+         GET 10 ;
+         COMPARE ;
+         EQ ;
+         IF {} { PUSH string "Paused" ; FAILWITH } ;
+         CAR ;
+         HASH_KEY ;
+         IMPLICIT_ACCOUNT ;
+         ADDRESS ;
+         SWAP ;
+         GET 9 ;
+         COMPARE ;
+         EQ ;
+         IF {} { PUSH string "InvalidSigner" ; FAILWITH } ;
+         PUSH bool True } }
+
