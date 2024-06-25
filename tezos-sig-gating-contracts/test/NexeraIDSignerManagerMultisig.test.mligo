@@ -43,13 +43,11 @@ let sign_hash (data_hash : bytes) : signature =
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TESTS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-let test_signermanager_pause =
+let test_signermanagermultisig_pause =
     let (owner1, _owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -68,13 +66,11 @@ let test_signermanager_pause =
     let () = Test.Next.Assert.assert (current_storage.pause) in
     ()
 
-let test_signermanager_failure_pause_not_pauser =
+let test_signermanagermultisig_failure_pause_only_owner =
     let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -88,19 +84,17 @@ let test_signermanager_failure_pause_not_pauser =
     // PAUSE fails
     let () = Test.set_source owner2 in
     let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.not_pauser in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.only_owner in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = false) in
     ()
 
-let test_signermanager_failure_pause_already_paused =
+let test_signermanagermultisig_failure_pause_already_paused =
     let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -119,13 +113,11 @@ let test_signermanager_failure_pause_already_paused =
     let () = Test.Next.Assert.assert (current_storage.pause = true) in
     ()
 
-let test_signermanager_unpause =
+let test_signermanagermultisig_unpause =
     let (owner1, _owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -144,13 +136,11 @@ let test_signermanager_unpause =
     let () = Test.Next.Assert.assert (current_storage.pause = false) in
     ()
 
-let test_signermanager_failure_unpause_not_pauser =
+let test_signermanagermultisig_failure_unpause_only_owner =
     let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -163,19 +153,17 @@ let test_signermanager_failure_unpause_not_pauser =
     // PAUSE fails
     let () = Test.set_source owner2 in
     let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.not_pauser in
+    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.only_owner in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = true) in
     ()
 
-let test_signermanager_failure_unpause_already_unpaused =
+let test_signermanagermultisig_failure_unpause_already_unpaused =
     let (owner1, owner2, owner3, _, _, _, _) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = owner3;
-        pauser = owner1;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -199,9 +187,7 @@ let test_signermanagermultisig_mint_gated =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = localsigner.address;
-        pauser = owner1;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
@@ -270,9 +256,7 @@ let test_signermanagermultisig_change_signer =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY SignerManager
     let initial_storage = { 
-        owner = owner1;
         signerAddress = localsigner.address;
-        pauser = owner1;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);

@@ -11,12 +11,10 @@ module SignerManagerMultisig = struct
     }
     
     type storage = {
-        owner: address; // should be multisig
         owners: (address, bool) big_map;
         proposals: (nat, proposal) big_map;
         next_proposal_id: nat;
         threshold: nat;
-        pauser: address;
         signerAddress: address;
         pause: bool
     }
@@ -24,9 +22,9 @@ module SignerManagerMultisig = struct
 
     module Errors = struct
         let only_owner = "OnlyOwner"
-        let not_pauser = "OnlyPauser"
         let already_paused= "AlreadyPaused"
         let already_unpaused= "AlreadyUnpaused"
+        let in_pause= "Paused"
         let invalid_signer = "InvalidSigner"
 
         let unknown_proposal = "UnknownProposal"
@@ -35,22 +33,34 @@ module SignerManagerMultisig = struct
         let already_executed = "AlreadyExecuted"
     end
 
+    let assertIsOwner (addr: address) (s: storage) : unit = 
+        match Big_map.find_opt addr s.owners with 
+        | None -> failwith Errors.only_owner
+        | Some auth -> Assert.Error.assert auth Errors.only_owner
+
+    [@entry]
+    let setThreshold(threshold: nat) (s: storage) : ret =
+        let () = assertIsOwner (Tezos.get_sender()) s in
+        let op = Tezos.emit "%setThreshold" threshold in
+        [op], { s with threshold = threshold}
+
     [@entry]
     let pause(_p: unit) (s: storage) : ret =
-        let _ = Assert.Error.assert (Tezos.get_sender() = s.pauser) Errors.not_pauser in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let _ = Assert.Error.assert (s.pause = false) Errors.already_paused in
         let op = Tezos.emit "%pause" true in
         [op], { s with pause = true}
 
     [@entry]
     let unpause(_p: unit) (s: storage) : ret =
-        let _ = Assert.Error.assert (Tezos.get_sender() = s.pauser) Errors.not_pauser in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let _ = Assert.Error.assert (s.pause = true) Errors.already_unpaused in
         let op = Tezos.emit "%pause" false in
         [op], { s with pause = false}
 
     [@view]
     let isValidSignature (p: key * bytes * signature)(s: storage) : bool =
+        let _ = Assert.Error.assert (s.pause = false) Errors.in_pause in
         let (k, _data, _signature) = p in
         let kh : key_hash = Crypto.hash_key k in
         let signer_address_from_key = Tezos.address(Tezos.implicit_account kh) in
@@ -59,25 +69,19 @@ module SignerManagerMultisig = struct
     
     [@entry]
     let addOwner(newOwner: address) (s: storage) : ret =
-        let () = match Big_map.find_opt (Tezos.get_sender()) s.owners with 
-        | None -> failwith Errors.only_owner
-        | Some auth -> Assert.Error.assert auth Errors.only_owner in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%addOwner" newOwner in
         [op], { s with owners = Big_map.update newOwner (Some(true)) s.owners }
 
     [@entry]
     let removeOwner(newOwner: address) (s: storage) : ret =
-        let () = match Big_map.find_opt (Tezos.get_sender()) s.owners with 
-        | None -> failwith Errors.only_owner
-        | Some auth -> Assert.Error.assert auth Errors.only_owner in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%removeOwner" newOwner in
         [op], { s with owners = Big_map.remove newOwner s.owners }
 
     [@entry]
     let createProposal(newSigner: address) (s: storage) : ret =
-        let () = match Big_map.find_opt (Tezos.get_sender()) s.owners with 
-        | None -> failwith Errors.only_owner
-        | Some auth -> Assert.Error.assert auth Errors.only_owner in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let res : proposal = {
             proposal_id=s.next_proposal_id;
             signer=newSigner;
@@ -91,9 +95,7 @@ module SignerManagerMultisig = struct
 
     [@entry]
     let validateProposal(proposal_id, agreement: nat * bool) (s: storage) : ret =
-        let () = match Big_map.find_opt (Tezos.get_sender()) s.owners with 
-        | None -> failwith Errors.only_owner
-        | Some auth -> Assert.Error.assert auth Errors.only_owner in
+        let () = assertIsOwner (Tezos.get_sender()) s in
         let p = match Big_map.find_opt proposal_id s.proposals with 
         | None -> failwith Errors.unknown_proposal
         | Some p -> p

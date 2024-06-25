@@ -11,21 +11,16 @@ export async function deploySignerManagerMultisig(
   owner: string,
   signer: string
 ) {
-  let alice = owner;
-  let bob = signer;
-
   let owners = new MichelsonMap();
-  owners.set(alice, true);
+  owners.set(owner, true);
   let proposals = new MichelsonMap();
 
   const initialStorage = {
-    owner: alice, // TODO remove
     owners: owners,
     proposals: proposals,
     next_proposal_id: 0,
     threshold: 2,
-    pauser: alice,
-    signerAddress: bob,
+    signerAddress: signer,
     pause: false,
   };
 
