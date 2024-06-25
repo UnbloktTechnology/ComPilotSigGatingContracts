@@ -76,11 +76,13 @@ jobs:
         run: |
           pnpm run build:contracts
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
+          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build
 
       - name: Publish to private NPM
         run: |
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
           pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
 
       - name: Publish to public NPM
         env:
@@ -91,20 +93,5 @@ jobs:
           pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
 
           pnpm --filter "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
-
-      - name: Build Tezos
-        env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build
-
-      - name: Publish to private NPM (Tezos)
-        run: |
-          pnpm --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
-
-      - name: Publish to public NPM (Tezos)
-        env:
-          NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
+          
           pnpm --filter "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
