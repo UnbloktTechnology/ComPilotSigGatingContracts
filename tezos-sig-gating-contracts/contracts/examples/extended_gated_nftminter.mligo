@@ -1,5 +1,5 @@
 // #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
+// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
@@ -37,19 +37,20 @@ module NftMinterExt = struct
   let txAuthDataSignerAddress(p: unit)(s: storage) : address = 
       SigGatedExtendable.getSigner p s 
 
+
   [@entry]
   let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
     let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
     [op], s
 
-  // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses 
+  // Option 1: Example (useful if verification and processing is separated in different contracts) of entrypoint which uses 
   // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
   // - calls Distpatch entrypoint for processing the calldata
   [@entry]
   let exec_gated_calldata (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
       SigGatedExtendable.verifyAndDispatchTxAuthData data s 
 
-  // Example of entrypoint which uses 
+  // Option 2: Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
@@ -59,7 +60,7 @@ module NftMinterExt = struct
       let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
       [op], s
 
-  // Example of entrypoint which uses 
+  // Option 3: Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process the calldata itself
   [@entry]

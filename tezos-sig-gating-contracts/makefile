@@ -11,14 +11,14 @@ LIGO=docker run --platform linux/amd64 -u $(id -u):$(id -g) --rm -v "$(PWD)":"$(
 endif
 # ^ use LIGO en var bin if configured, otherwise use docker
 
-compile = $(LIGO) compile contract --library . --project-root ./contracts ./contracts/$(1) -o ./compiled/$(2) $(3) 
+compile = $(LIGO) compile contract --library . --project-root . ./contracts/$(1) -o ./compiled/$(2) $(3) 
 # ^ Compile contracts to Michelson or Micheline
 
 test = @$(LIGO) run test $(project_root) ./test/$(1) --no-warn
 # ^ run given test file
 
 
-install: ## install dependencies
+install: ## install LIGO dependencies
 	@$(LIGO) install
 
 
@@ -37,11 +37,11 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/gatednftminter_nodispatch.mligo,gatednftminter_nodispatch.json, -m NftMinterExtNoDispatch --michelson-format json)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.tz, -m NftMinterSimple)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.json, -m NftMinterSimple --michelson-format json)
-	@$(call compile,sigGatingExtendable/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
-	@$(call compile,sigGatingExtendable/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
 
 
-test: ## run tests (SUITE=asset_approve make test)
+test: ## run tests (SUITE=extended_gated_nftminter make test)
 ifndef SUITE
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,nftminter.test.mligo)
@@ -59,33 +59,33 @@ endif
 #            for TESTNET              #
 #######################################
 
-sign:
+sign: 
 	@echo "Running sign script\n"
 	@npm run sign
 
-scripts_install:
+scripts_install:  ## Install typescripts dependencies (including Taquto)
 	@echo "Installing deploy script dependencies"
 	@npm install
 	@echo ""
 
-deploy:
+deploy:  ## Deploy the extended_gated_nftminter contract on Ghostnet
 	@echo "Running deploy script\n"
 	@npm run deploy
 
-mint:
+mint:  ## Trigger the exec_gated_offchain entrypoint of the extended_gated_nftminter contract on Ghostnet (scripts/manual/mint_offchain.ts)
 	@echo "Running mint script\n"
 	@npm run mint
 
 #######################################
 #            SANDBOX                  #
 #######################################
-sandbox-start: ##@Sandbox - Start Flextesa sandbox
+sandbox-start: ## Sandbox - Start Flextesa sandbox
 	@./scripts/run-sandbox $(PROJECT)
 
-sandbox-stop: ##@Sandbox - Stop Flextesa sandbox
+sandbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
-integration-test:
+integration-test: ## Launch tests on a the sandbox (local network)  
 	@echo "Running integration test script\n"
 	@npm run test
 

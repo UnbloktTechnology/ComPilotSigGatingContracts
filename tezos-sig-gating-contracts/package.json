@@ -1,7 +1,9 @@
 {
-  "name": "tezos-sig-gating",
+  "name": "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk",
   "version": "1.0.0",
   "description": "",
+  "main": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.cjs.js",
+  "module": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.esm.js",
   "scripts": {
     "test": "tsc && mocha scripts/tests --timeout 10000",
     "sign": "ts-node scripts/signAuthData.ts",
@@ -11,18 +13,37 @@
     "localdeploy": "ts-node scripts/manual/localDeployNftminter.ts",
     "localmint": "ts-node scripts/manual/localMintOffchain.ts",
     "localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
-    "build": "preconstruct build",
-    "pre-build": "preconstruct build",
+    "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
+    "build": "cp compiled/gatednftminter_simple.json src/compiledContracts/ && pnpm lint && preconstruct build",
+    "pre-build": "cp compiled/gatednftminter_simple.json src/compiledContracts/ && pnpm lint && preconstruct build",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "lint": "prettier --write .",
-    "lint:check": "prettier --check ."
+    "lint": "prettier --write src/**/**.ts",
+    "lint:check": "prettier --check src/**/**.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
+    "directory": "tezos-sig-gating-contracts"
+  },
+  "files": [
+    "dist",
+    "addresses",
+    "compiledContracts",
+    "lib"
+  ],
+  "preconstruct": {
+    "entrypoints": [
+      "addresses/index.ts",
+      "compiledContracts/index.ts",
+      "lib/index.ts"
+    ]
   },
   "dependencies": {
-    "@taquito/signer": "^19.2.0",
-    "@taquito/taquito": "^19.2.0",
-    "@taquito/utils": "^19.2.0",
-    "@taquito/rpc": "^19.2.0",
-    "@taquito/michel-codec": "^19.2.0",
+    "@taquito/signer": "^20.0.0",
+    "@taquito/taquito": "^20.0.0",
+    "@taquito/utils": "^20.0.0",
+    "@taquito/rpc": "^20.0.0",
+    "@taquito/michel-codec": "^20.0.0",
     "keccak": "3.0.4",
     "zod": "^3.22.4"
   },

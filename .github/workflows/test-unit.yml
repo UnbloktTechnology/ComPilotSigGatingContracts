@@ -48,3 +48,25 @@ jobs:
         continue-on-error: false
         run: |
           pnpm run test:unit
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "pnpm"
+          node-version: 18.12
+
+      - name: Start a sandbox for Tezos (on local network)
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make sandbox-start
+
+      - name: 🖥️🧪 Run integration test for Tezos (on local network)
+        continue-on-error: true
+        run: |
+          pnpm run test:tezos-contracts-sdk
+
+      - name: 🖥️🧪 Stop the sandbox for Tezos (on local network)
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make sandbox-stop

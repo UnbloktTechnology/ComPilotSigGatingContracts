@@ -2,7 +2,10 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/nftminter.json";
+
+// import nftMinterContract from "../../compiled/nftminter.json";
+
+import nftMinterContract from "../../compiled/extended_gated_nftminter.json";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -56,21 +59,36 @@ async function main() {
 
   const operators = new MichelsonMap();
 
-  const extension = {
-    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
-    nonces: new MichelsonMap(),
-  };
+  const fa2Extension = {
+    minter : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+  }
 
-  const initialStorage = {
-    extension,
+  const initialFA2Storage = {
+    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
     ledger,
     metadata,
     token_metadata,
     operators,
   };
 
+  const initialStorage = {
+    admin : "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    signerAddress : "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    nonces : new MichelsonMap(),
+    siggated_extension: initialFA2Storage,
+  };
+
   try {
+    console.log("Attempt to deploy in localhost");
+    const chainID = await Tezos.rpc.getChainId();
+    console.log("chainID=", chainID);
+
+    console.log("Tezos.signer.publicKey=", await Tezos.signer.publicKey());
+    
+    const constants = await Tezos.rpc.getConstants();
+    console.log("constants=", constants);
+
+
     const originated = await Tezos.contract.originate({
       code: nftMinterContract,
       storage: initialStorage,

@@ -26,8 +26,8 @@ import { computePayloadHash } from "../utils/computePayloadHash";
 const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
-import { RpcClient } from "@taquito/rpc";
-const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
+import { RpcClient } from '@taquito/rpc';
+const client = Tezos.rpc; //new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
 const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"

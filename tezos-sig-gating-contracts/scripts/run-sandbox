@@ -6,7 +6,7 @@
 project=$1
 name="$project"-sandbox
 
-image=oxheadalpha/flextesa:20230915
+image=oxheadalpha/flextesa:latest
 script=oxfordbox
 
 docker run --rm --name "$name" --detach -p 20000:20000 \

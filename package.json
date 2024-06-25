@@ -10,13 +10,14 @@
   "packageManager": "pnpm@9.1.4",
   "author": "",
   "workspaces": [
-    "tezos-sig-gating-contracts",
     "sig-gating-contracts",
+    "tezos-sig-gating-contracts",
     "contracts-sdk"
   ],
   "preconstruct": {
     "packages": [
       "sig-gating-contracts",
+      "tezos-sig-gating-contracts",
       "contracts-sdk"
     ]
   },
@@ -42,9 +43,13 @@
   "scripts": {
     "lint": "pnpm -r lint",
     "lint:check": "pnpm -r lint:check",
-    "postinstall": "pnpm run pre-build:contracts-sdk && pnpm run build:contracts && pnpm run build:contracts-sdk",
+    "postinstall": "pnpm run postinstallEvm && pnpm run postinstallTezos",
+    "postinstallEvm": "pnpm run pre-build:contracts-sdk && pnpm run build:contracts && pnpm run build:contracts-sdk",
+    "postinstallTezos": "pnpm run build:tezos-contracts-sdk",
     "build:contracts": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts build",
     "build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build",
+    "build:tezos-contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk build",
+    "test:tezos-contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk test",
     "pre-build:contracts-sdk": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk pre-build",
     "publish-pkg:contracts": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
     "publish-pkg:sdk": "pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk publish-sdk-pkg",
