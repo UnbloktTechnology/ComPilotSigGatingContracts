@@ -26,9 +26,9 @@ export function computePayloadHash(payload: TezosTxAuthData) {
   const functionCallArgsBytes = payload.functionCallArgs;
   const nonceBytes = convert_nat(nonceString);
   const expirationBytes = convert_nat(expirationString);
-  const key_bytes = convert_key(payload.signerPublicKey);
-  const payload_bytes =
-    key_bytes +
+  const keyBytes = convert_key(payload.signerPublicKey);
+  const payloadBytes =
+    keyBytes +
     chainIdBytes +
     userBytes +
     nonceBytes +
@@ -36,6 +36,6 @@ export function computePayloadHash(payload: TezosTxAuthData) {
     functioncallContractBytes +
     functioncallNameBytes +
     functionCallArgsBytes;
-  const payloadHash = keccak256(payload_bytes);
+  const payloadHash = keccak256(payloadBytes);
   return payloadHash;
 }
