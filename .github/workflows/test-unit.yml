@@ -64,10 +64,3 @@ jobs:
         continue-on-error: false
         run: |
           pnpm run test:tezos-contracts-sdk
-
-      - name: 🖥️🧪 Stop the sandbox for Tezos (on local network)
-        if: always()
-        continue-on-error: false
-        run: |
-          cd tezos-sig-gating-contracts
-          make sandbox-stop
