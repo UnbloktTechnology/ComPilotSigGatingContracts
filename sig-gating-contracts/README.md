@@ -90,11 +90,16 @@ SignerManager is deployed on 0x29A75f22AC9A7303Abb86ce521Bb44C4C69028A0 on
 - Polygon Amoy
 - Polygon Mainnet
 - Base
+- Base Sepolia
 - Ethereum
 - Arbitrum
+- Arbitrum Sepolia
 - Optimism
+- Optimism Sepolia
 - BSC/BNB
+- BNB Testnet
 - Avalanche
+- Avalanche Fuji
 
 ## Sig Gating Tests
 
