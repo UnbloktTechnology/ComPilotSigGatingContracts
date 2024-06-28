@@ -2,15 +2,6 @@ import { InMemorySigner } from "@taquito/signer";
 import { RpcClient } from "@taquito/rpc";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import {
-  convert_timestamp,
-  convert_key,
-  convert_nat,
-  convert_string,
-  convert_address,
-  convert_chain_id,
-  convert_mint,
-} from "./convert";
-import {
   TezosAddress,
   TezosContractAddress,
   TezosTxAuthData,
