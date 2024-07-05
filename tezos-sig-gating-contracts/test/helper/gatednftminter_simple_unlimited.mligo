@@ -1,6 +1,6 @@
 #import "./bootstrap.mligo" "Bootstrap"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../contracts/examples/gatednftminter_simple.mligo" "NFTMINTER"
+#import "../../contracts/examples/gatednftminter_simple_unlimited.mligo" "NFTMINTER"
 
 module FA2_NFT = FA2.NFTExtendable
 
@@ -38,7 +38,7 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
         add_token_metadata (abs(count-1n)) new_all
     in
     let token_metadata = (Big_map.empty: (nat, FA2_NFT.TZIP12.tokenMetadataData) big_map) in
-    let token_metadata = add_token_metadata 6n token_metadata in
+    let token_metadata = add_token_metadata 5n token_metadata in
 
     // let token_metadata = (Big_map.literal [
     //     (1n, ({token_id=1n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
@@ -46,7 +46,6 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
     //     (3n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
     //     (4n, ({token_id=4n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
     //     (5n, ({token_id=5n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    //     (6n, ({token_id=6n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
     // ] : FA2_NFT.TZIP12.tokenMetadata) in
 
     let metadata =Big_map.literal [
@@ -54,7 +53,7 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
 	("data", [%bytes
     {|{
         "name":"FA2",
-        "description":"Example FA2 implementation",
+        "description":"Example FA2 NFT implementation with unlimited mint feature",
         "version":"0.1.0",
         "license":{"name":"MIT"},
         "authors":["Frank Hillard<frank@nexera.id>"],
@@ -69,17 +68,17 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
     in
     let fa2_extension_initial = { 
         minter = minter;
-        lastMinted = 5n; 
+        next_token_id = 6n;
     } in
 
-    let fa2_storage : NFTMINTER.NftMinterSimple.extended_fa2_storage = {
+    let fa2_storage : NFTMINTER.NftMinterUnlimited.extended_fa2_storage = {
         extension      = fa2_extension_initial;
         ledger         = ledger;
         token_metadata = token_metadata;
         operators      = operators;
         metadata       = metadata;
     } in
-    let initial_storage : NFTMINTER.NftMinterSimple.storage = { 
+    let initial_storage : NFTMINTER.NftMinterUnlimited.storage = { 
         admin = admin;
         signerAddress = signerAddress;
         nonces = (Big_map.empty: (address, nat) big_map);
@@ -90,5 +89,5 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
 
 let boot_nftminter (admin, signerAddress, minter, owner1, owner2, owner3, owner4, op1, op2, op3) = 
     let initial_storage, _owners, _ops = get_nftminter_initial_storage (admin, signerAddress, minter, owner1, owner2, owner3, owner4, op1, op2, op3) in
-    let orig_fa2 = Test.Next.Originate.contract (contract_of NFTMINTER.NftMinterSimple) initial_storage 0tez in
+    let orig_fa2 = Test.Next.Originate.contract (contract_of NFTMINTER.NftMinterUnlimited) initial_storage 0tez in
     orig_fa2

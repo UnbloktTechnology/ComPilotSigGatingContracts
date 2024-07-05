@@ -1,8 +1,7 @@
 #import "./helper/bootstrap.mligo" "Bootstrap"
 #import "./helper/assert.mligo" "AssertHelper"
 #import "../contracts/signerManager/NexeraIDSignerManager.mligo" "NexeraIDSignerManager"
-// #import "./helper/nftminter.mligo" "NftMinterHelper"
-// #import "../contracts/examples/nftminter.mligo" "NFTMINTER"
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS

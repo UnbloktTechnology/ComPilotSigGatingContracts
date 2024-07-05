@@ -115,7 +115,6 @@ let test_gatednftmintersimple_mint_gated =
         token_id=6n
       }: NFTMINTER.NftMinterSimple.mint)
     } in
-    let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
@@ -140,8 +139,50 @@ let test_gatednftmintersimple_mint_gated =
         | Some ownr6 -> Assert.assert (ownr6 = inputs.functioncall_params.owner) 
         | None -> Test.Next.Assert.failwith "Wrong owner ! Mint did not work"
     in
+    let () = Assert.assert (current_storage.siggated_extension.extension.lastMinted = 6n) in
     ()
 
+
+
+let test_gatednftmintersimple_mint_gated_failure_already_owned =
+    let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
+    // DEPLOY NFTMINTER
+    let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
+    let {taddr = nftminter_taddr; code = _ ; size = _} = orig_nftminter in 
+    let nftminter_contract = Test.Next.Typed_address.to_contract nftminter_taddr in
+    let nftminter_address : address = Tezos.address nftminter_contract in
+
+    // PREPARE parameter for EXEC_GATED_CALLDATA call 
+    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+      public_key = localsigner.publicKey;
+      chain_id = (Tezos.get_chain_id());
+      user = owner3;
+      nonce = 0n;
+      expiration = 100n;
+      functioncall_contract = nftminter_address;
+      functioncall_name = "%mint_gated";
+      functioncall_params = ({
+        owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
+        token_id=1n
+      }: NFTMINTER.NftMinterSimple.mint)
+    } in
+    let data_hash, functioncall_params_bytes = compute_hash inputs in 
+    let my_sig : signature = sign_hash data_hash in
+
+    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+      userAddress = inputs.user;   // user address (used to check nonce)
+      expirationBlock = inputs.expiration;  // expiration date
+      //contractAddress = inputs.functioncall_contract;  // calldata contract address
+      // functionName = inputs.functioncall_name;   // name of the entrypoint of the calldata (for example "%mint")
+      functionArgs = functioncall_params_bytes;   // arguments for the entrypoint of the calldata 
+      signerPublicKey = inputs.public_key;     // public key that signed the payload 
+      signature = my_sig;   // signature of the payload signed by the given public key
+    } in
+    // EXEC_GATED_CALLDATA entrypoint call 
+    let () = Test.set_source owner1 in
+    let r = Test.transfer_to_contract nftminter_contract (Mint_gated p) 0tez in
+    let () = AssertHelper.string_failure r NFTMINTER.NftMinterSimple.Errors.asset_already_owned in
+    ()
 
   let test_gatednftmintersimple_mint_gated_failure_wrong_contract =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in

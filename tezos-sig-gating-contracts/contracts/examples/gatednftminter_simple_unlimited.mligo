@@ -1,20 +1,21 @@
-// #import "../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../lib/main.mligo" "SigGatedExtendable"
-// #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
-module NftMinterSimple = struct
+module NftMinterUnlimited = struct
 
   (* FA2 extension - storage *)
   module NFT = FA2.NFTExtendable
   type fa2_extension = {
       minter: address;   // MINTER ROLE 
+      next_token_id: nat;
   }
   type extended_fa2_storage = fa2_extension NFT.storage
 
   type mint = {
     owner    : address;
-    token_id : nat;
+    token_info : (string, bytes) map;
   }
 
   (* SigGating extension - storage *)
@@ -23,22 +24,30 @@ module NftMinterSimple = struct
   type ret = operation list * storage
 
   module Errors = struct
-      let custom_error_mesage = "CustomError"
+      let asset_already_exist = "AssetAlreadyExist"
   end
 
   (* FA2 extension - entrypoints *)
 
   let apply_mint (mint : mint) (s : storage): ret =
     // Apply MINT
-    let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
-    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
+    let token_id = s.siggated_extension.extension.next_token_id in
+    let new_extension = { s.siggated_extension.extension with next_token_id=token_id+1n } in
+    let () = Assert.Error.assert (Option.is_none (Big_map.find_opt token_id s.siggated_extension.token_metadata)) Errors.asset_already_exist in
+    let new_token_info: NFT.TZIP12.tokenMetadataData = {token_id=token_id;token_info=mint.token_info;} in
+    let new_token_metadata: NFT.TZIP12.tokenMetadata = Big_map.add token_id new_token_info s.siggated_extension.token_metadata in
+    let ext_fa2_s = { s.siggated_extension with token_metadata=new_token_metadata; extension=new_extension} in
+    let new_fa2_s = NFT.set_balance ext_fa2_s mint.owner token_id in
     [], { s with siggated_extension=new_fa2_s }
 
   [@entry]
   let mint (mint : mint) (s : storage): ret =
     let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
     apply_mint mint s
+
+  [@view]
+  let nextTokenId(p: unit)(s: storage) : nat = 
+      s.siggated_extension.extension.next_token_id
 
   (* SigGating extension - entrypoints *)
 

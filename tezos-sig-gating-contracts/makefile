@@ -41,10 +41,13 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.json, -m NftMinterSimple --michelson-format json)
 	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
 	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
+	@$(call compile,examples/gatednftminter_simple_unlimited.mligo,gatednftminter_simple_unlimited.tz, -m NftMinterUnlimited)
+	@$(call compile,examples/gatednftminter_simple_unlimited.mligo,gatednftminter_simple_unlimited.json, -m NftMinterUnlimited --michelson-format json)
 
 
 test: ## run tests (SUITE=extended_gated_nftminter make test)
 ifndef SUITE
+	@$(call test,gatednftminter_simple_unlimited.test.mligo)
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,NexeraIDSignerManagerMultisig.test.mligo)
 	@$(call test,nftminter.test.mligo)

@@ -20,7 +20,7 @@ async function main() {
     const ledger = new taquito_1.MichelsonMap();
     ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
     const tokenMetadata = new taquito_1.MichelsonMap();
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
         const tokenInfo = new taquito_1.MichelsonMap();
         tokenInfo.set("name", (0, utils_1.char2Bytes)("Token " + i.toString()));
         tokenInfo.set("description", (0, utils_1.char2Bytes)("asset #" + i.toString()));
@@ -54,7 +54,7 @@ async function main() {
     };
     const initialStorage = {
         admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-        signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+        signerAddress: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
         nonces: new taquito_1.MichelsonMap(),
         siggated_extension: initialFA2Storage,
     };

@@ -26,8 +26,8 @@ compile: ## compile contracts to Michelson
 	@mkdir -p compiled
 	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.tz, -m NftMinterExt)
 	@$(call compile,examples/extended_gated_nftminter.mligo,extended_gated_nftminter.json, -m NftMinterExt --michelson-format json)
-	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterExtInternalDispatch)
-	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterExtInternalDispatch --michelson-format json)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.tz, -m NftMinterInternalDispatch)
+	@$(call compile,examples/gatednftminter_internaldispatch.mligo,gatednftminter_internaldispatch.json, -m NftMinterInternalDispatch --michelson-format json)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.tz, -m NftMinterSimple)
 	@$(call compile,examples/gatednftminter_simple.mligo,gatednftminter_simple.json, -m NftMinterSimple --michelson-format json)
 
