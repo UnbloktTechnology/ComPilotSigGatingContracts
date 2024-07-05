@@ -41,10 +41,11 @@ export async function deployNFTMinterSimple(provider: TezosToolkit) {
 
   const fa2Extension = {
     minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    lastMinted: 0,
   };
 
   const initialFA2Storage = {
-    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
+    extension: fa2Extension,
     ledger,
     metadata,
     token_metadata: tokenMetadata,
