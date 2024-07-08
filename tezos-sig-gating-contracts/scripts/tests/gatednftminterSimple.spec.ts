@@ -80,10 +80,14 @@ describe(`GatedNftMinterSimple`, function () {
   });
 
   it(`Should mint the asset #1`, async () => {
-    // Get contract storage
+    // Get contract
     const cntr = await Tezos.contract.at(
       exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
     );
+    // Get contract storage
+    const currentStorage: any = await cntr.storage();
+    const nextAssetId =
+      currentStorage.siggated_extension.extension.lastMinted + 1;
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -91,7 +95,7 @@ describe(`GatedNftMinterSimple`, function () {
       : "";
     const functionCallArgs = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-      token_id: "1",
+      token_id: nextAssetId.toString(), //"1",
     };
     // Prepare Hash of payload
     const functionCallArgsBytes = convert_mint(
@@ -128,7 +132,9 @@ describe(`GatedNftMinterSimple`, function () {
     const storage: any = await cntr.storage();
     const admin = await storage.admin;
     const ownerAsset0 = await storage.siggated_extension.ledger.get(0);
-    const ownerAsset1 = await storage.siggated_extension.ledger.get(1);
+    const ownerAsset1 = await storage.siggated_extension.ledger.get(
+      nextAssetId
+    );
     expect(deployerAddress === admin).to.be.true;
     expect(ownerAsset0 === deployerAddress).to.be.true;
     expect(ownerAsset1 === functionCallArgs.owner).to.be.true;

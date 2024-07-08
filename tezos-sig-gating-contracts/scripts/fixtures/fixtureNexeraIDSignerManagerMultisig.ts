@@ -19,7 +19,7 @@ export async function deploySignerManagerMultisig(
     owners: owners,
     proposals: proposals,
     next_proposal_id: 0,
-    threshold: 2,
+    threshold: 1,
     signerAddress: signer,
     pause: false,
   };

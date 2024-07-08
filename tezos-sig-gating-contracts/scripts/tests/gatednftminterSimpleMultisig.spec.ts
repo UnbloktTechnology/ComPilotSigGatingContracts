@@ -48,6 +48,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   let currentChainId: string;
   let nexeraSignerPublicKey: string;
   let nexeraSignerAddress: string;
+  let lastProposalId: number;
 
   before(async () => {
     // SET SIGNER
@@ -163,26 +164,72 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ? exampleGatedNFTMinterCntrl : ""
     );
-    const op = await cntrSignerManager.methodsObject.addOwner(frank).send();
+    const currentStorage: any = await cntrSignerManager.storage();
+    lastProposalId = await currentStorage.next_proposal_id;
+    const op = await cntrSignerManager.methodsObject
+      .createAddOwnerProposal(frank)
+      .send();
+    // const op = await cntrSignerManager.methodsObject.addOwner(frank).send();
     await op.confirmation(2);
+    // Verify
+    const storageAfter: any = await cntrSignerManager.storage();
+    const prop = await storageAfter.proposals.get(lastProposalId);
+    expect(prop.action?.addOwner === frank).to.be.true;
+
+    //Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
+    const op_validate = await cntrSignerManager.methodsObject
+      .validateProposal([lastProposalId, true])
+      .send();
+    await op_validate.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
     const frankAuth = await storage.owners.get(frank);
     expect(frankAuth).to.be.true;
   });
 
-  it(`Should create a proposal #0 in multisig`, async () => {
+  it(`Should setThreshold to 2 in multisig`, async () => {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ? exampleGatedNFTMinterCntrl : ""
     );
+    const currentStorage: any = await cntrSignerManager.storage();
+    lastProposalId = await currentStorage.next_proposal_id;
+    const newThreshold = 2;
+    const op = await cntrSignerManager.methodsObject
+      .createSetThresholdProposal(newThreshold)
+      .send();
+    // const op = await cntrSignerManager.methodsObject.addOwner(frank).send();
+    await op.confirmation(2);
+
+    // Verify
+    const storageAfter: any = await cntrSignerManager.storage();
+    const prop = await storageAfter.proposals.get(lastProposalId);
+    expect(prop.action?.setThreshold.toNumber()).to.be.eq(newThreshold);
+
+    const op_validate = await cntrSignerManager.methodsObject
+      .validateProposal([lastProposalId, true])
+      .send();
+    await op_validate.confirmation(2);
+    // Verify
+    const storage: any = await cntrSignerManager.storage();
+    const threshold = await storage.threshold;
+    expect(threshold.toNumber() === newThreshold).to.be.true;
+  });
+
+  it(`Should create a proposal to ChangeSigner in multisig`, async () => {
+    const cntrSignerManager = await Tezos.contract.at(
+      exampleGatedNFTMinterCntrl ? exampleGatedNFTMinterCntrl : ""
+    );
+    const currentStorage: any = await cntrSignerManager.storage();
+    lastProposalId = await currentStorage.next_proposal_id;
+
     const op = await cntrSignerManager.methodsObject
       .createNewSignerProposal(alice)
       .send();
     await op.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const prop0 = await storage.proposals.get(0);
-    expect(prop0.signer === alice).to.be.true;
+    const prop = await storage.proposals.get(lastProposalId);
+    expect(prop.action?.changeSigner === alice).to.be.true;
     expect(storage.pause === false).to.be.true;
   });
 
@@ -191,7 +238,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       exampleGatedNFTMinterCntrl ? exampleGatedNFTMinterCntrl : ""
     );
     const op = await cntrSignerManager.methodsObject
-      .validateNewSignerProposal([0, true])
+      .validateProposal([lastProposalId, true])
       .send();
     await op.confirmation(2);
     // Verify
@@ -207,7 +254,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     try {
       // CALL contract
       const op = await cntrSignerManager.methodsObject
-        .validateNewSignerProposal([0, true])
+        .validateProposal([lastProposalId, true])
         .send();
       expect(false).to.be.true;
       await op.confirmation(2);
@@ -233,7 +280,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
     // CALL contract
     const op = await cntrSignerManager.methodsObject
-      .validateNewSignerProposal([0, true])
+      .validateProposal([lastProposalId, true])
       .send();
     await op.confirmation(2);
     // Verify

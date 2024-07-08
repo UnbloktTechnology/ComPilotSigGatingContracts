@@ -260,7 +260,7 @@ let test_signermanagermultisig_change_signer =
         owners= Big_map.literal([(owner1, true)]);
         proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
-        threshold=2n;
+        threshold=1n;
     } in
     let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
@@ -277,17 +277,37 @@ let test_signermanagermultisig_change_signer =
     let r = Test.transfer_to_contract nftminter_contract (SetSigner signer_manager_address) 0tez in
     let () = AssertHelper.tx_success r in
 
-    // [Signer Manager] Add Owner in multisig  
+    // [Signer Manager] Add Owner in multisig  =>  PROPOSAL 0
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let next_proposal_id = current_storage.next_proposal_id in
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract signer_manager_contract (AddOwner owner2) 0tez in
+    let r = Test.transfer_to_contract signer_manager_contract (CreateAddOwnerProposal owner2) 0tez in
+    let () = AssertHelper.tx_success r in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
     let () = AssertHelper.tx_success r in
 
-    // [Signer Manager] Add Owner in multisig  
+
+    // [Signer Manager] Add Owner in multisig  => PROPOSAL 1
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let next_proposal_id = current_storage.next_proposal_id in
     let () = Test.set_source owner2 in
-    let r = Test.transfer_to_contract signer_manager_contract (AddOwner owner4) 0tez in
+    let r = Test.transfer_to_contract signer_manager_contract (CreateAddOwnerProposal owner4) 0tez in
+    let () = AssertHelper.tx_success r in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
     let () = AssertHelper.tx_success r in
 
-    // [Signer Manager] Create proposal in multisig  
+    // [Signer Manager] Change threshold in multisig  => PROPOSAL 2
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let next_proposal_id = current_storage.next_proposal_id in
+    let () = Test.set_source owner2 in
+    let r = Test.transfer_to_contract signer_manager_contract (CreateSetThresholdProposal 2n) 0tez in
+    let () = AssertHelper.tx_success r in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
+    let () = AssertHelper.tx_success r in
+
+    // [Signer Manager] ChangeSigner proposal in multisig  => PROPOSAL 3
+    let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
+    let next_proposal_id = current_storage.next_proposal_id in
     let () = Test.set_source owner2 in
     let r = Test.transfer_to_contract signer_manager_contract (CreateNewSignerProposal owner1) 0tez in
     let () = AssertHelper.tx_success r in
@@ -295,39 +315,39 @@ let test_signermanagermultisig_change_signer =
     // VERIFY proposal status
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = 
-        match Big_map.find_opt 0n current_storage.proposals with
+        match Big_map.find_opt next_proposal_id current_storage.proposals with
         | Some prop -> Assert.assert (prop.status = Pending) 
         | None -> Test.Next.Assert.failwith "createNewSignerProposal did not work"
     in
 
     // [Signer Manager] Create proposal in multisig  
     let () = Test.set_source owner4 in
-    let r = Test.transfer_to_contract signer_manager_contract (ValidateNewSignerProposal (0n, true)) 0tez in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
     let () = AssertHelper.tx_success r in
 
     // VERIFY proposal status
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = 
-        match Big_map.find_opt 0n current_storage.proposals with
+        match Big_map.find_opt next_proposal_id current_storage.proposals with
         | Some prop -> 
             let () = Assert.assert (prop.status = Pending) in
             let () = match Map.find_opt owner4 prop.agreements with
-            | None -> Test.Next.Assert.failwith "validateNewSignerProposal did not work"
+            | None -> Test.Next.Assert.failwith "validateProposal did not work"
             | Some x -> Assert.assert x 
             in
             ()
         | None -> Test.Next.Assert.failwith "createNewSignerProposal did not work"
     in
 
-    // [Signer Manager] Create proposal in multisig  
+    // [Signer Manager] Validate proposal in multisig  
     let () = Test.set_source owner2 in
-    let r = Test.transfer_to_contract signer_manager_contract (ValidateNewSignerProposal (0n, true)) 0tez in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
     let () = AssertHelper.tx_success r in
 
     // VERIFY proposal status & Sum(areements) = threshold
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = 
-        match Big_map.find_opt 0n current_storage.proposals with
+        match Big_map.find_opt next_proposal_id current_storage.proposals with
         | Some prop -> 
             let () = Assert.assert (prop.status = Executed) in
             let accepted_ones (acc, elt: nat * (address * bool)) = if elt.1 then acc + 1n else acc in 
@@ -339,7 +359,7 @@ let test_signermanagermultisig_change_signer =
 
     // [Signer Manager] Validate already executed) proposal  
     let () = Test.set_source owner1 in
-    let r = Test.transfer_to_contract signer_manager_contract (ValidateNewSignerProposal (0n, true)) 0tez in
+    let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
     let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.already_executed in
     // let exp_date : timestamp = ("1970-01-01t00:10:00Z" : timestamp) in
     ()
