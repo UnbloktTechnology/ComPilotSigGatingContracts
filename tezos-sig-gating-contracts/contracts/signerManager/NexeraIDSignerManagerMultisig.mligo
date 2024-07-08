@@ -1,3 +1,22 @@
+// This contract stores an address (the address of the signer role) 
+// It implements the "SignerManager" behaviour by implementing an entrypoint "isValidSignature". 
+// This "isValidSignature" entryoint which takes as parameters
+//   + a public key
+//   + a payload
+//   + a signature 
+//   and verifies that 
+//   -> the given public key corresponds to the address of the signer role 
+//   -> the signature has been produced by the given key for the given payload. 
+
+// It implements the "MultiSig" behaviour by implementing OwnerRole and Proposal concept.
+// - Storage requirement: An initial owner must be provided at deployment. 
+// - whitelisting: An owner can "addOwner" or "removeOwner"
+// - Propose: An owner can propose to change the signer by providing a new address with "createProposal"
+// - Accept: An owner can validate a proposal with "validateProposal". Once the proposal reached a threshold the proposal is executed.
+// - Config: An owner can modify the number of approvals for executing a proposal with "setThreshold".
+
+// It implements the "Pause" behaviour by implementing entrypoints "pause/unpause". 
+
 module SignerManagerMultisig = struct
 
     type status = Pending | Executed
