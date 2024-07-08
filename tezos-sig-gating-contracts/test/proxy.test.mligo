@@ -1,9 +1,9 @@
 #import "./helper/bootstrap.mligo" "Bootstrap"
 #import "./helper/assert.mligo" "AssertHelper"
 #import "../contracts/examples/proxy.mligo" "PROXY"
-#import "../contracts/examples/fa2_for_proxy.mligo" "NFTMINTER"
+#import "../contracts/examples/fa2Proxy.mligo" "NFTMINTER"
 
-#import "./helper/fa2_for_proxy.mligo" "FA2Helper"
+#import "./helper/fa2Proxy.mligo" "FA2Helper"
 // #import "../contracts/examples/nftminter.mligo" "NFTMINTER"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

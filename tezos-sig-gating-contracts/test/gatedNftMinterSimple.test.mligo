@@ -1,7 +1,7 @@
-#import "./helper/gatednftminter_simple.mligo" "NftMinterHelper"
+#import "./helper/gatedNftMinterSimple.mligo" "NftMinterHelper"
 #import "./helper/assert.mligo" "AssertHelper"
 #import "./helper/bootstrap.mligo" "Bootstrap"
-#import "../contracts/examples/gatednftminter_simple.mligo" "NFTMINTER"
+#import "../contracts/examples/gatedNftMinterSimple.mligo" "NFTMINTER"
 // #import "../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 

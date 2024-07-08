@@ -1,5 +1,10 @@
 // ABIs
-import nftMinterContract from "./gatednftminter_simple.json";
-// export default nftMinterContract
-export const ExtendedGatedNFTMinterContract_tezos_ghostnet_dev =
-  nftMinterContract;
+import nftMinterSimpleContract from "./gatedNftMinterSimple.json";
+import nftMinterSimpleUnlimitedContract from "./gatedNftMinterSimpleUnlimited.json";
+
+// export default nftMinterSimpleContract
+export const NFTMinterSimpleContractForTezos = nftMinterSimpleContract;
+
+// export default nftMinterSimpleUnlimitedContract
+export const NFTMinterSimpleUnlimitedContractForTezos =
+  nftMinterSimpleUnlimitedContract;

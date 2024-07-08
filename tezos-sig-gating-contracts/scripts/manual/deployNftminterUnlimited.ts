@@ -5,7 +5,7 @@ import {
   saveContractAddress,
   saveContractAddressGhostnet,
 } from "../utils/helper";
-import nftMinterContract from "../../compiled/gatednftminter_simple_unlimited.json";
+import nftMinterContract from "../../compiled/gatedNftMinterSimpleUnlimited.json";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
 

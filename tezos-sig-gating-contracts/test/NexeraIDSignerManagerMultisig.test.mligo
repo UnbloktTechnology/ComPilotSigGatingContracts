@@ -2,8 +2,8 @@
 #import "./helper/assert.mligo" "AssertHelper"
 #import "../contracts/signerManager/NexeraIDSignerManagerMultisig.mligo" "NexeraIDSignerManager"
 
-#import "../contracts/examples/gatednftminter_simple.mligo" "NFTMINTER"
-#import "./helper/gatednftminter_simple.mligo" "NftMinterHelper"
+#import "../contracts/examples/gatedNftMinterSimple.mligo" "NFTMINTER"
+#import "./helper/gatedNftMinterSimple.mligo" "NftMinterHelper"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -225,7 +225,6 @@ let test_signermanagermultisig_mint_gated =
         token_id=6n
       }: NFTMINTER.NftMinterSimple.mint)
     } in
-    let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 

@@ -16,5 +16,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// ExtendedGatedNFTMinter
-__exportStar(require("./ExtendedGatedNFTMinter_tezos_ghostnet_dev"), exports);
+// NFTMinters
+__exportStar(require("./NFTMinterSimpleAddressForTezosGhostnet"), exports);
+__exportStar(require("./NFTMinterSimpleUnlimitedAddressForTezosGhostnet"), exports);

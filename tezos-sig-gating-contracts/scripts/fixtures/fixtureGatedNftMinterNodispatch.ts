@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/gatednftminter_nodispatch.json";
+import nftMinterContract from "../../compiled/gatedNftMinterSimpleWithContractAddress.json";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 

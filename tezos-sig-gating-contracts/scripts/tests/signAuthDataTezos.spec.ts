@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterExt } from "../fixtures/fixtureExtendedGatedNftMinter";
+import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftMinterSimple";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
@@ -55,7 +55,7 @@ describe(`Sign txAuthData`, function () {
     // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterExt(Tezos);
+    exampleGatedNFTMinter = await deployNFTMinterSimple(Tezos);
   });
 
   beforeEach(async () => {
@@ -95,7 +95,7 @@ describe(`Sign txAuthData`, function () {
     );
     const tezosTxAuthInput: TezosTxAuthInput = {
       chainID: currentChainId,
-      contractAddress: functionCallContractAddress, //ExtendedGatedNFTMinterAddress_tezos_ghostnet_dev,
+      contractAddress: functionCallContractAddress, //NFTMinterSimpleAddressForTezosGhostnet,
       functionName: "%mint_gated",
       args: functionCallArgsBytes,
       userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
