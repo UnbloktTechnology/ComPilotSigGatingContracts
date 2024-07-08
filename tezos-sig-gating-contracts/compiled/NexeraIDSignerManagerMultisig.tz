@@ -1,6 +1,6 @@
 { parameter
-    (or (pair %validateProposal nat bool)
-        (or (address %createProposal)
+    (or (pair %validateNewSignerProposal nat bool)
+        (or (address %createNewSignerProposal)
             (or (address %removeOwner)
                 (or (address %addOwner) (or (unit %unpause) (or (unit %pause) (nat %setThreshold))))))) ;
   storage
@@ -94,7 +94,7 @@
                   SENDER ;
                   DUP 4 ;
                   PAIR 3 ;
-                  EMIT %signProposal (pair nat address bool) ;
+                  EMIT %validateNewSignerProposal (pair nat address bool) ;
                   DUP 4 ;
                   DIG 4 ;
                   GET 3 ;
@@ -145,7 +145,7 @@
                  PAIR 5 ;
                  DUP 2 ;
                  GET 5 ;
-                 EMIT %proposalCreated nat ;
+                 EMIT %proposalNewSignerCreated nat ;
                  DUP 3 ;
                  PUSH nat 1 ;
                  DUP 5 ;

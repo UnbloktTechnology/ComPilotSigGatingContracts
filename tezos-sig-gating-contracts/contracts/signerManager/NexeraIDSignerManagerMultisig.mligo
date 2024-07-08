@@ -11,8 +11,8 @@
 // It implements the "MultiSig" behaviour by implementing OwnerRole and Proposal concept.
 // - Storage requirement: An initial owner must be provided at deployment. 
 // - whitelisting: An owner can "addOwner" or "removeOwner"
-// - Propose: An owner can propose to change the signer by providing a new address with "createProposal"
-// - Accept: An owner can validate a proposal with "validateProposal". Once the proposal reached a threshold the proposal is executed.
+// - Propose: An owner can propose to change the signer by providing a new address with "createNewSignerProposal"
+// - Accept: An owner can validate a proposal with "validateNewSignerProposal". Once the proposal reached a threshold the proposal is executed.
 // - Config: An owner can modify the number of approvals for executing a proposal with "setThreshold".
 
 // It implements the "Pause" behaviour by implementing entrypoints "pause/unpause". 
@@ -99,7 +99,7 @@ module SignerManagerMultisig = struct
         [op], { s with owners = Big_map.remove newOwner s.owners }
 
     [@entry]
-    let createProposal(newSigner: address) (s: storage) : ret =
+    let createNewSignerProposal(newSigner: address) (s: storage) : ret =
         let () = assertIsOwner (Tezos.get_sender()) s in
         let res : proposal = {
             proposal_id=s.next_proposal_id;
@@ -109,11 +109,11 @@ module SignerManagerMultisig = struct
             status=Pending
         } in
         let new_proposals = Big_map.add s.next_proposal_id res s.proposals in
-        let op = Tezos.emit "%proposalCreated" s.next_proposal_id in
+        let op = Tezos.emit "%proposalNewSignerCreated" s.next_proposal_id in
         [op], { s with next_proposal_id = s.next_proposal_id + 1n; proposals = new_proposals }
 
     [@entry]
-    let validateProposal(proposal_id, agreement: nat * bool) (s: storage) : ret =
+    let validateNewSignerProposal(proposal_id, agreement: nat * bool) (s: storage) : ret =
         let () = assertIsOwner (Tezos.get_sender()) s in
         let p = match Big_map.find_opt proposal_id s.proposals with 
         | None -> failwith Errors.unknown_proposal
@@ -131,7 +131,7 @@ module SignerManagerMultisig = struct
         if nb_answers < s.threshold then
         let new_proposals= 
             Big_map.update proposal_id (Some(new_proposal)) s.proposals in
-            let op = Tezos.emit "%signProposal" (proposal_id, (Tezos.get_sender()), agreement) in
+            let op = Tezos.emit "%validateNewSignerProposal" (proposal_id, (Tezos.get_sender()), agreement) in
             [op], { s with proposals = new_proposals }
         else
             let new_proposal = { new_proposal with status=Executed } in
