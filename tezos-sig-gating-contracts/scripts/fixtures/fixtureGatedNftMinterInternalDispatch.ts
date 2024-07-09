@@ -63,11 +63,11 @@ export async function deployNFTMinterInternalDispatch(provider: TezosToolkit) {
       code: nftMinterContract,
       storage: initialStorage,
     });
-    console.log(
-      `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
-    );
+    // console.log(
+    //   `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
+    // );
     await originated.confirmation(2);
-    console.log("confirmed contract: ", originated.contractAddress);
+    // console.log("confirmed contract: ", originated.contractAddress);
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);

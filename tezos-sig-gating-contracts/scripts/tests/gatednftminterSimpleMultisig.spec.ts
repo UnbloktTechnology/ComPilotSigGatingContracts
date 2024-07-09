@@ -50,64 +50,12 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   let nexeraSignerAddress: string;
   let lastProposalId: number;
 
-  before(async () => {
-    // SET SIGNER
-    deployerAddress = alice;
-    Tezos.setProvider({
-      signer: await InMemorySigner.fromSecretKey(alice_pk),
-    });
-    // Retrieve Signer public key
-    nexeraSignerPublicKey = await nexeraSigner.publicKey();
-    nexeraSignerAddress = await nexeraSigner.publicKeyHash();
-    // Retrieve the chainID
-    currentChainId = await client.getChainId();
-    // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterSimple(Tezos);
-    if (!exampleGatedNFTMinter)
-      throw new Error("Deployment of NftMnter failed");
-
-    // DEPLOY SignerManager
-    exampleGatedNFTMinterCntrl = await deploySignerManagerMultisig(
-      Tezos,
-      alice,
-      bob
-    );
-    if (!exampleGatedNFTMinterCntrl)
-      throw new Error("Deployment of SignerMananger failed");
-
-    // Set signerManager
-    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
-
-    const op = await cntr.methodsObject
-      .setSigner(exampleGatedNFTMinterCntrl)
-      .send();
-    console.log(
-      `Waiting for SetSigner on ${exampleGatedNFTMinter} to be confirmed...`
-    );
-    await op.confirmation(2);
-    console.log("tx confirmed: ", op.hash);
-  });
-
-  beforeEach(async () => {
-    const block = await client.getBlockHeader();
-    currentBlock = block.level;
-  });
-
-  it(`Check initial storage`, async () => {
-    const cntrSignerManager = await Tezos.contract.at(
-      exampleGatedNFTMinterCntrl ?? ""
-    );
-    const storage: any = await cntrSignerManager.storage();
-    // Verify
-    const deployerAuth = await storage.owners.get(deployerAddress);
-    const pause = await storage.pause;
-    const signer = await storage.signerAddress;
-    expect(deployerAuth).to.be.true;
-    expect(pause === false).to.be.true;
-    expect(signer === bob).to.be.true;
-  });
-
-  it(`Should mint the asset #1 (signed by Bob)`, async () => {
+  async function mintAsset1SignedByBob(
+    exampleGatedNFTMinter: string,
+    currentChainId: string,
+    currentBlock: number,
+    nexeraSignerPublicKey: string
+  ) {
     // Get contract storage
     const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
@@ -160,40 +108,47 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     expect(ownerAsset1 === functionCallArgs.owner).to.be.true;
     const userNonce = await storage.nonces.get(functionCallArgs.owner);
     expect(userNonce.toNumber() === 1).to.be.true;
-  });
+  }
 
-  it(`Should add Frank as owner in multisig`, async () => {
+  async function addOwnerProposal(
+    exampleGatedNFTMinterCntrl: string,
+    user: string
+  ) {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
     const currentStorage: any = await cntrSignerManager.storage();
-    lastProposalId = await currentStorage.next_proposal_id;
+    const nextProposalId = await currentStorage.next_proposal_id;
     const op = await cntrSignerManager.methodsObject
-      .createAddOwnerProposal(frank)
+      .createAddOwnerProposal(user)
       .send();
     await op.confirmation(2);
     // Verify
     const storageAfter: any = await cntrSignerManager.storage();
-    const prop = await storageAfter.proposals.get(lastProposalId);
-    expect(prop.action?.addOwner === frank).to.be.true;
+    const prop = await storageAfter.proposals.get(nextProposalId);
+    expect(prop.action?.addOwner === user).to.be.true;
 
     const op_validate = await cntrSignerManager.methodsObject
-      .validateProposal([lastProposalId, true])
+      .validateProposal([nextProposalId, true])
       .send();
     await op_validate.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const frankAuth = await storage.owners.get(frank);
-    expect(frankAuth).to.be.true;
-  });
+    const userAuth = await storage.owners.get(user);
+    expect(userAuth).to.be.true;
+    return nextProposalId;
+  }
 
-  it(`Should setThreshold to 2 in multisig`, async () => {
+  async function setTheshold(
+    exampleGatedNFTMinterCntrl: string,
+    threshold: number
+  ) {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
     const currentStorage: any = await cntrSignerManager.storage();
-    lastProposalId = await currentStorage.next_proposal_id;
-    const newThreshold = 2;
+    const nextProposalId = await currentStorage.next_proposal_id;
+    const newThreshold = threshold;
     const op = await cntrSignerManager.methodsObject
       .createSetThresholdProposal(newThreshold)
       .send();
@@ -201,66 +156,96 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
 
     // Verify
     const storageAfter: any = await cntrSignerManager.storage();
-    const prop = await storageAfter.proposals.get(lastProposalId);
+    const prop = await storageAfter.proposals.get(nextProposalId);
     expect(prop.action?.setThreshold.toNumber()).to.be.eq(newThreshold);
 
     const op_validate = await cntrSignerManager.methodsObject
-      .validateProposal([lastProposalId, true])
+      .validateProposal([nextProposalId, true])
       .send();
     await op_validate.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const threshold = await storage.threshold;
-    expect(threshold.toNumber() === newThreshold).to.be.true;
-  });
+    const currentThreshold = await storage.threshold;
+    expect(currentThreshold.toNumber() === newThreshold).to.be.true;
+    return nextProposalId;
+  }
 
-  it(`Should create a proposal to ChangeSigner in multisig`, async () => {
+  async function createChangeSignerProposal(
+    exampleGatedNFTMinterCntrl: string,
+    newSigner: string
+  ) {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
     const currentStorage: any = await cntrSignerManager.storage();
-    lastProposalId = await currentStorage.next_proposal_id;
+    const nextProposalId = await currentStorage.next_proposal_id;
 
     const op = await cntrSignerManager.methodsObject
-      .createNewSignerProposal(alice)
+      .createNewSignerProposal(newSigner)
       .send();
     await op.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const prop = await storage.proposals.get(lastProposalId);
-    expect(prop.action?.changeSigner === alice).to.be.true;
+    const prop = await storage.proposals.get(nextProposalId);
+    expect(prop.action?.changeSigner === newSigner).to.be.true;
     expect(storage.pause === false).to.be.true;
-  });
+    return nextProposalId;
+  }
 
-  it(`Should validate proposal (Alice)`, async () => {
+  async function validateProposal(
+    exampleGatedNFTMinterCntrl: string,
+    proposalId: string
+  ) {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
     const op = await cntrSignerManager.methodsObject
-      .validateProposal([lastProposalId, true])
+      .validateProposal([proposalId, true])
       .send();
     await op.confirmation(2);
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const prop0 = await storage.proposals.get(0);
-    expect(prop0.status.pending).to.be.any;
-  });
+    const prop = await storage.proposals.get(proposalId);
+    expect(prop.status.pending).to.be.any;
+  }
 
-  it(`Should prevent validate twice a proposal`, async () => {
+  async function validateProposalFinal(
+    exampleGatedNFTMinterCntrl: string,
+    proposalId: string
+  ) {
+    const cntrSignerManager = await Tezos.contract.at(
+      exampleGatedNFTMinterCntrl ?? ""
+    );
+    const op = await cntrSignerManager.methodsObject
+      .validateProposal([proposalId, true])
+      .send();
+    await op.confirmation(2);
+    // Verify
+    const storage: any = await cntrSignerManager.storage();
+    const prop = await storage.proposals.get(proposalId);
+    expect(prop.status.executed).to.be.any;
+    expect(prop.status.pending).to.be.undefined;
+  }
+
+  async function validateProposalWithError(
+    exampleGatedNFTMinterCntrl: string,
+    proposalId: string,
+    error: string
+  ) {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
     try {
       // CALL contract
       const op = await cntrSignerManager.methodsObject
-        .validateProposal([lastProposalId, true])
+        .validateProposal([proposalId, true])
         .send();
       expect(false).to.be.true;
       await op.confirmation(2);
     } catch (err) {
       if (err instanceof TezosOperationError) {
         if (err instanceof TezosOperationError) {
-          expect(err.message).to.be.equal("AlreadyAnswered");
+          expect(err.message).to.be.equal(error);
         } else {
           expect(false).to.be.true;
         }
@@ -268,30 +253,201 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     }
     // Verify
     const storage: any = await cntrSignerManager.storage();
-    const prop0 = await storage.proposals.get(0);
-    expect(prop0.status.pending).to.be.any;
+    const prop = await storage.proposals.get(proposalId);
+    expect(prop.status.pending).to.be.any;
+  }
+
+  beforeEach(async () => {
+    // SET SIGNER
+    deployerAddress = alice;
+    Tezos.setProvider({
+      signer: await InMemorySigner.fromSecretKey(alice_pk),
+    });
+    // Retrieve Signer public key
+    nexeraSignerPublicKey = await nexeraSigner.publicKey();
+    nexeraSignerAddress = await nexeraSigner.publicKeyHash();
+    // Retrieve the chainID
+    currentChainId = await client.getChainId();
+    // DEPLOY NFTMINTER
+    exampleGatedNFTMinter = await deployNFTMinterSimple(Tezos);
+    if (!exampleGatedNFTMinter)
+      throw new Error("Deployment of NftMnter failed");
+
+    // DEPLOY SignerManager
+    exampleGatedNFTMinterCntrl = await deploySignerManagerMultisig(
+      Tezos,
+      alice,
+      bob
+    );
+    if (!exampleGatedNFTMinterCntrl)
+      throw new Error("Deployment of SignerMananger failed");
+
+    // Set signerManager
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
+
+    const op = await cntr.methodsObject
+      .setSigner(exampleGatedNFTMinterCntrl)
+      .send();
+    // console.log(
+    //   `Waiting for SetSigner on ${exampleGatedNFTMinter} to be confirmed...`
+    // );
+    await op.confirmation(2);
+    // console.log("tx confirmed: ", op.hash);
+
+    const block = await client.getBlockHeader();
+    currentBlock = block.level;
   });
 
-  it(`Should validate proposal (Frank) and execute the proposal (Alice becomes signer)`, async () => {
-    Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
+  it(`Check initial storage`, async () => {
     const cntrSignerManager = await Tezos.contract.at(
       exampleGatedNFTMinterCntrl ?? ""
     );
-    // CALL contract
-    const op = await cntrSignerManager.methodsObject
-      .validateProposal([lastProposalId, true])
-      .send();
-    await op.confirmation(2);
-    // Verify
     const storage: any = await cntrSignerManager.storage();
-    const prop0 = await storage.proposals.get(0);
-    expect(prop0.status.pending).to.be.undefined;
-    expect(prop0.status.executed).to.be.any;
+    // Verify
+    const deployerAuth = await storage.owners.get(deployerAddress);
+    const pause = await storage.pause;
+    const signer = await storage.signerAddress;
+    expect(deployerAuth).to.be.true;
+    expect(pause === false).to.be.true;
+    expect(signer === bob).to.be.true;
+  });
+
+  it(`Should mint the asset #1 (signed by Bob)`, async () => {
+    await mintAsset1SignedByBob(
+      exampleGatedNFTMinter ?? "",
+      currentChainId,
+      currentBlock,
+      nexeraSignerPublicKey
+    );
+  });
+
+  it(`Should add Frank as owner in multisig`, async () => {
+    const prop_id = await addOwnerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      frank
+    );
+  });
+
+  it(`Should setThreshold to 2 in multisig`, async () => {
+    const prop_id = await setTheshold(exampleGatedNFTMinterCntrl ?? "", 2);
+  });
+
+  it(`Should create a proposal to ChangeSigner in multisig`, async () => {
+    const changeSignerPropId = await createChangeSignerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      alice
+    );
+  });
+
+  it(`Alice Should validate proposal (changeSigner)`, async () => {
+    const addfrankPropId = await addOwnerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      frank
+    );
+    const setThesholdPropId = await setTheshold(
+      exampleGatedNFTMinterCntrl ?? "",
+      2
+    );
+    const changeSignerPropId = await createChangeSignerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      alice
+    );
+    await validateProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+  });
+
+  it(`Should prevent validate twice a proposal`, async () => {
+    const addfrankPropId = await addOwnerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      frank
+    );
+    const setThesholdPropId = await setTheshold(
+      exampleGatedNFTMinterCntrl ?? "",
+      2
+    );
+    const changeSignerPropId = await createChangeSignerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      alice
+    );
+    await validateProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+    await validateProposalWithError(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId,
+      "AlreadyAnswered"
+    );
+  });
+
+  it(`Should validate proposal (Frank) and execute the proposal (Alice becomes signer)`, async () => {
+    const addfrankPropId = await addOwnerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      frank
+    );
+    const setThesholdPropId = await setTheshold(
+      exampleGatedNFTMinterCntrl ?? "",
+      2
+    );
+    const changeSignerPropId = await createChangeSignerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      alice
+    );
+    await validateProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+
+    // Change user (send as frank)
+    Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
+    await validateProposalFinal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+
+    // Verify alice became signer role
+    const cntrSignerManager = await Tezos.contract.at(
+      exampleGatedNFTMinterCntrl ?? ""
+    );
+    const storage: any = await cntrSignerManager.storage();
     const currentSigner = storage.signerAddress;
     expect(currentSigner === alice).to.be.true;
   });
 
   it(`Should fail to mint the asset #2 (signed by Bob)`, async () => {
+    // CHANGE SIGNER
+    const addfrankPropId = await addOwnerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      frank
+    );
+    const setThesholdPropId = await setTheshold(
+      exampleGatedNFTMinterCntrl ?? "",
+      2
+    );
+    const changeSignerPropId = await createChangeSignerProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      alice
+    );
+    await validateProposal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+    Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
+    await validateProposalFinal(
+      exampleGatedNFTMinterCntrl ?? "",
+      changeSignerPropId
+    );
+    // Verify alice became signer role
+    const cntrSignerManager = await Tezos.contract.at(
+      exampleGatedNFTMinterCntrl ?? ""
+    );
+    const storageAfterChangeSigner: any = await cntrSignerManager.storage();
+    const currentSigner = storageAfterChangeSigner.signerAddress;
+    expect(currentSigner === alice).to.be.true;
+
+    // ATTEMPT TO MINT with message signed by old signer
     // Get contract storage
     const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     // MINT OFFCHAIN
@@ -311,7 +467,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       chainID: currentChainId,
       userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       nonce: 0,
-      blockExpiration: currentBlock + 10,
+      blockExpiration: currentBlock + 120,
       contractAddress: functionCallContract,
       functionCallName: "%mint_gated",
       functionCallArgs: functionCallArgsBytes,
@@ -330,7 +486,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       const op = await cntr.methodsObject.mint_gated(args).send();
       expect(false).to.be.true;
       console.log(
-        `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
+        `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
       );
       await op.confirmation(2);
       console.log("tx confirmed: ", op.hash);
@@ -352,6 +508,6 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     expect(ownerAsset0 === deployerAddress).to.be.true;
     expect(ownerAsset2).to.be.undefined;
     const userNonce = await storage.nonces.get(functionCallArgs.owner);
-    expect(userNonce.toNumber() === 1).to.be.true;
+    expect(userNonce).to.be.undefined;
   });
 });
