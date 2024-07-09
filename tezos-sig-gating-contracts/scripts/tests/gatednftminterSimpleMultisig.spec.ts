@@ -76,7 +76,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       throw new Error("Deployment of SignerMananger failed");
 
     // Set signerManager
-    const cntr = await Tezos.contract.at(exampleGatedNFTMinter);
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     const op = await cntr.methodsObject
       .setSigner(exampleGatedNFTMinterCntrl)
@@ -109,9 +109,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
 
   it(`Should mint the asset #1 (signed by Bob)`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -295,9 +293,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
 
   it(`Should fail to mint the asset #2 (signed by Bob)`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
       ? exampleGatedNFTMinter

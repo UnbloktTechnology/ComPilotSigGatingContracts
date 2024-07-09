@@ -62,9 +62,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
   });
 
   it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     const storage: any = await cntr.storage();
     // Verify
     const admin = await storage.admin;
@@ -81,9 +79,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should mint the asset #1`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -138,9 +134,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Attempt to replay mint #1 should fail`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -193,9 +187,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should fail when providing an unmatching calldata (arguments)`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -254,9 +246,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should fail when providing an incorrect expiration`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -311,9 +301,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should fail when providing an incorrect signature`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -370,9 +358,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should fail when providing an incorrect calldata (entrypoint)`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -430,9 +416,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should fail when providing an incorrect calldata (target contract)`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
@@ -487,9 +471,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Should mint the asset #2`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -549,9 +531,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   it(`Estimate mint the asset #3`, async () => {
     // Get contract storage
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter

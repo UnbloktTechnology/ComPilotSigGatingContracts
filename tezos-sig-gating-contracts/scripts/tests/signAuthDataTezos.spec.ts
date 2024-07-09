@@ -66,9 +66,7 @@ describe(`Sign txAuthData`, function () {
   });
 
   it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     const storage: any = await cntr.storage();
     // Verify
     const admin = await storage.admin;
