@@ -63,16 +63,20 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
     exampleGatedNFTMinter = await deployNFTMinterSimple(Tezos);
+    if (!exampleGatedNFTMinter)
+      throw new Error("Deployment of NftMnter failed");
+
     // DEPLOY SignerManager
     exampleGatedNFTMinterCntrl = await deploySignerManagerMultisig(
       Tezos,
       alice,
       bob
     );
+    if (!exampleGatedNFTMinterCntrl)
+      throw new Error("Deployment of SignerMananger failed");
+
     // Set signerManager
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter);
 
     const op = await cntr.methodsObject
       .setSigner(exampleGatedNFTMinterCntrl)
@@ -169,14 +173,12 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     const op = await cntrSignerManager.methodsObject
       .createAddOwnerProposal(frank)
       .send();
-    // const op = await cntrSignerManager.methodsObject.addOwner(frank).send();
     await op.confirmation(2);
     // Verify
     const storageAfter: any = await cntrSignerManager.storage();
     const prop = await storageAfter.proposals.get(lastProposalId);
     expect(prop.action?.addOwner === frank).to.be.true;
 
-    //Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
     const op_validate = await cntrSignerManager.methodsObject
       .validateProposal([lastProposalId, true])
       .send();
@@ -197,7 +199,6 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     const op = await cntrSignerManager.methodsObject
       .createSetThresholdProposal(newThreshold)
       .send();
-    // const op = await cntrSignerManager.methodsObject.addOwner(frank).send();
     await op.confirmation(2);
 
     // Verify
@@ -288,6 +289,8 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     const prop0 = await storage.proposals.get(0);
     expect(prop0.status.pending).to.be.undefined;
     expect(prop0.status.executed).to.be.any;
+    const currentSigner = storage.signerAddress;
+    expect(currentSigner === alice).to.be.true;
   });
 
   it(`Should fail to mint the asset #2 (signed by Bob)`, async () => {

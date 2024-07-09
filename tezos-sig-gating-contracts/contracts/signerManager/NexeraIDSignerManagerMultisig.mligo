@@ -82,22 +82,18 @@ module SignerManagerMultisig = struct
         true
     
     let setThreshold(threshold: nat) (s: storage) : ret =
-        // let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%setThreshold" threshold in
         [op], { s with threshold = threshold}
 
     let addOwner(newOwner: address) (s: storage) : ret =
-        // let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%addOwner" newOwner in
         [op], { s with owners = Big_map.update newOwner (Some(true)) s.owners }
 
     let removeOwner(newOwner: address) (s: storage) : ret =
-        // let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%removeOwner" newOwner in
         [op], { s with owners = Big_map.remove newOwner s.owners }
 
     let changeSigner(newSigner: address) (s: storage) : ret =
-        // let () = assertIsOwner (Tezos.get_sender()) s in
         let op = Tezos.emit "%changeSigner" newSigner in
         [op], { s with signerAddress = newSigner }
 

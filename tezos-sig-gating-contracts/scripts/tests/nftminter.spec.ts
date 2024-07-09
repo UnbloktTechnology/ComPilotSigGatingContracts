@@ -54,6 +54,8 @@ describe(`ExampleGatedNFTMinter`, function () {
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
     exampleGatedNFTMinter = await deployNFTMinter(Tezos);
+    if (!exampleGatedNFTMinter)
+      throw new Error("Deployment of NftMnter failed");
   });
 
   beforeEach(async () => {

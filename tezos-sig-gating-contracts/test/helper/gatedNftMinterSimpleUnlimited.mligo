@@ -40,14 +40,6 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
     let token_metadata = (Big_map.empty: (nat, FA2_NFT.TZIP12.tokenMetadataData) big_map) in
     let token_metadata = add_token_metadata 5n token_metadata in
 
-    // let token_metadata = (Big_map.literal [
-    //     (1n, ({token_id=1n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    //     (2n, ({token_id=2n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    //     (3n, ({token_id=3n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    //     (4n, ({token_id=4n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    //     (5n, ({token_id=5n;token_info=(Map.empty : (string, bytes) map);} : FA2_NFT.TZIP12.tokenMetadataData));
-    // ] : FA2_NFT.TZIP12.tokenMetadata) in
-
     let metadata =Big_map.literal [
 	("", [%bytes {|tezos-storage:data|}]);
 	("data", [%bytes
