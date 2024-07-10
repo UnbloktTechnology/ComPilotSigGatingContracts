@@ -10,7 +10,7 @@ image=oxheadalpha/flextesa:latest
 script=oxfordbox
 
 docker run --rm --name "$name" --detach -p 20000:20000 \
-       -e block_time=3 \
+       -e block_time=1 \
        -e flextesa_node_cors_origin='*' \
        "$image" "$script" start
 

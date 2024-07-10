@@ -3,7 +3,8 @@ import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
-import nftMinterAddress from "../../deployments/nftminter";
+// import nftMinterAddress from "../../deployments/nftminter";
+import { NFTMinterSimpleAddressForTezosGhostnet } from "../../src/addresses/NFTMinterSimpleAddressForTezosGhostnet";
 import {
   convert_timestamp,
   convert_key,
@@ -80,20 +81,23 @@ async function main() {
   // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
   try {
+    console.log("Attempt mint #4 in ghostnet");
     // INPUTS
-    const functioncall_contract = "KT1Ko4fwVmzNfZe3pSYFjhPYQj6GUTU3dAPa"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_contract = "KT1C3T9RuGHTyj9bPJxHhtzq7ZqtA7J2pKEb"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
     const functioncall_name = "%mint_gated";
     const functioncall_params = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
-      token_id: "1",
+      owner: "tz2SrmyZjTj8Z1SxU4X2rp2PgadreRLtLHMC",
+      token_id: "4",
     };
-    const dataKey = "edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
-    const expiration = "12345";
+    const dataKey = "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn"; //"edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
+    const expiration = "6915205";
     const nonce = "0";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+    const userAddress = "tz2SrmyZjTj8Z1SxU4X2rp2PgadreRLtLHMC"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
     const chain_id = "NetXnHfVqm9iesp";
 
-    // const signature = "edsigtwJeK1MQFudmBWiqLHFdD844gMr6nN1aX3ute1oVZf7wLGeYQq6JeubDkAy4UEXv4kef1EQwwnnsbV77oArqVh9pNY794b";
+    const signature =
+      "edsigtePm3YRCAgaiBvYu2xsGNazM3TBCQiMK71XW8J9n38cMCfJbDdzs7QyyDa4pb6YLfnXn4AR5y8HjcerUKSpbJw5V7fht1j";
+
     // Prepare arguments
     const functioncall_params_bytes = convert_mint(
       functioncall_params.owner,
@@ -111,26 +115,28 @@ async function main() {
       dataKey
     );
     // Bob signs Hash of payload
-    let signature_full = await signerBob.sign(payload_hash);
-    let signature = signature_full.prefixSig;
+    // let signature_full = await signerBob.sign(payload_hash);
+    // let signature = signature_full.prefixSig;
 
     // CALL contract
     const args = {
-      payload: payload_hash,
-      chain_id: chain_id,
+      // payload: payload_hash,
+      // chain_id: chain_id,
       userAddress: userAddress,
-      nonce: nonce,
-      expiration: expiration,
+      // nonce: nonce,
+      expirationBlock: expiration,
       contractAddress: functioncall_contract,
-      name: functioncall_name,
-      args: functioncall_params_bytes,
-      publicKey: dataKey,
+      // functionName: functioncall_name,
+      functionArgs: functioncall_params_bytes,
+      signerPublicKey: dataKey,
       signature: signature,
     };
-    const cntr = await Tezos.contract.at(nftMinterAddress);
-    const op = await cntr.methodsObject.exec_gated_calldata(args).send();
+    const cntr = await Tezos.contract.at(
+      NFTMinterSimpleAddressForTezosGhostnet
+    );
+    const op = await cntr.methodsObject.mint_gated(args).send();
     console.log(
-      `Waiting for Exec_gated_calldata on ${nftMinterAddress} to be confirmed...`
+      `Waiting for Exec_gated_calldata on ${NFTMinterSimpleAddressForTezosGhostnet} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);

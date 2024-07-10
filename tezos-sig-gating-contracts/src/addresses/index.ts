@@ -1,5 +1,6 @@
 // Deployed addresses
 // Tezos
 
-// ExtendedGatedNFTMinter
-export * from "./ExtendedGatedNFTMinter_tezos_ghostnet_dev";
+// NFTMinters
+export * from "./NFTMinterSimpleAddressForTezosGhostnet";
+export * from "./NFTMinterSimpleUnlimitedAddressForTezosGhostnet";

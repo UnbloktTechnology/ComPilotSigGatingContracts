@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/gatednftminter_simple.json";
+import nftMinterContract from "../../compiled/gatedNftClaimer.json";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -41,10 +41,11 @@ export async function deployNFTMinterSimple(provider: TezosToolkit) {
 
   const fa2Extension = {
     minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    lastMinted: 0,
   };
 
   const initialFA2Storage = {
-    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
+    extension: fa2Extension,
     ledger,
     metadata,
     token_metadata: tokenMetadata,
@@ -63,11 +64,11 @@ export async function deployNFTMinterSimple(provider: TezosToolkit) {
       code: nftMinterContract,
       storage: initialStorage,
     });
-    console.log(
-      `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
-    );
+    // console.log(
+    //   `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
+    // );
     await originated.confirmation(2);
-    console.log("confirmed contract: ", originated.contractAddress);
+    // console.log("confirmed contract: ", originated.contractAddress);
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);

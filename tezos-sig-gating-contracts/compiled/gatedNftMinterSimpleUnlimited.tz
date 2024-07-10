@@ -14,13 +14,14 @@
                        (bytes %functionArgs)
                        (key %signerPublicKey)
                        (signature %signature))
-                    (or (address %setSigner) (pair %mint (address %owner) (nat %token_id))))))) ;
+                    (or (address %setSigner)
+                        (pair %mint (address %owner) (map %token_info string bytes))))))) ;
   storage
     (pair (address %admin)
           (address %signerAddress)
           (big_map %nonces address nat)
           (pair %siggated_extension
-             (address %extension)
+             (pair %extension (address %minter) (nat %next_token_id))
              (big_map %ledger nat address)
              (big_map %operators (pair address address) (set nat))
              (big_map %token_metadata nat (pair (nat %token_id) (map %token_info string bytes)))
@@ -53,11 +54,11 @@
              EQ } ;
          LAMBDA
            (pair (lambda (pair (big_map nat (pair nat (map string bytes))) nat) unit)
-                 (pair (pair address nat)
+                 (pair (pair address (map string bytes))
                        address
                        address
                        (big_map address nat)
-                       (pair address
+                       (pair (pair address nat)
                              (big_map nat address)
                              (big_map (pair address address) (set nat))
                              (big_map nat (pair nat (map string bytes)))
@@ -66,7 +67,7 @@
                  address
                  address
                  (big_map address nat)
-                 (pair address
+                 (pair (pair address nat)
                        (big_map nat address)
                        (big_map (pair address address) (set nat))
                        (big_map nat (pair nat (map string bytes)))
@@ -74,28 +75,39 @@
            { UNPAIR ;
              SWAP ;
              UNPAIR ;
-             DUP ;
+             DUP 2 ;
+             GET 6 ;
+             CAR ;
              CDR ;
              DUP 3 ;
+             GET 6 ;
+             CAR ;
+             PUSH nat 1 ;
+             DUP 3 ;
+             ADD ;
+             UPDATE 2 ;
+             DUP 4 ;
              GET 6 ;
              GET 7 ;
-             PAIR ;
-             DUP 4 ;
-             SWAP ;
-             EXEC ;
-             DROP ;
-             DUP 2 ;
-             GET 6 ;
-             GET 3 ;
-             DUP 2 ;
-             CDR ;
+             DUP 3 ;
              GET ;
              IF_NONE { PUSH bool True } { DROP ; PUSH bool False } ;
-             IF {} { PUSH string "failed assertion" ; FAILWITH } ;
-             DUP ;
-             CDR ;
-             DUP 3 ;
+             IF {} { PUSH string "AssetAlreadyExist" ; FAILWITH } ;
+             DUP 4 ;
              GET 6 ;
+             DUP 5 ;
+             GET 6 ;
+             GET 7 ;
+             DUP 5 ;
+             CDR ;
+             DUP 5 ;
+             PAIR ;
+             SOME ;
+             DUP 5 ;
+             UPDATE ;
+             UPDATE 7 ;
+             SWAP ;
+             UPDATE 1 ;
              DUP 2 ;
              DUP 2 ;
              GET 7 ;
@@ -405,7 +417,7 @@
                          UPDATE 5 ;
                          SWAP ;
                          GET 7 ;
-                         UNPACK (pair (address %owner) (nat %token_id)) ;
+                         UNPACK (pair (address %owner) (map %token_info string bytes)) ;
                          IF_NONE { PUSH string "InvalidEntrypointArguments" ; FAILWITH } {} ;
                          PAIR ;
                          EXEC }
@@ -430,12 +442,14 @@
                            { DUP 2 ;
                              GET 6 ;
                              CAR ;
+                             CAR ;
                              SENDER ;
                              COMPARE ;
                              EQ ;
                              IF {} { PUSH string "failed assertion" ; FAILWITH } ;
                              PAIR ;
                              EXEC } } } } } } ;
+  view "nextTokenId" unit nat { CDR ; GET 6 ; CAR ; CDR } ;
   view "txAuthDataSignerAddress" unit address { CDR ; GET 3 } ;
   view "get_balance"
        (pair address nat)

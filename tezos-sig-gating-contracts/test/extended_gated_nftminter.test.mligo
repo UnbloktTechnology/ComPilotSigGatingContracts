@@ -139,7 +139,6 @@ let test_nftminterext_mint_gated =
         token_id=6n
       }: NFTMINTER.NftMinterExt.mint)
     } in
-    let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
@@ -390,7 +389,6 @@ let test_nftminterext_mint_gated_no_dispatch =
         token_id=6n
       }: NFTMINTER.NftMinterExt.mint)
     } in
-    let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
@@ -441,7 +439,6 @@ let test_nftminterext_mint_gated_no_dispatch2 =
         token_id=6n
       }: NFTMINTER.NftMinterExt.mint)
     } in
-    let () = Test.Next.IO.log inputs.chain_id in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 

@@ -49,6 +49,18 @@ jobs:
         run: |
           pnpm run test:unit
 
+      - name: Install Dependencies for Tezos
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make install
+
+      - name: 🖥️🧪 Run unit test for Tezos
+        continue-on-error: false
+        run: |
+          cd tezos-sig-gating-contracts
+          make test
+
       - uses: actions/setup-node@v4
         with:
           cache: "pnpm"

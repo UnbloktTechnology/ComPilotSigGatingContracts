@@ -1,6 +1,6 @@
 {
   "name": "@nexeraid/sig-gating",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Signature gating mechanism implemented as an extension. The library is providing a signature verification function and dispatch/proccess of an off-chain-signed contract invocation",
   "directories": {
     "examples": "examples",

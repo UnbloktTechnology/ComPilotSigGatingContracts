@@ -1,14 +1,15 @@
-// #import "../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../lib/main.mligo" "SigGatedExtendable"
-// #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
-module NftMinterSimple = struct
+module NftMinterDispatch = struct
 
   (* FA2 extension - storage *)
   module NFT = FA2.NFTExtendable
   type fa2_extension = {
       minter: address;   // MINTER ROLE 
+      lastMinted: nat;
   }
   type extended_fa2_storage = fa2_extension NFT.storage
 
@@ -24,6 +25,7 @@ module NftMinterSimple = struct
 
   module Errors = struct
       let custom_error_mesage = "CustomError"
+      let asset_already_owned = "AssetAlreadyOwned"
   end
 
   (* FA2 extension - entrypoints *)
@@ -31,8 +33,9 @@ module NftMinterSimple = struct
   let apply_mint (mint : mint) (s : storage): ret =
     // Apply MINT
     let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
+    let () = Assert.Error.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) Errors.asset_already_owned in
     let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
+    let new_fa2_s = { new_fa2_s with extension={ new_fa2_s.extension with lastMinted=mint.token_id }} in
     [], { s with siggated_extension=new_fa2_s }
 
   [@entry]
@@ -40,6 +43,10 @@ module NftMinterSimple = struct
     let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
     apply_mint mint s
 
+  [@view]
+  let lastMinted(p: unit)(s: storage) : nat = 
+      s.siggated_extension.extension.lastMinted
+      
   (* SigGating extension - entrypoints *)
 
   [@entry]
@@ -51,35 +58,20 @@ module NftMinterSimple = struct
   let txAuthDataSignerAddress(p: unit)(s: storage) : address = 
       SigGatedExtendable.getSigner p s 
 
-  type txAuthInput = {
-    userAddress: address;   // user address (used to check nonce)
-    expirationBlock: nat;  // expiration date
-    // functionName: string;   // name of the entrypoint of the calldata (for example "%mint")
-    functionArgs: bytes;   // arguments for the entrypoint of the calldata 
-    signerPublicKey: key;     // public key that signed the payload 
-    signature: signature;   // signature of the payload signed by the given public key
-  }
-  
-  // Example of entrypoint which uses 
-  // - verifyTxAuthData function for signature verification (nonce, expiration) 
-  // - process the calldata itself
   [@entry]
-  let mint_gated (datainput : txAuthInput) (s : storage): ret =
-    let data : SigGatedExtendable.txAuthData = { 
-      userAddress = datainput.userAddress;
-      expirationBlock = datainput.expirationBlock;
-      functionName = "%mint_gated";
-      functionArgs = datainput.functionArgs;
-      signerPublicKey = datainput.signerPublicKey;
-      signature = datainput.signature;
-    } in
-    let s = SigGatedExtendable.verifyTxAuthData data s in
-    let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
-    | Some data -> data
-    | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
-    in 
-    apply_mint mint_decoded s
+  let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
+    [op], s
 
+  [@entry]
+  let exec_gated_calldata (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
+      SigGatedExtendable.verifyAndDispatchTxAuthData data s 
+
+  [@entry]
+  let mint_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
 
   (* Standard FA2 interface, copied from the source *)
 

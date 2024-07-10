@@ -1,6 +1,6 @@
 {
   "name": "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.esm.js",
@@ -14,11 +14,11 @@
     "localmint": "ts-node scripts/manual/localMintOffchain.ts",
     "localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
     "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
-    "build": "cp compiled/gatednftminter_simple.json src/compiledContracts/ && pnpm lint && preconstruct build",
-    "pre-build": "cp compiled/gatednftminter_simple.json src/compiledContracts/ && pnpm lint && preconstruct build",
+    "build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
+    "pre-build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
     "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "lint": "prettier --write src/**/**.ts",
-    "lint:check": "prettier --check src/**/**.ts"
+    "lint": "prettier --write **/**/**.ts",
+    "lint:check": "prettier --check **/**/**.ts"
   },
   "repository": {
     "type": "git",

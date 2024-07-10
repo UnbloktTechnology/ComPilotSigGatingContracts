@@ -1,14 +1,15 @@
-// #import "../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
+// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../lib/main.mligo" "SigGatedExtendable"
-// #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
-module NftMinterSimple = struct
+module NftClaimer = struct
 
   (* FA2 extension - storage *)
   module NFT = FA2.NFTExtendable
   type fa2_extension = {
       minter: address;   // MINTER ROLE 
+      lastMinted: nat;
   }
   type extended_fa2_storage = fa2_extension NFT.storage
 
@@ -24,6 +25,7 @@ module NftMinterSimple = struct
 
   module Errors = struct
       let custom_error_mesage = "CustomError"
+      let asset_already_owned = "AssetAlreadyOwned"
   end
 
   (* FA2 extension - entrypoints *)
@@ -31,8 +33,9 @@ module NftMinterSimple = struct
   let apply_mint (mint : mint) (s : storage): ret =
     // Apply MINT
     let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
-    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
+    let () = Assert.Error.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) Errors.asset_already_owned in
     let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
+    let new_fa2_s = { new_fa2_s with extension={ new_fa2_s.extension with lastMinted=mint.token_id }} in
     [], { s with siggated_extension=new_fa2_s }
 
   [@entry]
@@ -40,6 +43,10 @@ module NftMinterSimple = struct
     let () = Assert.assert (Tezos.get_sender () = s.siggated_extension.extension.minter) in
     apply_mint mint s
 
+  [@view]
+  let lastMinted(p: unit)(s: storage) : nat = 
+      s.siggated_extension.extension.lastMinted
+      
   (* SigGating extension - entrypoints *)
 
   [@entry]

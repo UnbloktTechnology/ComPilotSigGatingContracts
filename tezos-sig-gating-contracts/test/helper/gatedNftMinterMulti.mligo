@@ -1,6 +1,6 @@
 #import "./bootstrap.mligo" "Bootstrap"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../contracts/examples/gatednftminter_internaldispatch.mligo" "NFTMINTER"
+#import "../../contracts/examples/gatedNftMinterMulti.mligo" "NFTMINTER"
 
 module FA2_NFT = FA2.NFTExtendable
 

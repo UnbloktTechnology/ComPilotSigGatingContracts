@@ -2,15 +2,6 @@ import { InMemorySigner } from "@taquito/signer";
 import { RpcClient } from "@taquito/rpc";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import {
-  convert_timestamp,
-  convert_key,
-  convert_nat,
-  convert_string,
-  convert_address,
-  convert_chain_id,
-  convert_mint,
-} from "./convert";
-import {
   TezosAddress,
   TezosContractAddress,
   TezosTxAuthData,
@@ -43,8 +34,8 @@ export const signTezosTxAuthData = async (
   signer: InMemorySigner,
   tezosTxAuthData: TezosTxAuthData
 ) => {
-  const payload_hash = await computePayloadHash(tezosTxAuthData);
-  let signature = await signer.sign(payload_hash);
+  const payloadHash = await computePayloadHash(tezosTxAuthData);
+  let signature = await signer.sign(payloadHash);
   return signature;
 };
 
@@ -68,7 +59,7 @@ export const signTezosTxAuthData = async (
 // });
 // const signer =  await InMemorySigner.fromSecretKey("edsk....");
 // const tezosTxAuthInput = {
-//   contractAddress: "KT1...", //ExtendedGatedNFTMinterAddress_tezos_ghostnet_dev,
+//   contractAddress: "KT1...", //NFTMinterSimpleAddressForTezos,
 //   functionName: "%mint_gated",
 //   args: convert_mint("tz1...", "1"),
 //   userAddress: "tz1...",
@@ -90,14 +81,14 @@ export const signTxAuthDataLibTezos = async (
     provider
   );
   // Retrieve CHAIN_ID from Rpc client
-  const chain_id = await getChainID(provider);
+  const chainId = await getChainID(provider);
   // Retrieve BLOCK LEVEL from Rpc client
-  const block_level = await getBlockLevel(provider);
-  const expiration_num = block_level + 50; //TODO: replace hardcoded value
-  const expiration = expiration_num;
+  const blockLevel = await getBlockLevel(provider);
+  const expirationNumber = blockLevel + 50; //TODO: replace hardcoded value
+  const expiration = expirationNumber;
 
   const txAuthData: TezosTxAuthData = {
-    chainID: chain_id,
+    chainID: chainId,
     userAddress: tezosTxAuthInput.userAddress,
     nonce: nonce,
     blockExpiration: expiration,
@@ -110,6 +101,6 @@ export const signTxAuthDataLibTezos = async (
 
   return {
     signature: signature.prefixSig,
-    blockExpiration: expiration_num,
+    blockExpiration: expirationNumber,
   };
 };

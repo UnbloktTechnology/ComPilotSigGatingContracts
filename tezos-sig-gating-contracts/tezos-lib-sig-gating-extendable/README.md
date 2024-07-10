@@ -11,16 +11,12 @@ The user wants to invoke a contract with an off-chain signed message. The messag
 In order to prevent that a signature is used twice , the payload must incapsulate a "nonce" field.
 Once a user has received a signed message, he must consume the offchain signed message before an expiration (block level). The expiration has been introduced in case the user lose his authorization.
 
-### Forging a signature
+### Building a signature
 
 The request of a user (i.e. a contract invocation) is declared as a payload sent to a ReferenceSigner. The ReferenceSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by the ReferenceSigner.
 Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains a `txAuthData` (payload + signature + public key + nonce + expiration)) to the smart contract that implements the signer public key verification mechanism.
 
-![](./pictures/nexera%20global%20workflow.png)
-
-In this case the transaction fee is paid by the user.
-
-The transaction could also be executed by an operator on behalf of the user. In this case the transaction fee is paid by the operator.
+In this case the transaction fee is paid by the user. The transaction could also be executed by an operator on behalf of the user. In this case the transaction fee is paid by the operator.
 
 ### Off-chain signature workflow
 
@@ -33,8 +29,6 @@ For a given calldata, the user receives from the Auth provider:
 - public key of the signer role (Auth provider)
 - signature of the payload hash
 
-<!-- ![](./pictures/nexera%20forge%20sig%20workflow.png) -->
-
 Then the user build the transaction and invoke the "exec_gated_calldata" entrypoint. In order to be able to verify an off-chain signed message, the "exec_gated_calldata" entrypoint expects a `txAuthData` parameter which contains the following fields
 
 - user address
@@ -43,16 +37,14 @@ Then the user build the transaction and invoke the "exec_gated_calldata" entrypo
 - signer public key
 - signature
 
-<!-- ![](./pictures/nexera%20exec_offchain%20format.png) -->
-
 The chain ID in Tezos varies depending on the network (see [rpc nodes](https://taquito.io/docs/rpc_nodes)).
 
-| Network   | chain ID                                                                         |
-| --------- | -------------------------------------------------------------------------------- |
-| ghostnet  | NetXnHfVqm9iesp                                                                  |
-| oxfordnet | NetXxWsskGahzQB                                                                  |
-| mainnet   | NetXdQprcVkpaWU                                                                  |
-| sandbox   | `docker exec <docker-container-name> octez-client rpc get /chains/main/chain_id` |
+```
+ghostnet  => NetXnHfVqm9iesp
+oxfordnet => NetXxWsskGahzQB
+mainnet   => NetXdQprcVkpaWU
+sandbox   => `docker exec <docker-container-name> octez-client rpc get /chains/main/chain_id`
+```
 
 ## SigGatingExtendable library usage
 
@@ -86,12 +78,37 @@ Option 2 (with Dispatch):
 - declare an entrypoint `Dispatch` that processes a `calldata`
   - use a strategy built-in function (i.e. `SigGatingExtendable.process_internal_calldata`) to invoke the entrypoint corresponding to the given `calldata`.
 
-for example ,
+### Built-ins strategies
+
+#### dispatch_calldata function
+
+Do not process calldatas but only dispatch the calldata to the targeted contract.
+
+#### process_internal_calldata function
+
+Process the calldata by invoking a local entrypoint (where the business logic resides).
+
+#### process_internal_calldata_2 function
+
+same as process_internal_calldata but the calldata can be dispatch to 2 hetreogenous entrypoints
+
+#### process_internal_calldata_3 function
+
+same as process_internal_calldata but the calldata can be dispatch to 3 hetreogenous entrypoints
+
+### Examples
+
+#### Example without Dispatch
+
+Case of a single contract, there is no need to use the Dispatch mechanism.
+The library provides a `process_internal_calldata` function to execute the right entrypoint with the right parameter conversion.
 
 ```ocaml
-  // Example of entrypoint which uses
-  // - verifyTxAuthData function for signature verification (nonce, expiration)
-  // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
+  [@entry]
+  let mint_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
+
   [@entry]
   let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
       let s = SigGatedExtendable.verifyTxAuthData data s in
@@ -100,7 +117,35 @@ for example ,
       [op], s
 ```
 
-for example with Dispatch (usefull in case of proxy too),
+#### Example 2 internal entrypoints without Dispatch
+
+Case of a single contract, there is no need to use the Dispatch mechanism.
+The library provides a `process_internal_calldata_2` function to execute the right entrypoint with the right parameter conversion.
+
+```ocaml
+  [@entry]
+  let mint_or_burn_gated (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+      let s = SigGatedExtendable.verifyTxAuthData data s in
+      let cd : SigGatedExtendable.calldata = ((Tezos.get_self_address ()), data.functionName, data.functionArgs) in
+      let op = SigGatedExtendable.process_internal_calldata_2 (cd,
+        (Tezos.self "%mint_gated": mint contract),
+        (Tezos.self "%burn_gated": mint contract)) in
+      [op], s
+
+  [@entry]
+  let burn_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
+
+  [@entry]
+  let mint_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    apply_mint mint s
+```
+
+#### Example with Dispatch mechanism
+
+The dispatch entrypoint can be used to dispatch a `calldata` to an internal entrypoints (ones of this contract).
 
 ```ocaml
   [@entry]
@@ -108,18 +153,11 @@ for example with Dispatch (usefull in case of proxy too),
     let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
     [op], s
 
-  // Example (useful if verification and processing is separated in different contracts) of entrypoint which uses
-  // - verifyAndDispatchTxAuthData function for signature verification (nonce, expiration)
-  // - calls Distpatch entrypoint for processing the calldata
   [@entry]
   let exec_gated_calldata (data : SigGatedExtendable.txAuthData) (s : storage): ret =
       SigGatedExtendable.verifyAndDispatchTxAuthData data s
-```
 
-In our exaple the business logic of our feature (mint) resided in `mint_gated` entrypoint
-
-```ocaml
- [@entry]
+  [@entry]
   let mint_gated (mint : mint) (s : storage): ret =
     let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
     // Apply MINT
@@ -129,48 +167,52 @@ In our exaple the business logic of our feature (mint) resided in `mint_gated` e
     [], { s with siggated_extension=new_fa2_s }
 ```
 
+In our example the business logic of our feature (mint) is in `mint_gated` entrypoint.
 Notice that we ensure that this entrypoint is callable only by re-entrance with
 
 ```ocaml
  let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
 ```
 
-### Built-ins strategies
+#### Example of a "verifier proxy" with Dispatch mechanism
 
-| function                    | description                                                                                      |
-| --------------------------- | ------------------------------------------------------------------------------------------------ |
-| dispatch_calldata           | Do not process calldatas but only dispatch the calldata to the targeted contract.                |
-| process_internal_calldata   | Process the calldata by invoking a local entrypoint (where the business logic resides).          |
-| process_internal_calldata_2 | same as process_internal_calldata but the calldata can be dispatch to 2 hetreogenous entrypoints |
-| process_internal_calldata_3 | same as process_internal_calldata but the calldata can be dispatch to 3 hetreogenous entrypoints |
+The dispatch entrypoint can be used to dispatch a `calldata` to an external entrypoint (not in this contract).
 
-## Smart contract architecture
+The VerifierProxy contract provides an entrypoint `exec_gated_calldata` to verify the signature and calls its `dispatch` entrypoint.
+The VerifierProxy contract provides an entrypoint `dispatch` which calls the `dispatch` entrypoint of the target smart contract. This entrypoint cannot be called except the contract itself .
 
-### Example of a standard TZIP-12 NFT token (using FA2 lib)
+```ocaml
+  [@entry]
+  let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    let op = SigGatedExtendable.dispatch_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+    [op], s
 
-<!-- ![](./pictures/nexera%20nftminter%20entrypoints.png) -->
+  [@entry]
+  let exec_gated_calldata (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+      SigGatedExtendable.verifyAndDispatchTxAuthData data s
+```
 
-| function name       | parameters                                | module            |
-| ------------------- | ----------------------------------------- | ----------------- |
-| setSigner           | address                                   | NFTMINTER         |
-| mint                | mint                                      | NFTMINTER         |
-| mint_gated          | mint                                      | NFTMINTER         |
-| dispatch            | calldata                                  | NFTMINTER         |
-| exec_gated_calldata | txAuthData                                | NFTMINTER         |
-| transfer            | FA2.NFTExtendable.TZIP12.transfer         | FA2.NFTExtendable |
-| balance_of          | FA2.NFTExtendable.TZIP12.balance_of       | FA2.NFTExtendable |
-| update_operators    | FA2.NFTExtendable.TZIP12.update_operators | FA2.NFTExtendable |
+The Token contract provides an entrypoint `dispatch` which uses an internal dispatch strategy in order to call the right entrypoint. This entrypoint cannot be called except the contract itself .
 
-### Example of a proxy contract
+```ocaml
+  [@entry]
+  let dispatch (cd: SigGatedExtendable.calldata)(s: storage) : ret =
+    let () = Assert.assert (Tezos.get_sender () = verifierProxyAddress) in
+    let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
+    [op], s
 
-The verification of the signature and the controls (expiration) can be splitted into 2 contracts
+  [@entry]
+  let mint_gated (mint : mint) (s : storage): ret =
+    let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
+    // Apply MINT
+    let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint.token_id in
+    let () = Assert.assert (Option.is_none (Big_map.find_opt mint.token_id s.siggated_extension.ledger)) in
+    let new_fa2_s = NFT.set_balance s.siggated_extension mint.owner mint.token_id in
+    [], { s with siggated_extension=new_fa2_s }
+```
 
-- a proxy that verifies the signature and dispatch the `calldata`
-- a fa2 contract that accepts a `calldata` (only from the proxy) and process it
-
-<!-- ![](./pictures/nexera%20proxynftminter.png) -->
-
-## Example code and tests
+## Library tests (for dev)
 
 Inside the `tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable` folder
 
@@ -184,28 +226,20 @@ The following sections describes in detail the command lines to launch tests and
 
 ### Setup
 
-Install the LIGO libraries `make install`. In our case we may use FA2 library to use NFT's in our test scenarios
+Install the LIGO libraries with `make install`. In our case we may use FA2 library to use NFT's in our test scenarios
 
 ### Compiling
 
-```
-make compile
-```
+Launch smart contract compilation with `make compile`
 
 The compilation produces 2 files (TZ file and JSON file) which are stored in the `compiled` folder. The contract in JSON format is used by scripts for deployment and interactions.
 
 ### Testing
 
-```
-make test
-```
-
-Launch LIGO tests
+Launch LIGO tests with `make test`
 
 ## Limitations
 
 ### Remark on transaction ordering
 
-When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
-
-<!-- ![](./pictures/nexera%20transaction%20ordering.png) -->
+When constructing the signature , the actual nonce for the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.

@@ -5,7 +5,7 @@ import {
   saveContractAddress,
   saveContractAddressGhostnet,
 } from "../utils/helper";
-import nftMinterContract from "../../compiled/gatednftminter_simple.json";
+import nftMinterContract from "../../compiled/gatedNftClaimer.json";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
 
@@ -24,7 +24,7 @@ async function main() {
   ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
 
   const tokenMetadata = new MichelsonMap();
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 200; i++) {
     const tokenInfo = new MichelsonMap();
     tokenInfo.set("name", char2Bytes("Token " + i.toString()));
     tokenInfo.set("description", char2Bytes("asset #" + i.toString()));
@@ -54,10 +54,11 @@ async function main() {
 
   const fa2Extension = {
     minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    lastMinted: 0,
   };
 
   const initialFA2Storage = {
-    extension: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", //fa2Extension,
+    extension: fa2Extension,
     ledger,
     metadata,
     token_metadata: tokenMetadata,
@@ -66,7 +67,7 @@ async function main() {
 
   const initialStorage = {
     admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress: "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6", // bob
+    signerAddress: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
     nonces: new MichelsonMap(),
     siggated_extension: initialFA2Storage,
   };

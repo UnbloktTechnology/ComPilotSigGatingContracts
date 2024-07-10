@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterExt } from "../fixtures/fixtureExtendedGatedNftMinter";
+import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
@@ -55,7 +55,9 @@ describe(`Sign txAuthData`, function () {
     // Retrieve the chainID
     currentChainId = await client.getChainId();
     // DEPLOY NFTMINTER
-    exampleGatedNFTMinter = await deployNFTMinterExt(Tezos);
+    exampleGatedNFTMinter = await deployNFTMinterSimple(Tezos);
+    if (!exampleGatedNFTMinter)
+      throw new Error("Deployment of NftMnter failed");
   });
 
   beforeEach(async () => {
@@ -64,9 +66,7 @@ describe(`Sign txAuthData`, function () {
   });
 
   it(`Check initial storage (the deployer is the admin of NftMinter and owns the asset #0)`, async () => {
-    const cntr = await Tezos.contract.at(
-      exampleGatedNFTMinter ? exampleGatedNFTMinter : ""
-    );
+    const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     const storage: any = await cntr.storage();
     // Verify
     const admin = await storage.admin;
@@ -95,7 +95,7 @@ describe(`Sign txAuthData`, function () {
     );
     const tezosTxAuthInput: TezosTxAuthInput = {
       chainID: currentChainId,
-      contractAddress: functionCallContractAddress, //ExtendedGatedNFTMinterAddress_tezos_ghostnet_dev,
+      contractAddress: functionCallContractAddress, //NFTMinterSimpleAddressForTezosGhostnet,
       functionName: "%mint_gated",
       args: functionCallArgsBytes,
       userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",

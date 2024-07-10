@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/gatednftminter_internaldispatch.json";
+import nftMinterContract from "../../compiled/gatedNftMinterMulti.json";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
 
@@ -63,11 +63,11 @@ export async function deployNFTMinterInternalDispatch(provider: TezosToolkit) {
       code: nftMinterContract,
       storage: initialStorage,
     });
-    console.log(
-      `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
-    );
+    // console.log(
+    //   `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
+    // );
     await originated.confirmation(2);
-    console.log("confirmed contract: ", originated.contractAddress);
+    // console.log("confirmed contract: ", originated.contractAddress);
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);

@@ -1,14 +1,17 @@
 { parameter
     (or (pair %validateProposal nat bool)
-        (or (address %createProposal)
-            (or (address %removeOwner)
-                (or (address %addOwner) (or (unit %unpause) (or (unit %pause) (nat %setThreshold))))))) ;
+        (or (address %createRemoveOwnerProposal)
+            (or (address %createAddOwnerProposal)
+                (or (nat %createSetThresholdProposal)
+                    (or (address %createNewSignerProposal) (or (unit %unpause) (unit %pause))))))) ;
   storage
     (pair (big_map %owners address bool)
           (big_map %proposals
              nat
              (pair (nat %proposal_id)
-                   (address %signer)
+                   (or %action
+                      (address %changeSigner)
+                      (or (nat %setThreshold) (or (address %addOwner) (address %removeOwner))))
                    (timestamp %expiration)
                    (map %agreements address bool)
                    (or %status (unit %pending) (unit %executed))))
@@ -21,7 +24,13 @@
            (pair string
                  (pair address
                        (big_map address bool)
-                       (big_map nat (pair nat address timestamp (map address bool) (or unit unit)))
+                       (big_map
+                          nat
+                          (pair nat
+                                (or address (or nat (or address address)))
+                                timestamp
+                                (map address bool)
+                                (or unit unit)))
                        nat
                        nat
                        address
@@ -94,7 +103,7 @@
                   SENDER ;
                   DUP 4 ;
                   PAIR 3 ;
-                  EMIT %signProposal (pair nat address bool) ;
+                  EMIT %validateProposal (pair nat address bool) ;
                   DUP 4 ;
                   DIG 4 ;
                   GET 3 ;
@@ -102,29 +111,53 @@
                   SOME ;
                   DIG 4 ;
                   UPDATE ;
-                  UPDATE 3 }
+                  UPDATE 3 ;
+                  NIL operation ;
+                  DIG 2 ;
+                  CONS }
                 { DIG 3 ;
                   DROP ;
                   UNIT ;
                   RIGHT unit ;
                   UPDATE 8 ;
-                  DUP 2 ;
+                  SWAP ;
                   GET 3 ;
-                  SENDER ;
-                  DUP 5 ;
-                  PAIR 3 ;
-                  EMIT %executeProposal (pair nat address address) ;
-                  DUP 5 ;
-                  DIG 5 ;
+                  IF_LEFT
+                    { DUP ; EMIT %changeSigner address ; DUP 5 ; DIG 2 ; UPDATE 9 }
+                    { IF_LEFT
+                        { DUP ; EMIT %setThreshold nat ; DUP 5 ; DIG 2 ; UPDATE 7 }
+                        { IF_LEFT
+                            { DUP ;
+                              EMIT %addOwner address ;
+                              DUP 5 ;
+                              DUP 6 ;
+                              CAR ;
+                              PUSH bool True ;
+                              SOME ;
+                              DIG 4 ;
+                              UPDATE ;
+                              UPDATE 1 }
+                            { DUP ;
+                              EMIT %removeOwner address ;
+                              DUP 5 ;
+                              DUP 6 ;
+                              CAR ;
+                              NONE bool ;
+                              DIG 4 ;
+                              UPDATE ;
+                              UPDATE 1 } } } ;
+                  NIL operation ;
+                  DIG 2 ;
+                  CONS ;
+                  SWAP ;
+                  DIG 4 ;
                   GET 3 ;
                   DIG 3 ;
                   SOME ;
-                  DIG 5 ;
+                  DIG 4 ;
                   UPDATE ;
                   UPDATE 3 ;
-                  DIG 2 ;
-                  GET 3 ;
-                  UPDATE 9 } }
+                  SWAP } }
            { IF_LEFT
                { DUP 2 ;
                  SENDER ;
@@ -140,12 +173,15 @@
                  NOW ;
                  ADD ;
                  DIG 3 ;
+                 RIGHT address ;
+                 RIGHT nat ;
+                 RIGHT address ;
                  DUP 5 ;
                  GET 5 ;
                  PAIR 5 ;
                  DUP 2 ;
                  GET 5 ;
-                 EMIT %proposalCreated nat ;
+                 EMIT %removeOwnerProposalCreated nat ;
                  DUP 3 ;
                  PUSH nat 1 ;
                  DUP 5 ;
@@ -168,15 +204,36 @@
                      SWAP ;
                      EXEC ;
                      DROP ;
-                     DUP ;
-                     EMIT %removeOwner address ;
-                     DUP 3 ;
+                     UNIT ;
+                     LEFT unit ;
+                     EMPTY_MAP address bool ;
+                     PUSH int 86400 ;
+                     NOW ;
+                     ADD ;
                      DIG 3 ;
-                     CAR ;
-                     NONE bool ;
+                     LEFT address ;
+                     RIGHT nat ;
+                     RIGHT address ;
+                     DUP 5 ;
+                     GET 5 ;
+                     PAIR 5 ;
+                     DUP 2 ;
+                     GET 5 ;
+                     EMIT %addOwnerProposalCreated nat ;
+                     DUP 3 ;
+                     PUSH nat 1 ;
+                     DUP 5 ;
+                     GET 5 ;
+                     ADD ;
+                     UPDATE 5 ;
+                     DUP 4 ;
+                     GET 3 ;
+                     DIG 3 ;
+                     SOME ;
                      DIG 4 ;
+                     GET 5 ;
                      UPDATE ;
-                     UPDATE 1 }
+                     UPDATE 3 }
                    { IF_LEFT
                        { DUP 2 ;
                          SENDER ;
@@ -185,37 +242,91 @@
                          SWAP ;
                          EXEC ;
                          DROP ;
-                         DUP ;
-                         EMIT %addOwner address ;
-                         DUP 3 ;
+                         UNIT ;
+                         LEFT unit ;
+                         EMPTY_MAP address bool ;
+                         PUSH int 86400 ;
+                         NOW ;
+                         ADD ;
                          DIG 3 ;
-                         CAR ;
-                         PUSH bool True ;
+                         LEFT (or address address) ;
+                         RIGHT address ;
+                         DUP 5 ;
+                         GET 5 ;
+                         PAIR 5 ;
+                         DUP 2 ;
+                         GET 5 ;
+                         EMIT %setThresholdProposalCreated nat ;
+                         DUP 3 ;
+                         PUSH nat 1 ;
+                         DUP 5 ;
+                         GET 5 ;
+                         ADD ;
+                         UPDATE 5 ;
+                         DUP 4 ;
+                         GET 3 ;
+                         DIG 3 ;
                          SOME ;
                          DIG 4 ;
+                         GET 5 ;
                          UPDATE ;
-                         UPDATE 1 }
+                         UPDATE 3 }
                        { IF_LEFT
-                           { DROP ;
-                             DUP ;
+                           { DUP 2 ;
                              SENDER ;
                              PAIR ;
-                             DIG 2 ;
+                             DIG 3 ;
                              SWAP ;
                              EXEC ;
                              DROP ;
-                             PUSH bool True ;
+                             UNIT ;
+                             LEFT unit ;
+                             EMPTY_MAP address bool ;
+                             PUSH int 86400 ;
+                             NOW ;
+                             ADD ;
+                             DIG 3 ;
+                             LEFT (or nat (or address address)) ;
+                             DUP 5 ;
+                             GET 5 ;
+                             PAIR 5 ;
                              DUP 2 ;
-                             GET 10 ;
-                             COMPARE ;
-                             EQ ;
-                             IF {} { PUSH string "AlreadyUnpaused" ; FAILWITH } ;
-                             PUSH bool False ;
-                             EMIT %pause bool ;
-                             SWAP ;
-                             PUSH bool False ;
-                             UPDATE 10 }
+                             GET 5 ;
+                             EMIT %proposalNewSignerCreated nat ;
+                             DUP 3 ;
+                             PUSH nat 1 ;
+                             DUP 5 ;
+                             GET 5 ;
+                             ADD ;
+                             UPDATE 5 ;
+                             DUP 4 ;
+                             GET 3 ;
+                             DIG 3 ;
+                             SOME ;
+                             DIG 4 ;
+                             GET 5 ;
+                             UPDATE ;
+                             UPDATE 3 }
                            { IF_LEFT
+                               { DROP ;
+                                 DUP ;
+                                 SENDER ;
+                                 PAIR ;
+                                 DIG 2 ;
+                                 SWAP ;
+                                 EXEC ;
+                                 DROP ;
+                                 PUSH bool True ;
+                                 DUP 2 ;
+                                 GET 10 ;
+                                 COMPARE ;
+                                 EQ ;
+                                 IF {} { PUSH string "AlreadyUnpaused" ; FAILWITH } ;
+                                 PUSH bool False ;
+                                 EMIT %pause bool ;
+                                 SWAP ;
+                                 PUSH bool False ;
+                                 UPDATE 10 }
                                { DROP ;
                                  DUP ;
                                  SENDER ;
@@ -234,21 +345,10 @@
                                  EMIT %pause bool ;
                                  SWAP ;
                                  PUSH bool True ;
-                                 UPDATE 10 }
-                               { DUP 2 ;
-                                 SENDER ;
-                                 PAIR ;
-                                 DIG 3 ;
-                                 SWAP ;
-                                 EXEC ;
-                                 DROP ;
-                                 DUP ;
-                                 EMIT %setThreshold nat ;
-                                 DUG 2 ;
-                                 UPDATE 7 } } } } } } ;
-         NIL operation ;
-         DIG 2 ;
-         CONS ;
+                                 UPDATE 10 } } } } } ;
+             NIL operation ;
+             DIG 2 ;
+             CONS } ;
          PAIR } ;
   view "isValidSignature"
        (pair key bytes signature)
