@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftMinterSimple";
+import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
 import { deploySignerManagerMultisig } from "../fixtures/fixtureNexeraIDSignerManagerMultisig";
 import { InMemorySigner } from "@taquito/signer";
 import {
@@ -382,7 +382,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
   });
 
-  it(`Should validate proposal (Frank) and execute the proposal (Alice becomes signer)`, async () => {
+  it(`Should validate proposal (Alice, Frank) and execute the proposal (Alice becomes signer)`, async () => {
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
       frank
@@ -416,7 +416,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     expect(currentSigner === alice).to.be.true;
   });
 
-  it(`Should fail to mint the asset #2 (signed by Bob)`, async () => {
+  it(`Should fail to mint the asset #2 after changeSigner (message signed by Bob)`, async () => {
     // CHANGE SIGNER
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",

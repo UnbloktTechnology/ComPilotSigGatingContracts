@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftMinterSimple";
+import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,

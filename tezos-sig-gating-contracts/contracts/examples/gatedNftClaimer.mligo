@@ -3,7 +3,7 @@
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
-module NftMinterSimple = struct
+module NftClaimer = struct
 
   (* FA2 extension - storage *)
   module NFT = FA2.NFTExtendable

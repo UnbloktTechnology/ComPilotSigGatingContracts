@@ -1,7 +1,7 @@
-#import "./helper/gatedNftMinterSimple.mligo" "NftMinterHelper"
+#import "./helper/gatedNftClaimer.mligo" "NftMinterHelper"
 #import "./helper/assert.mligo" "AssertHelper"
 #import "./helper/bootstrap.mligo" "Bootstrap"
-#import "../contracts/examples/gatedNftMinterSimple.mligo" "NFTMINTER"
+#import "../contracts/examples/gatedNftClaimer.mligo" "NFTMINTER"
 // #import "../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
@@ -102,7 +102,7 @@ let test_gatednftmintersimple_mint_gated =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -113,12 +113,12 @@ let test_gatednftmintersimple_mint_gated =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -153,7 +153,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -164,12 +164,12 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=1n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -181,7 +181,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     // EXEC_GATED_CALLDATA entrypoint call 
     let () = Test.set_source owner1 in
     let r = Test.transfer_to_contract nftminter_contract (Mint_gated p) 0tez in
-    let () = AssertHelper.string_failure r NFTMINTER.NftMinterSimple.Errors.asset_already_owned in
+    let () = AssertHelper.string_failure r NFTMINTER.NftClaimer.Errors.asset_already_owned in
     ()
 
   let test_gatednftmintersimple_mint_gated_failure_wrong_contract =
@@ -193,7 +193,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let _nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -204,12 +204,12 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -243,7 +243,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -254,13 +254,13 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=7n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = ("edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5" : signature) in
     // let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -293,7 +293,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -304,12 +304,12 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address
@@ -341,7 +341,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let nftminter_address : address = Tezos.address nftminter_contract in
 
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -352,12 +352,12 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address

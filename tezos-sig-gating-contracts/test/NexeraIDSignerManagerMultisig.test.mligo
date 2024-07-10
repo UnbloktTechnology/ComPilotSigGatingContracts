@@ -2,8 +2,8 @@
 #import "./helper/assert.mligo" "AssertHelper"
 #import "../contracts/signerManager/NexeraIDSignerManagerMultisig.mligo" "NexeraIDSignerManager"
 
-#import "../contracts/examples/gatedNftMinterSimple.mligo" "NFTMINTER"
-#import "./helper/gatedNftMinterSimple.mligo" "NftMinterHelper"
+#import "../contracts/examples/gatedNftClaimer.mligo" "NFTMINTER"
+#import "./helper/gatedNftClaimer.mligo" "NftMinterHelper"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -212,7 +212,7 @@ let test_signermanagermultisig_mint_gated =
     let () = Test.set_source owner1 in
     let exp_date : timestamp = ("1970-01-01t00:10:00Z" : timestamp) in
     // PREPARE parameter for EXEC_GATED_CALLDATA call 
-    let inputs: NFTMINTER.NftMinterSimple.mint raw_payload = {
+    let inputs: NFTMINTER.NftClaimer.mint raw_payload = {
       public_key = localsigner.publicKey;
       chain_id = (Tezos.get_chain_id());
       user = owner3;
@@ -223,12 +223,12 @@ let test_signermanagermultisig_mint_gated =
       functioncall_params = ({
         owner=("tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF": address);
         token_id=6n
-      }: NFTMINTER.NftMinterSimple.mint)
+      }: NFTMINTER.NftClaimer.mint)
     } in
     let data_hash, functioncall_params_bytes = compute_hash inputs in 
     let my_sig : signature = sign_hash data_hash in
 
-    let p: NFTMINTER.NftMinterSimple.txAuthInput = {
+    let p: NFTMINTER.NftClaimer.txAuthInput = {
       userAddress = inputs.user;   // user address (used to check nonce)
       expirationBlock = inputs.expiration;  // expiration date
       //contractAddress = inputs.functioncall_contract;  // calldata contract address

@@ -37,8 +37,8 @@ compile: ## compile contracts to Michelson
 	@$(call compile,examples/gatedNftMinterDispatch.mligo,gatedNftMinterDispatch.json, -m NftMinterDispatch --michelson-format json)
 	@$(call compile,examples/gatedNftMinterSimpleWithContractAddress.mligo,gatedNftMinterSimpleWithContractAddress.tz, -m NftMinterExtNoDispatch)
 	@$(call compile,examples/gatedNftMinterSimpleWithContractAddress.mligo,gatedNftMinterSimpleWithContractAddress.json, -m NftMinterExtNoDispatch --michelson-format json)
-	@$(call compile,examples/gatedNftMinterSimple.mligo,gatedNftMinterSimple.tz, -m NftMinterSimple)
-	@$(call compile,examples/gatedNftMinterSimple.mligo,gatedNftMinterSimple.json, -m NftMinterSimple --michelson-format json)
+	@$(call compile,examples/gatedNftClaimer.mligo,gatedNftClaimer.tz, -m NftClaimer)
+	@$(call compile,examples/gatedNftClaimer.mligo,gatedNftClaimer.json, -m NftClaimer --michelson-format json)
 	@$(call compile,examples/gatedNftMinterMulti.mligo,gatedNftMinterMulti.tz, -m NftMinterInternalDispatch)
 	@$(call compile,examples/gatedNftMinterMulti.mligo,gatedNftMinterMulti.json, -m NftMinterInternalDispatch --michelson-format json)
 	@$(call compile,examples/gatedNftMinterSimpleUnlimited.mligo,gatedNftMinterSimpleUnlimited.tz, -m NftMinterUnlimited)
@@ -47,7 +47,7 @@ compile: ## compile contracts to Michelson
 
 test: ## run tests (SUITE=gatedNftMinterSimple make test)
 ifndef SUITE
-	@$(call test,gatedNftMinterSimple.test.mligo)
+	@$(call test,gatedNftClaimer.test.mligo)
 	@$(call test,gatedNftMinterSimpleUnlimited.test.mligo)
 	@$(call test,NexeraIDSignerManager.test.mligo)
 	@$(call test,NexeraIDSignerManagerMultisig.test.mligo)

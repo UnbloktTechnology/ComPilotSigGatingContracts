@@ -1,6 +1,6 @@
 #import "./bootstrap.mligo" "Bootstrap"
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "../../contracts/examples/gatedNftMinterSimple.mligo" "NFTMINTER"
+#import "../../contracts/examples/gatedNftClaimer.mligo" "NFTMINTER"
 
 module FA2_NFT = FA2.NFTExtendable
 
@@ -63,14 +63,14 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
         lastMinted = 5n; 
     } in
 
-    let fa2_storage : NFTMINTER.NftMinterSimple.extended_fa2_storage = {
+    let fa2_storage : NFTMINTER.NftClaimer.extended_fa2_storage = {
         extension      = fa2_extension_initial;
         ledger         = ledger;
         token_metadata = token_metadata;
         operators      = operators;
         metadata       = metadata;
     } in
-    let initial_storage : NFTMINTER.NftMinterSimple.storage = { 
+    let initial_storage : NFTMINTER.NftClaimer.storage = { 
         admin = admin;
         signerAddress = signerAddress;
         nonces = (Big_map.empty: (address, nat) big_map);
@@ -81,5 +81,5 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
 
 let boot_nftminter (admin, signerAddress, minter, owner1, owner2, owner3, owner4, op1, op2, op3) = 
     let initial_storage, _owners, _ops = get_nftminter_initial_storage (admin, signerAddress, minter, owner1, owner2, owner3, owner4, op1, op2, op3) in
-    let orig_fa2 = Test.Next.Originate.contract (contract_of NFTMINTER.NftMinterSimple) initial_storage 0tez in
+    let orig_fa2 = Test.Next.Originate.contract (contract_of NFTMINTER.NftClaimer) initial_storage 0tez in
     orig_fa2
