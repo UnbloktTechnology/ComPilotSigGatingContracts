@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "@ligo/fa": "^1.4.2",
-    "@nexeraid/sig-gating": "^1.0.3"
+    "@nexeraid/sig-gating": "^1.0.4"
   }
 }

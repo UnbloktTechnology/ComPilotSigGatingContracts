@@ -138,6 +138,24 @@ describe(`GatedNftMinterSimple`, function () {
     expect(ownerAsset1 === functionCallArgs.owner).to.be.true;
     const userNonce = await storage.nonces.get(functionCallArgs.owner);
     expect(userNonce.toNumber() === 1).to.be.true;
+
+    // Tezos.setStreamProvider(
+    //   Tezos.getFactory(PollingSubscribeProvider)({
+    //     shouldObservableSubscriptionRetry: true,
+    //     pollingIntervalMilliseconds: 1500,
+    //   })
+    // );
+
+    // try {
+    //   const sub = Tezos.stream.subscribeEvent({
+    //     tag: tagName,
+    //     address: contractAddress,
+    //   });
+
+    //   sub.on('data', console.log);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   });
 
   it(`Attempt to replay mint #1 should fail`, async () => {

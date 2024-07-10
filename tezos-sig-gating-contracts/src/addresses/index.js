@@ -17,5 +17,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // NFTMinters
-__exportStar(require("./NFTMinterSimpleAddressForTezosGhostnet"), exports);
+__exportStar(require("./NFTClaimerAddressForTezosGhostnet"), exports);
 __exportStar(require("./NFTMinterSimpleUnlimitedAddressForTezosGhostnet"), exports);

@@ -1,7 +1,6 @@
-// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterUnlimited = struct
 
@@ -82,12 +81,13 @@ module NftMinterUnlimited = struct
       signerPublicKey = datainput.signerPublicKey;
       signature = datainput.signature;
     } in
-    let s = SigGatedExtendable.verifyTxAuthData data s in
+    let opsVerify, s = SigGatedExtendable.verifyTxAuthData data s in
     let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
     | Some data -> data
     | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
     in 
-    apply_mint mint_decoded s
+    let opsMint, s = apply_mint mint_decoded s in
+    SigGatedExtendable.Utils.concatlists opsVerify opsMint, s
 
 
   (* Standard FA2 interface, copied from the source *)

@@ -2,5 +2,5 @@
 // Tezos
 
 // NFTMinters
-export * from "./NFTMinterSimpleAddressForTezosGhostnet";
+export * from "./NFTClaimerAddressForTezosGhostnet";
 export * from "./NFTMinterSimpleUnlimitedAddressForTezosGhostnet";
