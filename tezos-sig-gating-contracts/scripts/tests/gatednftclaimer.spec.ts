@@ -3,8 +3,10 @@ import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
+  PollingSubscribeProvider,
   TezosToolkit,
   TezosOperationError,
+  ContractAbstraction,
 } from "@taquito/taquito";
 import {
   convert_timestamp,
@@ -26,14 +28,14 @@ import { computePayloadHash } from "../utils/computePayloadHash";
 const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
-import { RpcClient } from "@taquito/rpc";
+import { InternalOperationResult, RpcClient } from "@taquito/rpc";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
 const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
 ); // signer private key
 
-describe(`GatedNftMinterSimple`, function () {
+describe(`GatedNftClaimer`, function () {
   let exampleGatedNFTMinter: string | undefined;
   let deployerAddress: string;
   let currentBlock: number;
@@ -48,6 +50,7 @@ describe(`GatedNftMinterSimple`, function () {
         "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
       ),
     });
+
     // Retrieve Signer public key
     nexeraSignerPublicKey = await nexeraSigner.publicKey();
     // Retrieve the chainID
@@ -118,6 +121,7 @@ describe(`GatedNftMinterSimple`, function () {
       payloadToSign,
       signature.prefixSig
     );
+
     // CALL contract
     const op = await cntr.methodsObject.mint_gated(args).send();
     console.log(
@@ -145,17 +149,6 @@ describe(`GatedNftMinterSimple`, function () {
     //     pollingIntervalMilliseconds: 1500,
     //   })
     // );
-
-    // try {
-    //   const sub = Tezos.stream.subscribeEvent({
-    //     tag: tagName,
-    //     address: contractAddress,
-    //   });
-
-    //   sub.on('data', console.log);
-    // } catch (e) {
-    //   console.log(e);
-    // }
   });
 
   it(`Attempt to replay mint #1 should fail`, async () => {

@@ -46,7 +46,7 @@ let sign_hash (data_hash : bytes) : signature =
 // TESTS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let test_gatednftmintersimple_initial_storage =
+let test_gatednftclaimer_initial_storage =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -58,7 +58,7 @@ let test_gatednftmintersimple_initial_storage =
     let () = Assert.assert (current_storage.admin = owner3) in
     ()
 
-let test_gatednftmintersimple_set_signer =
+let test_gatednftclaimer_set_signer =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -75,7 +75,7 @@ let test_gatednftmintersimple_set_signer =
     let () = Assert.assert (current_storage.signerAddress = owner2) in
     ()
 
-let test_gatednftmintersimple_failure_set_signer_not_admin =
+let test_gatednftclaimer_failure_set_signer_not_admin =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -93,7 +93,7 @@ let test_gatednftmintersimple_failure_set_signer_not_admin =
     ()
 
 
-let test_gatednftmintersimple_mint_gated =
+let test_gatednftclaimer_mint_gated =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -140,11 +140,25 @@ let test_gatednftmintersimple_mint_gated =
         | None -> Test.Next.Assert.failwith "Wrong owner ! Mint did not work"
     in
     let () = Assert.assert (current_storage.siggated_extension.extension.lastMinted = 6n) in
+    // VERIFY events
+    let events : (chain_id * address * nat * nat * key * address * string * bytes) list = Test.Next.State.last_events nftminter_taddr "SignatureVerified" in
+    match events with 
+    | [elt] -> 
+      let (_chain_id,userAddress,nonce,expiration,k,_contractAddress,name, args) = elt in
+      // let () = Assert.assert (inputs.chain_id = chain_id) in
+      let () = Assert.assert (p.userAddress = userAddress) in
+      let () = Assert.assert (inputs.nonce = nonce) in
+      let () = Assert.assert (p.expirationBlock = expiration) in
+      // let () = Assert.assert (p.signerPublicKey = k) in
+      let () = Assert.assert (inputs.functioncall_name = name) in
+      let () = Assert.assert (p.functionArgs = args) in
+      ()
+    | _ -> failwith("expected  one event exactly")
     ()
 
 
 
-let test_gatednftmintersimple_mint_gated_failure_already_owned =
+let test_gatednftclaimer_mint_gated_failure_already_owned =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -184,7 +198,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     let () = AssertHelper.string_failure r NFTMINTER.NftClaimer.Errors.asset_already_owned in
     ()
 
-  let test_gatednftmintersimple_mint_gated_failure_wrong_contract =
+  let test_gatednftclaimer_mint_gated_failure_wrong_contract =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -234,7 +248,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     ()
 
 
-  let test_gatednftmintersimple_mint_gated_failure_wrong_calldata_param =
+  let test_gatednftclaimer_mint_gated_failure_wrong_calldata_param =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -284,7 +298,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     ()
 
   
-  let test_gatednftmintersimple_mint_gated_failure_unknown_calldata_name =
+  let test_gatednftclaimer_mint_gated_failure_unknown_calldata_name =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
@@ -332,7 +346,7 @@ let test_gatednftmintersimple_mint_gated_failure_already_owned =
     in
     ()
 
-  let test_gatednftmintersimple_mint_gated_failure_replay_attack =
+  let test_gatednftclaimer_mint_gated_failure_replay_attack =
     let (owner1, owner2, owner3, owner4, op1, op2, op3) = Bootstrap.boot_accounts() in
     // DEPLOY NFTMINTER
     let orig_nftminter = NftMinterHelper.boot_nftminter(owner3, localsigner.address, owner3, owner1, owner2, owner3, owner4, op1, op2, op3) in
