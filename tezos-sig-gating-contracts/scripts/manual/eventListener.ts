@@ -26,8 +26,12 @@ import {
   Parser,
   unpackDataBytes,
 } from "@taquito/michel-codec";
+import { assert } from "chai";
 
 const RPC_ENDPOINT = "http://localhost:20000/";
+
+let result = undefined;
+let expectedContractAddress: string;
 
 function processEvent(data: InternalOperationResult) {
   console.log("PROCESS EVENT");
@@ -35,39 +39,45 @@ function processEvent(data: InternalOperationResult) {
 
   try {
     const types = data.type as MichelsonV1ExpressionExtended;
-    types.args?.at(1);
-    console.log("data.type.args[1] ", types.args?.at(1));
-
     const payloads = data.payload as MichelsonV1Expression[];
-    console.log("data.payload[1] ", payloads.at(1));
 
+    // CHAIN ID
     // const decodedChainId = unpackDataBytes(
     //   payloads.at(0) as BytesLiteral,
     //   types.args?.at(0) as MichelsonType
     // );
     // console.log("decodedChainId", decodedChainId);
-
+    // USER ADDRESS
     const decodedUserAddress = encodePubKey(
       (payloads.at(1) as BytesLiteral).bytes
     );
     console.log("decodedUserAddress=", decodedUserAddress);
 
+    // SIGNER KEY
     // const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
     // console.log("key_encrypted=", key_encrypted);
     // const decodedSignerKey = encodeKey(key_encrypted);
     // console.log("decodedSignerKey=", decodedSignerKey);
 
+    // CONTRACT ADDESS
     const decodedContractAddress = encodeAddress(
       (payloads.at(5) as BytesLiteral).bytes
     );
     console.log("decodedContractAddress=", decodedContractAddress);
-
+    // ARGS
     const src = payloads.at(7) as BytesLiteral;
     const type = `(pair address nat)`;
     const p = new Parser();
     const typeJSON = p.parseMichelineExpression(type);
-    const decodedArgs = unpackDataBytes(src, typeJSON as MichelsonType);
+    // const decodedArgs = unpackDataBytes(src, typeJSON as MichelsonType);
+    const decodedArgs = unpackDataBytes(
+      src,
+      types.args?.at(7) as MichelsonType
+    );
+
     console.log("decodedArgs=", decodedArgs);
+    // VERIFY
+    assert(expectedContractAddress === decodedContractAddress);
   } catch (err) {
     console.log(err);
   }
@@ -90,6 +100,7 @@ async function main(contractAddress: string) {
       "00d670f72efd9475b62275fae773eb5f5eb1fea4f2a0880e6d21983273bf95a0af"
     );
     console.log("kk=", kk);
+    expectedContractAddress = contractAddress;
 
     const sub = Tezos.stream.subscribeEvent({
       // tag: "SignatureVerified",

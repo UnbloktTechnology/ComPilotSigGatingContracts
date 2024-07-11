@@ -26,43 +26,36 @@ function keccak256(data: string) {
 function compute_payload_hash_for_mint(
   chain_id: string,
   userAddress: string,
-  functioncall_contract: string,
-  functioncall_name: string, // "%mint-offchain"
-  functioncall_params_owner: string, // mint arg 1
-  functioncall_params_token_id: string, // mint arg 2
+  functioncallContract: string,
+  functioncallName: string, // "%mint-offchain"
+  functioncallParamsOwner: string, // mint arg 1
+  functioncallParamsTokenId: string, // mint arg 2
   nonce: string,
   expiration: string,
   dataKey: string
 ) {
-  const chain_id_bytes = convert_chain_id(chain_id);
-  const user_bytes = convert_address(userAddress);
-  const functioncall_contract_bytes = convert_address(functioncall_contract);
-  const functioncall_name_bytes = convert_string(functioncall_name);
-  const functioncall_params_bytes = convert_mint(
-    functioncall_params_owner,
-    functioncall_params_token_id
+  const chainIdBytes = convert_chain_id(chain_id);
+  const userBytes = convert_address(userAddress);
+  const functioncallContractBytes = convert_address(functioncallContract);
+  const functioncallNameBytes = convert_string(functioncallName);
+  const functioncallParamsBytes = convert_mint(
+    functioncallParamsOwner,
+    functioncallParamsTokenId
   );
-  const nonce_bytes = convert_nat(nonce);
-  const expiration_bytes = convert_nat(expiration);
-  const key_bytes = convert_key(dataKey);
+  const nonceBytes = convert_nat(nonce);
+  const expirationBytes = convert_nat(expiration);
+  const keyBytes = convert_key(dataKey);
   const payload =
-    key_bytes +
-    chain_id_bytes +
-    user_bytes +
-    nonce_bytes +
-    expiration_bytes +
-    functioncall_contract_bytes +
-    functioncall_name_bytes +
-    functioncall_params_bytes;
-  const payload_hash = keccak256(payload);
-  // console.log("user_bytes=", user_bytes);
-  // console.log("functioncall_name_bytes=", functioncall_name_bytes);
-  // console.log("functioncall_params_bytes=", functioncall_params_bytes);
-  // console.log("nonce_bytes=", nonce_bytes);
-  // console.log("exp_date_bytes=", exp_date_bytes);
-  // console.log("payload=", payload);
-  // console.log("payload_hash=", payload_hash);
-  return payload_hash;
+    keyBytes +
+    chainIdBytes +
+    userBytes +
+    nonceBytes +
+    expirationBytes +
+    functioncallContractBytes +
+    functioncallNameBytes +
+    functioncallParamsBytes;
+  const payloadHash = keccak256(payload);
+  return payloadHash;
 }
 
 async function main() {
@@ -84,9 +77,9 @@ async function main() {
   try {
     console.log("Attempt mint #1 in sandbox");
     // INPUTS
-    const functioncall_contract = nftMinterAddress; //"KT1C3T9RuGHTyj9bPJxHhtzq7ZqtA7J2pKEb"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
-    const functioncall_name = "%mint_gated";
-    const functioncall_params = {
+    const functioncallContract = nftMinterAddress; //"KT1C3T9RuGHTyj9bPJxHhtzq7ZqtA7J2pKEb"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncallName = "%mint_gated";
+    const functioncallParams = {
       owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
       token_id: "1",
     };
@@ -100,24 +93,24 @@ async function main() {
     //   "edsigtePm3YRCAgaiBvYu2xsGNazM3TBCQiMK71XW8J9n38cMCfJbDdzs7QyyDa4pb6YLfnXn4AR5y8HjcerUKSpbJw5V7fht1j";
 
     // Prepare arguments
-    const functioncall_params_bytes = convert_mint(
-      functioncall_params.owner,
-      functioncall_params.token_id
+    const functioncallParamsBytes = convert_mint(
+      functioncallParams.owner,
+      functioncallParams.token_id
     );
-    const payload_hash = compute_payload_hash_for_mint(
+    const payloadHash = compute_payload_hash_for_mint(
       chain_id,
       userAddress,
-      functioncall_contract,
-      functioncall_name,
-      functioncall_params.owner,
-      functioncall_params.token_id,
+      functioncallContract,
+      functioncallName,
+      functioncallParams.owner,
+      functioncallParams.token_id,
       nonce,
       expiration,
       dataKey
     );
     // Bob signs Hash of payload
-    let signature_full = await signerBob.sign(payload_hash);
-    let signature = signature_full.prefixSig;
+    let signatureFull = await signerBob.sign(payloadHash);
+    let signature = signatureFull.prefixSig;
 
     // CALL contract
     const args = {
@@ -126,9 +119,9 @@ async function main() {
       userAddress: userAddress,
       // nonce: nonce,
       expirationBlock: expiration,
-      contractAddress: functioncall_contract,
-      // functionName: functioncall_name,
-      functionArgs: functioncall_params_bytes,
+      contractAddress: functioncallContract,
+      // functionName: functioncallName,
+      functionArgs: functioncallParamsBytes,
       signerPublicKey: dataKey,
       signature: signature,
     };

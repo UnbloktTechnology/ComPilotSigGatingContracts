@@ -78,10 +78,6 @@ export function unconvert_bytes(
   bytes: BytesLiteral,
   expected_type: MichelsonType
 ): MichelsonData {
-  // const src = { bytes: bytes_str };
-  // const typ: MichelsonType = {
-  //   prim: "chain_id",
-  // };
   const packed = unpackDataBytes(bytes, expected_type);
   return packed;
 }

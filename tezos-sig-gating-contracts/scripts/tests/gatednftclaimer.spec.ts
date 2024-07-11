@@ -28,7 +28,21 @@ import { computePayloadHash } from "../utils/computePayloadHash";
 const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
-import { InternalOperationResult, RpcClient } from "@taquito/rpc";
+import {
+  InternalOperationResult,
+  MichelsonV1Expression,
+  MichelsonV1ExpressionExtended,
+  RpcClient,
+} from "@taquito/rpc";
+import { encodeAddress, encodePubKey } from "@taquito/utils";
+import {
+  BytesLiteral,
+  IntLiteral,
+  MichelsonType,
+  Parser,
+  StringLiteral,
+  unpackDataBytes,
+} from "@taquito/michel-codec";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
 const nexeraSigner = new InMemorySigner(
@@ -42,6 +56,14 @@ describe(`GatedNftClaimer`, function () {
   let currentChainId: string;
   let nexeraSignerPublicKey: string;
 
+  // for Event
+  let expectedNonce: string;
+  let expectedContractAddress: string;
+  let expectedFunctionName: string;
+  let expectedUserAddress: string;
+  let expectedFunctionArgsOwner: string;
+  let expectedFunctionArgsTokenId: string;
+
   before(async () => {
     // SET SIGNER
     deployerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
@@ -50,7 +72,12 @@ describe(`GatedNftClaimer`, function () {
         "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
       ),
     });
-
+    Tezos.setStreamProvider(
+      Tezos.getFactory(PollingSubscribeProvider)({
+        shouldObservableSubscriptionRetry: true,
+        pollingIntervalMilliseconds: 1500,
+      })
+    );
     // Retrieve Signer public key
     nexeraSignerPublicKey = await nexeraSigner.publicKey();
     // Retrieve the chainID
@@ -81,6 +108,65 @@ describe(`GatedNftClaimer`, function () {
     expect(ownerAsset2).to.be.undefined;
     expect(ownerAsset3).to.be.undefined;
   });
+
+  function processEvent(data: InternalOperationResult) {
+    try {
+      const types = data.type as MichelsonV1ExpressionExtended;
+      const payloads = data.payload as MichelsonV1Expression[];
+
+      // CHAIN ID
+      // const decodedChainId = unpackDataBytes(
+      //   payloads.at(0) as BytesLiteral,
+      //   types.args?.at(0) as MichelsonType
+      // );
+      // console.log("decodedChainId", decodedChainId);
+      // USER ADDRESS
+      const decodedUserAddress = encodePubKey(
+        (payloads.at(1) as BytesLiteral).bytes
+      );
+      // console.log("decodedUserAddress=", decodedUserAddress);
+      // NONCE
+      const decodedNonce = encodePubKey((payloads.at(2) as IntLiteral).int);
+      // SIGNER KEY
+      // const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
+      // console.log("key_encrypted=", key_encrypted);
+      // const decodedSignerKey = encodeKey(key_encrypted);
+      // console.log("decodedSignerKey=", decodedSignerKey);
+
+      // CONTRACT ADDESS
+      const decodedContract = encodeAddress(
+        (payloads.at(5) as BytesLiteral).bytes
+      );
+      // console.log("decodedContract=", decodedContract);
+      // FUNCTION NAME
+      const decodedFunctionName = (payloads.at(6) as StringLiteral).string;
+      // console.log("decodedContractAddress=", decodedContractAddress);
+      // ARGS
+      const decodedArgs = unpackDataBytes(
+        payloads.at(7) as BytesLiteral,
+        types.args?.at(7) as MichelsonType
+      );
+      const decodedArgsTyped = decodedArgs as MichelsonV1ExpressionExtended;
+      const decodedFunctionArgsOwner = encodeAddress(
+        (decodedArgsTyped?.args?.at(0) as BytesLiteral).bytes
+      );
+      const decodedFunctionArgsTokenId = (
+        decodedArgsTyped?.args?.at(1) as IntLiteral
+      ).int;
+      // console.log("decodedArgs=", decodedArgs);
+      // VERIFY
+      expect(expectedNonce === decodedNonce);
+      expect(expectedContractAddress === decodedContract);
+      expect(expectedFunctionName === decodedFunctionName);
+      expect(expectedUserAddress === decodedUserAddress);
+      expect(expectedFunctionArgsOwner === decodedFunctionArgsOwner);
+      expect(expectedFunctionArgsTokenId === decodedFunctionArgsTokenId);
+      console.log("Event received and verified");
+    } catch (err) {
+      console.log(err);
+    }
+    // console.log("data", data);
+  }
 
   it(`Should mint the asset #1`, async () => {
     // Get contract
@@ -122,13 +208,35 @@ describe(`GatedNftClaimer`, function () {
       signature.prefixSig
     );
 
-    // CALL contract
-    const op = await cntr.methodsObject.mint_gated(args).send();
-    console.log(
-      `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
-    );
-    await op.confirmation(2);
-    console.log("tx confirmed: ", op.hash);
+    try {
+      console.log("listen events for ", exampleGatedNFTMinter);
+      // set global variable for processEvent hook
+      expectedNonce = payloadToSign.nonce.toString();
+      expectedContractAddress = payloadToSign.contractAddress;
+      expectedFunctionName = payloadToSign.functionCallName;
+      expectedUserAddress = payloadToSign.userAddress;
+      expectedFunctionArgsOwner = functionCallArgs.owner;
+      expectedFunctionArgsTokenId = functionCallArgs.token_id;
+
+      const sub = Tezos.stream.subscribeEvent({
+        tag: "SignatureVerified",
+        address: exampleGatedNFTMinter,
+        excludeFailedOperations: true,
+      });
+      sub.on("data", processEvent);
+
+      // CALL contract
+      const op = await cntr.methodsObject.mint_gated(args).send();
+      console.log(
+        `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
+      );
+      await op.confirmation(2);
+      console.log("tx confirmed: ", op.hash);
+
+      sub.close();
+    } catch (e) {
+      console.log(e);
+    }
 
     // VERIFY
     const storage: any = await cntr.storage();
@@ -142,13 +250,6 @@ describe(`GatedNftClaimer`, function () {
     expect(ownerAsset1 === functionCallArgs.owner).to.be.true;
     const userNonce = await storage.nonces.get(functionCallArgs.owner);
     expect(userNonce.toNumber() === 1).to.be.true;
-
-    // Tezos.setStreamProvider(
-    //   Tezos.getFactory(PollingSubscribeProvider)({
-    //     shouldObservableSubscriptionRetry: true,
-    //     pollingIntervalMilliseconds: 1500,
-    //   })
-    // );
   });
 
   it(`Attempt to replay mint #1 should fail`, async () => {
