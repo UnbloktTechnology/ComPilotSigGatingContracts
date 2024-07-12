@@ -48,7 +48,14 @@ sandbox   => `docker exec <docker-container-name> octez-client rpc get /chains/m
 
 ## SigGatingExtendable library usage
 
-- Extend the storage
+This library provides a parametric storage `siggated_storage` that can be extended and functions that verify the signature. These functions expects a specific input type:
+
+- `verifyTxAuthDataWithContractAddress` expects a `txAuthDataWithContractAddress` input
+- `verifyTxAuthData` expects a `txAuthData` input (same txAuthDataWithContractAddress without the contract address)
+
+These functions emits an event `SignatureVerified` when a signature is verified.
+
+### Extend the storage
 
 For example , a nft minter using `@ligo/fa` library
 
@@ -63,7 +70,7 @@ For example , a nft minter using `@ligo/fa` library
   type storage = extended_fa2_storage SigGatedExtendable.siggated_storage
 ```
 
-- Add entrypoints
+### Add entrypoints
 
 Option 1 (dispatch not needed):
 

@@ -91,6 +91,12 @@ sandbox-start: ## Sandbox - Start Flextesa sandbox
 sandbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
+sandbox-tezbox-start: ## Sandbox - Start Flextesa sandbox
+	@./scripts/run-sandbox-tezbox $(PROJECT)
+
+sandbox-tezbox-stop: ## Sandbox - Stop Flextesa sandbox
+	@docker stop $(PROJECT)-sandbox
+
 integration-test: ## Launch tests on a the sandbox (local network)  
 	@echo "Running integration test script\n"
 	@npm run test

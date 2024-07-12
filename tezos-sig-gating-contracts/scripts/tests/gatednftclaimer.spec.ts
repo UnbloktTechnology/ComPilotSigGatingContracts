@@ -36,6 +36,7 @@ import {
   RpcClient,
 } from "@taquito/rpc";
 import {
+  prefix,
   b58cencode,
   encodeAddress,
   encodeKey,
@@ -106,24 +107,13 @@ describe(`GatedNftClaimer`, function () {
       // console.log(data);
       const types = data.type as MichelsonV1ExpressionExtended;
       const payloads = data.payload as MichelsonV1Expression[];
-
       // CHAIN ID
-      // const decodedChainId = unpackDataBytes(
-      //   payloads.at(0) as BytesLiteral,
-      //   types.args?.at(0) as MichelsonType
-      // );
-      // console.log("decodedChainId", decodedChainId);
-      // const decodedChainId = b58cencode(
-      //   (payloads.at(0) as BytesLiteral).bytes,
-      //   new Uint8Array([0x4e, 0x65, 0x74])
-      // );
-      // console.log("decodedChainId", decodedChainId);
-      // const decodedChainId2 = encodePubKey(
-      //   (payloads.at(0) as BytesLiteral).bytes
-      // );
-      // console.log("decodedChainId2", decodedChainId2);
+      const decodedChainId = b58cencode(
+        (payloads.at(0) as BytesLiteral).bytes,
+        prefix.Net
+      );
       // USER ADDRESS
-      const decodedUserAddress = encodePubKey(
+      const decodedUserAddress = encodeAddress(
         (payloads.at(1) as BytesLiteral).bytes
       );
       // NONCE
@@ -152,9 +142,9 @@ describe(`GatedNftClaimer`, function () {
       const decodedFunctionArgsTokenId = (
         decodedArgsTyped?.args?.at(1) as IntLiteral
       ).int;
-      // const decodedFunctionArgsTokenIdName = decodedArgsTyped?.annots?.at(1);
+      // const decodedFunctionArgsTokenIdName = decodedArgsTyped?.annots?.at(1); // TODO
       return {
-        // chainID: currentChainId,
+        chainID: decodedChainId,
         userAddress: decodedUserAddress,
         nonce: decodedNonce,
         blockExpiration: decodedExpiration,
@@ -233,6 +223,7 @@ describe(`GatedNftClaimer`, function () {
           // VERIFY
           expect(evt).to.be.any;
           if (evt) {
+            expect(evt.chainID === payloadToSign.chainID).to.be.true;
             expect(evt.userAddress === payloadToSign.userAddress).to.be.true;
             expect(evt.nonce === payloadToSign.nonce.toString()).to.be.true;
             expect(
