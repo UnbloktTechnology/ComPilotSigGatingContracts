@@ -32,9 +32,15 @@ import {
   InternalOperationResult,
   MichelsonV1Expression,
   MichelsonV1ExpressionExtended,
+  OpKind,
   RpcClient,
 } from "@taquito/rpc";
-import { encodeAddress, encodePubKey } from "@taquito/utils";
+import {
+  b58cencode,
+  encodeAddress,
+  encodeKey,
+  encodePubKey,
+} from "@taquito/utils";
 import {
   BytesLiteral,
   IntLiteral,
@@ -56,14 +62,6 @@ describe(`GatedNftClaimer`, function () {
   let currentChainId: string;
   let nexeraSignerPublicKey: string;
 
-  // for Event
-  let expectedNonce: string;
-  let expectedContractAddress: string;
-  let expectedFunctionName: string;
-  let expectedUserAddress: string;
-  let expectedFunctionArgsOwner: string;
-  let expectedFunctionArgsTokenId: string;
-
   before(async () => {
     // SET SIGNER
     deployerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
@@ -72,12 +70,6 @@ describe(`GatedNftClaimer`, function () {
         "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
       ),
     });
-    Tezos.setStreamProvider(
-      Tezos.getFactory(PollingSubscribeProvider)({
-        shouldObservableSubscriptionRetry: true,
-        pollingIntervalMilliseconds: 1500,
-      })
-    );
     // Retrieve Signer public key
     nexeraSignerPublicKey = await nexeraSigner.publicKey();
     // Retrieve the chainID
@@ -109,8 +101,9 @@ describe(`GatedNftClaimer`, function () {
     expect(ownerAsset3).to.be.undefined;
   });
 
-  function processEvent(data: InternalOperationResult) {
+  function decodeMintEvent(data: InternalOperationResult) {
     try {
+      // console.log(data);
       const types = data.type as MichelsonV1ExpressionExtended;
       const payloads = data.payload as MichelsonV1Expression[];
 
@@ -120,52 +113,62 @@ describe(`GatedNftClaimer`, function () {
       //   types.args?.at(0) as MichelsonType
       // );
       // console.log("decodedChainId", decodedChainId);
+      // const decodedChainId = b58cencode(
+      //   (payloads.at(0) as BytesLiteral).bytes,
+      //   new Uint8Array([0x4e, 0x65, 0x74])
+      // );
+      // console.log("decodedChainId", decodedChainId);
+      // const decodedChainId2 = encodePubKey(
+      //   (payloads.at(0) as BytesLiteral).bytes
+      // );
+      // console.log("decodedChainId2", decodedChainId2);
       // USER ADDRESS
       const decodedUserAddress = encodePubKey(
         (payloads.at(1) as BytesLiteral).bytes
       );
-      // console.log("decodedUserAddress=", decodedUserAddress);
       // NONCE
-      const decodedNonce = encodePubKey((payloads.at(2) as IntLiteral).int);
+      const decodedNonce = (payloads.at(2) as IntLiteral).int;
+      // EXPIRATION
+      const decodedExpiration = (payloads.at(3) as IntLiteral).int;
       // SIGNER KEY
-      // const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
-      // console.log("key_encrypted=", key_encrypted);
-      // const decodedSignerKey = encodeKey(key_encrypted);
-      // console.log("decodedSignerKey=", decodedSignerKey);
-
+      const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
+      const decodedSignerKey = encodeKey(key_encrypted);
       // CONTRACT ADDESS
       const decodedContract = encodeAddress(
         (payloads.at(5) as BytesLiteral).bytes
       );
-      // console.log("decodedContract=", decodedContract);
       // FUNCTION NAME
       const decodedFunctionName = (payloads.at(6) as StringLiteral).string;
-      // console.log("decodedContractAddress=", decodedContractAddress);
       // ARGS
       const decodedArgs = unpackDataBytes(
         payloads.at(7) as BytesLiteral,
         types.args?.at(7) as MichelsonType
       );
       const decodedArgsTyped = decodedArgs as MichelsonV1ExpressionExtended;
+      const decodedFunctionArgs = {};
       const decodedFunctionArgsOwner = encodeAddress(
         (decodedArgsTyped?.args?.at(0) as BytesLiteral).bytes
       );
       const decodedFunctionArgsTokenId = (
         decodedArgsTyped?.args?.at(1) as IntLiteral
       ).int;
-      // console.log("decodedArgs=", decodedArgs);
-      // VERIFY
-      expect(expectedNonce === decodedNonce);
-      expect(expectedContractAddress === decodedContract);
-      expect(expectedFunctionName === decodedFunctionName);
-      expect(expectedUserAddress === decodedUserAddress);
-      expect(expectedFunctionArgsOwner === decodedFunctionArgsOwner);
-      expect(expectedFunctionArgsTokenId === decodedFunctionArgsTokenId);
-      console.log("Event received and verified");
+      // const decodedFunctionArgsTokenIdName = decodedArgsTyped?.annots?.at(1);
+      return {
+        // chainID: currentChainId,
+        userAddress: decodedUserAddress,
+        nonce: decodedNonce,
+        blockExpiration: decodedExpiration,
+        contractAddress: decodedContract,
+        functionCallName: decodedFunctionName,
+        functionCallArgs: {
+          owner: decodedFunctionArgsOwner,
+          token_id: decodedFunctionArgsTokenId,
+        },
+        signerPublicKey: decodedSignerKey,
+      };
     } catch (err) {
       console.log(err);
     }
-    // console.log("data", data);
   }
 
   it(`Should mint the asset #1`, async () => {
@@ -174,7 +177,7 @@ describe(`GatedNftClaimer`, function () {
     // Get contract storage
     const currentStorage: any = await cntr.storage();
     const nextAssetId =
-      currentStorage.siggated_extension.extension.lastMinted + 1;
+      currentStorage.siggated_extension.extension.lastMinted.toNumber() + 1;
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -208,34 +211,47 @@ describe(`GatedNftClaimer`, function () {
       signature.prefixSig
     );
 
-    try {
-      console.log("listen events for ", exampleGatedNFTMinter);
-      // set global variable for processEvent hook
-      expectedNonce = payloadToSign.nonce.toString();
-      expectedContractAddress = payloadToSign.contractAddress;
-      expectedFunctionName = payloadToSign.functionCallName;
-      expectedUserAddress = payloadToSign.userAddress;
-      expectedFunctionArgsOwner = functionCallArgs.owner;
-      expectedFunctionArgsTokenId = functionCallArgs.token_id;
+    // CALL contract
+    const op = await cntr.methodsObject.mint_gated(args).send();
+    console.log(
+      `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
+    );
+    await op.confirmation(2);
+    console.log("tx confirmed: ", op.hash);
 
-      const sub = Tezos.stream.subscribeEvent({
-        tag: "SignatureVerified",
-        address: exampleGatedNFTMinter,
-        excludeFailedOperations: true,
-      });
-      sub.on("data", processEvent);
-
-      // CALL contract
-      const op = await cntr.methodsObject.mint_gated(args).send();
-      console.log(
-        `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
-      );
-      await op.confirmation(2);
-      console.log("tx confirmed: ", op.hash);
-
-      sub.close();
-    } catch (e) {
-      console.log(e);
+    // Retrieve Events produced by the transaction
+    for (var opResult of op.operationResults) {
+      const internalOperationResults = opResult.metadata
+        .internal_operation_results as InternalOperationResult[];
+      for (var internalOpResult of internalOperationResults) {
+        if (
+          internalOpResult.kind === OpKind.EVENT &&
+          internalOpResult.tag === "SignatureVerified" &&
+          internalOpResult.source === exampleGatedNFTMinter
+        ) {
+          const evt = decodeMintEvent(internalOpResult);
+          // VERIFY
+          expect(evt).to.be.any;
+          if (evt) {
+            expect(evt.userAddress === payloadToSign.userAddress).to.be.true;
+            expect(evt.nonce === payloadToSign.nonce.toString()).to.be.true;
+            expect(
+              evt.blockExpiration === payloadToSign.blockExpiration.toString()
+            ).to.be.true;
+            expect(evt.contractAddress === payloadToSign.contractAddress).to.be
+              .true;
+            expect(evt.functionCallName === payloadToSign.functionCallName).to
+              .be.true;
+            expect(evt.functionCallArgs.owner === functionCallArgs.owner).to.be
+              .true;
+            expect(evt.functionCallArgs.token_id === functionCallArgs.token_id)
+              .to.be.true;
+            expect(evt.signerPublicKey === payloadToSign.signerPublicKey).to.be
+              .true;
+            console.log("Event received and verified");
+          }
+        }
+      }
     }
 
     // VERIFY
