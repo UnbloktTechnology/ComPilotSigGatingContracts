@@ -28,7 +28,7 @@ import {
 } from "@taquito/michel-codec";
 import { assert } from "chai";
 
-const RPC_ENDPOINT = "http://localhost:20000/";
+const RPC_ENDPOINT = "http://localhost:8732/";
 
 let result = undefined;
 let expectedContractAddress: string;

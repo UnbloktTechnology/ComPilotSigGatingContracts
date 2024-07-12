@@ -14,7 +14,7 @@ import {
 } from "../utils/convert";
 
 const createKeccakHash = require("keccak");
-const RPC_ENDPOINT = "http://localhost:20000/"; // "https://oxfordnet.ecadinfra.com"; //
+const RPC_ENDPOINT = "http://localhost:8732/"; // "https://oxfordnet.ecadinfra.com"; //
 
 function keccak256(data: string) {
   return createKeccakHash("keccak256").update(data, "hex").digest("hex");

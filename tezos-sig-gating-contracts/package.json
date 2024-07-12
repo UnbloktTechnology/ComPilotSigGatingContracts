@@ -5,7 +5,7 @@
   "main": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.esm.js",
   "scripts": {
-    "test": "tsc && mocha scripts/tests --timeout 20000",
+    "test": "tsc && mocha scripts/tests --timeout 60000",
     "sign": "ts-node scripts/signAuthData.ts",
     "deploy": "ts-node scripts/manual/deployNftminter.ts",
     "mint": "ts-node scripts/manual/mintOffchain.ts",

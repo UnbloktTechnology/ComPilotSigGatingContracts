@@ -25,7 +25,7 @@ import {
 import { buildTxCallDataNoFunctionName } from "../utils/buildTxCallData";
 import { computePayloadHash } from "../utils/computePayloadHash";
 
-const RPC_ENDPOINT = "http://localhost:20000/";
+const RPC_ENDPOINT = "http://localhost:8732/"; //"http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import {
