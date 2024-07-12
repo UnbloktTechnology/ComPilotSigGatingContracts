@@ -91,6 +91,12 @@ sandbox-start: ## Sandbox - Start Flextesa sandbox
 sandbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
+sandbox-tezbox-start: ## Sandbox - Start Flextesa sandbox
+	@./scripts/run-sandbox-tezbox $(PROJECT)
+
+sandbox-tezbox-stop: ## Sandbox - Stop Flextesa sandbox
+	@docker stop $(PROJECT)-sandbox
+
 integration-test: ## Launch tests on a the sandbox (local network)  
 	@echo "Running integration test script\n"
 	@npm run test
@@ -107,6 +113,10 @@ localmint:   ##@Sandbox - Alice sends a message (signed offchain by bob) to the 
 	@echo "Running mint script (local)\n"
 	@npm run localmint
 
-localdisplay:   ##@Sandbox - Alice storage of the  NftMinter contract.
+localdisplay:   ## Display storage of contract (deployment/nftminter.ts) on @Sandbox.
 	@echo "Running display script (local)\n"
 	@npm run localdisplay
+
+locallisten:	## Run Event listener on @Sandbox.
+	@echo "Running Event listener (local)\n"
+	@npm run locallisten

@@ -154,19 +154,19 @@ importers:
   tezos-sig-gating-contracts:
     dependencies:
       '@taquito/michel-codec':
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1
       '@taquito/rpc':
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1(encoding@0.1.13)
       '@taquito/signer':
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1(encoding@0.1.13)
       '@taquito/taquito':
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1(encoding@0.1.13)
       '@taquito/utils':
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1
       keccak:
         specifier: 3.0.4

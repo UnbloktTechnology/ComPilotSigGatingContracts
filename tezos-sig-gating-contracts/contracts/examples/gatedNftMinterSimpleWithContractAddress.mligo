@@ -1,7 +1,6 @@
-// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterExtNoDispatch = struct
 
@@ -74,13 +73,14 @@ module NftMinterExtNoDispatch = struct
       signature = datainput.signature;
       contractAddress=Tezos.get_self_address(); 
     } in
-    let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
+    let ops, s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
     if data.functionName = "%mint_gated" then
       let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
       | Some data -> data
       | None -> failwith SigGatedExtendable.Errors.invalid_calldata_wrong_arguments
       in 
-      apply_mint mint_decoded s
+      let opsMint, s = apply_mint mint_decoded s in
+      SigGatedExtendable.Utils.concatlists ops opsMint, s
     else
       failwith SigGatedExtendable.Errors.invalid_calldata_wrong_name
 

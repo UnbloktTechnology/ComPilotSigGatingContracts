@@ -33,15 +33,18 @@ async function main() {
 
   try {
     // Get contract storage
+    console.log("display storage of ", nftMinterAddress);
     const cntr = await Tezos.contract.at(nftMinterAddress);
     const storage: any = await cntr.storage();
-    // console.log("storage=", storage);
-
+    const nonce = await storage.nonces.get(
+      "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF"
+    );
+    console.log("nonce (for tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF)=", nonce);
     // const ownerAsset1 = await storage["ledger"].get(1);
-    const ownerAsset0 = await storage.ledger.get(0);
-    const ownerAsset1 = await storage.ledger.get(1);
-    const ownerAsset2 = await storage.ledger.get(2);
-    const ownerAsset3 = await storage.ledger.get(3);
+    const ownerAsset0 = await storage.siggated_extension.ledger.get(0);
+    const ownerAsset1 = await storage.siggated_extension.ledger.get(1);
+    const ownerAsset2 = await storage.siggated_extension.ledger.get(2);
+    const ownerAsset3 = await storage.siggated_extension.ledger.get(3);
     console.log("ownerAsset0=", ownerAsset0);
     console.log("ownerAsset1=", ownerAsset1);
     console.log("ownerAsset2=", ownerAsset2);

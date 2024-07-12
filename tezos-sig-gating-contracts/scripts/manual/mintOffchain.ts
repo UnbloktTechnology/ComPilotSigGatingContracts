@@ -4,7 +4,7 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/nftminter.json";
 // import nftMinterAddress from "../../deployments/nftminter";
-import { NFTMinterSimpleAddressForTezosGhostnet } from "../../src/addresses/NFTMinterSimpleAddressForTezosGhostnet";
+import { NFTClaimerAddressForTezosGhostnet } from "../../src/addresses/NFTClaimerAddressForTezosGhostnet";
 import {
   convert_timestamp,
   convert_key,
@@ -131,12 +131,10 @@ async function main() {
       signerPublicKey: dataKey,
       signature: signature,
     };
-    const cntr = await Tezos.contract.at(
-      NFTMinterSimpleAddressForTezosGhostnet
-    );
+    const cntr = await Tezos.contract.at(NFTClaimerAddressForTezosGhostnet);
     const op = await cntr.methodsObject.mint_gated(args).send();
     console.log(
-      `Waiting for Exec_gated_calldata on ${NFTMinterSimpleAddressForTezosGhostnet} to be confirmed...`
+      `Waiting for Exec_gated_calldata on ${NFTClaimerAddressForTezosGhostnet} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);

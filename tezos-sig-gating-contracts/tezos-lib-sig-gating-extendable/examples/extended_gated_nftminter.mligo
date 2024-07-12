@@ -54,17 +54,17 @@ module NftMinterExt = struct
   // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
   let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
-      let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
+      let ops, s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
       let cd : SigGatedExtendable.calldata = (data.contractAddress, data.functionName, data.functionArgs) in
       let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
-      [op], s
+      op::ops, s
 
   // Example of entrypoint which uses 
   // - verifyTxAuthData function for signature verification (nonce, expiration) 
   // - process the calldata itself
   [@entry]
   let exec_gated_calldata_no_dispatch2 (data : SigGatedExtendable.txAuthDataWithContractAddress) (s : storage): ret =
-    let s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
+    let ops, s = SigGatedExtendable.verifyTxAuthDataWithContractAddress data s in
     if (Tezos.get_self_address() = data.contractAddress) then
       if data.functionName = "%mint_gated" then
         let mint_decoded: mint = match (Bytes.unpack data.functionArgs: mint option) with
@@ -74,7 +74,7 @@ module NftMinterExt = struct
         let () = NFT.Assertions.assert_token_exist s.siggated_extension.token_metadata mint_decoded.token_id in
         let () = Assert.assert (Option.is_none (Big_map.find_opt mint_decoded.token_id s.siggated_extension.ledger)) in
         let new_fa2_s = NFT.set_balance s.siggated_extension mint_decoded.owner mint_decoded.token_id in
-        [], { s with siggated_extension=new_fa2_s }
+        ops, { s with siggated_extension=new_fa2_s }
       else
         failwith SigGatedExtendable.Errors.invalid_calldata_wrong_name
     else

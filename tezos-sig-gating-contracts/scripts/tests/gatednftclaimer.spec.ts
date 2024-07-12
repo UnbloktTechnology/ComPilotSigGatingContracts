@@ -3,8 +3,10 @@ import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
 import { InMemorySigner } from "@taquito/signer";
 import {
   MichelsonMap,
+  PollingSubscribeProvider,
   TezosToolkit,
   TezosOperationError,
+  ContractAbstraction,
 } from "@taquito/taquito";
 import {
   convert_timestamp,
@@ -26,14 +28,35 @@ import { computePayloadHash } from "../utils/computePayloadHash";
 const RPC_ENDPOINT = "http://localhost:20000/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
-import { RpcClient } from "@taquito/rpc";
+import {
+  InternalOperationResult,
+  MichelsonV1Expression,
+  MichelsonV1ExpressionExtended,
+  OpKind,
+  RpcClient,
+} from "@taquito/rpc";
+import {
+  prefix,
+  b58cencode,
+  encodeAddress,
+  encodeKey,
+  encodePubKey,
+} from "@taquito/utils";
+import {
+  BytesLiteral,
+  IntLiteral,
+  MichelsonType,
+  Parser,
+  StringLiteral,
+  unpackDataBytes,
+} from "@taquito/michel-codec";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
 const nexeraSigner = new InMemorySigner(
   "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
 ); // signer private key
 
-describe(`GatedNftMinterSimple`, function () {
+describe(`GatedNftClaimer`, function () {
   let exampleGatedNFTMinter: string | undefined;
   let deployerAddress: string;
   let currentBlock: number;
@@ -79,13 +102,72 @@ describe(`GatedNftMinterSimple`, function () {
     expect(ownerAsset3).to.be.undefined;
   });
 
+  function decodeMintEvent(data: InternalOperationResult) {
+    try {
+      // console.log(data);
+      const types = data.type as MichelsonV1ExpressionExtended;
+      const payloads = data.payload as MichelsonV1Expression[];
+      // CHAIN ID
+      const decodedChainId = b58cencode(
+        (payloads.at(0) as BytesLiteral).bytes,
+        prefix.Net
+      );
+      // USER ADDRESS
+      const decodedUserAddress = encodeAddress(
+        (payloads.at(1) as BytesLiteral).bytes
+      );
+      // NONCE
+      const decodedNonce = (payloads.at(2) as IntLiteral).int;
+      // EXPIRATION
+      const decodedExpiration = (payloads.at(3) as IntLiteral).int;
+      // SIGNER KEY
+      const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
+      const decodedSignerKey = encodeKey(key_encrypted);
+      // CONTRACT ADDESS
+      const decodedContract = encodeAddress(
+        (payloads.at(5) as BytesLiteral).bytes
+      );
+      // FUNCTION NAME
+      const decodedFunctionName = (payloads.at(6) as StringLiteral).string;
+      // ARGS
+      const decodedArgs = unpackDataBytes(
+        payloads.at(7) as BytesLiteral,
+        types.args?.at(7) as MichelsonType
+      );
+      const decodedArgsTyped = decodedArgs as MichelsonV1ExpressionExtended;
+      const decodedFunctionArgs = {};
+      const decodedFunctionArgsOwner = encodeAddress(
+        (decodedArgsTyped?.args?.at(0) as BytesLiteral).bytes
+      );
+      const decodedFunctionArgsTokenId = (
+        decodedArgsTyped?.args?.at(1) as IntLiteral
+      ).int;
+      // const decodedFunctionArgsTokenIdName = decodedArgsTyped?.annots?.at(1); // TODO
+      return {
+        chainID: decodedChainId,
+        userAddress: decodedUserAddress,
+        nonce: decodedNonce,
+        blockExpiration: decodedExpiration,
+        contractAddress: decodedContract,
+        functionCallName: decodedFunctionName,
+        functionCallArgs: {
+          owner: decodedFunctionArgsOwner,
+          token_id: decodedFunctionArgsTokenId,
+        },
+        signerPublicKey: decodedSignerKey,
+      };
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   it(`Should mint the asset #1`, async () => {
     // Get contract
     const cntr = await Tezos.contract.at(exampleGatedNFTMinter ?? "");
     // Get contract storage
     const currentStorage: any = await cntr.storage();
     const nextAssetId =
-      currentStorage.siggated_extension.extension.lastMinted + 1;
+      currentStorage.siggated_extension.extension.lastMinted.toNumber() + 1;
 
     // MINT OFFCHAIN
     const functionCallContract = exampleGatedNFTMinter
@@ -118,13 +200,50 @@ describe(`GatedNftMinterSimple`, function () {
       payloadToSign,
       signature.prefixSig
     );
+
     // CALL contract
     const op = await cntr.methodsObject.mint_gated(args).send();
     console.log(
-      `Waiting for Exec_gated_calldata on ${exampleGatedNFTMinter} to be confirmed...`
+      `Waiting for mint_gated on ${exampleGatedNFTMinter} to be confirmed...`
     );
     await op.confirmation(2);
     console.log("tx confirmed: ", op.hash);
+
+    // Retrieve Events produced by the transaction
+    for (var opResult of op.operationResults) {
+      const internalOperationResults = opResult.metadata
+        .internal_operation_results as InternalOperationResult[];
+      for (var internalOpResult of internalOperationResults) {
+        if (
+          internalOpResult.kind === OpKind.EVENT &&
+          internalOpResult.tag === "SignatureVerified" &&
+          internalOpResult.source === exampleGatedNFTMinter
+        ) {
+          const evt = decodeMintEvent(internalOpResult);
+          // VERIFY
+          expect(evt).to.be.any;
+          if (evt) {
+            expect(evt.chainID === payloadToSign.chainID).to.be.true;
+            expect(evt.userAddress === payloadToSign.userAddress).to.be.true;
+            expect(evt.nonce === payloadToSign.nonce.toString()).to.be.true;
+            expect(
+              evt.blockExpiration === payloadToSign.blockExpiration.toString()
+            ).to.be.true;
+            expect(evt.contractAddress === payloadToSign.contractAddress).to.be
+              .true;
+            expect(evt.functionCallName === payloadToSign.functionCallName).to
+              .be.true;
+            expect(evt.functionCallArgs.owner === functionCallArgs.owner).to.be
+              .true;
+            expect(evt.functionCallArgs.token_id === functionCallArgs.token_id)
+              .to.be.true;
+            expect(evt.signerPublicKey === payloadToSign.signerPublicKey).to.be
+              .true;
+            console.log("Event received and verified");
+          }
+        }
+      }
+    }
 
     // VERIFY
     const storage: any = await cntr.storage();

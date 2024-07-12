@@ -139,6 +139,20 @@ let test_gatednftminterunlimited_mint_gated =
         | Some ownr6 -> Assert.assert (ownr6 = inputs.functioncall_params.owner) 
         | None -> Test.Next.Assert.failwith "Wrong owner ! Mint did not work"
     in
+    // VERIFY events
+    let events : (chain_id * address * nat * nat * key * address * string * bytes) list = Test.Next.State.last_events nftminter_taddr "SignatureVerified" in
+    match events with 
+    | [elt] -> 
+      let (_chain_id,userAddress,nonce,expiration,k,_contractAddress,name, args) = elt in
+      // let () = Assert.assert (inputs.chain_id = chain_id) in
+      let () = Assert.assert (p.userAddress = userAddress) in
+      let () = Assert.assert (inputs.nonce = nonce) in
+      let () = Assert.assert (p.expirationBlock = expiration) in
+      // let () = Assert.assert (p.signerPublicKey = k) in
+      let () = Assert.assert (inputs.functioncall_name = name) in
+      let () = Assert.assert (p.functionArgs = args) in
+      ()
+    | _ -> failwith("expected  one event exactly")
     ()
 
 

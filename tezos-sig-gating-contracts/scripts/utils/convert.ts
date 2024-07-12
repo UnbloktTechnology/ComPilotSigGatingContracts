@@ -3,6 +3,9 @@ import {
   packDataBytes,
   MichelsonData,
   MichelsonType,
+  unpackData,
+  unpackDataBytes,
+  BytesLiteral,
 } from "@taquito/michel-codec";
 
 export function convert_timestamp(tt: string) {
@@ -71,6 +74,23 @@ export function convert_chain_id(addr_str: string) {
   return packed.bytes;
 }
 
+export function unconvert_bytes(
+  bytes: BytesLiteral,
+  expected_type: MichelsonType
+): MichelsonData {
+  const packed = unpackDataBytes(bytes, expected_type);
+  return packed;
+}
+
+export function unconvert_chain_id(bytes_str: string) {
+  const src = { bytes: bytes_str };
+  const typ: MichelsonType = {
+    prim: "chain_id",
+  };
+  const packed = unpackDataBytes(src, typ);
+  return packed;
+}
+
 export function convert_mint(owner_str: string, token_id: string) {
   const data = `(Pair "${owner_str}" ${token_id})`;
   const type = `(pair address nat)`;
@@ -82,6 +102,15 @@ export function convert_mint(owner_str: string, token_id: string) {
     typeJSON as MichelsonType
   );
   return packed.bytes;
+}
+
+export function unconvert_mint(bytes_str: string) {
+  const src = { bytes: bytes_str };
+  const type = `(pair address nat)`;
+  const p = new Parser();
+  const typeJSON = p.parseMichelineExpression(type);
+  const packed = unpackDataBytes(src, typeJSON as MichelsonType);
+  return packed;
 }
 
 // export function convert_mint(owner_str : string, token_id : string ) {

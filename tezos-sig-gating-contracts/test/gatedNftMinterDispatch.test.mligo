@@ -140,6 +140,20 @@ let test_GNM_Dispatch_mint_gated =
         | None -> Test.Next.Assert.failwith "Wrong owner ! Mint did not work"
     in
     let () = Assert.assert (current_storage.siggated_extension.extension.lastMinted = 6n) in
+    // VERIFY events
+    let events : (chain_id * address * nat * nat * key * address * string * bytes) list = Test.Next.State.last_events nftminter_taddr "SignatureVerified" in
+    match events with 
+    | [elt] -> 
+      let (_chain_id,userAddress,nonce,expiration,k,contractAddress,name, args) = elt in
+      // let () = Assert.assert (inputs.chain_id = chain_id) in
+      let () = Assert.assert (p.userAddress = userAddress) in
+      let () = Assert.assert (inputs.nonce = nonce) in
+      let () = Assert.assert (p.expirationBlock = expiration) in
+      let () = Assert.assert (p.functionName = name) in
+      let () = Assert.assert (p.functionArgs = args) in
+      let () = Assert.assert (p.contractAddress = contractAddress) in
+      ()
+    | _ -> failwith("expected  one event exactly")
     ()
 
 

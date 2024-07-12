@@ -48,7 +48,14 @@ sandbox   => `docker exec <docker-container-name> octez-client rpc get /chains/m
 
 ## SigGatingExtendable library usage
 
-- Extend the storage
+This library provides a parametric storage `siggated_storage` that can be extended and functions that verify the signature. These functions expects a specific input type:
+
+- `verifyTxAuthDataWithContractAddress` expects a `txAuthDataWithContractAddress` input
+- `verifyTxAuthData` expects a `txAuthData` input (same txAuthDataWithContractAddress without the contract address)
+
+These functions emits an event `SignatureVerified` when a signature is verified.
+
+### Extend the storage
 
 For example , a nft minter using `@ligo/fa` library
 
@@ -63,7 +70,7 @@ For example , a nft minter using `@ligo/fa` library
   type storage = extended_fa2_storage SigGatedExtendable.siggated_storage
 ```
 
-- Add entrypoints
+### Add entrypoints
 
 Option 1 (dispatch not needed):
 
@@ -105,16 +112,16 @@ The library provides a `process_internal_calldata` function to execute the right
 
 ```ocaml
   [@entry]
+  let exec_gated (data : SigGatedExtendable.txAuthData) (s : storage): ret =
+      let ops, s = SigGatedExtendable.verifyTxAuthData data s in
+      let cd : SigGatedExtendable.calldata = ((Tezos.get_self_address ()), data.functionName, data.functionArgs) in
+      let op = SigGatedExtendable.process_internal_calldata (cd, (Tezos.self "%mint_gated": mint contract)) in
+      op::ops, s
+
+  [@entry]
   let mint_gated (mint : mint) (s : storage): ret =
     let () = Assert.assert (Tezos.get_sender () = Tezos.get_self_address()) in
     apply_mint mint s
-
-  [@entry]
-  let exec_gated_calldata_no_dispatch (data : SigGatedExtendable.txAuthData) (s : storage): ret =
-      let s = SigGatedExtendable.verifyTxAuthData data s in
-      let cd : SigGatedExtendable.calldata = (data.contractAddress, data.name, data.args) in
-      let op = SigGatedExtendable.process_internal_calldata (cd, "%mint_gated", (Tezos.self "%mint_gated": mint contract)) in
-      [op], s
 ```
 
 #### Example 2 internal entrypoints without Dispatch
@@ -122,15 +129,15 @@ The library provides a `process_internal_calldata` function to execute the right
 Case of a single contract, there is no need to use the Dispatch mechanism.
 The library provides a `process_internal_calldata_2` function to execute the right entrypoint with the right parameter conversion.
 
-```ocaml
+```
   [@entry]
   let mint_or_burn_gated (data : SigGatedExtendable.txAuthData) (s : storage): ret =
-      let s = SigGatedExtendable.verifyTxAuthData data s in
+      let ops, s = SigGatedExtendable.verifyTxAuthData data s in
       let cd : SigGatedExtendable.calldata = ((Tezos.get_self_address ()), data.functionName, data.functionArgs) in
       let op = SigGatedExtendable.process_internal_calldata_2 (cd,
         (Tezos.self "%mint_gated": mint contract),
         (Tezos.self "%burn_gated": mint contract)) in
-      [op], s
+      op::ops, s
 
   [@entry]
   let burn_gated (mint : mint) (s : storage): ret =

@@ -1,7 +1,6 @@
-// #import "../../.ligo/source/i/ligo__s__fa__1.4.2__ffffffff/lib/main.mligo" "FA2"
-// #import "../../.ligo/source/i/nexeraid__s__sig_gating__1.0.2__ffffffff/lib/main.mligo" "SigGatedExtendable"
 #import "@ligo/fa/lib/main.mligo" "FA2"
 #import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+// #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterInternalDispatch = struct
 
@@ -49,12 +48,12 @@ module NftMinterInternalDispatch = struct
   // - process_internal_calldata for processing the calldata (by calling the targeted entrypoint)
   [@entry]
   let mint_or_burn_gated (data : SigGatedExtendable.txAuthData) (s : storage): ret =
-      let s = SigGatedExtendable.verifyTxAuthData data s in
+      let ops, s = SigGatedExtendable.verifyTxAuthData data s in
       let cd : SigGatedExtendable.calldata = (Tezos.get_self_address (), data.functionName, data.functionArgs) in
       let op = SigGatedExtendable.process_internal_calldata_2 (cd, 
         (Tezos.self "%mint_gated": mint contract), 
         (Tezos.self "%burn_gated": mint contract)) in
-      [op], s
+      op :: ops, s
 
   [@entry]
   let burn_gated (mint : mint) (s : storage): ret =
