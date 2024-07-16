@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:NexeraProtocol/NexeraIDSigGatingContracts.git"
+    "url": "git+ssh://git@github.com:UnbloktTechnology/NexeraIDSigGatingContracts.git"
   },
   "main": "lib/main.mligo",
   "keywords": [
@@ -23,9 +23,9 @@
   "author": "NexeraID <https://www.nexera.id/>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/issues"
+    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues"
   },
-  "homepage": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/tree/main/tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable/readme",
+  "homepage": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/tree/main/tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable/readme",
   "dependencies": {
     "@ligo/fa": "^1.4.2"
   }

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.0.5](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.4...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.5) (2024-07-12)
+## [1.0.5](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.4...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.5) (2024-07-12)
 
 **Note:** Version bump only for package @nexeraid/nexera-id-tezos-sig-gating-contracts-sdk
 
@@ -11,7 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.4](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.2...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.4) (2024-07-10)
+## [1.0.4](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.2...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.4) (2024-07-10)
 
 **Note:** Version bump only for package @nexeraid/nexera-id-tezos-sig-gating-contracts-sdk
 
@@ -19,7 +19,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.2](https://github.com/NexeraProtocol/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.1...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.2) (2024-06-25)
+## [1.0.2](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.1...@nexeraid/nexera-id-tezos-sig-gating-contracts-sdk@1.0.2) (2024-06-25)
 
 **Note:** Version bump only for package @nexeraid/nexera-id-tezos-sig-gating-contracts-sdk
 

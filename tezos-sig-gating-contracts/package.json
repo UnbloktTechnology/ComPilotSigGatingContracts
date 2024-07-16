@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
+    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts.git",
     "directory": "tezos-sig-gating-contracts"
   },
   "files": [
