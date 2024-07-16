@@ -4,7 +4,7 @@ import {
   ChainId,
   IdToChains,
   NEXERA_CHAINS,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+} from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
 
 dotenv.config();
 

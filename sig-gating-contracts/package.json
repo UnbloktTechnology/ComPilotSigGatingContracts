@@ -1,5 +1,5 @@
 {
-  "name": "@nexeraprotocol/nexera-id-sig-gating-contracts",
+  "name": "@nexeraid/nexera-id-sig-gating-contracts",
   "version": "2.2.45",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
@@ -59,7 +59,7 @@
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk": "workspace:*",
+    "@nexeraid/nexera-id-sig-gating-contracts-sdk": "workspace:*",
     "@nomicfoundation/hardhat-verify": "^2.0.8",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",

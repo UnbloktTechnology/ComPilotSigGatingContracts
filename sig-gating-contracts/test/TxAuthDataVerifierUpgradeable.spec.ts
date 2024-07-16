@@ -5,11 +5,11 @@ import { ExampleGatedNFTMinterUpgradeable } from "../typechain";
 import {
   Address,
   signTxAuthDataLibEthers,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+} from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
 import { fixtureExampleGatedNFTMinterUpgradeable } from "../fixtures/fixtureExampleGatedNFTMinterUpgradeable";
 
-import { ExampleGatedNFTMinterUpgradeableABI } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/abis";
-import { signTxAuthDataLib } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+import { ExampleGatedNFTMinterUpgradeableABI } from "@nexeraid/nexera-id-sig-gating-contracts-sdk/abis";
+import { signTxAuthDataLib } from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
 import {
   generateFunctionCallData,
   generateFunctionCallDataViem,

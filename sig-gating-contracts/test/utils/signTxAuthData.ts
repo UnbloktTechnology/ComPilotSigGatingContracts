@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
-import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+import { Address } from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
 import { ethers } from "hardhat";
 import { WalletClient, encodePacked, keccak256, toBytes } from "viem";
 

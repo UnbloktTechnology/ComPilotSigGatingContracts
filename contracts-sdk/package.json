@@ -1,10 +1,10 @@
 {
   "version": "2.0.22",
-  "name": "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk",
+  "name": "@nexeraid/nexera-id-sig-gating-contracts-sdk",
   "main": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk.esm.js",
   "scripts": {
-    "get-types-abis-addresses": "pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts build && pnpm run --filter @nexeraprotocol/nexera-id-sig-gating-contracts copy-info-to-sdk && pnpm lint",
+    "get-types-abis-addresses": "pnpm run --filter @nexeraid/nexera-id-sig-gating-contracts build && pnpm run --filter @nexeraid/nexera-id-sig-gating-contracts copy-info-to-sdk && pnpm lint",
     "build": "pnpm run get-types-abis-addresses && preconstruct build",
     "pre-build": "preconstruct build",
     "test": "echo \"Error: no test specified\" && exit 1",

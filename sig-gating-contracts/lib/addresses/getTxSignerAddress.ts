@@ -1,7 +1,7 @@
 import {
   Address,
   ChainId,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+} from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
 
 // This function returns the txSignerAddress
 export const getTxSignerAddress = (chainId: string) => {
