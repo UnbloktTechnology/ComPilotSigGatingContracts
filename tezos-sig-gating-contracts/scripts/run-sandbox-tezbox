@@ -3,20 +3,11 @@
 # run a local tezos sandbox
 # https://github.com/tez-capital/tezbox
 
-# docker run  --name "tezos-sig-gating-contracts-sandbox" -p 8732:8732 -it -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson ghcr.io/tez-capital/tezbox:tezos-v20.2 parisbox
-
-
 project=$1
 name="$project"-sandbox
 
 image=ghcr.io/tez-capital/tezbox:tezos-v20.2
 script=parisbox
-
-
-# docker run --rm --name "$name"  \
-#     -v $(pwd)/tezbox-overrides/sandbox-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson \
-#     -v $(pwd)/tezbox-overrides/accounts.hjson:/tezbox/overrides/accounts.hjson \
-#     -d -p 8732:8732 $image $script
 
 docker run --rm --name "$name"  \
     -v $(pwd)/tezbox-overrides/sandbox-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson \
