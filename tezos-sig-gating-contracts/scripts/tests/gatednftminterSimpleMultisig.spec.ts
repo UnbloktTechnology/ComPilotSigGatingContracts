@@ -24,19 +24,27 @@ import {
 import { buildTxCallDataNoFunctionName } from "../utils/buildTxCallData";
 import { computePayloadHash } from "../utils/computePayloadHash";
 
+import {
+  NEXERAID_SIGNER_SK,
+  DEPLOYER_SK,
+  DEPLOYER_PK,
+  USER_1_PK,
+  USER_2_SK,
+  USER_2_PK,
+} from "./testAddresses";
+
 const RPC_ENDPOINT = "http://localhost:8732/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import { RpcClient } from "@taquito/rpc";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
-let alice_pk = "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq";
+let alice_pk = DEPLOYER_SK;
 let alice = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
-let bob_pk = "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt";
+let bob_pk = NEXERAID_SIGNER_SK;
 let bob = "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6";
-let frank_pk =
-  "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU";
-let frank = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
+let frank_pk = USER_2_SK;
+let frank = USER_2_PK;
 
 const nexeraSigner = new InMemorySigner(bob_pk); // signer private key
 
@@ -64,7 +72,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "1",
     };
     // Prepare Hash of payload
@@ -74,7 +82,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -401,6 +409,10 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
 
     // Change user (send as frank)
+    console.log(
+      "frank public key",
+      (await InMemorySigner.fromSecretKey(frank_pk)).publicKey()
+    );
     Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
     await validateProposalFinal(
       exampleGatedNFTMinterCntrl ?? "",
@@ -455,7 +467,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
     // Prepare Hash of payload
@@ -465,7 +477,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 0,
       blockExpiration: currentBlock + 120,
       contractAddress: functionCallContract,

@@ -92,7 +92,8 @@ sandbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
 sandbox-tezbox-start: ## Sandbox - Start Flextesa sandbox
-	@./scripts/run-sandbox-tezbox $(PROJECT)
+	@cd scripts && ./run-sandbox-tezbox $(PROJECT)
+# @./scripts/run-sandbox-tezbox $(PROJECT)
 
 sandbox-tezbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox

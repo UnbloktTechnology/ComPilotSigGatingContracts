@@ -1,0 +1,8 @@
+{
+    frank: {
+        pkh: tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2
+        pk: edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat
+        sk: unencrypted:edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU
+        balance: 2000000
+    }
+}

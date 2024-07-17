@@ -23,15 +23,20 @@ import {
 import { buildTxCallDataNoContractAddress } from "../utils/buildTxCallData";
 import { computePayloadHash } from "../utils/computePayloadHash";
 
+import {
+  NEXERAID_SIGNER_SK,
+  DEPLOYER_SK,
+  DEPLOYER_PK,
+  USER_1_PK,
+} from "./testAddresses";
+
 const RPC_ENDPOINT = "http://localhost:8732/";
 
 const Tezos = new TezosToolkit(RPC_ENDPOINT);
 import { RpcClient } from "@taquito/rpc";
 const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 
-const nexeraSigner = new InMemorySigner(
-  "edsk3RFfvaFaxbHx8BMtEW1rKQcPtDML3LXjNqMNLCzC3wLC1bWbAt"
-); // signer private key
+const nexeraSigner = new InMemorySigner(NEXERAID_SIGNER_SK); // signer private key
 
 describe(`GatedNftMinterInternalDispatch`, function () {
   let exampleGatedNFTMinter: string | undefined;
@@ -42,11 +47,9 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 
   before(async () => {
     // SET SIGNER
-    deployerAddress = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
+    deployerAddress = DEPLOYER_PK;
     Tezos.setProvider({
-      signer: await InMemorySigner.fromSecretKey(
-        "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
-      ),
+      signer: await InMemorySigner.fromSecretKey(DEPLOYER_SK),
     });
     // Retrieve Signer public key
     nexeraSignerPublicKey = await nexeraSigner.publicKey();
@@ -86,7 +89,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "1",
     };
     // Prepare Hash of payload
@@ -96,7 +99,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -141,7 +144,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "1",
     };
 
@@ -152,7 +155,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -194,7 +197,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "1",
     };
     // Provide a different calldata arguments
@@ -209,7 +212,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -253,7 +256,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -264,7 +267,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 1,
       blockExpiration: 1,
       contractAddress: functionCallContract,
@@ -308,7 +311,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -319,7 +322,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -366,7 +369,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       : "";
 
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
 
@@ -378,7 +381,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -421,7 +424,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // MINT OFFCHAIN
     const functionCallContract = "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
 
@@ -433,7 +436,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -478,7 +481,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "2",
     };
     // Prepare Hash of payload
@@ -488,7 +491,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -538,7 +541,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PK,
       token_id: "3",
     };
     // Prepare Hash of payload
@@ -548,7 +551,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      userAddress: USER_1_PK,
       nonce: 2,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
