@@ -4,8 +4,6 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/gatedNftMinterSimpleWithContractAddress.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/";
-
 export async function deployNFTMinterExtNoDispatch(provider: TezosToolkit) {
   const ledger = new MichelsonMap();
   ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
