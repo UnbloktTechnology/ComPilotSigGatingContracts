@@ -1,12 +1,7 @@
 import { InMemorySigner } from "@taquito/signer";
-import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
-import { char2Bytes } from "@taquito/utils";
-import { saveContractAddress } from "../utils/helper";
-import nftMinterContract from "../../compiled/nftminter.json";
-// import nftMinterAddress from "../../deployments/nftminter";
+import { TezosToolkit } from "@taquito/taquito";
 import { NFTClaimerAddressForTezosGhostnet } from "../../src/addresses/NFTClaimerAddressForTezosGhostnet";
 import {
-  convert_timestamp,
   convert_key,
   convert_nat,
   convert_string,
@@ -14,6 +9,12 @@ import {
   convert_chain_id,
   convert_mint,
 } from "../utils/convert";
+import {
+  NEXERAID_SIGNER_PK,
+  NEXERAID_SIGNER_SK,
+  DEPLOYER_SK,
+  USER_1_PKH,
+} from "../tests/testAddresses";
 
 const createKeccakHash = require("keccak");
 const RPC_ENDPOINT = "https://rpc.ghostnet.teztnets.com/"; // "https://oxfordnet.ecadinfra.com"; //
@@ -69,35 +70,26 @@ async function main() {
 
   //set signer
   Tezos.setProvider({
-    signer: await InMemorySigner.fromSecretKey(
-      "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-    ),
+    signer: await InMemorySigner.fromSecretKey(DEPLOYER_SK),
   });
   // const senderAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
-  const signerBob = new InMemorySigner(
-    "edsk3QoqBuvdamxouPhin7swCvkQNgq4jP5KZPbwWNnwdZpSpJiEbq"
-    // "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-  ); // bob private key
-  // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
+  const signerNexera = new InMemorySigner(NEXERAID_SIGNER_SK); // bob private key
 
   try {
     console.log("Attempt mint #4 in ghostnet");
     // INPUTS
-    const functioncall_contract = "KT1KNhkV7c7bCdFvCXM6LNxbgzSnRxEoXP8Y"; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
+    const functioncall_contract = NFTClaimerAddressForTezosGhostnet; //"KT1AoU1mrLRSM2zouUVkvLz2UHo1on4UAFBF";
     const functioncall_name = "%mint_gated";
     const functioncall_params = {
-      owner: "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF",
+      owner: USER_1_PKH,
       token_id: "10",
     };
-    const dataKey = "edpkvGfYw3LyB1UcCahKQk4rF2tvbMUk8GFiTuMjL75uGXrpvKXhjn"; //"edpkuoQnnWMys1uS2eJrDkhPnizRNyQYBcsBsyfX4K97jVEaWKTXat";
+    const dataKey = NEXERAID_SIGNER_PK;
     const expiration = "7100000";
     const nonce = "1";
-    const userAddress = "tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF"; //"tz1fon1Hp3eRff17X82Y3Hc2xyokz33MavFF";
+    const userAddress = USER_1_PKH;
     const chain_id = "NetXnHfVqm9iesp";
-
-    // const signature =
-    //   "edsigtePm3YRCAgaiBvYu2xsGNazM3TBCQiMK71XW8J9n38cMCfJbDdzs7QyyDa4pb6YLfnXn4AR5y8HjcerUKSpbJw5V7fht1j";
 
     // Prepare arguments
     const functioncall_params_bytes = convert_mint(
@@ -116,7 +108,7 @@ async function main() {
       dataKey
     );
     // Bob signs Hash of payload
-    let signature_full = await signerBob.sign(payload_hash);
+    let signature_full = await signerNexera.sign(payload_hash);
     let signature = signature_full.prefixSig;
 
     // CALL contract

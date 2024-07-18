@@ -27,10 +27,10 @@ import { computePayloadHash } from "../utils/computePayloadHash";
 import {
   NEXERAID_SIGNER_SK,
   DEPLOYER_SK,
-  DEPLOYER_PK,
-  USER_1_PK,
-  USER_2_SK,
-  USER_2_PK,
+  DEPLOYER_PKH,
+  USER_1_PKH,
+  MULTISIG_OWNER_SK,
+  MULTISIG_OWNER_PKH,
 } from "./testAddresses";
 
 const RPC_ENDPOINT = "http://localhost:8732/";
@@ -43,8 +43,8 @@ let alice_pk = DEPLOYER_SK;
 let alice = "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb";
 let bob_pk = NEXERAID_SIGNER_SK;
 let bob = "tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6";
-let frank_pk = USER_2_SK;
-let frank = USER_2_PK;
+let multisigOwnerSecretKey = MULTISIG_OWNER_SK;
+let multisigOwner = MULTISIG_OWNER_PKH;
 
 const nexeraSigner = new InMemorySigner(bob_pk); // signer private key
 
@@ -72,7 +72,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "1",
     };
     // Prepare Hash of payload
@@ -82,7 +82,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContract,
@@ -332,7 +332,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   it(`Should add Frank as owner in multisig`, async () => {
     const prop_id = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
-      frank
+      multisigOwner
     );
   });
 
@@ -350,7 +350,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   it(`Alice Should validate proposal (changeSigner)`, async () => {
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
-      frank
+      multisigOwner
     );
     const setThesholdPropId = await setTheshold(
       exampleGatedNFTMinterCntrl ?? "",
@@ -369,7 +369,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   it(`Should prevent validate twice a proposal`, async () => {
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
-      frank
+      multisigOwner
     );
     const setThesholdPropId = await setTheshold(
       exampleGatedNFTMinterCntrl ?? "",
@@ -393,7 +393,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
   it(`Should validate proposal (Alice, Frank) and execute the proposal (Alice becomes signer)`, async () => {
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
-      frank
+      multisigOwner
     );
     const setThesholdPropId = await setTheshold(
       exampleGatedNFTMinterCntrl ?? "",
@@ -409,11 +409,9 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
 
     // Change user (send as frank)
-    console.log(
-      "frank public key",
-      (await InMemorySigner.fromSecretKey(frank_pk)).publicKey()
+    Tezos.setSignerProvider(
+      await InMemorySigner.fromSecretKey(multisigOwnerSecretKey)
     );
-    Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
     await validateProposalFinal(
       exampleGatedNFTMinterCntrl ?? "",
       changeSignerPropId
@@ -432,7 +430,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     // CHANGE SIGNER
     const addfrankPropId = await addOwnerProposal(
       exampleGatedNFTMinterCntrl ?? "",
-      frank
+      multisigOwner
     );
     const setThesholdPropId = await setTheshold(
       exampleGatedNFTMinterCntrl ?? "",
@@ -446,7 +444,9 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       exampleGatedNFTMinterCntrl ?? "",
       changeSignerPropId
     );
-    Tezos.setSignerProvider(await InMemorySigner.fromSecretKey(frank_pk));
+    Tezos.setSignerProvider(
+      await InMemorySigner.fromSecretKey(multisigOwnerSecretKey)
+    );
     await validateProposalFinal(
       exampleGatedNFTMinterCntrl ?? "",
       changeSignerPropId
@@ -467,7 +467,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "2",
     };
     // Prepare Hash of payload
@@ -477,7 +477,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: currentBlock + 120,
       contractAddress: functionCallContract,

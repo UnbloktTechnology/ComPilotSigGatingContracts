@@ -17,16 +17,3 @@ docker run --rm --name "$name"  \
 
 # let it time to bootstrap..
 sleep 10
-
-# # add missing accounts
-# docker exec "$name" octez-client import secret key frank \
-#     unencrypted:edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU
-
-# docker exec "$name" octez-client import secret key user \
-#     unencrypted:edskRn9jTrK2LLXeBQWczJHEDgjYPscHugVZ3TryQJBkH5DGF6MYEx8ysihSonyNrCSweGZdpsYi6EB4Fvnbyw3kfhZHGiFccQ
-
-# # fund them
-# reveal_fee=0.06425
-
-# docker exec "$name" octez-client transfer 10000 from alice to frank --burn-cap "$reveal_fee"
-# docker exec "$name" octez-client transfer 10000 from alice to user --burn-cap "$reveal_fee"

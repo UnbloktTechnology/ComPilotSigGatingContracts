@@ -8,7 +8,7 @@
     "test": "tsc && mocha scripts/tests --timeout 20000",
     "sign": "ts-node scripts/signAuthData.ts",
     "deploy": "ts-node scripts/manual/deployNftminter.ts",
-    "mint": "ts-node scripts/manual/mintOffchain.ts",
+    "mint": "ts-node scripts/manual/mint.ts",
     "localsign": "ts-node scripts/manual/localSign.ts",
     "localdeploy": "ts-node scripts/manual/localDeployNftminter.ts",
     "localmint": "ts-node scripts/manual/localMint.ts",

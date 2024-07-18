@@ -32,8 +32,8 @@ const client = new RpcClient(RPC_ENDPOINT); //, 'NetXnofnLBXBoxo');
 import {
   NEXERAID_SIGNER_SK,
   DEPLOYER_SK,
-  DEPLOYER_PK,
-  USER_1_PK,
+  DEPLOYER_PKH,
+  USER_1_PKH,
 } from "./testAddresses";
 
 const nexeraSigner = new InMemorySigner(NEXERAID_SIGNER_SK); // signer private key
@@ -47,7 +47,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
   before(async () => {
     // SET SIGNER
-    deployerAddress = DEPLOYER_PK;
+    deployerAddress = DEPLOYER_PKH;
     Tezos.setProvider({
       signer: await InMemorySigner.fromSecretKey(DEPLOYER_SK),
     });
@@ -91,7 +91,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "1",
     };
     // Prepare Hash of payload
@@ -101,7 +101,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddress,
@@ -148,7 +148,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "1",
     };
     // Prepare Hash of payload
@@ -158,7 +158,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     );
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddress,
@@ -200,7 +200,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "1",
     };
     // Provide a different calldata arguments
@@ -215,7 +215,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddress,
@@ -259,7 +259,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -270,7 +270,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 0,
       blockExpiration: 1,
       contractAddress: functionCallContractAddress,
@@ -313,7 +313,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -324,7 +324,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddress,
@@ -367,7 +367,7 @@ describe(`ExampleGatedNFTMinter`, function () {
       ? exampleGatedNFTMinter
       : "";
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -378,7 +378,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddress,
@@ -423,7 +423,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     const functionCallContractAddressInvalid =
       "KT1HUduHHW7mLAdkefzRuMhEFjdomuDNDskk"; // wrong address
     const functionCallArgs = {
-      owner: USER_1_PK,
+      owner: USER_1_PKH,
       token_id: "2",
     };
     // Provide a different calldata arguments
@@ -434,7 +434,7 @@ describe(`ExampleGatedNFTMinter`, function () {
     // Prepare Hash of payload
     const payloadToSign: TezosTxAuthData = {
       chainID: currentChainId,
-      userAddress: USER_1_PK,
+      userAddress: USER_1_PKH,
       nonce: 1,
       blockExpiration: currentBlock + 10,
       contractAddress: functionCallContractAddressInvalid,

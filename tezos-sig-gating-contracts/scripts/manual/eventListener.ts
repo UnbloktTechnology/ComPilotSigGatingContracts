@@ -1,13 +1,5 @@
-import { InMemorySigner } from "@taquito/signer";
 import { TezosToolkit, PollingSubscribeProvider } from "@taquito/taquito";
-import {
-  bytesToString,
-  char2Bytes,
-  encodeAddress,
-  encodeKey,
-  encodePubKey,
-} from "@taquito/utils";
-import { NFTClaimerAddressForTezosGhostnet } from "../../src/addresses/NFTClaimerAddressForTezosGhostnet";
+import { b58cencode, encodeAddress, encodeKey, prefix } from "@taquito/utils";
 import nftMinterAddress from "../../deployments/nftminter";
 import {
   InternalOperationResult,
@@ -15,64 +7,70 @@ import {
   MichelsonV1ExpressionExtended,
 } from "@taquito/rpc";
 import {
-  convert_address,
-  unconvert_bytes,
-  unconvert_chain_id,
-  unconvert_mint,
-} from "../utils/convert";
-import {
   BytesLiteral,
+  IntLiteral,
   MichelsonType,
-  Parser,
+  StringLiteral,
   unpackDataBytes,
 } from "@taquito/michel-codec";
-import { assert } from "chai";
 
-const RPC_ENDPOINT = "https://rpc.ghostnet.teztnets.com/"; //"http://localhost:8732/";
+const RPC_ENDPOINT = "http://localhost:8732/"; //"https://rpc.ghostnet.teztnets.com/";
 
 function processEvent(data: InternalOperationResult) {
-  console.log("PROCESS EVENT");
-  console.log("data", data);
-
   try {
+    // console.log(data);
     const types = data.type as MichelsonV1ExpressionExtended;
     const payloads = data.payload as MichelsonV1Expression[];
-
-    // // CHAIN ID
-    // // const decodedChainId = unpackDataBytes(
-    // //   payloads.at(0) as BytesLiteral,
-    // //   types.args?.at(0) as MichelsonType
-    // // );
-    // // console.log("decodedChainId", decodedChainId);
-    // // USER ADDRESS
-    // const decodedUserAddress = encodePubKey(
-    //   (payloads.at(1) as BytesLiteral).bytes
-    // );
-    // console.log("decodedUserAddress=", decodedUserAddress);
-
-    // // SIGNER KEY
-    // // const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
-    // // console.log("key_encrypted=", key_encrypted);
-    // // const decodedSignerKey = encodeKey(key_encrypted);
-    // // console.log("decodedSignerKey=", decodedSignerKey);
-
-    // // CONTRACT ADDESS
-    // const decodedContractAddress = encodeAddress(
-    //   (payloads.at(5) as BytesLiteral).bytes
-    // );
-    // console.log("decodedContractAddress=", decodedContractAddress);
-    // // ARGS
-    // const src = payloads.at(7) as BytesLiteral;
-    // const type = `(pair address nat)`;
-    // const p = new Parser();
-    // const typeJSON = p.parseMichelineExpression(type);
-    // // const decodedArgs = unpackDataBytes(src, typeJSON as MichelsonType);
-    // const decodedArgs = unpackDataBytes(
-    //   src,
-    //   types.args?.at(7) as MichelsonType
-    // );
-
-    // console.log("decodedArgs=", decodedArgs);
+    // CHAIN ID
+    const decodedChainId = b58cencode(
+      (payloads.at(0) as BytesLiteral).bytes,
+      prefix.Net
+    );
+    // USER ADDRESS
+    const decodedUserAddress = encodeAddress(
+      (payloads.at(1) as BytesLiteral).bytes
+    );
+    // NONCE
+    const decodedNonce = (payloads.at(2) as IntLiteral).int;
+    // EXPIRATION
+    const decodedExpiration = (payloads.at(3) as IntLiteral).int;
+    // SIGNER KEY
+    const key_encrypted = (payloads.at(4) as BytesLiteral).bytes;
+    const decodedSignerKey = encodeKey(key_encrypted);
+    // CONTRACT ADDESS
+    const decodedContract = encodeAddress(
+      (payloads.at(5) as BytesLiteral).bytes
+    );
+    // FUNCTION NAME
+    const decodedFunctionName = (payloads.at(6) as StringLiteral).string;
+    // ARGS
+    const decodedArgs = unpackDataBytes(
+      payloads.at(7) as BytesLiteral,
+      types.args?.at(7) as MichelsonType
+    );
+    const decodedArgsTyped = decodedArgs as MichelsonV1ExpressionExtended;
+    const decodedFunctionArgs = {};
+    const decodedFunctionArgsOwner = encodeAddress(
+      (decodedArgsTyped?.args?.at(0) as BytesLiteral).bytes
+    );
+    const decodedFunctionArgsTokenId = (
+      decodedArgsTyped?.args?.at(1) as IntLiteral
+    ).int;
+    // const decodedFunctionArgsTokenIdName = decodedArgsTyped?.annots?.at(1); // TODO
+    const result = {
+      chainID: decodedChainId,
+      userAddress: decodedUserAddress,
+      nonce: decodedNonce,
+      blockExpiration: decodedExpiration,
+      contractAddress: decodedContract,
+      functionCallName: decodedFunctionName,
+      functionCallArgs: {
+        owner: decodedFunctionArgsOwner,
+        token_id: decodedFunctionArgsTokenId,
+      },
+      signerPublicKey: decodedSignerKey,
+    };
+    console.log("Decoded mint event", result);
   } catch (err) {
     console.log(err);
   }
@@ -80,14 +78,6 @@ function processEvent(data: InternalOperationResult) {
 
 async function main(contractAddress: string) {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);
-  console.log(
-    "frank public key",
-    await (
-      await InMemorySigner.fromSecretKey(
-        "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-      )
-    ).publicKey()
-  );
 
   Tezos.setStreamProvider(
     Tezos.getFactory(PollingSubscribeProvider)({
@@ -97,11 +87,9 @@ async function main(contractAddress: string) {
   );
 
   try {
-    console.log("listen events for ", contractAddress); // KT1KNhkV7c7bCdFvCXM6LNxbgzSnRxEoXP8Y
-
     const sub = Tezos.stream.subscribeEvent({
-      // tag: "SignatureVerified",
-      // address: "KT1KNhkV7c7bCdFvCXM6LNxbgzSnRxEoXP8Y",
+      tag: "SignatureVerified",
+      // address: contractAddress,
       excludeFailedOperations: true,
     });
     sub.on("data", processEvent);
