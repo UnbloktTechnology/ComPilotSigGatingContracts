@@ -14,7 +14,7 @@ import {
   unpackDataBytes,
 } from "@taquito/michel-codec";
 
-const RPC_ENDPOINT = "http://localhost:8732/"; //"https://rpc.ghostnet.teztnets.com/";
+const RPC_ENDPOINT = "https://rpc.ghostnet.teztnets.com/"; //"http://localhost:8732/";
 
 function processEvent(data: InternalOperationResult) {
   try {

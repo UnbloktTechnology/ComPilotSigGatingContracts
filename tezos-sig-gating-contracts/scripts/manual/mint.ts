@@ -83,10 +83,10 @@ async function main() {
     const functioncall_name = "%mint_gated";
     const functioncall_params = {
       owner: USER_1_PKH,
-      token_id: "10",
+      token_id: "2",
     };
     const dataKey = NEXERAID_SIGNER_PK;
-    const expiration = "7100000";
+    const expiration = "71000000";
     const nonce = "1";
     const userAddress = USER_1_PKH;
     const chain_id = "NetXnHfVqm9iesp";

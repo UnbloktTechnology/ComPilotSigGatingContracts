@@ -1,2 +1,2 @@
 export const NFTClaimerAddressForTezosGhostnet =
-  "KT1KNhkV7c7bCdFvCXM6LNxbgzSnRxEoXP8Y";
+  "KT1JN7a2es4Ne8SuePZU7YrHKG49hfgCCyBK";
