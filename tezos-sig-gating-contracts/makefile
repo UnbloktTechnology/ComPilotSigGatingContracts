@@ -86,16 +86,17 @@ mint:  ## Trigger the exec_gated_offchain entrypoint of the extended_gated_nftmi
 #            SANDBOX                  #
 #######################################
 sandbox-start: ## Sandbox - Start Flextesa sandbox
-	@./scripts/run-sandbox $(PROJECT)
+	@cd scripts && ./run-sandbox-tezbox $(PROJECT)
 
 sandbox-stop: ## Sandbox - Stop Flextesa sandbox
 	@docker stop $(PROJECT)-sandbox
 
 sandbox-tezbox-start: ## Sandbox - Start Flextesa sandbox
-	@./scripts/run-sandbox-tezbox $(PROJECT)
+	@cd scripts && ./run-sandbox-tezbox $(PROJECT)
+# @./scripts/run-sandbox-tezbox $(PROJECT)
 
-sandbox-tezbox-stop: ## Sandbox - Stop Flextesa sandbox
-	@docker stop $(PROJECT)-sandbox
+sandbox-flextesa-start: ## Sandbox - Start Flextesa sandbox
+	@./scripts/run-sandbox $(PROJECT)
 
 integration-test: ## Launch tests on a the sandbox (local network)  
 	@echo "Running integration test script\n"

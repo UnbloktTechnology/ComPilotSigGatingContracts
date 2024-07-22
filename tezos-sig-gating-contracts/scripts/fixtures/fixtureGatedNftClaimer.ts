@@ -4,8 +4,6 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nftMinterContract from "../../compiled/gatedNftClaimer.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/";
-
 export async function deployNFTMinterSimple(provider: TezosToolkit) {
   const ledger = new MichelsonMap();
   ledger.set(0, "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb");
@@ -64,11 +62,11 @@ export async function deployNFTMinterSimple(provider: TezosToolkit) {
       code: nftMinterContract,
       storage: initialStorage,
     });
-    // console.log(
-    //   `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
-    // );
+    console.log(
+      `Waiting for nftMinterContract ${originated.contractAddress} to be confirmed...`
+    );
     await originated.confirmation(2);
-    // console.log("confirmed contract: ", originated.contractAddress);
+    console.log("confirmed contract: ", originated.contractAddress);
     return originated.contractAddress;
   } catch (error: any) {
     console.log(error);

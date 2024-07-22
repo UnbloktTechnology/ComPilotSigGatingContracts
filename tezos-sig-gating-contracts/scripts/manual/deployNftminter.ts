@@ -7,7 +7,7 @@ import {
 } from "../utils/helper";
 import nftMinterContract from "../../compiled/gatedNftClaimer.json";
 
-const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:20000/"
+const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:8732/"
 
 async function main() {
   const Tezos = new TezosToolkit(RPC_ENDPOINT);

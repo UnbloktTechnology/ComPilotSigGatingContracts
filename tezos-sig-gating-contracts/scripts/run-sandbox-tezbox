@@ -1,37 +1,19 @@
 #!/bin/sh
 
 # run a local tezos sandbox
-# https://tezos.gitlab.io/flextesa/
+# https://github.com/tez-capital/tezbox
 
 project=$1
 name="$project"-sandbox
 
-image=ghcr.io/tez-capital/tezbox:tezos-v20.1
+image=ghcr.io/tez-capital/tezbox:tezos-v20.2
 script=parisbox
 
-docker run -it 
-
 docker run --rm --name "$name"  \
-    -v $(pwd)/sandbox-override-parameters.hjson:/tezbox/overrides/protocols/Proxford/sandbox-parameters.hjson \
-    -d -p 8732:8732 -e block_time=1  "$image" "$script"
+    -v $(pwd)/tezbox-overrides/sandbox-parameters.hjson:/tezbox/overrides/protocols/PsParisC/sandbox-parameters.hjson \
+    -v $(pwd)/tezbox-overrides/accounts.hjson:/tezbox/overrides/accounts.hjson \
+    -d -p 8732:8732 $image $script
 
-# docker run --rm --name "$name" --detach -p 20000:20000 \
-#        -e block_time=1 \
-#        -e flextesa_node_cors_origin='*' \
-#        "$image" "$script" start
 
 # let it time to bootstrap..
-sleep 15
-
-# add missing accounts
-docker exec "$name" octez-client import secret key frank \
-    unencrypted:edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU
-
-docker exec "$name" octez-client import secret key user \
-    unencrypted:edskRn9jTrK2LLXeBQWczJHEDgjYPscHugVZ3TryQJBkH5DGF6MYEx8ysihSonyNrCSweGZdpsYi6EB4Fvnbyw3kfhZHGiFccQ
-
-# fund them
-reveal_fee=0.06425
-
-docker exec "$name" octez-client transfer 10000 from alice to frank --burn-cap "$reveal_fee"
-docker exec "$name" octez-client transfer 10000 from alice to user --burn-cap "$reveal_fee"
+sleep 10

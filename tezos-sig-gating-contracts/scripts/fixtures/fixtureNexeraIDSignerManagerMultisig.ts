@@ -4,8 +4,6 @@ import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
 import nexeraIdSignerManagerContract from "../../compiled/NexeraIDSignerManagerMultisig.json";
 
-const RPC_ENDPOINT = "http://localhost:20000/";
-
 export async function deploySignerManagerMultisig(
   provider: TezosToolkit,
   owner: string,
