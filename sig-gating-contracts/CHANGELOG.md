@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-07-22)
+
+
+### Features
+
+* bump script version ([#91](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/91)) ([3b021e8](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/3b021e8774535360aaa7706134e3970e2b5f16ca))
+* Feature/web3 210 deploy contracts on polygon mainnet ([#101](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/101)) ([5507d09](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/5507d092a11eefdfca9e4b186d5e22b205c4cedc))
+* Pavel feedback ([#62](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/62)) ([69732b1](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/69732b1241b7f42adcba68eb7cc5e23f9bcdfe87))
+* **release:** bump package version ([#82](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/82)) ([3980a98](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/3980a9825c58a518bec4df31d666a78a2054a8d2))
+
+
+### BREAKING CHANGES
+
+* **release:** security audit fixes, optimizations
+
+
+
+
+
 ## [2.2.45](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/sig-gating-contracts@2.2.44...@nexeraid/sig-gating-contracts@2.2.45) (2024-06-21)
 
 **Note:** Version bump only for package @nexeraid/sig-gating-contracts

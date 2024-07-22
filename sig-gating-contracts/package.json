@@ -1,6 +1,6 @@
 {
   "name": "@nexeraid/sig-gating-contracts",
-  "version": "2.2.45",
+  "version": "3.0.0",
   "description": "Nexera ID Signature Based Gating Contracts",
   "author": "Nexera ID",
   "files": [

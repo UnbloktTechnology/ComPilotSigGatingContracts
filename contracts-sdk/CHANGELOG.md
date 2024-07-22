@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2024-07-22)
+
+
+### Features
+
+* add nexeraidsignermanager and link to BaseTxAuthDataVerifier ([#38](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/38)) ([4375965](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/43759654072d886d3f5f2c512d4fa2cc2a0600eb))
+* Feature/web3 244 smart contract fix to handle bytes inputs ([#29](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/29)) ([0ca65c9](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/0ca65c973792e4e88cb02dd8bf885b924503377e))
+* Pavel feedback ([#62](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/62)) ([69732b1](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/69732b1241b7f42adcba68eb7cc5e23f9bcdfe87))
+* **release:** bump package version ([#81](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/81)) ([7a30b28](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/7a30b284f8f1d77a72e7b335367de5e044b6c50d))
+
+
+### BREAKING CHANGES
+
+* **release:** security audit fixes, optimizations
+
+
+
+
+
 ## [2.0.22](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/sig-gating-contracts-sdk@2.0.21...@nexeraid/sig-gating-contracts-sdk@2.0.22) (2024-06-21)
 
 **Note:** Version bump only for package @nexeraid/sig-gating-contracts-sdk
