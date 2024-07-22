@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 import { Abi, encodeFunctionData } from "viem";
-import { Address } from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+import { Address } from "@nexeraid/sig-gating-contracts-sdk/lib";
 
 // Generating functionCallData with viem
 export async function generateFunctionCallDataViem(

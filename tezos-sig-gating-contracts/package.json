@@ -1,9 +1,9 @@
 {
-  "name": "@nexeraprotocol/nexera-id-tezos-sig-gating-contracts-sdk",
+  "name": "@nexeraid/tezos-sig-gating-contracts-sdk",
   "version": "1.0.7",
   "description": "",
-  "main": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.cjs.js",
-  "module": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk.esm.js",
+  "main": "dist/nexeraid-tezos-sig-gating-contracts-sdk.cjs.js",
+  "module": "dist/nexeraid-tezos-sig-gating-contracts-sdk.esm.js",
   "scripts": {
     "test": "tsc && mocha scripts/tests --timeout 20000",
     "sign": "ts-node scripts/signAuthData.ts",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/NexeraProtocol/NexeraIDSigGatingContracts.git",
+    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts.git",
     "directory": "tezos-sig-gating-contracts"
   },
   "files": [

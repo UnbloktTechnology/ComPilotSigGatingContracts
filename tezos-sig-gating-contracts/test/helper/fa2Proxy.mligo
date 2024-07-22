@@ -48,7 +48,7 @@ let get_fa2_for_proxy_initial_storage (nft_extension_initial, owner1, owner2, ow
         "license":{"name":"MIT"},
         "authors":["Frank Hillard<frank@nexera.id>"],
         "homepage":"",
-        "source":{"tools":["Ligo"], "location":"https://github.com/NexeraProtocol/NexeraIDSigGatingContracts"},
+        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts"},
         "interfaces":["TZIP-012"],
         "errors":[],
         "views":[]

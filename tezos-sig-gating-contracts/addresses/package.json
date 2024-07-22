@@ -1,4 +1,4 @@
 {
-  "main": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk-addresses.cjs.js",
-  "module": "dist/nexeraprotocol-nexera-id-tezos-sig-gating-contracts-sdk-addresses.esm.js"
+  "main": "dist/nexeraid-tezos-sig-gating-contracts-sdk-addresses.cjs.js",
+  "module": "dist/nexeraid-tezos-sig-gating-contracts-sdk-addresses.esm.js"
 }

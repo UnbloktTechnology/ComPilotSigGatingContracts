@@ -1,4 +1,4 @@
 {
-  "main": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk-abis.cjs.js",
-  "module": "dist/nexeraprotocol-nexera-id-sig-gating-contracts-sdk-abis.esm.js"
+  "main": "dist/nexeraid-sig-gating-contracts-sdk-abis.cjs.js",
+  "module": "dist/nexeraid-sig-gating-contracts-sdk-abis.esm.js"
 }

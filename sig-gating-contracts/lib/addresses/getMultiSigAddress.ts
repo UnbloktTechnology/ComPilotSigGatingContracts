@@ -1,7 +1,7 @@
 import {
   Address,
   NEXERA_CHAINS,
-} from "@nexeraprotocol/nexera-id-sig-gating-contracts-sdk/lib";
+} from "@nexeraid/sig-gating-contracts-sdk/lib";
 
 // This function returns an address for a MultiSig if has been deployed on the input network
 export const getMultiSigAddress = (chainId: string) => {

@@ -59,7 +59,7 @@ jobs:
       - name: Build
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraprotocol/nexera-id-sig-gating-contracts-sdk build
+          pnpm --filter @nexeraid/sig-gating-contracts-sdk build
 
       # Commented for now because we prefer to bump it manually
       #   - name: Update Signer Manager version

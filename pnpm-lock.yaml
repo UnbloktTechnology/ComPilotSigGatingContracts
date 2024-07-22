@@ -78,7 +78,7 @@ importers:
       '@ethersproject/providers':
         specifier: ^5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@nexeraprotocol/nexera-id-sig-gating-contracts-sdk':
+      '@nexeraid/sig-gating-contracts-sdk':
         specifier: workspace:*
         version: link:../contracts-sdk
       '@nomicfoundation/hardhat-verify':
