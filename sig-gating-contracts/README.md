@@ -1,6 +1,6 @@
-# @nexeraid/nexera-id-sig-gating-contracts
+# @nexeraid/sig-gating-contracts
 
-@nexeraid/nexera-id-sig-gating-contracts
+@nexeraid/sig-gating-contracts
 
 Signature Based Gating: users are verified in our back-end and receive authorization signatures through our api.
 

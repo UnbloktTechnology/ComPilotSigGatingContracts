@@ -1,4 +1,4 @@
-import { Address } from "@nexeraid/nexera-id-sig-gating-contracts-sdk/lib";
+import { Address } from "@nexeraid/sig-gating-contracts-sdk/lib";
 import { ethers, network } from "hardhat";
 
 async function setAccountBalance(
