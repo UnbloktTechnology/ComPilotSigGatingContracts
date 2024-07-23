@@ -6,6 +6,11 @@ import {
   saveContractAddressGhostnet,
 } from "../utils/helper";
 import nftMinterContract from "../../compiled/gatedNftClaimer.json";
+import {
+  NEXERAID_SIGNER_PKH,
+  DEPLOYER_SK,
+  DEPLOYER_PKH,
+} from "../tests/testAddresses";
 
 const RPC_ENDPOINT = "https://ghostnet.ecadinfra.com"; // "https://oxfordnet.ecadinfra.com"; "https://localhost:8732/"
 
@@ -14,14 +19,12 @@ async function main() {
 
   //set alice key
   Tezos.setProvider({
-    signer: await InMemorySigner.fromSecretKey(
-      "edskS7YYeT85SiRZEHPFjDpCAzCuUaMwYFi39cWPfguovTuNqxU3U9hXo7LocuJmr7hxkesUFkmDJh26ubQGehwXY8YiGXYCvU"
-    ),
+    signer: await InMemorySigner.fromSecretKey(DEPLOYER_SK),
   });
   // related address
   // const signerAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
   const ledger = new MichelsonMap();
-  ledger.set(0, "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2");
+  ledger.set(0, DEPLOYER_PKH);
 
   const tokenMetadata = new MichelsonMap();
   for (let i = 0; i < 200; i++) {
@@ -53,7 +56,7 @@ async function main() {
   const operators = new MichelsonMap();
 
   const fa2Extension = {
-    minter: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    minter: DEPLOYER_PKH, // alice
     lastMinted: 0,
   };
 
@@ -66,8 +69,8 @@ async function main() {
   };
 
   const initialStorage = {
-    admin: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
-    signerAddress: "tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb", // alice
+    admin: DEPLOYER_PKH, // alice
+    signerAddress: NEXERAID_SIGNER_PKH,
     nonces: new MichelsonMap(),
     siggated_extension: initialFA2Storage,
   };
