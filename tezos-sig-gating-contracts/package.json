@@ -1,6 +1,6 @@
 {
   "name": "@nexeraid/tezos-sig-gating-contracts-sdk",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "",
   "main": "dist/nexeraid-tezos-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraid-tezos-sig-gating-contracts-sdk.esm.js",
