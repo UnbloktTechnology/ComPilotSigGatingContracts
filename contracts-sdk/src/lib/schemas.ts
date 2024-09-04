@@ -112,7 +112,7 @@ export const isValidAddress = (address: string) => {
 export const AddressSchema = z
   .string()
   .refine((value) => isValidAddress(value))
-  .transform((value) => value.toLowerCase() as `0x${string}`)
+  .transform((value) => value as `0x${string}`)
   .describe(
     "String value that identifies the address of a specific user. Normally tied to an EOA that includes the Smart Wallet."
   );
@@ -129,6 +129,8 @@ export const FunctionCallData = String0x;
 export type FunctionCallData = String0x;
 
 export type Address = z.infer<typeof AddressSchema>;
+
+export type EvmPrivateKey = String0x;
 
 export type CredentialType =
   | "AMLScreeningsResults"

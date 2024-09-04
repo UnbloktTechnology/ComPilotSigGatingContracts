@@ -33,7 +33,9 @@
     ]
   },
   "dependencies": {
+    "@swisstronik/web3-plugin-swisstronik": "^1.5.1",
     "viem": "^2.9.31",
+    "web3": "^4.12.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
