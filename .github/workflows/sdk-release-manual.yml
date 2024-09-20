@@ -118,7 +118,7 @@ jobs:
 
       - name: Publish to public NPM
         env:
-          NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
+          NPMJS_COM_TOKEN: ${{ secrets.COMPILOT_NPMJS_COM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
 
