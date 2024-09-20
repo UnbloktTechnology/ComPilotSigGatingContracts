@@ -5,7 +5,7 @@
 # the repo. Unless a later match takes precedence,
 # @global-owner1 and @global-owner2 will be requested for
 # review when someone opens a pull request.
-*         @galimba @LizanLycan @grmkris @cbarrilab @bogdancirlugea2 @markoftw @joelamouche @Berbex @pash7ka @frankhillard @prevostc
+*         @galimba @LizanLycan @grmkris @bogdancirlugea2 @markoftw @joelamouche @Berbex @pash7ka @frankhillard @prevostc
 .github/* @markoftw @grmkris @joelamouche @frankhillard @prevostc
 
 # Order is important; the last matching pattern takes the most
