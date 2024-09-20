@@ -72,15 +72,15 @@ importers:
         specifier: 0.3.0-beta.13
         version: 0.3.0-beta.13(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))(hardhat@2.22.5(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@20.11.17)(typescript@5.4.5))(typescript@5.4.5)(utf-8-validate@5.0.10))
     devDependencies:
+      '@compilot/sig-gating-contracts-sdk':
+        specifier: workspace:*
+        version: link:../contracts-sdk
       '@ethersproject/abi':
         specifier: ^5.7.0
         version: 5.7.0
       '@ethersproject/providers':
         specifier: ^5.7.2
         version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@nexeraid/sig-gating-contracts-sdk':
-        specifier: workspace:*
-        version: link:../contracts-sdk
       '@nomicfoundation/hardhat-verify':
         specifier: ^2.0.8
         version: 2.0.8(hardhat@2.22.5(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@20.11.17)(typescript@5.4.5))(typescript@5.4.5)(utf-8-validate@5.0.10))
