@@ -24,17 +24,17 @@ export const moveAllContractAddressesToSdk = () => {
 	moveContractAddressToSdk("ExampleGatedNFTMinter", "polygonAmoy");
 	moveContractAddressToSdk("ExampleGatedNFTMinter", "polygonAmoy_local");
 	moveContractAddressToSdk("ExampleNFTMinter", "polygonAmoy");
-	moveContractAddressToSdk("CompilotSignerManager", "polygonAmoy");
+	moveContractAddressToSdk("ComPilotSignerManager", "polygonAmoy");
 	// Sepolia
 	moveContractAddressToSdk("ExampleGatedNFTMinter", "sepolia");
 	moveContractAddressToSdk("ExampleGatedNFTMinter", "sepolia_local");
 	moveContractAddressToSdk("ExampleNFTMinter", "sepolia");
-	moveContractAddressToSdk("CompilotSignerManager", "sepolia");
+	moveContractAddressToSdk("ComPilotSignerManager", "sepolia");
 	// Polygon Mainnet
 	moveContractAddressToSdk("ExampleGatedNFTMinter", "polygon");
 	moveContractAddressToSdk("ExampleNFTMinter", "polygon");
-	moveContractAddressToSdk("CompilotSignerManager", "polygon");
+	moveContractAddressToSdk("ComPilotSignerManager", "polygon");
 	// Base
-	moveContractAddressToSdk("CompilotSignerManager", "base");
+	moveContractAddressToSdk("ComPilotSignerManager", "base");
 };
 moveAllContractAddressesToSdk();

@@ -118,7 +118,7 @@ type String0x = z.infer<typeof String0x>;
 // >;
 
 // Tx Auth Data SIgnature
-// This is the info that is signed by Compilot's Back end
+// This is the info that is signed by ComPilot's Back end
 export const TezosTxAuthData = z.object({
 	chainID: z.string(),
 	userAddress: TezosAddress,

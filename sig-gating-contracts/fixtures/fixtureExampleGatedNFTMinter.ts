@@ -1,6 +1,6 @@
 import { deployments, ethers } from "hardhat";
 
-import { ExampleGatedNFTMinter, CompilotSignerManager } from "../typechain";
+import { ExampleGatedNFTMinter, ComPilotSignerManager } from "../typechain";
 export async function fixtureExampleGatedNFTMinter() {
 	const contractName = "ExampleGatedNFTMinter";
 	await deployments.fixture([contractName]);
@@ -10,12 +10,12 @@ export async function fixtureExampleGatedNFTMinter() {
 	);
 
 	const compilotIDSignerManager = await ethers.getContractAt(
-		"CompilotSignerManager",
-		(await deployments.get("CompilotSignerManager")).address,
+		"ComPilotSignerManager",
+		(await deployments.get("ComPilotSignerManager")).address,
 	);
 
 	return {
 		exampleGatedNFTMinter: contractInstance as ExampleGatedNFTMinter,
-		compilotIDSignerManager: compilotIDSignerManager as CompilotSignerManager,
+		compilotIDSignerManager: compilotIDSignerManager as ComPilotSignerManager,
 	};
 }

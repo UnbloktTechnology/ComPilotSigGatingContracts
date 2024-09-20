@@ -11,7 +11,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 	const { deployer } = await getNamedAccounts();
 
 	// Fetch deployed Signer Manager
-	const signerManagerAddress = (await deployments.get("CompilotSignerManager"))
+	const signerManagerAddress = (await deployments.get("ComPilotSignerManager"))
 		.address;
 	console.log("signerManagerAddress", signerManagerAddress);
 
@@ -46,4 +46,4 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 export default func;
 func.id = contractName + version;
 func.tags = [contractName, version];
-func.dependencies = ["CompilotSignerManager"];
+func.dependencies = ["ComPilotSignerManager"];

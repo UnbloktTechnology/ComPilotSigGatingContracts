@@ -74,7 +74,7 @@ async function main() {
 	});
 	// const senderAddress = "tz1TiFzFCcwjv4pyYGTrnncqgq17p59CzAE2";
 
-	const signerCompilot = new InMemorySigner(COMPILOT_SIGNER_SK); // bob private key
+	const signerComPilot = new InMemorySigner(COMPILOT_SIGNER_SK); // bob private key
 
 	try {
 		console.log("Attempt mint #4 in ghostnet");
@@ -108,7 +108,7 @@ async function main() {
 			dataKey,
 		);
 		// Bob signs Hash of payload
-		let signature_full = await signerCompilot.sign(payload_hash);
+		let signature_full = await signerComPilot.sign(payload_hash);
 		let signature = signature_full.prefixSig;
 
 		// CALL contract

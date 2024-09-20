@@ -218,7 +218,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTMinterUpgradeable with a signature from the signer -  with custom address for contract to be able to call it`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -278,7 +278,7 @@ describe(`ExampleGatedNFTMinterUpgradeable`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can NOT call the ExampleGatedNFTMinterUpgradeable with a wrong signature from the signer`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();

@@ -2,7 +2,7 @@
 
 ## General idea
 
-The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to CompilotSigner. The CompilotSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by Compilot signer.
+The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to ComPilotSigner. The ComPilotSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by ComPilot signer.
 Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains payload + signature + public key + nonce + expiration) to the smart contract that implements the signature verifiacition mecanism.
 
 ![](./pictures/compilot%20global%20workflow.png)
@@ -13,12 +13,12 @@ The transaction could also be executed by an operator on behalf of the user. In 
 
 ### off-chain signture workflow
 
-For a given calldata, the user receives from Compilot
+For a given calldata, the user receives from ComPilot
 
 - payload hash (keccak(key, nonce, expiration, calldata))
 - nonce (custom nonce of the contract)
 - expiration (block level)
-- public key of Compilot signer role
+- public key of ComPilot signer role
 - signature of the payload hash
 
 ![](./pictures/compilot%20forge%20sig%20workflow.png)
@@ -88,7 +88,7 @@ If the Ligo library (`SigGating`) is modified it has to been re-published in the
 - Log in: `ligo registry login`
 
 ```
-FrankCompilot
+FrankComPilot
 *******
 ```
 

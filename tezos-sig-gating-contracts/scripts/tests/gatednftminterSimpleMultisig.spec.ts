@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { deployNFTMinterSimple } from "../fixtures/fixtureGatedNftClaimer";
-import { deploySignerManagerMultisig } from "../fixtures/fixtureCompilotSignerManagerMultisig";
+import { deploySignerManagerMultisig } from "../fixtures/fixtureComPilotSignerManagerMultisig";
 import { InMemorySigner } from "@taquito/signer";
 import {
 	MichelsonMap,
@@ -91,7 +91,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoFunctionName(
@@ -486,7 +486,7 @@ describe(`GatedNftMinterSimple with SignerManagerMultisig`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoFunctionName(

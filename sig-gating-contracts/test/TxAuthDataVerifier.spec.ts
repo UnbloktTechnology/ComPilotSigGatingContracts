@@ -101,7 +101,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 				data: txData,
 			}),
 		)
-			.to.emit(exampleGatedNFTMinter, "CompilotSignatureVerified")
+			.to.emit(exampleGatedNFTMinter, "ComPilotSignatureVerified")
 			.withArgs(
 				chainID,
 				0,
@@ -235,7 +235,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 
 		// Do it a second time to make sure nonce system works
 
@@ -281,7 +281,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData2[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData2[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData2[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with ethers lib function`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -339,7 +339,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 
 		// Do it a second time to make sure nonce system works
 
@@ -385,7 +385,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData2[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData2[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData2[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -449,7 +449,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTMinter with a signature from the signer - custom nonce and chainId`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -519,7 +519,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTMinterExternalCall with a signature from the signer - with custom address for contract to be able to call it`, async () => {
 		const { tester, txAuthSignerAddress, externalContract } =
@@ -585,7 +585,7 @@ describe(`ExampleGatedNFTMinter`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleMultipleInputs - multiple input with bytes - with a signature from the signer - with lib function`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();

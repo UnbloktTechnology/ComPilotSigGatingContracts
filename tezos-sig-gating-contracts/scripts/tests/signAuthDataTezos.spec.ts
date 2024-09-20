@@ -120,7 +120,7 @@ describe(`Sign txAuthData`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let expectedSignature = await compilotSigner.sign(payloadHash);
 		expect(expectedSignature.prefixSig === signature).to.be.true;
 	});

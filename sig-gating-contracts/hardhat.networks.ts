@@ -172,7 +172,7 @@ export const networks: NetworksUserConfig = {
 			// using fixed block number is supposed to improve test performance
 			blockNumber: 5499570,
 		},
-		// Compilot Test address is set up with tokens to test the Pool
+		// ComPilot Test address is set up with tokens to test the Pool
 		accounts: { mnemonic: TEST_MNEMONIC },
 	},
 };

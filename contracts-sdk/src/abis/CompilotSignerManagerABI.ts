@@ -1,4 +1,4 @@
-export const CompilotSignerManagerABI = [
+export const ComPilotSignerManagerABI = [
   {
     inputs: [
       {

@@ -4,7 +4,7 @@ const path = require("path");
 // Path to your TypeScript file
 const tsFilePath = path.join(
 	__dirname,
-	"../sig-gating-contracts/deploy/01_deployCompilotSignerManager.ts",
+	"../sig-gating-contracts/deploy/01_deployComPilotSignerManager.ts",
 );
 console.log(tsFilePath);
 

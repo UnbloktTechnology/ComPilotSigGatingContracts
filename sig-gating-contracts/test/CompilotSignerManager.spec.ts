@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import hre, { getNamedAccounts, ethers } from "hardhat";
 
-import { ExampleGatedNFTMinter, CompilotSignerManager } from "../typechain";
+import { ExampleGatedNFTMinter, ComPilotSignerManager } from "../typechain";
 import { Address } from "@compilot/sig-gating-contracts-sdk/lib";
 
 import { ExampleGatedNFTMinterABI } from "@compilot/sig-gating-contracts-sdk/abis";
@@ -10,8 +10,8 @@ import { publicActions, pad } from "viem";
 import { setupThreeAccounts } from "./utils/fundAccounts";
 import { fixtureExampleGatedNFTMinter } from "../fixtures/fixtureExampleGatedNFTMinter";
 
-describe(`CompilotSignerManager`, function () {
-	let compilotIDSignerManager: CompilotSignerManager;
+describe(`ComPilotSignerManager`, function () {
+	let compilotIDSignerManager: ComPilotSignerManager;
 	let exampleGatedNFTMinter: ExampleGatedNFTMinter;
 
 	beforeEach(async () => {
@@ -118,7 +118,7 @@ describe(`CompilotSignerManager`, function () {
 
 		// Also check for signature verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 
 		// Now try with old signer that should fail
 

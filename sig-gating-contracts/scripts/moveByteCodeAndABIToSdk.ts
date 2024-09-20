@@ -71,15 +71,15 @@ export const moveExampleGatedNFTFacetABIToSDK = () => {
 	//saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
 };
 
-export const moveCompilotSignerManagerABIToSDK = () => {
+export const moveComPilotSignerManagerABIToSDK = () => {
 	// Load the JSON file
 	const jsonFile =
-		"./artifacts/contracts/signerManager/CompilotSignerManager.sol/CompilotSignerManager.json"; // Replace with your JSON file's path
+		"./artifacts/contracts/signerManager/ComPilotSignerManager.sol/ComPilotSignerManager.json"; // Replace with your JSON file's path
 	const rawData = fs.readFileSync(jsonFile);
 	const jsonData = JSON.parse(rawData);
 	const abi = jsonData.abi;
 	const unprocessedByteCode = jsonData.bytecode;
-	saveContractABI("CompilotSignerManager", abi);
+	saveContractABI("ComPilotSignerManager", abi);
 	//saveContractByteCode("ExampleNFTMinter", unprocessedByteCode);
 };
 
@@ -90,6 +90,6 @@ export const moveByteCodeAndABIToSdk = () => {
 	moveExampleMultipleInputsABIToSDK();
 	moveExampleGatedNFTMinterExternalCallABIToSDK();
 	moveExampleGatedNFTFacetABIToSDK();
-	moveCompilotSignerManagerABIToSDK();
+	moveComPilotSignerManagerABIToSDK();
 };
 moveByteCodeAndABIToSdk();

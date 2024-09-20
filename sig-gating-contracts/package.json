@@ -1,8 +1,8 @@
 {
 	"name": "@compilot/sig-gating-contracts",
 	"version": "3.0.0",
-	"description": "Compilot Signature Based Gating Contracts",
-	"author": "Compilot",
+	"description": "ComPilot Signature Based Gating Contracts",
+	"author": "ComPilot",
 	"files": ["**/*.sol"],
 	"repository": {
 		"type": "git",

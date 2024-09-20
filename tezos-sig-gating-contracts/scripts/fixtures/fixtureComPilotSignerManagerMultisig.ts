@@ -2,7 +2,7 @@ import { InMemorySigner } from "@taquito/signer";
 import { MichelsonMap, TezosToolkit } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
 import { saveContractAddress } from "../utils/helper";
-import compilotIdSignerManagerContract from "../../compiled/CompilotSignerManagerMultisig.json";
+import compilotIdSignerManagerContract from "../../compiled/ComPilotSignerManagerMultisig.json";
 
 export async function deploySignerManagerMultisig(
 	provider: TezosToolkit,

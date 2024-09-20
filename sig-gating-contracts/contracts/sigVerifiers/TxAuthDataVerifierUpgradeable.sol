@@ -47,7 +47,7 @@ contract TxAuthDataVerifierUpgradeable is
      * - The transaction must not have expired, as indicated by `_blockExpiration`.
      * - The provided signature must be valid and correctly match the caller's address, as determined by `_msgSender()`.
      *
-     * Emits a `CompilotSignatureVerified` event upon successful verification, indicating that the transaction has been authenticated.
+     * Emits a `ComPilotSignatureVerified` event upon successful verification, indicating that the transaction has been authenticated.
      */
     modifier requireTxDataAuth() {
         _verifyTxAuthData(_msgData(), _msgSender());
@@ -69,7 +69,7 @@ contract TxAuthDataVerifierUpgradeable is
      * - The transaction must not have expired, as indicated by `_blockExpiration`.
      * - The signature must correctly match the provided `userAddress`.
      *
-     * Emits a `CompilotSignatureVerified` event upon successful verification of the transaction.
+     * Emits a `ComPilotSignatureVerified` event upon successful verification of the transaction.
      */
     modifier requireTxDataAuthWithAddress(address userAddress) {
         _verifyTxAuthData(_msgData(), userAddress);

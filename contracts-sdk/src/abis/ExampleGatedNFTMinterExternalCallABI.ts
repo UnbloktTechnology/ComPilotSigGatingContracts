@@ -115,7 +115,7 @@ export const ExampleGatedNFTMinterExternalCallABI = [
         type: "bytes",
       },
     ],
-    name: "CompilotSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

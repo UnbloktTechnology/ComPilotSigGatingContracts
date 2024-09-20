@@ -25,10 +25,10 @@ install: ## install LIGO dependencies
 .PHONY: test compile
 compile: ## compile contracts to Michelson
 	@mkdir -p compiled
-	@$(call compile,signerManager/CompilotSignerManager.mligo,CompilotSignerManager.tz, -m SignerManager)
-	@$(call compile,signerManager/CompilotSignerManager.mligo,CompilotSignerManager.json, -m SignerManager --michelson-format json)
-	@$(call compile,signerManager/CompilotSignerManagerMultisig.mligo,CompilotSignerManagerMultisig.tz, -m SignerManagerMultisig)
-	@$(call compile,signerManager/CompilotSignerManagerMultisig.mligo,CompilotSignerManagerMultisig.json, -m SignerManagerMultisig --michelson-format json)
+	@$(call compile,signerManager/ComPilotSignerManager.mligo,ComPilotSignerManager.tz, -m SignerManager)
+	@$(call compile,signerManager/ComPilotSignerManager.mligo,ComPilotSignerManager.json, -m SignerManager --michelson-format json)
+	@$(call compile,signerManager/ComPilotSignerManagerMultisig.mligo,ComPilotSignerManagerMultisig.tz, -m SignerManagerMultisig)
+	@$(call compile,signerManager/ComPilotSignerManagerMultisig.mligo,ComPilotSignerManagerMultisig.json, -m SignerManagerMultisig --michelson-format json)
 	@$(call compile,examples/nftminter.mligo,nftminter.tz, -m NftMinter)
 	@$(call compile,examples/nftminter.mligo,nftminter.json, -m NftMinter --michelson-format json)
 	@$(call compile,examples/proxy.mligo,proxy.tz, -m ProxyVerifier)
@@ -49,8 +49,8 @@ test: ## run tests (SUITE=gatedNftMinterSimple make test)
 ifndef SUITE
 	@$(call test,gatedNftClaimer.test.mligo)
 	@$(call test,gatedNftMinterSimpleUnlimited.test.mligo)
-	@$(call test,CompilotSignerManager.test.mligo)
-	@$(call test,CompilotSignerManagerMultisig.test.mligo)
+	@$(call test,ComPilotSignerManager.test.mligo)
+	@$(call test,ComPilotSignerManagerMultisig.test.mligo)
 	@$(call test,nftminter.test.mligo)
 	@$(call test,proxy.test.mligo)
 	@$(call test,gatedNftMinterDispatch.test.mligo)

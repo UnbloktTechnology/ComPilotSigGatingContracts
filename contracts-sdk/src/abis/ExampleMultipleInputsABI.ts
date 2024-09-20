@@ -60,7 +60,7 @@ export const ExampleMultipleInputsABI = [
         type: "bytes",
       },
     ],
-    name: "CompilotSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

@@ -64,15 +64,15 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "CompilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "SignerChanged(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CompilotSignatureVerified"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ComPilotSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SignerChanged"): EventFragment;
 }
 
-export type CompilotSignatureVerifiedEvent = TypedEvent<
+export type ComPilotSignatureVerifiedEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, string, string, string] & {
     chainID: BigNumber;
     nonce: BigNumber;
@@ -196,7 +196,7 @@ export class TxAuthDataVerifier extends BaseContract {
   };
 
   filters: {
-    "CompilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,
@@ -215,7 +215,7 @@ export class TxAuthDataVerifier extends BaseContract {
       }
     >;
 
-    CompilotSignatureVerified(
+    ComPilotSignatureVerified(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,

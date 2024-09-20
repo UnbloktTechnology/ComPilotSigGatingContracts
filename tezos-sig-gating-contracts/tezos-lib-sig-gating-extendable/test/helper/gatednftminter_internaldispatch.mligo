@@ -48,7 +48,7 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
         "license":{"name":"MIT"},
         "authors":["Frank Hillard<frank@compilot.ai>"],
         "homepage":"",
-        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/CompilotSigGatingContracts"},
+        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/ComPilotSigGatingContracts"},
         "interfaces":["TZIP-012"],
         "errors":[],
         "views":[]

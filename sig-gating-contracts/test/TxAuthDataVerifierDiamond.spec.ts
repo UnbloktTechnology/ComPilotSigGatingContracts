@@ -79,7 +79,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 				data: txData,
 			}),
 		)
-			.to.emit(exampleGatedNFTDiamond, "CompilotSignatureVerified")
+			.to.emit(exampleGatedNFTDiamond, "ComPilotSignatureVerified")
 			.withArgs(
 				chainID,
 				0,
@@ -213,7 +213,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 
 		// Do it a second time to make sure nonce system works
 
@@ -259,7 +259,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData2[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData2[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData2[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTDiamond with a signature from the signer - with ethers lib function`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -317,7 +317,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 
 		// Do it a second time to make sure nonce system works
 
@@ -363,7 +363,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData2[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData2[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData2[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTDiamond with a signature from the signer - with EOA signer instead of SignerManager`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -427,7 +427,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 	it(`Should check that user can call the ExampleGatedNFTDiamond with a signature from the signer - custom nonce and chainId`, async () => {
 		const { tester, txAuthSignerAddress } = await getNamedAccounts();
@@ -497,7 +497,7 @@ describe(`ExampleGatedNFTFacet`, function () {
 
 		// Also check for signagure verified emitted event
 		expect(eventsData[0].args?.userAddress === tester).to.be.true;
-		expect(eventsData[0].name === "CompilotSignatureVerified").to.be.true;
+		expect(eventsData[0].name === "ComPilotSignatureVerified").to.be.true;
 	});
 
 	it(`Should check that user can NOT call the ExampleGatedNFTDiamond with a wrong signature from the signer`, async () => {

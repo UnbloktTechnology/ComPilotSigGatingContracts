@@ -108,7 +108,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -164,7 +164,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -221,7 +221,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 
 		// Execute mint-offchain entrypoint
@@ -276,7 +276,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -331,7 +331,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		// let signature = await compilotSigner.sign(payloadHash);
 		let signature_raw =
 			"edsigtcjNvuDj6sfUL9u3Ma4Up3zfiZiPM2gzwDC3Vk1324SJzaGTbVwtdmdJ5q9UbD9qnKm9jdzytFqjSSt54oLY61XuB2mSW5";
@@ -390,7 +390,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -445,7 +445,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -500,7 +500,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(
@@ -560,7 +560,7 @@ describe(`GatedNftMinterInternalDispatch`, function () {
 			signerPublicKey: compilotSignerPublicKey,
 		};
 		const payloadHash = computePayloadHash(payloadToSign);
-		// Compilot signs Hash of payload
+		// ComPilot signs Hash of payload
 		let signature = await compilotSigner.sign(payloadHash);
 		// Execute mint-offchain entrypoint
 		const args: TezosTxCalldata = buildTxCallDataNoContractAddress(

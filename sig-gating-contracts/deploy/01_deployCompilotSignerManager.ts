@@ -5,7 +5,7 @@ import { getMultiSigAddress } from "../lib/addresses/getMultiSigAddress";
 import { getTxSignerAddress } from "../lib/addresses/getTxSignerAddress";
 
 const version = "0.1.13";
-const contractName = "CompilotSignerManager";
+const contractName = "ComPilotSignerManager";
 const withExample = "withExample";
 const onlySignerManager = "onlySignerManager";
 
@@ -15,7 +15,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 	const { deployer, txAuthSignerAddress, signerManagerController } =
 		await getNamedAccounts();
 
-	// 1. Deploy CompilotSignerManager
+	// 1. Deploy ComPilotSignerManager
 	console.log(`\n--------------------------------------------------------`);
 	console.log(`Deploying ${contractName}...`);
 	console.log(`\n--------------------------------------------------------`);

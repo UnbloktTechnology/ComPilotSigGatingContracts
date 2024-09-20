@@ -10,7 +10,7 @@ library ExampleGatedNFTFacetStorage {
     /// @dev Storage slot for the ExampleGatedNFTFacet storage, derived from a unique hash.
     bytes32 internal constant STORAGE_SLOT =
         keccak256(
-            "compilotId.CompilotSigGating.storage.ExampleGatedNFTFacetStorage"
+            "compilotId.ComPilotSigGating.storage.ExampleGatedNFTFacetStorage"
         );
 
     /**

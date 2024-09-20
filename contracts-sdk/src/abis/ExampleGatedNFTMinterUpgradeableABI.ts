@@ -104,7 +104,7 @@ export const ExampleGatedNFTMinterUpgradeableABI = [
         type: "bytes",
       },
     ],
-    name: "CompilotSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

@@ -22,7 +22,7 @@ contract TxAuthDataVerifierFacet is Context {
     using TxAuthDataVerifierFacetStorage for TxAuthDataVerifierFacetStorage.Layout;
 
     /// @dev Event emitted when a signature is verified
-    event CompilotSignatureVerified(
+    event ComPilotSignatureVerified(
         uint256 chainID,
         uint256 nonce,
         uint256 blockExpiration,
@@ -80,7 +80,7 @@ contract TxAuthDataVerifierFacet is Context {
      * - The transaction must not have expired, as indicated by `blockExpiration`.
      * - The provided signature must be valid and correctly match the caller's address, as determined by `_msgSender()`.
      *
-     * Emits a `CompilotSignatureVerified` event upon successful verification, indicating that the transaction has been authenticated.
+     * Emits a `ComPilotSignatureVerified` event upon successful verification, indicating that the transaction has been authenticated.
      */
     modifier requireTxDataAuth() {
         _verifyTxAuthData(_msgData(), _msgSender());
@@ -102,7 +102,7 @@ contract TxAuthDataVerifierFacet is Context {
      * - The transaction must not have expired, as indicated by `blockExpiration`.
      * - The signature must correctly match the provided `userAddress`.
      *
-     * Emits a `CompilotSignatureVerified` event upon successful verification of the transaction.
+     * Emits a `ComPilotSignatureVerified` event upon successful verification of the transaction.
      */
     modifier requireTxDataAuthWithAddress(address userAddress) {
         _verifyTxAuthData(_msgData(), userAddress);
@@ -146,7 +146,7 @@ contract TxAuthDataVerifierFacet is Context {
      * - The current block number must be less than `blockExpiration`.
      * - The signature must be valid and correspond to `userAddress`.
      *
-     * Emits a `CompilotSignatureVerified` event upon successful verification.
+     * Emits a `ComPilotSignatureVerified` event upon successful verification.
      */
     function _verifyTxAuthData(
         bytes calldata msgData,
@@ -194,7 +194,7 @@ contract TxAuthDataVerifierFacet is Context {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
-        emit CompilotSignatureVerified(
+        emit ComPilotSignatureVerified(
             block.chainid,
             userNonce,
             blockExpiration,
