@@ -1,5 +1,5 @@
 #import "@ligo/fa/lib/main.mligo" "FA2"
-#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@compilot/sig-gating/lib/main.mligo" "SigGatedExtendable"
 // #import "../../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
 
 module NftMinterExtNoDispatch = struct

@@ -63,6 +63,6 @@ jobs:
           NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SALT: ${{ secrets.SALT }}
         run: |
-          pnpm --filter @nexeraid/sig-gating-contracts build
-          pnpm --filter @nexeraid/sig-gating-contracts-sdk build
-          pnpm --filter @nexeraid/tezos-sig-gating-contracts-sdk build
+          pnpm --filter @compilot/sig-gating-contracts build
+          pnpm --filter @compilot/sig-gating-contracts-sdk build
+          pnpm --filter @compilot/tezos-sig-gating-contracts-sdk build

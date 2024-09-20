@@ -5,4 +5,4 @@ export * from "./ExampleGatedNFTMinterUpgradeableABI";
 export * from "./ExampleMultipleInputsABI";
 export * from "./ExampleGatedNFTMinterExternalCallABI";
 export * from "./ExampleGatedNFTFacetABI";
-export * from "./NexeraIDSignerManagerABI";
+export * from "./ComPilotSignerManagerABI";

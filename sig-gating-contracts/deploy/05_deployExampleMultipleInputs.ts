@@ -6,35 +6,35 @@ const version = "0.2.1";
 const contractName = "ExampleMultipleInputs";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments } = hre;
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
-  console.log("deployer", deployer);
-  // Fetch deployed Signer Manager
-  const signerManagerAddress = (await deployments.get("NexeraIDSignerManager"))
-    .address;
-  console.log("signerManagerAddress", signerManagerAddress);
+	const { deployments } = hre;
+	const { deploy } = deployments;
+	const { deployer } = await getNamedAccounts();
+	console.log("deployer", deployer);
+	// Fetch deployed Signer Manager
+	const signerManagerAddress = (await deployments.get("ComPilotSignerManager"))
+		.address;
+	console.log("signerManagerAddress", signerManagerAddress);
 
-  console.log(`\n--------------------------------------------------------`);
-  console.log(`Deploying ${contractName}...`);
-  console.log(`\n--------------------------------------------------------`);
+	console.log(`\n--------------------------------------------------------`);
+	console.log(`Deploying ${contractName}...`);
+	console.log(`\n--------------------------------------------------------`);
 
-  const deployResult = await deploy(contractName, {
-    contract: contractName,
-    from: deployer,
-    args: [signerManagerAddress],
-    log: true,
-    nonce: "pending",
-    waitConfirmations: 1,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
+	const deployResult = await deploy(contractName, {
+		contract: contractName,
+		from: deployer,
+		args: [signerManagerAddress],
+		log: true,
+		nonce: "pending",
+		waitConfirmations: 1,
+		autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+	});
 
-  console.log("\nDeployed " + contractName + " at " + deployResult.address);
+	console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
-  return true;
+	return true;
 };
 
 export default func;
 func.id = contractName + version;
 func.tags = [contractName, version];
-func.dependencies = ["NexeraIDSignerManager"];
+func.dependencies = ["ComPilotSignerManager"];

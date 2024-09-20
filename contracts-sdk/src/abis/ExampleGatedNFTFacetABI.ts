@@ -214,7 +214,7 @@ export const ExampleGatedNFTFacetABI = [
         type: "bytes",
       },
     ],
-    name: "NexeraIDSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

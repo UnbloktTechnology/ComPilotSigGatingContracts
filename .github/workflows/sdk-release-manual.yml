@@ -85,16 +85,16 @@ jobs:
         run: |
           echo ${{ steps.tag_release.outputs.release_tag }}
 
-          version=$(pnpm pkg get version -w "@nexeraid/sig-gating-contracts" | jq -r '.["@nexeraid/sig-gating-contracts"]')
-          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraid/sig-gating-contracts"
+          version=$(pnpm pkg get version -w "@compilot/sig-gating-contracts" | jq -r '.["@compilot/sig-gating-contracts"]')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@compilot/sig-gating-contracts"
           echo $version
 
-          version=$(pnpm pkg get version -w "@nexeraid/sig-gating-contracts-sdk" | jq -r '.["@nexeraid/sig-gating-contracts-sdk"]')
-          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraid/sig-gating-contracts-sdk"
+          version=$(pnpm pkg get version -w "@compilot/sig-gating-contracts-sdk" | jq -r '.["@compilot/sig-gating-contracts-sdk"]')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@compilot/sig-gating-contracts-sdk"
           echo $version
 
-          version=$(pnpm pkg get version -w "@nexeraid/tezos-sig-gating-contracts-sdk" | jq -r '.["@nexeraid/tezos-sig-gating-contracts-sdk"]')
-          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@nexeraid/tezos-sig-gating-contracts-sdk"
+          version=$(pnpm pkg get version -w "@compilot/tezos-sig-gating-contracts-sdk" | jq -r '.["@compilot/tezos-sig-gating-contracts-sdk"]')
+          pnpm pkg set version="$version-${{ steps.branch_name.outputs.branch_name }}" -w "@compilot/tezos-sig-gating-contracts-sdk"
           echo $version
 
       - name: Build Evm
@@ -107,23 +107,23 @@ jobs:
           SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraid/sig-gating-contracts-sdk build
-          pnpm --filter @nexeraid/tezos-sig-gating-contracts-sdk build
+          pnpm --filter @compilot/sig-gating-contracts-sdk build
+          pnpm --filter @compilot/tezos-sig-gating-contracts-sdk build
 
 #      - name: Publish to private NPM
 #        run: |
-#          pnpm --filter @nexeraid/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
-#          pnpm --filter @nexeraid/sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
-#          pnpm --filter @nexeraid/tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
+#          pnpm --filter @compilot/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
+#          pnpm --filter @compilot/sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
+#          pnpm --filter @compilot/tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/ --tag ${{ steps.tag_release.outputs.release_tag }}
 
       - name: Publish to public NPM
         env:
-          NPMJS_COM_TOKEN: ${{ secrets.NPMJS_COM_TOKEN }}
+          NPMJS_COM_TOKEN: ${{ secrets.COMPILOT_NPMJS_COM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
 
-          pnpm --filter "@nexeraid/sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}
+          pnpm --filter "@compilot/sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}
 
-          pnpm --filter "@nexeraid/sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}
+          pnpm --filter "@compilot/sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}
 
-          pnpm --filter "@nexeraid/tezos-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}
+          pnpm --filter "@compilot/tezos-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/ --tag ${{ steps.tag_release.outputs.release_tag }}

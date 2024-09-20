@@ -34,7 +34,7 @@ contract BaseTxAuthDataVerifier {
     mapping(address => uint256) public nonces;
 
     /// @dev Event emitted when a signature is verified
-    event NexeraIDSignatureVerified(
+    event ComPilotSignatureVerified(
         uint256 chainID,
         uint256 nonce,
         uint256 blockExpiration,
@@ -97,7 +97,7 @@ contract BaseTxAuthDataVerifier {
      * @dev Verifies the authenticity and validity of a transaction's authorization data.
      * This function checks if the transaction signature is valid, has not expired, and is signed by the correct user.
      * It also ensures that the transaction has not been replayed by checking and incrementing the nonce.
-     * Emits a {NexeraIDSignatureVerified} event upon successful verification.
+     * Emits a {ComPilotSignatureVerified} event upon successful verification.
      *
      * @param msgData The full calldata including the function selector and arguments.
      * @param userAddress The address of the user who signed the transaction.
@@ -107,7 +107,7 @@ contract BaseTxAuthDataVerifier {
      * - The current block number must be less than `blockExpiration`.
      * - The signature must be valid and correspond to `userAddress`.
      *
-     * Emits a {NexeraIDSignatureVerified} event.
+     * Emits a {ComPilotSignatureVerified} event.
      */
     function _verifyTxAuthData(
         bytes calldata msgData,
@@ -150,7 +150,7 @@ contract BaseTxAuthDataVerifier {
         bytes32 messageHash = getMessageHash(txAuthData);
         bytes32 ethSignedMessageHash = toEthSignedMessageHash(messageHash);
 
-        emit NexeraIDSignatureVerified(
+        emit ComPilotSignatureVerified(
             block.chainid,
             userNonce,
             blockExpiration,

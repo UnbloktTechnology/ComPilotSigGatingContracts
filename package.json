@@ -1,77 +1,77 @@
 {
-  "name": "nexeraid-contracts",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "engines": {
-    "node": ">=20.14",
-    "pnpm": ">=9.1.4"
-  },
-  "packageManager": "pnpm@9.1.4",
-  "author": "",
-  "workspaces": [
-    "sig-gating-contracts",
-    "tezos-sig-gating-contracts",
-    "contracts-sdk"
-  ],
-  "preconstruct": {
-    "packages": [
-      "sig-gating-contracts",
-      "tezos-sig-gating-contracts",
-      "contracts-sdk"
-    ]
-  },
-  "pnpm": {
-    "overrides": {
-      "@babel/helpers": "7.24.5",
-      "hardhat-deploy": "0.11.12",
-      "hardhat-deploy-ethers": "0.3.0-beta.13"
-    }
-  },
-  "devDependencies": {
-    "@babel/core": "7.24.5",
-    "@babel/preset-env": "7.24.5",
-    "@babel/preset-react": "7.24.1",
-    "@babel/preset-typescript": "7.24.1",
-    "@preconstruct/cli": "^2.8.4",
-    "copyfiles": "^2.4.1",
-    "lerna": "^8.1.2"
-  },
-  "publishConfig": {
-    "@nexeraid:registry": "https://npm.pkg.github.com"
-  },
-  "scripts": {
-    "lint": "pnpm -r lint",
-    "lint:check": "pnpm -r lint:check",
-    "postinstall": "pnpm run postinstallEvm && pnpm run postinstallTezos",
-    "postinstallEvm": "pnpm run pre-build:contracts-sdk && pnpm run build:contracts && pnpm run build:contracts-sdk",
-    "postinstallTezos": "pnpm run build:tezos-contracts-sdk",
-    "build:contracts": "pnpm run --filter @nexeraid/sig-gating-contracts build",
-    "build:contracts-sdk": "pnpm run --filter @nexeraid/sig-gating-contracts-sdk build",
-    "build:tezos-contracts-sdk": "pnpm run --filter @nexeraid/tezos-sig-gating-contracts-sdk build",
-    "test:tezos-contracts-sdk": "pnpm run --filter @nexeraid/tezos-sig-gating-contracts-sdk test",
-    "pre-build:contracts-sdk": "pnpm run --filter @nexeraid/sig-gating-contracts-sdk pre-build",
-    "publish-pkg:contracts": "pnpm --filter @nexeraid/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "publish-pkg:sdk": "pnpm --filter @nexeraid/sig-gating-contracts-sdk publish-sdk-pkg",
-    "test:unit": "pnpm run --filter @nexeraid/sig-gating-contracts test:seq",
-    "version:patch": "node tooling/version.js",
-    "copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
-    "deploy-testnet-contracts": "pnpm -r deploy-testnet-contracts",
-    "deploy-polygonAmoy": "pnpm -r deploy-polygonAmoy",
-    "deploy-sepolia": "pnpm -r deploy-sepolia",
-    "deploy-polygonAmoy-local": "pnpm -r deploy-polygonAmoy-local",
-    "deploy-sepolia-local": "pnpm -r deploy-sepolia-local",
-    "deploy-polygon": "pnpm -r deploy-polygon",
-    "deploy-ethereum-mainnet": "pnpm -r deploy-ethereum-mainnet",
-    "deploy-arbitrum": "pnpm -r deploy-arbitrum",
-    "deploy-bsc": "pnpm -r deploy-bsc",
-    "deploy-optimisticEthereum": "pnpm -r deploy-optimisticEthereum",
-    "deploy-avalanche": "pnpm -r deploy-avalanche",
-    "deploy-base": "pnpm -r deploy-base",
-    "deploy-baseSepolia": "pnpm -r deploy-baseSepolia",
-    "deploy-optimisticSepolia": "pnpm -r deploy-optimisticSepolia",
-    "deploy-avalancheFujiTestnet": "pnpm -r deploy-avalancheFujiTestnet",
-    "deploy-bscTestnet": "pnpm -r deploy-bscTestnet",
-    "deploy-arbitrumSepolia": "pnpm -r deploy-arbitrumSepolia"
-  }
+	"name": "compilot-contracts",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [],
+	"engines": {
+		"node": ">=20.14",
+		"pnpm": ">=9.1.4"
+	},
+	"packageManager": "pnpm@9.1.4",
+	"author": "",
+	"workspaces": [
+		"sig-gating-contracts",
+		"tezos-sig-gating-contracts",
+		"contracts-sdk"
+	],
+	"preconstruct": {
+		"packages": [
+			"sig-gating-contracts",
+			"tezos-sig-gating-contracts",
+			"contracts-sdk"
+		]
+	},
+	"pnpm": {
+		"overrides": {
+			"@babel/helpers": "7.24.5",
+			"hardhat-deploy": "0.11.12",
+			"hardhat-deploy-ethers": "0.3.0-beta.13"
+		}
+	},
+	"devDependencies": {
+		"@babel/core": "7.24.5",
+		"@babel/preset-env": "7.24.5",
+		"@babel/preset-react": "7.24.1",
+		"@babel/preset-typescript": "7.24.1",
+		"@preconstruct/cli": "^2.8.4",
+		"copyfiles": "^2.4.1",
+		"lerna": "^8.1.2"
+	},
+	"publishConfig": {
+		"@compilot:registry": "https://npm.pkg.github.com"
+	},
+	"scripts": {
+		"lint": "pnpm -r lint",
+		"lint:check": "pnpm -r lint:check",
+		"postinstall": "pnpm run postinstallEvm && pnpm run postinstallTezos",
+		"postinstallEvm": "pnpm run pre-build:contracts-sdk && pnpm run build:contracts && pnpm run build:contracts-sdk",
+		"postinstallTezos": "pnpm run build:tezos-contracts-sdk",
+		"build:contracts": "pnpm run --filter @compilot/sig-gating-contracts build",
+		"build:contracts-sdk": "pnpm run --filter @compilot/sig-gating-contracts-sdk build",
+		"build:tezos-contracts-sdk": "pnpm run --filter @compilot/tezos-sig-gating-contracts-sdk build",
+		"test:tezos-contracts-sdk": "pnpm run --filter @compilot/tezos-sig-gating-contracts-sdk test",
+		"pre-build:contracts-sdk": "pnpm run --filter @compilot/sig-gating-contracts-sdk pre-build",
+		"publish-pkg:contracts": "pnpm --filter @compilot/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/",
+		"publish-pkg:sdk": "pnpm --filter @compilot/sig-gating-contracts-sdk publish-sdk-pkg",
+		"test:unit": "pnpm run --filter @compilot/sig-gating-contracts test:seq",
+		"version:patch": "node tooling/version.js",
+		"copy-info-to-sdk": "pnpm -r copy-info-to-sdk",
+		"deploy-testnet-contracts": "pnpm -r deploy-testnet-contracts",
+		"deploy-polygonAmoy": "pnpm -r deploy-polygonAmoy",
+		"deploy-sepolia": "pnpm -r deploy-sepolia",
+		"deploy-polygonAmoy-local": "pnpm -r deploy-polygonAmoy-local",
+		"deploy-sepolia-local": "pnpm -r deploy-sepolia-local",
+		"deploy-polygon": "pnpm -r deploy-polygon",
+		"deploy-ethereum-mainnet": "pnpm -r deploy-ethereum-mainnet",
+		"deploy-arbitrum": "pnpm -r deploy-arbitrum",
+		"deploy-bsc": "pnpm -r deploy-bsc",
+		"deploy-optimisticEthereum": "pnpm -r deploy-optimisticEthereum",
+		"deploy-avalanche": "pnpm -r deploy-avalanche",
+		"deploy-base": "pnpm -r deploy-base",
+		"deploy-baseSepolia": "pnpm -r deploy-baseSepolia",
+		"deploy-optimisticSepolia": "pnpm -r deploy-optimisticSepolia",
+		"deploy-avalancheFujiTestnet": "pnpm -r deploy-avalancheFujiTestnet",
+		"deploy-bscTestnet": "pnpm -r deploy-bscTestnet",
+		"deploy-arbitrumSepolia": "pnpm -r deploy-arbitrumSepolia"
+	}
 }

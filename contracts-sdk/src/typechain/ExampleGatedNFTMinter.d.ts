@@ -190,7 +190,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "SignerChanged(address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
@@ -198,7 +198,7 @@ interface ExampleGatedNFTMinterInterface extends ethers.utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ComPilotSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SignerChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -220,7 +220,7 @@ export type ApprovalForAllEvent = TypedEvent<
   }
 >;
 
-export type NexeraIDSignatureVerifiedEvent = TypedEvent<
+export type ComPilotSignatureVerifiedEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, string, string, string] & {
     chainID: BigNumber;
     nonce: BigNumber;
@@ -638,7 +638,7 @@ export class ExampleGatedNFTMinter extends BaseContract {
       { owner: string; operator: string; approved: boolean }
     >;
 
-    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,
@@ -657,7 +657,7 @@ export class ExampleGatedNFTMinter extends BaseContract {
       }
     >;
 
-    NexeraIDSignatureVerified(
+    ComPilotSignatureVerified(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,

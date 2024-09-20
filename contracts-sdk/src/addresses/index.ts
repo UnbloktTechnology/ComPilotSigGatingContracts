@@ -8,8 +8,8 @@ export * from "./ExampleGatedNFTMinterAddress_polygonAmoy_local";
 // ExampleNFTMinter
 export * from "./ExampleNFTMinterAddress_polygonAmoy";
 
-// NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_polygonAmoy";
+// ComPilotSignerManager
+export * from "./ComPilotSignerManagerAddress_polygonAmoy";
 
 // Sepolia
 
@@ -20,8 +20,8 @@ export * from "./ExampleGatedNFTMinterAddress_sepolia_local";
 // ExampleNFTMinter
 export * from "./ExampleNFTMinterAddress_sepolia";
 
-// NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_sepolia";
+// ComPilotSignerManager
+export * from "./ComPilotSignerManagerAddress_sepolia";
 
 // Polygon Mainnet
 
@@ -31,10 +31,10 @@ export * from "./ExampleGatedNFTMinterAddress_polygon";
 // ExampleNFTMinter
 export * from "./ExampleNFTMinterAddress_polygon";
 
-// NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_polygon";
+// ComPilotSignerManager
+export * from "./ComPilotSignerManagerAddress_polygon";
 
 // Base
 
-// NexeraIDSignerManager
-export * from "./NexeraIDSignerManagerAddress_base";
+// ComPilotSignerManager
+export * from "./ComPilotSignerManagerAddress_base";

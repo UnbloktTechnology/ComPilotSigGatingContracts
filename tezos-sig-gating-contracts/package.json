@@ -1,63 +1,58 @@
 {
-  "name": "@nexeraid/tezos-sig-gating-contracts-sdk",
-  "version": "1.0.10",
-  "description": "",
-  "main": "dist/nexeraid-tezos-sig-gating-contracts-sdk.cjs.js",
-  "module": "dist/nexeraid-tezos-sig-gating-contracts-sdk.esm.js",
-  "scripts": {
-    "test": "tsc && mocha scripts/tests --timeout 20000",
-    "sign": "ts-node scripts/signAuthData.ts",
-    "deploy": "ts-node scripts/manual/deployNftminter.ts",
-    "mint": "ts-node scripts/manual/mint.ts",
-    "localsign": "ts-node scripts/manual/localSign.ts",
-    "localdeploy": "ts-node scripts/manual/localDeployNftminter.ts",
-    "localmint": "ts-node scripts/manual/localMint.ts",
-    "localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
-    "locallisten": "ts-node scripts/manual/eventListener.ts",
-    "sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
-    "build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
-    "pre-build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
-    "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "lint": "prettier --write **/**/**.ts",
-    "lint:check": "prettier --check **/**/**.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts.git",
-    "directory": "tezos-sig-gating-contracts"
-  },
-  "files": [
-    "dist",
-    "addresses",
-    "compiledContracts",
-    "lib"
-  ],
-  "preconstruct": {
-    "entrypoints": [
-      "addresses/index.ts",
-      "compiledContracts/index.ts",
-      "lib/index.ts"
-    ]
-  },
-  "dependencies": {
-    "@taquito/michel-codec": "^20.0.1",
-    "@taquito/rpc": "^20.0.1",
-    "@taquito/signer": "^20.0.1",
-    "@taquito/taquito": "^20.0.1",
-    "@taquito/utils": "^20.0.1",
-    "keccak": "3.0.4",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "@ledgerhq/hw-transport-node-hid": "^6.27.9",
-    "@taquito/ledger-signer": "^15.0.1",
-    "@types/chai": "^4.3.11",
-    "@types/fs-extra": "^9.0.13",
-    "@types/mocha": "^10.0.6",
-    "chai": "^4.4.1",
-    "fs-extra": "^11.2.0",
-    "mocha": "^10.4.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.2.2"
-  }
+	"name": "@compilot/tezos-sig-gating-contracts-sdk",
+	"version": "1.0.10",
+	"description": "",
+	"main": "dist/compilot-tezos-sig-gating-contracts-sdk.cjs.js",
+	"module": "dist/compilot-tezos-sig-gating-contracts-sdk.esm.js",
+	"scripts": {
+		"test": "tsc && mocha scripts/tests --timeout 20000",
+		"sign": "ts-node scripts/signAuthData.ts",
+		"deploy": "ts-node scripts/manual/deployNftminter.ts",
+		"mint": "ts-node scripts/manual/mint.ts",
+		"localsign": "ts-node scripts/manual/localSign.ts",
+		"localdeploy": "ts-node scripts/manual/localDeployNftminter.ts",
+		"localmint": "ts-node scripts/manual/localMint.ts",
+		"localdisplay": "ts-node scripts/manual/localDisplayStorage.ts",
+		"locallisten": "ts-node scripts/manual/eventListener.ts",
+		"sandbox-start": "./scripts/run-sandbox tezos-sig-gating-contracts",
+		"build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
+		"pre-build": "make install && make compile && cp compiled/gatedNft*.json src/compiledContracts/ && pnpm lint && preconstruct build",
+		"publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
+		"lint": "prettier --write **/**/**.ts",
+		"lint:check": "prettier --check **/**/**.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/UnbloktTechnology/ComPilotSigGatingContracts.git",
+		"directory": "tezos-sig-gating-contracts"
+	},
+	"files": ["dist", "addresses", "compiledContracts", "lib"],
+	"preconstruct": {
+		"entrypoints": [
+			"addresses/index.ts",
+			"compiledContracts/index.ts",
+			"lib/index.ts"
+		]
+	},
+	"dependencies": {
+		"@taquito/michel-codec": "^20.0.1",
+		"@taquito/rpc": "^20.0.1",
+		"@taquito/signer": "^20.0.1",
+		"@taquito/taquito": "^20.0.1",
+		"@taquito/utils": "^20.0.1",
+		"keccak": "3.0.4",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"@ledgerhq/hw-transport-node-hid": "^6.27.9",
+		"@taquito/ledger-signer": "^15.0.1",
+		"@types/chai": "^4.3.11",
+		"@types/fs-extra": "^9.0.13",
+		"@types/mocha": "^10.0.6",
+		"chai": "^4.4.1",
+		"fs-extra": "^11.2.0",
+		"mocha": "^10.4.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.2.2"
+	}
 }

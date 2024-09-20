@@ -1,4 +1,4 @@
-export const NexeraIDSignerManagerABI = [
+export const ComPilotSignerManagerABI = [
   {
     inputs: [
       {

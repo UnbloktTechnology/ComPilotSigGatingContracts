@@ -2,10 +2,10 @@
 
 ## General idea
 
-The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to NexeraSigner. The NexeraSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by Nexera signer.
+The SigGating contracts are dedicated to provide a mecanism for off-chain validation of an action requested by a user. The request of a user (i.e. a contract invocation) is declared as a payload sent to ComPilotSigner. The ComPilotSigner retrieves the nonce for the user (from contract storage), specifies the expiration (block level) and compact all using a keccak hashing and finally signs this "keccaked payload". This off-chain signature is produced by ComPilot signer.
 Then the produced signature and extra data (expiration, nonce, public key) are sent back to the user. The user can now send his transaction (which contains payload + signature + public key + nonce + expiration) to the smart contract that implements the signature verifiacition mecanism.
 
-![](./pictures/nexera%20global%20workflow.png)
+![](./pictures/compilot%20global%20workflow.png)
 
 In this case the transaction fee is paid by the user.
 
@@ -13,15 +13,15 @@ The transaction could also be executed by an operator on behalf of the user. In 
 
 ### off-chain signture workflow
 
-For a given calldata, the user receives from Nexera
+For a given calldata, the user receives from ComPilot
 
 - payload hash (keccak(key, nonce, expiration, calldata))
 - nonce (custom nonce of the contract)
 - expiration (block level)
-- public key of Nexera signer role
+- public key of ComPilot signer role
 - signature of the payload hash
 
-![](./pictures/nexera%20forge%20sig%20workflow.png)
+![](./pictures/compilot%20forge%20sig%20workflow.png)
 
 Then the user build the transaction and invoke the exec_gated_calldata entrypoint. In order to be able to verify an off-chain signed message, the exec_gated_calldata entrypoint expects a `txAuthData` parameter which contains the following fields
 
@@ -34,7 +34,7 @@ Then the user build the transaction and invoke the exec_gated_calldata entrypoin
 - public key
 - signature
 
-![](./pictures/nexera%20exec_offchain%20format.png)
+![](./pictures/compilot%20exec_offchain%20format.png)
 
 The chain ID in Tezos varies depending on the network (see [rpc nodes](https://taquito.io/docs/rpc_nodes)).
 
@@ -49,7 +49,7 @@ The chain ID in Tezos varies depending on the network (see [rpc nodes](https://t
 
 ### Example of a standard TZIP-12 NFT token (using FA2 lib)
 
-![](./pictures/nexera%20nftminter%20entrypoints.png)
+![](./pictures/compilot%20nftminter%20entrypoints.png)
 
 | function name       | parameters                                | module            |
 | ------------------- | ----------------------------------------- | ----------------- |
@@ -69,7 +69,7 @@ The verification of the signature and the controls (expiration) can be splitted 
 - a proxy that verifies the signature and dispatch the `calldata`
 - a fa2 contract that accepts a `calldata` (only from the proxy) and process it
 
-![](./pictures/nexera%20proxynftminter.png)
+![](./pictures/compilot%20proxynftminter.png)
 
 ## Deployments
 
@@ -88,7 +88,7 @@ If the Ligo library (`SigGating`) is modified it has to been re-published in the
 - Log in: `ligo registry login`
 
 ```
-FrankNexera
+FrankComPilot
 *******
 ```
 
@@ -101,7 +101,7 @@ Then smart contracts can use this library by specifying the version in a `ligo.j
 {
   "dependencies": {
     "@ligo/fa": "^1.4.2",
-    "@nexeraid/sig-gating": "^1.0.0"
+    "@compilot/sig-gating": "^1.0.0"
   }
 }
 ```
@@ -282,4 +282,4 @@ For example, [our ghostnet contract](https://ghostnet.tzkt.io/KT1AoU1mrLRSM2zouU
 
 When constructing the signature , the actual nonce ofr the user is taken into account in the payload (to prevent replay attack). But it also implies that if a user submits 2 payloads (in this order `calldataA` and `calldataB`) then the `calldataB` cannot executed before `calldataA`.
 
-![](./pictures/nexera%20transaction%20ordering.png)
+![](./pictures/compilot%20transaction%20ordering.png)

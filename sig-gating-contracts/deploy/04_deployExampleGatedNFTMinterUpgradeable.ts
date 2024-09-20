@@ -6,44 +6,44 @@ const version = "0.2.1";
 const contractName = "ExampleGatedNFTMinterUpgradeable";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
-  const { deployments } = hre;
-  const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+	const { deployments } = hre;
+	const { deploy } = deployments;
+	const { deployer } = await getNamedAccounts();
 
-  // Fetch deployed Signer Manager
-  const signerManagerAddress = (await deployments.get("NexeraIDSignerManager"))
-    .address;
-  console.log("signerManagerAddress", signerManagerAddress);
+	// Fetch deployed Signer Manager
+	const signerManagerAddress = (await deployments.get("ComPilotSignerManager"))
+		.address;
+	console.log("signerManagerAddress", signerManagerAddress);
 
-  console.log(`\n--------------------------------------------------------`);
-  console.log(`Deploying ${contractName}...`);
-  console.log(`\n--------------------------------------------------------`);
+	console.log(`\n--------------------------------------------------------`);
+	console.log(`Deploying ${contractName}...`);
+	console.log(`\n--------------------------------------------------------`);
 
-  const deployResult = await deploy(contractName, {
-    contract: contractName,
-    from: deployer,
-    log: true,
-    proxy: {
-      owner: deployer,
-      proxyContract: "OptimizedTransparentProxy",
-      execute: {
-        init: {
-          methodName: "initialize",
-          args: [signerManagerAddress],
-        },
-      },
-    },
-    //nonce: "pending",
-    waitConfirmations: 1,
-    autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
-  });
+	const deployResult = await deploy(contractName, {
+		contract: contractName,
+		from: deployer,
+		log: true,
+		proxy: {
+			owner: deployer,
+			proxyContract: "OptimizedTransparentProxy",
+			execute: {
+				init: {
+					methodName: "initialize",
+					args: [signerManagerAddress],
+				},
+			},
+		},
+		//nonce: "pending",
+		waitConfirmations: 1,
+		autoMine: true, // speed up deployment on local network (ganache, hardhat), no effect on live networks
+	});
 
-  console.log("\nDeployed " + contractName + " at " + deployResult.address);
+	console.log("\nDeployed " + contractName + " at " + deployResult.address);
 
-  return true;
+	return true;
 };
 
 export default func;
 func.id = contractName + version;
 func.tags = [contractName, version];
-func.dependencies = ["NexeraIDSignerManager"];
+func.dependencies = ["ComPilotSignerManager"];

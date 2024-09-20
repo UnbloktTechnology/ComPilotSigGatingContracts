@@ -1,32 +1,32 @@
 {
-  "name": "@nexeraid/sig-gating",
-  "version": "1.0.5",
-  "description": "Signature gating mechanism implemented as an extension. The library is providing a signature verification function and dispatch/proccess of an off-chain-signed contract invocation",
-  "directories": {
-    "examples": "examples",
-    "lib": "lib",
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com:UnbloktTechnology/NexeraIDSigGatingContracts.git"
-  },
-  "main": "lib/main.mligo",
-  "keywords": [
-    "ligo",
-    "ligo@^1.6.0",
-    "tezos",
-    "nexera",
-    "cameligo",
-    "signature"
-  ],
-  "author": "NexeraID <https://www.nexera.id/>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues"
-  },
-  "homepage": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/tree/main/tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable/readme",
-  "dependencies": {
-    "@ligo/fa": "^1.4.2"
-  }
+	"name": "@compilot/sig-gating",
+	"version": "1.0.5",
+	"description": "Signature gating mechanism implemented as an extension. The library is providing a signature verification function and dispatch/proccess of an off-chain-signed contract invocation",
+	"directories": {
+		"examples": "examples",
+		"lib": "lib",
+		"test": "test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com:UnbloktTechnology/ComPilotSigGatingContracts.git"
+	},
+	"main": "lib/main.mligo",
+	"keywords": [
+		"ligo",
+		"ligo@^1.6.0",
+		"tezos",
+		"compilot",
+		"cameligo",
+		"signature"
+	],
+	"author": "ComPilot <https://www.compilot.ai/>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/UnbloktTechnology/ComPilotSigGatingContracts/issues"
+	},
+	"homepage": "https://github.com/UnbloktTechnology/ComPilotSigGatingContracts/tree/main/tezos-sig-gating-contracts/tezos-lib-sig-gating-extendable/readme",
+	"dependencies": {
+		"@ligo/fa": "^1.4.2"
+	}
 }

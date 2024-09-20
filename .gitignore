@@ -133,13 +133,13 @@ dist
 !.vscode/tasks.json
 /tests/.env.api
 /tests/.env.cms
-/tests/.env.nexera_id
-/tests/.env.nexera_id_v1
+/tests/.env.compilot_id
+/tests/.env.compilot_id_v1
 /tests/.env.opa
 
 .DS_Store
-/nexera_vc-policies
-/nexera_vc-policies.pub
+/compilot_vc-policies
+/compilot_vc-policies.pub
 
 *.drawio.bkp
 

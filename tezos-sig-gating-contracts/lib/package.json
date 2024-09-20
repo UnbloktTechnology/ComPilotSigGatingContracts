@@ -1,4 +1,4 @@
 {
-  "main": "dist/nexeraid-tezos-sig-gating-contracts-sdk-lib.cjs.js",
-  "module": "dist/nexeraid-tezos-sig-gating-contracts-sdk-lib.esm.js"
+	"main": "dist/compilot-tezos-sig-gating-contracts-sdk-lib.cjs.js",
+	"module": "dist/compilot-tezos-sig-gating-contracts-sdk-lib.esm.js"
 }

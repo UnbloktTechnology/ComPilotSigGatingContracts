@@ -115,7 +115,7 @@ export const ExampleGatedNFTMinterABI = [
         type: "bytes",
       },
     ],
-    name: "NexeraIDSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

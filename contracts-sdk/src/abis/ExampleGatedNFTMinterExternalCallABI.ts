@@ -115,7 +115,7 @@ export const ExampleGatedNFTMinterExternalCallABI = [
         type: "bytes",
       },
     ],
-    name: "NexeraIDSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {

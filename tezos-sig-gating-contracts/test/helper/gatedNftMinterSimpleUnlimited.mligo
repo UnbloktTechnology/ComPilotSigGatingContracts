@@ -48,9 +48,9 @@ let get_nftminter_initial_storage (admin, signerAddress, minter , owner1, owner2
         "description":"Example FA2 NFT implementation with unlimited mint feature",
         "version":"0.1.0",
         "license":{"name":"MIT"},
-        "authors":["Frank Hillard<frank@nexera.id>"],
+        "authors":["Frank Hillard<frank@compilot.ai>"],
         "homepage":"",
-        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts"},
+        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/ComPilotSigGatingContracts"},
         "interfaces":["TZIP-012"],
         "errors":[],
         "views":[]

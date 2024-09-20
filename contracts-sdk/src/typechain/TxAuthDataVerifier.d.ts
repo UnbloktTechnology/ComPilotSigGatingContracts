@@ -64,15 +64,15 @@ interface TxAuthDataVerifierInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)": EventFragment;
     "SignerChanged(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "NexeraIDSignatureVerified"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ComPilotSignatureVerified"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SignerChanged"): EventFragment;
 }
 
-export type NexeraIDSignatureVerifiedEvent = TypedEvent<
+export type ComPilotSignatureVerifiedEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, string, string, string] & {
     chainID: BigNumber;
     nonce: BigNumber;
@@ -196,7 +196,7 @@ export class TxAuthDataVerifier extends BaseContract {
   };
 
   filters: {
-    "NexeraIDSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
+    "ComPilotSignatureVerified(uint256,uint256,uint256,address,address,bytes)"(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,
@@ -215,7 +215,7 @@ export class TxAuthDataVerifier extends BaseContract {
       }
     >;
 
-    NexeraIDSignatureVerified(
+    ComPilotSignatureVerified(
       chainID?: null,
       nonce?: null,
       blockExpiration?: null,

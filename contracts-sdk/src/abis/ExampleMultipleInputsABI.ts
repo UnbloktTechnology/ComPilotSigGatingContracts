@@ -60,7 +60,7 @@ export const ExampleMultipleInputsABI = [
         type: "bytes",
       },
     ],
-    name: "NexeraIDSignatureVerified",
+    name: "ComPilotSignatureVerified",
     type: "event",
   },
   {
