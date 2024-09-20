@@ -11,7 +11,7 @@ library TxAuthDataVerifierFacetStorage {
     /// @dev Storage slot for the TxAuthDataVerifierFacet storage, derived from a unique hash.
     bytes32 internal constant STORAGE_SLOT =
         keccak256(
-            "compilotId.ComPilotSigGating.storage.TxAuthDataVerifierFacetStorage"
+            "compilot.ComPilotSigGating.storage.TxAuthDataVerifierFacetStorage"
         );
 
     /// @notice Constant representing the length of a bytes32 value.
