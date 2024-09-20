@@ -56,8 +56,8 @@ jobs:
 
       - name: Config github actions user
         run: |
-          git config --global user.name "nexera-release[bot]"
-          git config --global user.email "137495321+nexera-release[bot]@users.noreply.github.com"
+          git config --global user.name "compilot-release[bot]"
+          git config --global user.email "137495321+compilot-release[bot]@users.noreply.github.com"
 
       - name: Bump versions and update changelog
         env:
@@ -75,14 +75,14 @@ jobs:
           SALT: ${{ secrets.SALT }}
         run: |
           pnpm run build:contracts
-          pnpm --filter @nexeraid/sig-gating-contracts-sdk build
-          pnpm --filter @nexeraid/tezos-sig-gating-contracts-sdk build
+          pnpm --filter @compilot/sig-gating-contracts-sdk build
+          pnpm --filter @compilot/tezos-sig-gating-contracts-sdk build
 
 #      - name: Publish to private NPM
 #        run: |
-#          pnpm --filter @nexeraid/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
-#          pnpm --filter @nexeraid/sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
-#          pnpm --filter @nexeraid/tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+#          pnpm --filter @compilot/sig-gating-contracts publish --no-git-checks --registry https://npm.pkg.github.com/
+#          pnpm --filter @compilot/sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
+#          pnpm --filter @compilot/tezos-sig-gating-contracts-sdk publish --no-git-checks --registry https://npm.pkg.github.com/
 
       - name: Publish to public NPM
         env:
@@ -90,8 +90,8 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPMJS_COM_TOKEN" > .npmrc
 
-          pnpm --filter "@nexeraid/sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
+          pnpm --filter "@compilot/sig-gating-contracts" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
 
-          pnpm --filter "@nexeraid/sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
+          pnpm --filter "@compilot/sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
           
-          pnpm --filter "@nexeraid/tezos-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/
+          pnpm --filter "@compilot/tezos-sig-gating-contracts-sdk" publish --access=public --no-git-checks --registry https://registry.npmjs.org/

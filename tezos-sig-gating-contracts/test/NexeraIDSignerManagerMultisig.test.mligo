@@ -1,10 +1,10 @@
 #import "./helper/bootstrap.mligo" "Bootstrap"
 #import "./helper/assert.mligo" "AssertHelper"
-#import "../contracts/signerManager/NexeraIDSignerManagerMultisig.mligo" "NexeraIDSignerManager"
+#import "../contracts/signerManager/CompilotSignerManagerMultisig.mligo" "CompilotSignerManager"
 
 #import "../contracts/examples/gatedNftClaimer.mligo" "NFTMINTER"
 #import "./helper/gatedNftClaimer.mligo" "NftMinterHelper"
-#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@compilot/sig-gating/lib/main.mligo" "SigGatedExtendable"
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HELPERS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,11 +50,11 @@ let test_signermanagermultisig_pause =
         signerAddress = owner3;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE
@@ -73,18 +73,18 @@ let test_signermanagermultisig_failure_pause_only_owner =
         signerAddress = owner3;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
 
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE fails
     let () = Test.set_source owner2 in
     let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.only_owner in
+    let () = AssertHelper.string_failure r CompilotSignerManager.SignerManagerMultisig.Errors.only_owner in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = false) in
@@ -97,17 +97,17 @@ let test_signermanagermultisig_failure_pause_already_paused =
         signerAddress = owner3;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE fails
     let () = Test.set_source owner1 in
     let r = Test.transfer_to_contract signer_manager_contract (Pause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.already_paused in
+    let () = AssertHelper.string_failure r CompilotSignerManager.SignerManagerMultisig.Errors.already_paused in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = true) in
@@ -120,11 +120,11 @@ let test_signermanagermultisig_unpause =
         signerAddress = owner3;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE
@@ -143,17 +143,17 @@ let test_signermanagermultisig_failure_unpause_only_owner =
         signerAddress = owner3;
         pause = true;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE fails
     let () = Test.set_source owner2 in
     let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.only_owner in
+    let () = AssertHelper.string_failure r CompilotSignerManager.SignerManagerMultisig.Errors.only_owner in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = true) in
@@ -166,17 +166,17 @@ let test_signermanagermultisig_failure_unpause_already_unpaused =
         signerAddress = owner3;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let _signer_manager_address : address = Tezos.address signer_manager_contract in
     // PAUSE fails
     let () = Test.set_source owner1 in
     let r = Test.transfer_to_contract signer_manager_contract (Unpause ()) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.already_unpaused in
+    let () = AssertHelper.string_failure r CompilotSignerManager.SignerManagerMultisig.Errors.already_unpaused in
     // VERIFY 
     let current_storage = Test.Next.Typed_address.get_storage signer_manager_taddr in
     let () = Test.Next.Assert.assert (current_storage.pause = false) in
@@ -190,11 +190,11 @@ let test_signermanagermultisig_mint_gated =
         signerAddress = localsigner.address;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=2n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let signer_manager_address : address = Tezos.address signer_manager_contract in
 
@@ -258,11 +258,11 @@ let test_signermanagermultisig_change_signer =
         signerAddress = localsigner.address;
         pause = false;
         owners= Big_map.literal([(owner1, true)]);
-        proposals= (Big_map.empty : (nat, NexeraIDSignerManager.SignerManagerMultisig.proposal) big_map);
+        proposals= (Big_map.empty : (nat, CompilotSignerManager.SignerManagerMultisig.proposal) big_map);
         next_proposal_id=0n;
         threshold=1n;
     } in
-    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of NexeraIDSignerManager.SignerManagerMultisig) initial_storage 0tez in
+    let {taddr = signer_manager_taddr; code = _ ; size = _} = Test.Next.Originate.contract (contract_of CompilotSignerManager.SignerManagerMultisig) initial_storage 0tez in
     let signer_manager_contract = Test.Next.Typed_address.to_contract signer_manager_taddr in
     let signer_manager_address : address = Tezos.address signer_manager_contract in
 
@@ -360,6 +360,6 @@ let test_signermanagermultisig_change_signer =
     // [Signer Manager] Validate already executed) proposal  
     let () = Test.set_source owner1 in
     let r = Test.transfer_to_contract signer_manager_contract (ValidateProposal (next_proposal_id, true)) 0tez in
-    let () = AssertHelper.string_failure r NexeraIDSignerManager.SignerManagerMultisig.Errors.already_executed in
+    let () = AssertHelper.string_failure r CompilotSignerManager.SignerManagerMultisig.Errors.already_executed in
     // let exp_date : timestamp = ("1970-01-01t00:10:00Z" : timestamp) in
     ()

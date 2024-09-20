@@ -6,13 +6,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC1271.sol";
 
 /**
- * @title NexeraID Signer Manager
+ * @title Compilot Signer Manager
  * @dev Implementation of the IERC1271 interface to support signature validation using a designated signerAddress.
- * This contract allows the management of a signerAddress address, which can be updated by the contract owner (Nexera ID).
+ * This contract allows the management of a signerAddress address, which can be updated by the contract owner (Compilot).
  * It provides a mechanism to validate signatures according to EIP-1271, enabling the contract to act
  * as an identity with the ability to authorize actions through off-chain signed messages.
  */
-contract NexeraIDSignerManager is IERC1271, Ownable {
+contract CompilotSignerManager is IERC1271, Ownable {
     using ECDSA for bytes32;
 
     // Address of the signerAddress authorized to sign on behalf of this contract
@@ -51,7 +51,7 @@ contract NexeraIDSignerManager is IERC1271, Ownable {
     function _setSigner(address newSigner) internal {
         require(
             newSigner != address(0),
-            "NexeraIDSignerManager: new signerAddress is the zero address"
+            "CompilotSignerManager: new signerAddress is the zero address"
         );
         signerAddress = newSigner;
         emit SignerChanged(newSigner);

@@ -3,7 +3,7 @@
 #import "./helper/bootstrap.mligo" "Bootstrap"
 #import "../contracts/examples/gatedNftMinterDispatch.mligo" "NFTMINTER"
 // #import "../tezos-lib-sig-gating-extendable/lib/main.mligo" "SigGatedExtendable"
-#import "@nexeraid/sig-gating/lib/main.mligo" "SigGatedExtendable"
+#import "@compilot/sig-gating/lib/main.mligo" "SigGatedExtendable"
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

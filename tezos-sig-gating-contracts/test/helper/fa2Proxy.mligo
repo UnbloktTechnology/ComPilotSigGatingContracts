@@ -46,9 +46,9 @@ let get_fa2_for_proxy_initial_storage (nft_extension_initial, owner1, owner2, ow
         "description":"Example FA2 implementation",
         "version":"0.1.0",
         "license":{"name":"MIT"},
-        "authors":["Frank Hillard<frank@nexera.id>"],
+        "authors":["Frank Hillard<frank@compilot.ai>"],
         "homepage":"",
-        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts"},
+        "source":{"tools":["Ligo"], "location":"https://github.com/UnbloktTechnology/CompilotSigGatingContracts"},
         "interfaces":["TZIP-012"],
         "errors":[],
         "views":[]

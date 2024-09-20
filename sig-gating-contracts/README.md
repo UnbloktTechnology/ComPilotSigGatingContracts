@@ -1,12 +1,12 @@
-# @nexeraid/sig-gating-contracts
+# @compilot/sig-gating-contracts
 
-@nexeraid/sig-gating-contracts
+@compilot/sig-gating-contracts
 
 Signature Based Gating: users are verified in our back-end and receive authorization signatures through our api.
 
 ## Smart Contract Architecture Overview
 
-![Architecture Overview](../images/NexeraID%20Smart%20Contract%20Architecture%20Overview.png)
+![Architecture Overview](../images/Compilot%20Smart%20Contract%20Architecture%20Overview.png)
 
 ## Contracts Files
 
@@ -40,7 +40,7 @@ It includes functionality for:
 - Verifying transaction signatures against a specified signer address.
 - Ensuring transactions have not expired based on their block expiration.
 - Incrementing nonces to prevent replay attacks.
-- The contract utilizes OZ SignatureChecker for signature verification (compatible with both EOA and smart contract signers). We recommend our customers set this to point to our deployed NexeraIDSignerManager contract.
+- The contract utilizes OZ SignatureChecker for signature verification (compatible with both EOA and smart contract signers). We recommend our customers set this to point to our deployed CompilotSignerManager contract.
 
 - Transaction Authentication Data Verifier
 Contract for verifying transaction authentication data, including signature verification and nonce management.
@@ -53,7 +53,7 @@ It is intended to be deployed behind a proxy for upgradeability.
 
 ### Signer Manager
 
-`./contracts/signerManager/NexeraIDSignerManager.sol` is a smart contract that we use to manage the signer address used in our API.
+`./contracts/signerManager/CompilotSignerManager.sol` is a smart contract that we use to manage the signer address used in our API.
 
 That way, if this address is compromised, we can change it without every customer having to call _setSigner.
 

@@ -1,4 +1,4 @@
 {
-  "main": "dist/nexeraid-sig-gating-contracts-sdk-addresses.cjs.js",
-  "module": "dist/nexeraid-sig-gating-contracts-sdk-addresses.esm.js"
+	"main": "dist/compilot-sig-gating-contracts-sdk-addresses.cjs.js",
+	"module": "dist/compilot-sig-gating-contracts-sdk-addresses.esm.js"
 }

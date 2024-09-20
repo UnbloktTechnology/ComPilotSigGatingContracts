@@ -1,45 +1,39 @@
 {
-  "version": "3.0.0",
-  "name": "@nexeraid/sig-gating-contracts-sdk",
-  "main": "dist/nexeraid-sig-gating-contracts-sdk.cjs.js",
-  "module": "dist/nexeraid-sig-gating-contracts-sdk.esm.js",
-  "scripts": {
-    "get-types-abis-addresses": "pnpm run --filter @nexeraid/sig-gating-contracts build && pnpm run --filter @nexeraid/sig-gating-contracts copy-info-to-sdk && pnpm lint",
-    "build": "pnpm run get-types-abis-addresses && preconstruct build",
-    "pre-build": "preconstruct build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
-    "lint": "prettier --write src/**/**.ts",
-    "lint:check": "prettier --check src/**/**.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts.git",
-    "directory": "contracts-sdk"
-  },
-  "files": [
-    "dist",
-    "abis",
-    "addresses",
-    "typechain",
-    "lib"
-  ],
-  "preconstruct": {
-    "entrypoints": [
-      "abis/index.ts",
-      "addresses/index.ts",
-      "typechain/index.ts",
-      "lib/index.ts"
-    ]
-  },
-  "dependencies": {
-    "viem": "^2.9.31",
-    "zod": "^3.22.4"
-  },
-  "devDependencies": {
-    "typescript": "5.4.5"
-  },
-  "peerDependencies": {
-    "ethers": "^5.7.2"
-  }
+	"version": "3.0.0",
+	"name": "@compilot/sig-gating-contracts-sdk",
+	"main": "dist/compilot-sig-gating-contracts-sdk.cjs.js",
+	"module": "dist/compilot-sig-gating-contracts-sdk.esm.js",
+	"scripts": {
+		"get-types-abis-addresses": "pnpm run --filter @compilot/sig-gating-contracts build && pnpm run --filter @compilot/sig-gating-contracts copy-info-to-sdk && pnpm lint",
+		"build": "pnpm run get-types-abis-addresses && preconstruct build",
+		"pre-build": "preconstruct build",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"publish-sdk-pkg": "pnpm build && pnpm publish --no-git-checks --registry https://npm.pkg.github.com/",
+		"lint": "prettier --write src/**/**.ts",
+		"lint:check": "prettier --check src/**/**.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/UnbloktTechnology/ComPilotSigGatingContracts.git",
+		"directory": "contracts-sdk"
+	},
+	"files": ["dist", "abis", "addresses", "typechain", "lib"],
+	"preconstruct": {
+		"entrypoints": [
+			"abis/index.ts",
+			"addresses/index.ts",
+			"typechain/index.ts",
+			"lib/index.ts"
+		]
+	},
+	"dependencies": {
+		"viem": "^2.9.31",
+		"zod": "^3.22.4"
+	},
+	"devDependencies": {
+		"typescript": "5.4.5"
+	},
+	"peerDependencies": {
+		"ethers": "^5.7.2"
+	}
 }
