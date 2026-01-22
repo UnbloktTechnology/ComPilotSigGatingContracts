@@ -184,11 +184,12 @@ export const networks: NetworksUserConfig = {
   // local
   hardhat: {
     live: false,
-    forking: {
-      url: `${AMOY_PROVIDER_URL}`,
-      // using fixed block number is supposed to improve test performance
-      blockNumber: 5499570,
-    },
+    // This breaks tests for some reason
+    // forking: {
+    //   url: `${AMOY_PROVIDER_URL}`,
+    //   // using fixed block number is supposed to improve test performance
+    //   blockNumber: 5499570,
+    // },
     // Nexera ID Test address is set up with tokens to test the Pool
     accounts: { mnemonic: TEST_MNEMONIC },
   },
