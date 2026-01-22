@@ -36,5 +36,7 @@ export const moveAllContractAddressesToSdk = () => {
   moveContractAddressToSdk("NexeraIDSignerManager", "polygon");
   // Base
   moveContractAddressToSdk("NexeraIDSignerManager", "base");
+  // XDC
+  moveContractAddressToSdk("NexeraIDSignerManager", "xdc");
 };
 moveAllContractAddressesToSdk();

@@ -38,3 +38,8 @@ export * from "./NexeraIDSignerManagerAddress_polygon";
 
 // NexeraIDSignerManager
 export * from "./NexeraIDSignerManagerAddress_base";
+
+// XDC
+
+// NexeraIDSignerManager
+export * from "./NexeraIDSignerManagerAddress_xdc";
