@@ -33,19 +33,19 @@ jobs:
           app_id: ${{ secrets.MERGE_BOT_APP_ID }}
           private_key: ${{ secrets.MERGE_BOT_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ steps.generate_token.outputs.token }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v3.0.0
+      - uses: pnpm/action-setup@v4
         name: Install pnpm
         id: pnpm-install
         with:
           version: ${{ env.PNPM_VERSION }}
           run_install: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           cache: "pnpm"
           node-version: ${{ env.NODE_VERSION }}
