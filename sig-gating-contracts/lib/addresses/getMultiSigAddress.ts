@@ -22,6 +22,8 @@ export const getMultiSigAddress = (chainId: string) => {
       return SAFE_ADDRESS[NEXERA_CHAINS.OPTIMISM];
     case NEXERA_CHAINS.AVALANCHE:
       return SAFE_ADDRESS[NEXERA_CHAINS.AVALANCHE];
+    case NEXERA_CHAINS.XDC:
+      return SAFE_ADDRESS[NEXERA_CHAINS.XDC];
     default:
       console.log(
         "--- WARNING --- No SAFE_ADDRESS specified for this Chain, using default Signer Manager Controller"
@@ -40,4 +42,6 @@ export const SAFE_ADDRESS = {
   [NEXERA_CHAINS.OPTIMISM]: "0xD5FE72cb8195518E9E5D6cB3E5Ab5A352670f5fB",
   [NEXERA_CHAINS.BNB]: "0xB071EC779D41D6aa43261A9BB275269f53A4a67c",
   [NEXERA_CHAINS.AVALANCHE]: "0xD5FE72cb8195518E9E5D6cB3E5Ab5A352670f5fB",
+  // TODO: Replace with actual Gnosis Safe address after creating Safe on XDC mainnet
+  [NEXERA_CHAINS.XDC]: "0x0000000000000000000000000000000000000000",
 } as { [key: string]: Address };

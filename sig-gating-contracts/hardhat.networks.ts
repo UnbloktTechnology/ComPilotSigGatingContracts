@@ -61,6 +61,12 @@ const ARBITRUM_SEPOLIA_PROVIDER_URL =
   process.env.ARBITRUM_SEPOLIA_PROVIDER_URL ||
   getRpcUrl(NEXERA_CHAINS.ARBITRUM_SEPOLIA);
 
+// XDC
+const XDC_PROVIDER_URL =
+  process.env.XDC_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.XDC);
+const XDC_APOTHEM_PROVIDER_URL =
+  process.env.XDC_APOTHEM_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.XDC_APOTHEM);
+
 export const networks: NetworksUserConfig = {
   //mainnets
   polygon: {
@@ -103,6 +109,19 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: Number(NEXERA_CHAINS.AVALANCHE),
     url: `${AVALANCHE_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  // XDC
+  xdc: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.XDC),
+    url: `${XDC_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  xdcApothem: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.XDC_APOTHEM),
+    url: `${XDC_APOTHEM_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets

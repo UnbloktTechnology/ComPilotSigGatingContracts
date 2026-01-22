@@ -33,6 +33,8 @@
     "deploy-avalancheFujiTestnet": "hardhat deploy --tags onlySignerManager --network avalancheFujiTestnet",
     "deploy-bscTestnet": "hardhat deploy --tags onlySignerManager --network bscTestnet",
     "deploy-arbitrumSepolia": "hardhat deploy --tags onlySignerManager --network arbitrumSepolia",
+    "deploy-xdc": "hardhat deploy --tags onlySignerManager --network xdc",
+    "deploy-xdcApothem": "hardhat deploy --tags onlySignerManager --network xdcApothem",
     "run-node": "hardhat node",
     "build": "hardhat compile",
     "copy-abi-bytecode": "hardhat run scripts/moveByteCodeAndABIToSdk.ts",

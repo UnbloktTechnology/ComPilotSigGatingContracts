@@ -8,6 +8,7 @@ import type {
   Transport,
   WalletActions,
 } from "viem";
+import { defineChain } from "viem";
 import {
   arbitrum,
   arbitrumGoerli,
@@ -30,6 +31,27 @@ import {
   sepolia,
 } from "viem/chains";
 
+// XDC Network custom chain definitions (not available in viem)
+const xdc = defineChain({
+  id: 50,
+  name: "XDC Network",
+  network: "xdc",
+  nativeCurrency: { name: "XDC", symbol: "XDC", decimals: 18 },
+  rpcUrls: { default: { http: ["https://erpc.xinfin.network"] } },
+  blockExplorers: { default: { name: "XDCScan", url: "https://xdcscan.io" } },
+});
+
+const xdcApothem = defineChain({
+  id: 51,
+  name: "XDC Apothem",
+  network: "xdc-apothem",
+  nativeCurrency: { name: "XDC", symbol: "XDC", decimals: 18 },
+  rpcUrls: { default: { http: ["https://erpc.apothem.network"] } },
+  blockExplorers: {
+    default: { name: "XDCScan", url: "https://apothem.xdcscan.io" },
+  },
+});
+
 export enum NEXERA_CHAINS {
   ETHEREUM = "1",
   GOERLI = "5",
@@ -51,6 +73,8 @@ export enum NEXERA_CHAINS {
   BASE_SEPOLIA = "84532",
   MOONBEAM = "1284",
   MOONRIVER = "1285",
+  XDC = "50",
+  XDC_APOTHEM = "51",
 }
 export const ACTIVE_CHAIN_VALUES = [
   NEXERA_CHAINS.ETHEREUM,
@@ -69,6 +93,8 @@ export const ACTIVE_CHAIN_VALUES = [
   NEXERA_CHAINS.OPTIMISM_SEPOLIA,
   NEXERA_CHAINS.BNB,
   NEXERA_CHAINS.BNB_TESTNET,
+  NEXERA_CHAINS.XDC,
+  NEXERA_CHAINS.XDC_APOTHEM,
 ] as const;
 
 export const ChainId = z.preprocess(
@@ -102,6 +128,8 @@ export const IdToChains = {
   [NEXERA_CHAINS.BNB_TESTNET]: bscTestnet,
   [NEXERA_CHAINS.MOONBEAM]: moonbeam,
   [NEXERA_CHAINS.MOONRIVER]: moonriver,
+  [NEXERA_CHAINS.XDC]: xdc,
+  [NEXERA_CHAINS.XDC_APOTHEM]: xdcApothem,
 } as Record<ChainId, Chain>;
 
 export const isValidAddress = (address: string) => {
