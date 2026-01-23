@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/compare/@nexeraid/sig-gating-contracts@3.0.0...@nexeraid/sig-gating-contracts@3.1.0) (2026-01-23)
+
+
+### Features
+
+* xdc network support ([#173](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/issues/173)) ([a623d17](https://github.com/UnbloktTechnology/NexeraIDSigGatingContracts/commit/a623d17172d7746dc27b5399c318335b6be217b4))
+
+
+
+
+
 # 3.0.0 (2024-07-22)
 
 

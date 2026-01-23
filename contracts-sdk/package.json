@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.1.0",
   "name": "@nexeraid/sig-gating-contracts-sdk",
   "main": "dist/nexeraid-sig-gating-contracts-sdk.cjs.js",
   "module": "dist/nexeraid-sig-gating-contracts-sdk.esm.js",
