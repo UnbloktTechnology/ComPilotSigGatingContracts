@@ -63,7 +63,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          lerna version --yes --changelog-preset=angular
+          lerna version --yes --changelog-preset=angular --tag-version-separator="@v"
 
       - name: Build
         env:
