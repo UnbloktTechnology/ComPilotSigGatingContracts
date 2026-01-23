@@ -41,7 +41,27 @@ const config: HardhatUserConfig = {
       mainnet: `${process.env.ETHERSCAN_ETHEREUM_API_KEY}`,
       sepolia: `${process.env.ETHERSCAN_ETHEREUM_API_KEY}`,
       optimisticEthereum: `${process.env.ETHERSCAN_OPTIMISM_API_KEY}`,
+      xdc: "abc", // XDCScan doesn't require API key, use placeholder
+      xdcApothem: "abc", // XDCScan doesn't require API key, use placeholder
     },
+    customChains: [
+      {
+        network: "xdc",
+        chainId: 50,
+        urls: {
+          apiURL: "https://xdcscan.io/api",
+          browserURL: "https://xdcscan.io",
+        },
+      },
+      {
+        network: "xdcApothem",
+        chainId: 51,
+        urls: {
+          apiURL: "https://apothem.xdcscan.io/api",
+          browserURL: "https://apothem.xdcscan.io",
+        },
+      },
+    ],
   },
   sourcify: {
     // Disabled by default

@@ -61,6 +61,12 @@ const ARBITRUM_SEPOLIA_PROVIDER_URL =
   process.env.ARBITRUM_SEPOLIA_PROVIDER_URL ||
   getRpcUrl(NEXERA_CHAINS.ARBITRUM_SEPOLIA);
 
+// XDC
+const XDC_PROVIDER_URL =
+  process.env.XDC_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.XDC);
+const XDC_APOTHEM_PROVIDER_URL =
+  process.env.XDC_APOTHEM_PROVIDER_URL || getRpcUrl(NEXERA_CHAINS.XDC_APOTHEM);
+
 export const networks: NetworksUserConfig = {
   //mainnets
   polygon: {
@@ -103,6 +109,19 @@ export const networks: NetworksUserConfig = {
     live: true,
     chainId: Number(NEXERA_CHAINS.AVALANCHE),
     url: `${AVALANCHE_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  // XDC
+  xdc: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.XDC),
+    url: `${XDC_PROVIDER_URL}`,
+    accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
+  },
+  xdcApothem: {
+    live: true,
+    chainId: Number(NEXERA_CHAINS.XDC_APOTHEM),
+    url: `${XDC_APOTHEM_PROVIDER_URL}`,
     accounts: { mnemonic: MAINNET_SIG_DEPLOYMENT_MNEMONIC },
   },
   //testnets
@@ -165,11 +184,12 @@ export const networks: NetworksUserConfig = {
   // local
   hardhat: {
     live: false,
-    forking: {
-      url: `${AMOY_PROVIDER_URL}`,
-      // using fixed block number is supposed to improve test performance
-      blockNumber: 5499570,
-    },
+    // This breaks tests for some reason
+    // forking: {
+    //   url: `${AMOY_PROVIDER_URL}`,
+    //   // using fixed block number is supposed to improve test performance
+    //   blockNumber: 5499570,
+    // },
     // Nexera ID Test address is set up with tokens to test the Pool
     accounts: { mnemonic: TEST_MNEMONIC },
   },
